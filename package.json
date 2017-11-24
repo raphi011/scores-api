@@ -1,0 +1,26 @@
+{
+  "name": "scores",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "isomorphic-unfetch": "^2.0.0",
+    "material-ui": "^1.0.0-beta.20",
+    "material-ui-icons": "^1.0.0-beta.17",
+    "next": "^4.1.4",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "devDependencies": {
+    "cross-env": "^5.1.1",
+    "http-proxy-middleware": "^0.17.4"
+  },
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development PORT=3000 node server.js",
+    "build": "next build",
+    "prod": "cross-env NODE_ENV=production PORT=3000 node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
