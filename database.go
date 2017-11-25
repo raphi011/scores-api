@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-test/models"
+	"scores-backend/models"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"

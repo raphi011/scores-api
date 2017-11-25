@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"go-test/dtos"
+	"scores-backend/dtos"
 	"net/http"
 	"strconv"
 
