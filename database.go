@@ -21,22 +21,19 @@ func initDb() (*gorm.DB, error) {
 	db.First(&models.Player{}).Count(&count)
 
 	if count == 0 {
-		player1 := models.Player{Name: "Steve"}
-		player2 := models.Player{Name: "Tom"}
-		player3 := models.Player{Name: "Nick"}
-		player4 := models.Player{Name: "Phil"}
+		player1 := models.Player{Name: "Raphi"}
+		player2 := models.Player{Name: "Robert"}
+		player3 := models.Player{Name: "Lukas"}
+		player4 := models.Player{Name: "Richie"}
+		player5 := models.Player{Name: "Dominik"}
+		player6 := models.Player{Name: "Roman"}
 
-		team1 := models.Team{Players: []models.Player{player1, player2}}
-		team2 := models.Team{Players: []models.Player{player3, player4}}
-
-		match := models.Match{
-			Team1:      team1,
-			Team2:      team2,
-			ScoreTeam1: 21,
-			ScoreTeam2: 18,
-		}
-
-		db.Create(&match)
+		db.Create(&player1)
+		db.Create(&player2)
+		db.Create(&player3)
+		db.Create(&player4)
+		db.Create(&player5)
+		db.Create(&player6)
 	}
 
 	return db, err
@@ -44,31 +41,53 @@ func initDb() (*gorm.DB, error) {
 
 func getMatches() []models.Match {
 	var matches []models.Match
-	db.Preload("Team1.Players").Preload("Team2.Players").Find(&matches)
+	db.
+		Preload("Team1.Player1").
+		Preload("Team1.Player2").
+		Preload("Team2.Player1").
+		Preload("Team2.Player2").
+		Find(&matches)
+
 	return matches
 }
 
 func getMatch(id int) models.Match {
 	var match models.Match
-	db.Preload("Team1.Players").Preload("Team2.Players").First(&match, id)
+	db.
+		Preload("Team1.Player1").
+		Preload("Team1.Player2").
+		Preload("Team2.Player1").
+		Preload("Team2.Player2").
+		First(&match, id)
 
 	return match
 }
 
+func getTeam(player1ID, player2ID uint) models.Team {
+	if player1ID > player2ID {
+		player1ID, player2ID = player2ID, player1ID
+	}
+
+	var team models.Team
+
+	db.Where(models.Team{Player1ID: player1ID, Player2ID: player2ID}).FirstOrCreate(&team)
+
+	return team
+}
+
 func createMatch(
-	player1ID,
-	player2ID,
-	player3ID,
-	player4ID,
-	scoreTeam1,
+	player1ID uint,
+	player2ID uint,
+	player3ID uint,
+	player4ID uint,
+	scoreTeam1 int,
 	scoreTeam2 int) (models.Match, error) {
-	// TODO: get (or create) real team ids from players
-	team1ID := 1
-	team2ID := 2
+	team1 := getTeam(player1ID, player2ID)
+	team2 := getTeam(player3ID, player4ID)
 
 	match := models.Match{
-		Team1ID:    team1ID,
-		Team2ID:    team2ID,
+		Team1:      team1,
+		Team2:      team2,
 		ScoreTeam1: scoreTeam1,
 		ScoreTeam2: scoreTeam2,
 	}
