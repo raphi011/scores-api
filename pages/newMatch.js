@@ -47,7 +47,7 @@ class NewMatch extends React.Component {
 
   static async getInitialProps() {
     try {
-      const playersResponse = await fetch("http://localhost:3000/api/players");
+      const playersResponse = await fetch(`${process.env.BACKEND_URL}/api/players`);
       const players = await playersResponse.json();
 
       const playerMap = {};
@@ -94,7 +94,7 @@ class NewMatch extends React.Component {
     const { formState, ...match } = this.state;
 
     try {
-      const response = await fetch("http://localhost:3000/api/matches", {
+      const response = await fetch(`${process.env.BACKEND_URL}/api/matches`, {
         method: "POST",
         body: JSON.stringify(match)
       });

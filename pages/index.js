@@ -11,7 +11,7 @@ import MatchList from '../components/MatchList';
 export default class extends React.Component {
   static async getInitialProps() {
     try {
-      const matchResponse = await fetch("http://localhost:3000/api/matches");
+      const matchResponse = await fetch(`${process.env.BACKEND_URL}/api/matches`);
       const matches = await matchResponse.json();
 
       return { matches };
