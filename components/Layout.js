@@ -18,7 +18,7 @@ class Layout extends React.Component {
   }
 
   render() {
-    const { status, children } = this.props;
+    const { status, title, children } = this.props;
     return (
       <div>
         <Head>
@@ -31,7 +31,7 @@ class Layout extends React.Component {
             </style>
         </Head>
         <Drawer onRequestClose={this.onCloseDrawer} open={this.state.open} />
-        <AppBar onOpenMenu={this.onToggleDrawer}/>
+        <AppBar onOpenMenu={this.onToggleDrawer} title={title} />
         {children}
         <Snackbar status={status} />
       </div>

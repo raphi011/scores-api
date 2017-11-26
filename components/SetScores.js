@@ -1,4 +1,14 @@
 import React from "react";
+import TextField from 'material-ui/TextField';
+import { withStyles } from 'material-ui/styles';
+
+const styles = theme => ({
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+});
 
 class SetScores extends React.Component {
   render() {
@@ -9,7 +19,8 @@ class SetScores extends React.Component {
       player4,
       scoreTeam1,
       scoreTeam2,
-      onChangeScore
+      onChangeScore,
+      classes
     } = this.props;
 
     const onChangeScoreTeam1 = e =>
@@ -22,28 +33,39 @@ class SetScores extends React.Component {
         <p>
           {player1.Name} / {player2.Name}: {scoreTeam1}
         </p>
-        <input
-          type="range"
-          min={0}
-          max={40}
-          step={1}
+        <TextField
+          id="number"
+          label="Score"
           value={scoreTeam1}
           onChange={onChangeScoreTeam1}
+          type="number"
+          className={classes.textField}
+          min={0}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          margin="normal"
         />
         <p>
           {player3.Name} / {player4.Name}: {scoreTeam2}
         </p>
-        <input
-          type="range"
-          min={0}
-          max={40}
-          step={1}
+        <TextField
+          id="number"
+          label="Score"
           value={scoreTeam2}
           onChange={onChangeScoreTeam2}
+          type="number"
+          className={classes.textField}
+          min={0}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          margin="normal"
         />
       </div>
     );
   }
 }
 
-export default SetScores;
+
+export default withStyles(styles)(SetScores);

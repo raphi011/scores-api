@@ -18,6 +18,9 @@ const styles = theme => ({
   button: {
     marginRight: theme.spacing.unit
   },
+  stepContainer: {
+    padding: '0 20px',
+  },
   actionsContainer: {
     marginTop: theme.spacing.unit
   },
@@ -41,8 +44,8 @@ class NewMatch extends React.Component {
     player2ID: 0,
     player3ID: 0,
     player4ID: 0,
-    scoreTeam1: 21,
-    scoreTeam2: 21
+    scoreTeam1: 15,
+    scoreTeam2: 15
   };
 
   static async getInitialProps() {
@@ -106,7 +109,7 @@ class NewMatch extends React.Component {
   };
 
   render() {
-    const { error, playerMap, classes } = this.props;
+    const { playerMap, classes, error } = this.props;
     const { teamsComplete, activeStep, scoreTeam1, scoreTeam2, ...selectedIDs } = this.state;
 
     const players = this.getPlayers();
@@ -119,8 +122,7 @@ class NewMatch extends React.Component {
     const player4 = playerMap[selectedIDs.player4ID];
 
     return (
-      <Layout status={this.state.status}>
-        <h1>New Match</h1>
+      <Layout status={this.state.status} title="New Match">
         <div>
           <MobileStepper
             position="static"
@@ -145,6 +147,7 @@ class NewMatch extends React.Component {
               </Button>
             }
           />
+          <div className={classes.stepContainer}>
           {activeStep == 0 ? (
             <CreateMatch
               {...selectedIDs}
@@ -174,6 +177,7 @@ class NewMatch extends React.Component {
               </Button>
             </div>
           )}
+          </div>
         </div>
       </Layout>
     );
