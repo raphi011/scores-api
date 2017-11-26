@@ -29,7 +29,7 @@ var routes = Routes{
 	Route{
 		"MatchShow",
 		"GET",
-		"/matches/{matchId}",
+		"/matches/{matchID}",
 		MatchShow,
 	},
 	Route{
@@ -49,5 +49,17 @@ var routes = Routes{
 		"POST",
 		"/matches",
 		MatchCreate,
+	},
+	Route{
+		"MatchDelete",
+		"DELETE",
+		"/matches/{matchID}",
+		MatchDelete,
+	},
+	Route{
+		"PlayerStatistic",
+		"GET",
+		"/players/{playerID}/statistic",
+		PlayerStatistic,
 	},
 }

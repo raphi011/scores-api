@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"scores-backend/dtos"
 	"net/http"
+	"scores-backend/dtos"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -16,21 +16,34 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 func MatchShow(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	matchID, err := strconv.Atoi(vars["matchId"])
+	matchID, err := strconv.Atoi(vars["matchID"])
 
 	if err != nil {
-		panic(err)
+		respondError(w, err.Error(), http.StatusBadRequest)
 	}
 
 	match := getMatch(matchID)
 
-	WriteJson(w, match)
+	writeJSON(w, match, http.StatusOK)
+}
+
+func MatchDelete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	matchID, err := strconv.Atoi(vars["matchID"])
+
+	if err != nil {
+		respondError(w, err.Error(), http.StatusBadRequest)
+	}
+
+	deleteMatch(uint(matchID))
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func MatchIndex(w http.ResponseWriter, r *http.Request) {
 	matches := getMatches()
 
-	WriteJson(w, matches)
+	writeJSON(w, matches, http.StatusOK)
 }
 
 func MatchCreate(w http.ResponseWriter, r *http.Request) {
@@ -39,11 +52,8 @@ func MatchCreate(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 
 	if err := decoder.Decode(&newMatch); err != nil {
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(422) // unprocessable entity
-		if err := json.NewEncoder(w).Encode(err); err != nil {
-			panic(err)
-		}
+		respondError(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	match, _ := createMatch(
@@ -55,27 +65,39 @@ func MatchCreate(w http.ResponseWriter, r *http.Request) {
 		newMatch.ScoreTeam2,
 	)
 
-	w.WriteHeader(http.StatusCreated)
-	WriteJson(w, match)
+	writeJSON(w, match, http.StatusCreated)
 }
 
 func PlayerCreate(w http.ResponseWriter, r *http.Request) {
 	var newPlayer dtos.CreatePlayerDto
 
 	decoder := json.NewDecoder(r.Body)
-
 	if err := decoder.Decode(&newPlayer); err != nil {
-		panic(err)
+		respondError(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	player, _ := createPlayer(newPlayer.Name)
 
-	w.WriteHeader(http.StatusCreated)
-	WriteJson(w, player)
+	writeJSON(w, player, http.StatusCreated)
 }
 
 func PlayerIndex(w http.ResponseWriter, r *http.Request) {
 	players := getPlayers()
 
-	WriteJson(w, players)
+	writeJSON(w, players, http.StatusOK)
+}
+
+func PlayerStatistic(w http.ResponseWriter, r *http.Request) {
+	// vars := mux.Vars(r)
+	// playerID, err := strconv.Atoi(vars["playerID"])
+
+	// if err != nil {
+	// 	respondError(w, err.Error(), http.StatusBadRequest)
+	// }
+
+	// statistic := PlayerStatistic(uint(playerID))
+	var statistic dtos.Statistic
+
+	writeJSON(w, statistic, http.StatusOK)
 }

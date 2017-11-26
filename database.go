@@ -75,6 +75,16 @@ func getTeam(player1ID, player2ID uint) models.Team {
 	return team
 }
 
+/* func playerStatistic() {
+	db.Model(&models.Match)
+}  */
+
+func deleteMatch(matchID uint) {
+	match := models.Match{Model: gorm.Model{ID: matchID}}
+
+	db.Delete(&match)
+}
+
 func createMatch(
 	player1ID uint,
 	player2ID uint,
