@@ -3,7 +3,6 @@ import fetch from "isomorphic-unfetch";
 import Badge from "material-ui/Badge";
 import PersonIcon from "material-ui-icons/Person";
 import AddCircleIcon from "material-ui-icons/AddCircle";
-import Link from 'next/link'
 
 import Layout from '../components/Layout';
 import MatchList from '../components/MatchList';
@@ -27,7 +26,6 @@ export default class extends React.Component {
     return (
       <Layout>
         <h1>Matches</h1>
-        <Link href="/newMatch"><a><AddCircleIcon /> add match</a></Link>
         <MatchList matches={matches} />
       </Layout>
     );

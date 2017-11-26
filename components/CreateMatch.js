@@ -26,12 +26,12 @@ const playerItemStyles = theme => ({
 
 class CreateMatch extends React.Component {
   playerNr = playerID => {
-    const { player1, player2, player3, player4 } = this.props;
+    const { player1ID, player2ID, player3ID, player4ID } = this.props;
 
-    if (playerID === player1) return 1;
-    else if (playerID === player2) return 2;
-    else if (playerID === player3) return 3;
-    else if (playerID === player4) return 4;
+    if (playerID === player1ID) return 1;
+    else if (playerID === player2ID) return 2;
+    else if (playerID === player3ID) return 3;
+    else if (playerID === player4ID) return 4;
 
     return 0;
   };
@@ -44,7 +44,7 @@ class CreateMatch extends React.Component {
     let selected;
 
     for (let i = 1; i < 5; i++) {
-      const pID = this.props["player" + i];
+      const pID = this.props[`player${i}ID`];
 
       if (pID === ID) {
         selected = i;

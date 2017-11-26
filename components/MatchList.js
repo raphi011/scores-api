@@ -7,8 +7,32 @@ const styles = theme => ({
     width: "100%",
     maxWidth: 360,
     background: theme.palette.background.paper
+  },
+  listContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
+  team1: {},
+  team2: { textAlign: 'right' },
+  points: {
+    fontSize: "35px"
   }
 });
+
+function getTeamName(team) {
+  if (team.Name) return team.Name;
+
+  return (
+    <span>
+      {team.Player1.Name}
+      <br />
+      {team.Player2.Name}
+    </span>
+  );
+}
 
 function MatchList({ matches = [], classes }) {
   return (
@@ -18,13 +42,13 @@ function MatchList({ matches = [], classes }) {
           <ListItemText
             inset
             primary={
-              <span>
-                {m.Team1.Name}{" "}
-                <b>
+              <div className={classes.listContainer}>
+                <div>{getTeamName(m.Team1)} </div>
+                <div className={classes.points}>
                   {m.ScoreTeam1} : {m.ScoreTeam2}
-                </b>{" "}
-                {m.Team2.Name}
-              </span>
+                </div>
+                <div className={classes.team2}>{getTeamName(m.Team2)}</div>
+              </div>
             }
           />
         </ListItem>

@@ -6,8 +6,8 @@
   "dependencies": {
     "express": "^4.16.2",
     "isomorphic-unfetch": "^2.0.0",
-    "material-ui": "^1.0.0-beta.20",
     "material-ui-icons": "^1.0.0-beta.17",
+    "material-ui": "^1.0.0-beta.20",
     "next": "^4.1.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
