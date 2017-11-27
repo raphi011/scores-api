@@ -1,11 +1,11 @@
 FROM arm32v7/golang:1.9.2
 
-WORKDIR /backend
+WORKDIR /go/src/scores-backend
+COPY . .
 
-ADD . /go/src/scores-backend
+RUN go-wrapper download
+RUN go-wrapper install
 
-RUN go install scores-backend
-
-ENTRYPOINT /go/bin/scores-backend
+CMD ["go-wrapper", "run"]
 
 EXPOSE 8080
