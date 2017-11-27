@@ -7,9 +7,11 @@ import BackIcon from "material-ui-icons/KeyboardArrowLeft";
 import NextIcon from "material-ui-icons/KeyboardArrowRight";
 import DoneIcon from "material-ui-icons/Done";
 import MobileStepper from "material-ui/MobileStepper";
+
 import Layout from "../components/Layout";
 import CreateMatch from "../components/CreateMatch";
 import SetScores from "../components/SetScores";
+import withRoot from '../components/withRoot';
 
 const styles = theme => ({
   root: {
@@ -184,4 +186,4 @@ class NewMatch extends React.Component {
   }
 }
 
-export default withStyles(styles)(NewMatch);
+export default withRoot(withStyles(styles)(NewMatch));

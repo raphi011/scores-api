@@ -1,5 +1,4 @@
 FROM node:carbon
-# FROM golang:1.9
 
 
 WORKDIR /frontend
@@ -11,4 +10,3 @@ RUN npm run build
 EXPOSE 3000 
 
 CMD ["npm", "start"]
-# CMD["./backened/scores-backend"]
