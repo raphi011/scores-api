@@ -22,7 +22,7 @@ const styles = theme => ({
   },
 });
 
-function ButtonAppBar({ onOpenMenu, title, classes }) {
+function ButtonAppBar({ onOpenMenu, loginRoute, title, classes }) {
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -33,7 +33,7 @@ function ButtonAppBar({ onOpenMenu, title, classes }) {
           <Typography type="title" color="inherit" className={classes.flex}>
             {title}
           </Typography>
-          <Button color="contrast">Login</Button>
+          <Button color="contrast" href={loginRoute} >Login</Button>
         </Toolbar>
       </AppBar>
     </div>

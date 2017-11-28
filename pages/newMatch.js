@@ -7,11 +7,12 @@ import BackIcon from "material-ui-icons/KeyboardArrowLeft";
 import NextIcon from "material-ui-icons/KeyboardArrowRight";
 import DoneIcon from "material-ui-icons/Done";
 import MobileStepper from "material-ui/MobileStepper";
+import Router from "next/router";
 
 import Layout from "../components/Layout";
 import CreateMatch from "../components/CreateMatch";
 import SetScores from "../components/SetScores";
-import withRoot from '../components/withRoot';
+import withRoot from "../components/withRoot";
 
 const styles = theme => ({
   root: {
@@ -21,7 +22,7 @@ const styles = theme => ({
     marginRight: theme.spacing.unit
   },
   stepContainer: {
-    padding: '0 20px',
+    padding: "0 20px"
   },
   actionsContainer: {
     marginTop: theme.spacing.unit
@@ -35,7 +36,7 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit
-  },
+  }
 });
 
 class NewMatch extends React.Component {
@@ -46,13 +47,15 @@ class NewMatch extends React.Component {
     player2ID: 0,
     player3ID: 0,
     player4ID: 0,
-    scoreTeam1: 15,
-    scoreTeam2: 15
+    scoreTeam1: "",
+    scoreTeam2: ""
   };
 
   static async getInitialProps() {
     try {
-      const playersResponse = await fetch(`${process.env.BACKEND_URL}/api/players`);
+      const playersResponse = await fetch(
+        `${process.env.BACKEND_URL}/api/players`
+      );
       const players = await playersResponse.json();
 
       const playerMap = {};
@@ -83,7 +86,7 @@ class NewMatch extends React.Component {
 
   onSetScores = () => {
     this.setState({ activeStep: 1 });
-  }
+  };
 
   getPlayers = () => {
     const { playerIDs = [], playerMap } = this.props;
@@ -99,20 +102,26 @@ class NewMatch extends React.Component {
     const { formState, ...match } = this.state;
 
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/matches`, {
+      await fetch(`${process.env.BACKEND_URL}/api/matches`, {
         method: "POST",
         body: JSON.stringify(match)
       });
 
-      this.setState({ status: "Match created" });
+      Router.push("/");
     } catch (e) {
-      console.error(e);
+      this.setState({ status: "Error creating match" });
     }
   };
 
   render() {
     const { playerMap, classes, error } = this.props;
-    const { teamsComplete, activeStep, scoreTeam1, scoreTeam2, ...selectedIDs } = this.state;
+    const {
+      teamsComplete,
+      activeStep,
+      scoreTeam1,
+      scoreTeam2,
+      ...selectedIDs
+    } = this.state;
 
     const players = this.getPlayers();
 
@@ -143,42 +152,46 @@ class NewMatch extends React.Component {
               </Button>
             }
             nextButton={
-              <Button onClick={this.onSetScores} dense disabled={activeStep == 1 || !teamsComplete}>
+              <Button
+                onClick={this.onSetScores}
+                dense
+                disabled={activeStep == 1 || !teamsComplete}
+              >
                 Next
                 <NextIcon className={classes.button} />
               </Button>
             }
           />
           <div className={classes.stepContainer}>
-          {activeStep == 0 ? (
-            <CreateMatch
-              {...selectedIDs}
-              players={players}
-              onSetPlayer={this.onSetPlayer}
-              onUnsetPlayer={this.onUnsetPlayer}
-            />
-          ) : (
-            <div>
-              <SetScores
-                player1={player1}
-                player2={player2}
-                player3={player3}
-                player4={player4}
-                scoreTeam1={scoreTeam1}
-                scoreTeam2={scoreTeam2}
-                onChangeScore={this.onChangeScore}
+            {activeStep == 0 ? (
+              <CreateMatch
+                {...selectedIDs}
+                players={players}
+                onSetPlayer={this.onSetPlayer}
+                onUnsetPlayer={this.onUnsetPlayer}
               />
-              <Button
-                className={classes.button}
-                onClick={this.onCreateMatch}
-                raised
-                color="primary"
-              >
-                <DoneIcon className={classes.leftIcon} />
-                Submit
-              </Button>
-            </div>
-          )}
+            ) : (
+              <div>
+                <SetScores
+                  player1={player1}
+                  player2={player2}
+                  player3={player3}
+                  player4={player4}
+                  scoreTeam1={scoreTeam1}
+                  scoreTeam2={scoreTeam2}
+                  onChangeScore={this.onChangeScore}
+                />
+                <Button
+                  className={classes.button}
+                  onClick={this.onCreateMatch}
+                  raised
+                  color="primary"
+                >
+                  <DoneIcon className={classes.leftIcon} />
+                  Submit
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </Layout>

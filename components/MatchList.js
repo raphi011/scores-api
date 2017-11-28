@@ -34,11 +34,11 @@ function getTeamName(team) {
   );
 }
 
-function MatchList({ matches = [], classes }) {
+function MatchList({ matches = [], onMatchClick, classes }) {
   return (
     <List className={classes.root}>
       {matches.map(m => (
-        <ListItem key={m.ID} button>
+        <ListItem key={m.ID} button onClick={() => onMatchClick(m)}>
           <ListItemText
             inset
             primary={
@@ -50,6 +50,7 @@ function MatchList({ matches = [], classes }) {
                 <div className={classes.team2}>{getTeamName(m.Team2)}</div>
               </div>
             }
+            secondary={new Date(m.CreatedAt).toUTCString()}
           />
         </ListItem>
       ))}

@@ -31,7 +31,7 @@ class SetScores extends React.Component {
     return (
       <div>
         <p>
-          {player1.Name} / {player2.Name}: {scoreTeam1}
+          {player1.Name} / {player2.Name}
         </p>
         <TextField
           id="number"
@@ -47,7 +47,7 @@ class SetScores extends React.Component {
           margin="normal"
         />
         <p>
-          {player3.Name} / {player4.Name}: {scoreTeam2}
+          {player3.Name} / {player4.Name}
         </p>
         <TextField
           id="number"
