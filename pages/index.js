@@ -3,24 +3,24 @@ import fetch from "isomorphic-unfetch";
 import Badge from "material-ui/Badge";
 import PersonIcon from "material-ui-icons/Person";
 import AddCircleIcon from "material-ui-icons/AddCircle";
+import withRedux from "next-redux-wrapper";
 
 import withRoot from "../components/withRoot";
 import Layout from "../components/Layout";
 import MatchOptionsDialog from "../components/MatchOptionsDialog";
 import MatchList from "../components/MatchList";
+import initStore from "../redux/store";
+import { matchesSelector } from "../redux/reducers/reducer";
+import { loadMatchesAction, setStatusAction, deleteMatchAction } from "../redux/actions/action";
 
 class Index extends React.Component {
   state = {
     loginRoute: "",
-    selectedMatch: null,
-    status: "",
+    selectedMatch: null
   };
 
-  static async getInitialProps() {
-    const matchResponse = await fetch(`${process.env.BACKEND_URL}/api/matches`);
-    const matches = await matchResponse.json();
-
-    return { matches };
+  static async getInitialProps({ store }) {
+    await store.dispatch(loadMatchesAction());
   }
 
   async componentDidMount() {
@@ -38,29 +38,23 @@ class Index extends React.Component {
     this.setState({ selectedMatch: null });
   };
 
-  onOpenDialog = (selectedMatch) => {
+  onOpenDialog = selectedMatch => {
     this.setState({ selectedMatch });
   };
 
-  onDeleteMatch = async () => {
-    try {
-      const { matches } = this.props;
+  onDeleteMatch = () => {
+      const { matches, deleteMatch } = this.props;
       const { selectedMatch } = this.state;
 
-      await fetch(`${process.env.BACKEND_URL}/api/matches/${selectedMatch.ID}`, {
-        method: "DELETE"
-      });
+      deleteMatch(selectedMatch);
 
-      // BAD: maybe put matches into state instead of props
-      matches.splice(matches.indexOf(selectedMatch), 1);
-      this.setState({ selectedMatch: null, status: "Deleted Match"});
-    } catch (e) {
-      this.setState({ status: "Error deleting Match"});
-    }
+      this.setState({ selectedMatch: null });
   };
 
   onCloneMatch = () => {
-    this.setState({ selectedMatch: null, status: "Not implemented yet"});
+    const { setStatus } = this.props;
+    setStatus("Not implemented yet");
+    this.setState({ selectedMatch: null });
   };
 
   render() {
@@ -68,7 +62,7 @@ class Index extends React.Component {
     const { loginRoute, selectedMatch } = this.state;
 
     return (
-      <Layout status={this.state.status} title="Matches" loginRoute={loginRoute}>
+      <Layout title="Matches" loginRoute={loginRoute}>
         <MatchList matches={matches} onMatchClick={this.onOpenDialog} />
         <MatchOptionsDialog
           open={selectedMatch != null}
@@ -82,4 +76,20 @@ class Index extends React.Component {
   }
 }
 
-export default withRoot(Index);
+function mapStateToProps(state) {
+  const matches = matchesSelector(state);
+
+  return {
+    matches
+  };
+}
+
+const mapDispatchToProps = {
+  loadMatches: loadMatchesAction,
+  setStatus: setStatusAction,
+  deleteMatch: deleteMatchAction,
+};
+
+export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
+  withRoot(Index)
+);

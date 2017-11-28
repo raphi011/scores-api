@@ -10,7 +10,11 @@
     "material-ui": "next",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-redux": "latest",
+    "redux-devtools-extension": "latest",
+    "redux": "latest",
+    "next-redux-wrapper": "latest"
   },
   "devDependencies": {
     "babel-plugin-transform-define": "^1.3.0",

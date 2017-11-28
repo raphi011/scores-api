@@ -1,7 +1,7 @@
 import React from "react";
 import Drawer from "./Drawer";
 import AppBar from "./AppBar";
-import Snackbar from "./Snackbar";
+import Snackbar from "../containers/SnackbarContainer";
 
 class Layout extends React.Component {
   state = {
@@ -17,7 +17,7 @@ class Layout extends React.Component {
   };
 
   render() {
-    const { status, title, loginRoute, children } = this.props;
+    const { title, loginRoute, children } = this.props;
     return (
       <div>
         <Drawer onRequestClose={this.onCloseDrawer} open={this.state.open} />
@@ -27,7 +27,7 @@ class Layout extends React.Component {
           title={title}
         />
         {children}
-        <Snackbar status={status} />
+        <Snackbar />
       </div>
     );
   }

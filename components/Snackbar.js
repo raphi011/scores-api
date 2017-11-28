@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { withStyles } from "material-ui/styles";
 import Button from "material-ui/Button";
 import Snackbar from "material-ui/Snackbar";
@@ -13,58 +12,41 @@ const styles = theme => ({
   }
 });
 
-class SimpleSnackbar extends React.Component {
-  state = {
-    open: false
-  };
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.status !== this.props.status) {
-      this.setState({ open: true });
-    }
-  }
-
-  handleRequestClose = (event, reason) => {
+  const handleRequestClose = onClose => (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
 
-    this.setState({ open: false });
+    onClose();
   };
 
-  render() {
-    const { classes } = this.props;
-    return (
-      <Snackbar
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "center"
-        }}
-        open={this.state.open}
-        autoHideDuration={6000}
-        onRequestClose={this.handleRequestClose}
-        SnackbarContentProps={{
-          "aria-describedby": "message-id"
-        }}
-        message={<span id="message-id">{this.props.status}</span>}
-        action={[
-          <IconButton
-            key="close"
-            aria-label="Close"
-            color="inherit"
-            className={classes.close}
-            onClick={this.handleRequestClose}
-          >
-            <CloseIcon />
-          </IconButton>
-        ]}
-      />
-    );
-  }
-}
 
-SimpleSnackbar.propTypes = {
-  classes: PropTypes.object.isRequired
-};
+const SimpleSnackbar = ({ classes, onClose, status, open }) => (
+
+  <Snackbar
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center"
+    }}
+    open={open}
+    autoHideDuration={6000}
+    onRequestClose={handleRequestClose(onClose)}
+    SnackbarContentProps={{
+      "aria-describedby": "message-id"
+    }}
+    message={<span id="message-id">{status}</span>}
+    action={[
+      <IconButton
+        key="close"
+        aria-label="Close"
+        color="inherit"
+        className={classes.close}
+        onClick={onClose}
+      >
+        <CloseIcon />
+      </IconButton>
+    ]}
+  />
+);
 
 export default withStyles(styles)(SimpleSnackbar);

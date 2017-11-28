@@ -8,11 +8,18 @@ import NextIcon from "material-ui-icons/KeyboardArrowRight";
 import DoneIcon from "material-ui-icons/Done";
 import MobileStepper from "material-ui/MobileStepper";
 import Router from "next/router";
+import withRedux from "next-redux-wrapper";
 
 import Layout from "../components/Layout";
 import CreateMatch from "../components/CreateMatch";
 import SetScores from "../components/SetScores";
 import withRoot from "../components/withRoot";
+import initStore from "../redux/store";
+import { playersSelector, statusSelector } from "../redux/reducers/reducer";
+import {
+  createNewMatchAction,
+  loadPlayersAction
+} from "../redux/actions/action";
 
 const styles = theme => ({
   root: {
@@ -51,24 +58,8 @@ class NewMatch extends React.Component {
     scoreTeam2: ""
   };
 
-  static async getInitialProps() {
-    try {
-      const playersResponse = await fetch(
-        `${process.env.BACKEND_URL}/api/players`
-      );
-      const players = await playersResponse.json();
-
-      const playerMap = {};
-      const playerIDs = [];
-      players.forEach(p => {
-        playerIDs.push(p.ID);
-        playerMap[p.ID] = p;
-      });
-
-      return { playerMap, playerIDs };
-    } catch (error) {
-      return { error };
-    }
+  static async getInitialProps({ store }) {
+    await store.dispatch(loadPlayersAction());
   }
 
   onUnsetPlayer = selected => {
@@ -89,9 +80,9 @@ class NewMatch extends React.Component {
   };
 
   getPlayers = () => {
-    const { playerIDs = [], playerMap } = this.props;
+    const { playerIDs = [], playersMap } = this.props;
 
-    return playerIDs.map(p => playerMap[p]);
+    return playerIDs.map(p => playersMap[p]);
   };
 
   onChangeScore = (teamNr, score) => {
@@ -100,21 +91,14 @@ class NewMatch extends React.Component {
 
   onCreateMatch = async () => {
     const { formState, ...match } = this.state;
+    const { createNewMatch } = this.props;
 
-    try {
-      await fetch(`${process.env.BACKEND_URL}/api/matches`, {
-        method: "POST",
-        body: JSON.stringify(match)
-      });
-
-      Router.push("/");
-    } catch (e) {
-      this.setState({ status: "Error creating match" });
-    }
+    await createNewMatch(match);
+    Router.push("/");
   };
 
   render() {
-    const { playerMap, classes, error } = this.props;
+    const { playersMap, classes, error } = this.props;
     const {
       teamsComplete,
       activeStep,
@@ -127,13 +111,13 @@ class NewMatch extends React.Component {
 
     let body;
 
-    const player1 = playerMap[selectedIDs.player1ID];
-    const player2 = playerMap[selectedIDs.player2ID];
-    const player3 = playerMap[selectedIDs.player3ID];
-    const player4 = playerMap[selectedIDs.player4ID];
+    const player1 = playersMap[selectedIDs.player1ID];
+    const player2 = playersMap[selectedIDs.player2ID];
+    const player3 = playersMap[selectedIDs.player3ID];
+    const player4 = playersMap[selectedIDs.player4ID];
 
     return (
-      <Layout status={this.state.status} title="New Match">
+      <Layout title="New Match">
         <div>
           <MobileStepper
             position="static"
@@ -199,4 +183,20 @@ class NewMatch extends React.Component {
   }
 }
 
-export default withRoot(withStyles(styles)(NewMatch));
+function mapStateToProps(state) {
+  const { playersMap, playerIDs } = playersSelector(state);
+
+  return {
+    playersMap,
+    playerIDs,
+  };
+}
+
+const mapDispatchToProps = {
+  loadPlayers: loadPlayersAction,
+  createNewMatch: createNewMatchAction
+};
+
+export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
+  withRoot(withStyles(styles)(NewMatch))
+);
