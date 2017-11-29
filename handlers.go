@@ -49,6 +49,8 @@ func randToken() string {
 }
 
 func initAuth() {
+	var redirectURL string
+	env := os.Getenv("APP_ENV")
 	file, err := ioutil.ReadFile("./client_secret.json")
 	if err != nil {
 		log.Printf("File error: %v\n", err)
@@ -56,10 +58,16 @@ func initAuth() {
 	}
 	json.Unmarshal(file, &cred)
 
+	if env == "production" {
+		redirectURL = "https://scores.raphi011.com/api/auth"
+	} else {
+		redirectURL = "http://localhost:3000/api/auth"
+	}
+
 	conf = &oauth2.Config{
 		ClientID:     cred.Cid,
 		ClientSecret: cred.Csecret,
-		RedirectURL:  "http://localhost:3000/api/auth",
+		RedirectURL:  redirectURL,
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 		},

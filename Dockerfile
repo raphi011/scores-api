@@ -1,5 +1,8 @@
 FROM arm32v7/golang:1.9.2
 
+ARG app_env
+ENV APP_ENV $app_env
+
 WORKDIR /go/src/scores-backend
 COPY . .
 
