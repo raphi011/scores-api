@@ -10,6 +10,7 @@ import MobileStepper from "material-ui/MobileStepper";
 import Router from "next/router";
 import withRedux from "next-redux-wrapper";
 
+import { validateMatch } from "../validation/match";
 import Layout from "../components/Layout";
 import CreateMatch from "../components/CreateMatch";
 import SetScores from "../components/SetScores";
@@ -20,13 +21,15 @@ import {
   createNewMatchAction,
   loadPlayersAction
 } from "../redux/actions/action";
+import withWidth from "material-ui/utils/withWidth";
 
 const styles = theme => ({
   root: {
     width: "90%"
   },
-  button: {
-    marginRight: theme.spacing.unit
+  submitButton: {
+    marginRight: theme.spacing.unit,
+    width: "100%"
   },
   stepContainer: {
     padding: "0 20px"
@@ -50,12 +53,17 @@ class NewMatch extends React.Component {
   state = {
     activeStep: 0,
     teamsComplete: false,
-    player1ID: 0,
-    player2ID: 0,
-    player3ID: 0,
-    player4ID: 0,
-    scoreTeam1: "",
-    scoreTeam2: ""
+    match: {
+      player1ID: 0,
+      player2ID: 0,
+      player3ID: 0,
+      player4ID: 0,
+      scoreTeam1: "",
+      scoreTeam2: ""
+    },
+    errors: {
+      valid: true
+    }
   };
 
   static async getInitialProps({ store }) {
@@ -63,12 +71,22 @@ class NewMatch extends React.Component {
   }
 
   onUnsetPlayer = selected => {
-    this.setState({ [`player${selected}ID`]: 0, teamsComplete: false });
+    const match = {
+      ...this.state.match,
+      [`player${selected}ID`]: 0
+    };
+
+    this.setState({ match, teamsComplete: false });
   };
 
   onSetPlayer = (unassigned, ID, teamsComplete) => {
     const activeStep = teamsComplete ? 1 : 0;
-    this.setState({ [`player${unassigned}ID`]: ID, teamsComplete, activeStep });
+    const match = {
+      ...this.state.match,
+      [`player${unassigned}ID`]: ID
+    };
+
+    this.setState({ match, teamsComplete, activeStep });
   };
 
   onSelectTeam = () => {
@@ -86,35 +104,49 @@ class NewMatch extends React.Component {
   };
 
   onChangeScore = (teamNr, score) => {
-    this.setState({ ["scoreTeam" + teamNr]: score });
+    const match = {
+      ...this.state.match,
+      ["scoreTeam" + teamNr]: score
+    };
+
+    this.setState({ match });
   };
 
   onCreateMatch = async () => {
-    const { formState, ...match } = this.state;
+    const { match } = this.state;
     const { createNewMatch } = this.props;
 
-    await createNewMatch(match);
-    Router.push("/");
+    const errors = validateMatch(match);
+
+    if (!errors.valid) {
+      this.setState({ errors });
+    } else {
+      await createNewMatch(match);
+      Router.push("/");
+    }
   };
 
   render() {
     const { playersMap, classes, error } = this.props;
+    const { teamsComplete, activeStep, match, errors } = this.state;
+
     const {
-      teamsComplete,
-      activeStep,
       scoreTeam1,
       scoreTeam2,
-      ...selectedIDs
-    } = this.state;
+      player1ID,
+      player2ID,
+      player3ID,
+      player4ID
+    } = match;
 
     const players = this.getPlayers();
 
     let body;
 
-    const player1 = playersMap[selectedIDs.player1ID];
-    const player2 = playersMap[selectedIDs.player2ID];
-    const player3 = playersMap[selectedIDs.player3ID];
-    const player4 = playersMap[selectedIDs.player4ID];
+    const player1 = playersMap[player1ID];
+    const player2 = playersMap[player2ID];
+    const player3 = playersMap[player3ID];
+    const player4 = playersMap[player4ID];
 
     return (
       <Layout title="New Match">
@@ -149,24 +181,30 @@ class NewMatch extends React.Component {
           <div>
             {activeStep == 0 ? (
               <CreateMatch
-                {...selectedIDs}
+                player1ID={player1ID}
+                player2ID={player2ID}
+                player3ID={player3ID}
+                player4ID={player4ID}
                 players={players}
                 onSetPlayer={this.onSetPlayer}
                 onUnsetPlayer={this.onUnsetPlayer}
               />
             ) : (
-              <div className={classes.stepContainer}>
-                <SetScores
-                  player1={player1}
-                  player2={player2}
-                  player3={player3}
-                  player4={player4}
-                  scoreTeam1={scoreTeam1}
-                  scoreTeam2={scoreTeam2}
-                  onChangeScore={this.onChangeScore}
-                />
+              <div>
+                <div className={classes.stepContainer}>
+                  <SetScores
+                    player1={player1}
+                    player2={player2}
+                    player3={player3}
+                    player4={player4}
+                    errors={errors}
+                    scoreTeam1={scoreTeam1}
+                    scoreTeam2={scoreTeam2}
+                    onChangeScore={this.onChangeScore}
+                  />
+                </div>
                 <Button
-                  className={classes.button}
+                  className={classes.submitButton}
                   onClick={this.onCreateMatch}
                   raised
                   color="primary"

@@ -1,8 +1,8 @@
 {
-  "name": "Next.js",
-  "short_name": "Next.js",
+  "name": "Scores",
+  "short_name": "Scores",
   "display": "standalone",
   "start_url": "/",
-  "theme_color": "#9c27b0",
+  "theme_color": "#03A9F4",
   "background_color": "#fafafa"
 }

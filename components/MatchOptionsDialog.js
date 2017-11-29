@@ -1,9 +1,16 @@
 import React from "react";
 import DeleteIcon from "material-ui-icons/Delete";
 import CopyIcon from "material-ui-icons/ContentCopy";
-import Dialog, { DialogTitle } from 'material-ui/Dialog';
+import Dialog from 'material-ui/Dialog';
+import { withStyles } from "material-ui/styles";
 import List, { ListItem, ListItemText, ListItemAvatar } from "material-ui/List";
 import Avatar from 'material-ui/Avatar';
+
+const styles = theme => ({
+  root: {
+    width: 250,
+  },
+});
 
 const MatchOptionsDialog = ({
   classes,
@@ -11,12 +18,10 @@ const MatchOptionsDialog = ({
   onClone,
   onDelete,
   match,
-  open
+  open,
 }) => (
   <Dialog onRequestClose={onClose} open={open}>
-    <DialogTitle>Menu</DialogTitle>
-    <div>
-      <List>
+      <List className={classes.root}>
         <ListItem button onClick={() => onDelete(match)}>
           <ListItemAvatar>
             <Avatar>
@@ -34,8 +39,7 @@ const MatchOptionsDialog = ({
           <ListItemText primary="Clone" />
         </ListItem>
       </List>
-    </div>
   </Dialog>
 );
 
-export default MatchOptionsDialog;
+export default withStyles(styles)(MatchOptionsDialog);
