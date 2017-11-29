@@ -1,25 +1,28 @@
 package main
 
 import (
-	"net/http"
-
-	"github.com/gorilla/mux"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 )
 
-func NewRouter() *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range routes {
-		var handler http.Handler
+var store = sessions.NewCookieStore([]byte("ultrasecret"))
 
-		handler = route.HandlerFunc
-		handler = Logger(handler, route.Name)
+func newRouter() *gin.Engine {
+	r := gin.Default()
 
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(handler)
-	}
+	r.Use(sessions.Sessions("goquestsession", store))
 
-	return router
+	r.GET("/", index)
+	r.GET("/matches", matchIndex)
+	r.GET("/matches/:matchID", matchShow)
+	r.DELETE("/matches/:matchID", matchDelete)
+	r.GET("/players", playerIndex)
+	r.GET("/players/:playerID/statistic", playerStatistic)
+	r.POST("/players", playerCreate)
+	r.POST("/matches", matchCreate)
+
+	r.GET("/loginRoute", loginHandler)
+	r.GET("/auth", authHandler)
+
+	return r
 }

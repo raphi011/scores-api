@@ -2,19 +2,20 @@ package main
 
 import (
 	"log"
-	"net/http"
 
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 func main() {
 	db, err := initDb()
+	initAuth()
+
 	if err != nil {
 		panic("Error creating db")
 	}
 
 	defer db.Close()
 
-	router := NewRouter()
-	log.Fatal(http.ListenAndServe(":8080", router))
+	router := newRouter()
+	log.Fatal(router.Run())
 }
