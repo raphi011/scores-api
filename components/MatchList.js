@@ -16,9 +16,10 @@ const styles = theme => ({
   team1: { flex: "1 1 0" },
   team2: { textAlign: "right", flex: "1 1 0" },
   points: {
-    fontSize: "35px",
+    fontSize: "40px",
     textAlign: "center",
-    flex: "2 2 0"
+    flex: "2 2 0",
+    fontWeight: "lighter"
   }
 });
 
@@ -44,7 +45,7 @@ function MatchList({ matches = [], onMatchClick, classes }) {
               <div className={classes.listContainer}>
                 <div className={classes.team1}>{getTeamName(m.Team1)} </div>
                 <div className={classes.points}>
-                  {m.ScoreTeam1} : {m.ScoreTeam2}
+                  {m.ScoreTeam1} - {m.ScoreTeam2}
                 </div>
                 <div className={classes.team2}>{getTeamName(m.Team2)}</div>
               </div>
