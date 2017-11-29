@@ -34,7 +34,7 @@ type User struct {
 	Profile       string `json:"profile"`
 	Picture       string `json:"picture"`
 	Email         string `json:"email"`
-	EmailVerified string `json:"email_verified"`
+	EmailVerified bool   `json:"email_verified"`
 	Gender        string `json:"gender"`
 }
 
@@ -78,18 +78,23 @@ func matchShow(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 	}
 
-	match := getMatch(matchID)
+	match := getMatch(uint(matchID))
 
 	c.JSON(http.StatusOK, match)
 }
 
 func matchDelete(c *gin.Context) {
 	matchID, err := strconv.Atoi(c.Param("matchID"))
+	userID := c.GetString("userID")
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	if err := deleteMatch(uint(matchID), userID); err != nil {
+		c.AbortWithError(http.StatusForbidden, err)
 	} else {
-		deleteMatch(uint(matchID))
 		c.Status(http.StatusNoContent)
 	}
 }
@@ -102,6 +107,7 @@ func matchIndex(c *gin.Context) {
 
 func matchCreate(c *gin.Context) {
 	var newMatch dtos.CreateMatchDto
+	userID := c.GetString("userID")
 
 	if err := c.ShouldBindJSON(&newMatch); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -113,6 +119,7 @@ func matchCreate(c *gin.Context) {
 			newMatch.Player4ID,
 			newMatch.ScoreTeam1,
 			newMatch.ScoreTeam2,
+			userID,
 		)
 
 		c.JSON(http.StatusCreated, match)
@@ -165,9 +172,25 @@ func authHandler(c *gin.Context) {
 		return
 	}
 	defer email.Body.Close()
+
+	user := User{}
+
 	data, _ := ioutil.ReadAll(email.Body)
-	log.Println("Email body: ", string(data))
-	c.Redirect(http.StatusFound, "/")
+
+	if err := json.Unmarshal(data, &user); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	dbUser := getUserByEmail(user.Email)
+
+	if dbUser.ID == 0 {
+		c.Redirect(http.StatusFound, "/loggedIn?error=USER_NOT_FOUND")
+	} else {
+		session.Set("user-id", user.Email)
+		session.Save()
+		c.Redirect(http.StatusFound, "/loggedIn?username="+user.Email)
+	}
 }
 
 func getLoginURL(state string) string {
@@ -179,5 +202,14 @@ func loginHandler(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Set("state", state)
 	session.Save()
+
 	c.JSON(http.StatusOK, getLoginURL(state))
+}
+
+func logoutHandler(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Set("user-id", nil)
+	session.Save()
+
+	c.Status(http.StatusNoContent)
 }

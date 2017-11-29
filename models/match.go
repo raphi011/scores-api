@@ -6,12 +6,14 @@ import (
 
 type Match struct {
 	gorm.Model
-	Team1      Team
-	Team1ID    uint
-	Team2      Team
-	Team2ID    uint
-	ScoreTeam1 int
-	ScoreTeam2 int
+	Team1       Team
+	Team1ID     uint
+	Team2       Team
+	Team2ID     uint
+	ScoreTeam1  int
+	ScoreTeam2  int
+	CreatedByID uint
+	CreatedBy   User
 }
 
 type MatchDto struct {
