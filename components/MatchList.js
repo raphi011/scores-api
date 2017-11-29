@@ -5,20 +5,20 @@ import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 const styles = theme => ({
   root: {
     width: "100%",
-    maxWidth: 360,
     background: theme.palette.background.paper
   },
   listContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%"
   },
-  team1: {},
-  team2: { textAlign: 'right' },
+  team1: { flex: "1 1 0" },
+  team2: { textAlign: "right", flex: "1 1 0" },
   points: {
-    fontSize: "35px"
+    fontSize: "35px",
+    textAlign: "center",
+    flex: "2 2 0"
   }
 });
 
@@ -40,10 +40,9 @@ function MatchList({ matches = [], onMatchClick, classes }) {
       {matches.map(m => (
         <ListItem key={m.ID} button onClick={() => onMatchClick(m)}>
           <ListItemText
-            inset
             primary={
               <div className={classes.listContainer}>
-                <div>{getTeamName(m.Team1)} </div>
+                <div className={classes.team1}>{getTeamName(m.Team1)} </div>
                 <div className={classes.points}>
                   {m.ScoreTeam1} : {m.ScoreTeam2}
                 </div>

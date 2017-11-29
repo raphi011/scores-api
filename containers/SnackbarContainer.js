@@ -1,5 +1,4 @@
 import { connect } from "react-redux";
-import { withStyles } from "material-ui/styles";
 import { statusSelector } from "../redux/reducers/reducer";
 import { clearStatusAction } from "../redux/actions/action";
 import Snackbar from "../components/Snackbar";

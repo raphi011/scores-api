@@ -1,6 +1,6 @@
 import React from "react";
 import Drawer from "./Drawer";
-import AppBar from "./AppBar";
+import AppBar from "../containers/AppBarContainer";
 import Snackbar from "../containers/SnackbarContainer";
 
 class Layout extends React.Component {

@@ -11,7 +11,11 @@ import MatchOptionsDialog from "../components/MatchOptionsDialog";
 import MatchList from "../components/MatchList";
 import initStore from "../redux/store";
 import { matchesSelector } from "../redux/reducers/reducer";
-import { loadMatchesAction, setStatusAction, deleteMatchAction } from "../redux/actions/action";
+import {
+  loadMatchesAction,
+  setStatusAction,
+  deleteMatchAction
+} from "../redux/actions/action";
 
 class Index extends React.Component {
   state = {
@@ -43,12 +47,12 @@ class Index extends React.Component {
   };
 
   onDeleteMatch = () => {
-      const { matches, deleteMatch } = this.props;
-      const { selectedMatch } = this.state;
+    const { matches, deleteMatch } = this.props;
+    const { selectedMatch } = this.state;
 
-      deleteMatch(selectedMatch);
+    deleteMatch(selectedMatch);
 
-      this.setState({ selectedMatch: null });
+    this.setState({ selectedMatch: null });
   };
 
   onCloneMatch = () => {
@@ -87,7 +91,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   loadMatches: loadMatchesAction,
   setStatus: setStatusAction,
-  deleteMatch: deleteMatchAction,
+  deleteMatch: deleteMatchAction
 };
 
 export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(

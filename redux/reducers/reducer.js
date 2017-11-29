@@ -20,6 +20,16 @@ const reducer = (state, action) => {
         playersMap,
         playerIDs
       };
+    case actionNames.LOGGEDOUT:
+      return {
+        ...state,
+        user: action.username
+      };
+    case actionNames.LOGIN:
+      return {
+        ...state,
+        user: action.username
+      };
     case actionNames.SET_STATUS:
       return {
         ...state,
@@ -28,13 +38,13 @@ const reducer = (state, action) => {
     case actionNames.CLEAR_STATUS:
       return {
         ...state,
-        status: '',
+        status: ""
       };
     case actionNames.REMOVE_MATCH:
       const matches = state.matches.filter(m => m.ID !== action.ID);
       return {
         ...state,
-        matches,
+        matches
       };
     default:
       return state;
@@ -48,4 +58,8 @@ export const matchesSelector = state => state.matches;
 export const playersSelector = state => ({
   playersMap: state.playersMap,
   playerIDs: state.playerIDs
+});
+export const userSelector = state => ({
+  isLoggedIn: !!state.user,
+  user: state.user
 });

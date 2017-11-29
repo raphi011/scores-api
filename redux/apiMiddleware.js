@@ -34,9 +34,18 @@ const apiMiddleware = ({ getState, dispatch }) => next => async action => {
   const endpoint = buildUrl(url, params);
 
   try {
-    const response = await fetch(endpoint, { method, headers, body });
+    const response = await fetch(endpoint, {
+      method,
+      headers,
+      body,
+      credentials: "same-origin"
+    });
     if (response.status === 401) {
-      dispatch({ type: action.LOGOUT });
+      dispatch({ type: actionNames.LOGGEDOUT });
+      dispatch({
+        type: actionNames.SET_STATUS,
+        status: "You have to be logged in for this action"
+      });
       return;
     }
 
@@ -58,7 +67,7 @@ const apiMiddleware = ({ getState, dispatch }) => next => async action => {
       }
     } else {
       // TODO: get error message from response
-      dispatch({ type: error, error: "An error occured" });
+      dispatch({ type: actionNames.SET_STATUS, error: "An error occured" });
     }
   } catch (e) {
     dispatch({ type: error, error: e.message });
