@@ -146,7 +146,7 @@ class NewMatch extends React.Component {
               </Button>
             }
           />
-          <div className={classes.stepContainer}>
+          <div>
             {activeStep == 0 ? (
               <CreateMatch
                 {...selectedIDs}
@@ -155,7 +155,7 @@ class NewMatch extends React.Component {
                 onUnsetPlayer={this.onUnsetPlayer}
               />
             ) : (
-              <div>
+              <div className={classes.stepContainer}>
                 <SetScores
                   player1={player1}
                   player2={player2}
@@ -188,7 +188,7 @@ function mapStateToProps(state) {
 
   return {
     playersMap,
-    playerIDs,
+    playerIDs
   };
 }
 
