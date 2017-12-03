@@ -35,7 +35,7 @@ func newRouter() *gin.Engine {
 	r.GET("/players", playerIndex)
 	r.GET("/players/:playerID/statistic", playerStatistic)
 
-	r.GET("/loginRoute", loginHandler)
+	r.GET("/userOrLoginRoute", loginHandler)
 	r.GET("/auth", authHandler)
 	r.POST("/logout", logoutHandler)
 

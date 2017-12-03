@@ -195,6 +195,11 @@ func authHandler(c *gin.Context) {
 	if dbUser.ID == 0 {
 		c.Redirect(http.StatusFound, "/loggedIn?error=USER_NOT_FOUND")
 	} else {
+		if dbUser.ProfileImageURL != user.Picture {
+			dbUser.ProfileImageURL = user.Picture
+			updateUser(dbUser)
+		}
+
 		session.Set("user-id", user.Email)
 		session.Save()
 		c.Redirect(http.StatusFound, "/loggedIn?username="+user.Email)
@@ -206,18 +211,33 @@ func getLoginURL(state string) string {
 }
 
 func loginHandler(c *gin.Context) {
-	state = randToken()
+	response := dtos.LoginRouteOrUserDto{}
 	session := sessions.Default(c)
-	session.Set("state", state)
-	session.Save()
 
-	c.JSON(http.StatusOK, getLoginURL(state))
+	state = randToken()
+
+	if userID := session.Get("user-id"); userID != nil {
+		user := getUserByEmail(userID.(string))
+		response.User = &user
+	} else {
+		session.Set("state", state)
+		session.Save()
+
+		response.LoginRoute = getLoginURL(state)
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 func logoutHandler(c *gin.Context) {
+	response := dtos.LoginRouteOrUserDto{}
+	state = randToken()
 	session := sessions.Default(c)
-	session.Set("user-id", nil)
+	session.Delete("user-id")
+	session.Set("state", state)
 	session.Save()
 
-	c.Status(http.StatusNoContent)
+	response.LoginRoute = getLoginURL(state)
+
+	c.JSON(http.StatusOK, response)
 }

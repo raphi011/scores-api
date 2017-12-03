@@ -138,6 +138,10 @@ func getPlayers() []models.Player {
 	return players
 }
 
+func updateUser(user models.User) {
+	db.Save(&user)
+}
+
 func createPlayer(name string) (models.Player, error) {
 	player := models.Player{
 		Name: name,
