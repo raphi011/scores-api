@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"scores-backend/models"
 
 	"github.com/jinzhu/gorm"
@@ -86,17 +85,8 @@ func getTeam(player1ID, player2ID uint) models.Team {
 	return team
 }
 
-func deleteMatch(matchID uint, userEmail string) error {
-	user := getUserByEmail(userEmail)
-	match := getMatch(matchID)
-
-	if user.ID != match.CreatedByID {
-		return errors.New("Match was not created by you")
-	}
-
+func deleteMatch(match models.Match) {
 	db.Delete(&match)
-
-	return nil
 }
 
 func getUserByEmail(email string) models.User {

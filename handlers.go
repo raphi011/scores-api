@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -73,16 +72,30 @@ func initAuth() {
 	}
 }
 
+func JSONN(c *gin.Context, code int, data interface{}, message string) {
+	c.JSON(code, gin.H{
+		"status":  code,
+		"message": message,
+		"data":    data,
+	})
+}
+
 func matchShow(c *gin.Context) {
 	matchID, err := strconv.Atoi(c.Param("matchID"))
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		JSONN(c, http.StatusBadRequest, nil, "Bad request")
+		return
 	}
 
 	match := getMatch(uint(matchID))
 
-	c.JSON(http.StatusOK, match)
+	if match.ID == 0 {
+		JSONN(c, http.StatusNotFound, nil, "Match not found")
+		return
+	}
+
+	JSONN(c, http.StatusOK, match, "")
 }
 
 func matchDelete(c *gin.Context) {
@@ -90,21 +103,33 @@ func matchDelete(c *gin.Context) {
 	userID := c.GetString("userID")
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		JSONN(c, http.StatusBadRequest, nil, "Bad request")
 		return
 	}
 
-	if err := deleteMatch(uint(matchID), userID); err != nil {
-		c.AbortWithError(http.StatusForbidden, err)
-	} else {
-		c.Status(http.StatusNoContent)
+	match := getMatch(uint(matchID))
+
+	if match.ID == 0 {
+		JSONN(c, http.StatusNotFound, nil, "Match not found")
+		return
 	}
+
+	user := getUserByEmail(userID)
+
+	if user.ID != match.CreatedByID {
+		JSONN(c, http.StatusForbidden, nil, "Match was not created by you")
+		return
+	}
+
+	deleteMatch(match)
+
+	JSONN(c, http.StatusNoContent, nil, "")
 }
 
 func matchIndex(c *gin.Context) {
 	matches := getMatches()
 
-	c.JSON(http.StatusOK, matches)
+	JSONN(c, http.StatusOK, matches, "")
 }
 
 func matchCreate(c *gin.Context) {
@@ -112,7 +137,7 @@ func matchCreate(c *gin.Context) {
 	userID := c.GetString("userID")
 
 	if err := c.ShouldBindJSON(&newMatch); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		JSONN(c, http.StatusBadRequest, nil, "Bad request")
 	} else {
 		match, _ := createMatch(
 			newMatch.Player1ID,
@@ -124,7 +149,7 @@ func matchCreate(c *gin.Context) {
 			userID,
 		)
 
-		c.JSON(http.StatusCreated, match)
+		JSONN(c, http.StatusCreated, match, "")
 	}
 }
 
@@ -132,23 +157,23 @@ func playerCreate(c *gin.Context) {
 	var newPlayer dtos.CreatePlayerDto
 
 	if err := c.ShouldBindJSON(&newPlayer); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		JSONN(c, http.StatusBadRequest, nil, "Bad request")
 	} else {
 		player, _ := createPlayer(newPlayer.Name)
-		c.JSON(http.StatusCreated, player)
+		JSONN(c, http.StatusCreated, player, "")
 	}
 }
 
 func playerIndex(c *gin.Context) {
 	players := getPlayers()
 
-	c.JSON(http.StatusOK, players)
+	JSONN(c, http.StatusOK, players, "")
 }
 
 func playerStatistic(c *gin.Context) {
 	var statistic dtos.Statistic
 
-	c.JSON(http.StatusOK, statistic)
+	JSONN(c, http.StatusOK, statistic, "")
 }
 
 func authHandler(c *gin.Context) {
@@ -157,20 +182,21 @@ func authHandler(c *gin.Context) {
 	retrievedState := session.Get("state")
 	originalState := c.Query("state")
 	if retrievedState != originalState {
-		c.AbortWithError(http.StatusUnauthorized, fmt.Errorf("Invalid session state: %s", retrievedState))
+		JSONN(c, http.StatusUnauthorized, nil, "")
 		return
 	}
 
 	tok, err := conf.Exchange(oauth2.NoContext, c.Query("code"))
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		JSONN(c, http.StatusBadRequest, nil, "")
 		return
 	}
 
 	client := conf.Client(oauth2.NoContext, tok)
 	email, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
+
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		JSONN(c, http.StatusBadRequest, nil, "")
 		return
 	}
 	defer email.Body.Close()
@@ -180,7 +206,7 @@ func authHandler(c *gin.Context) {
 	data, _ := ioutil.ReadAll(email.Body)
 
 	if err := json.Unmarshal(data, &user); err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		JSONN(c, http.StatusBadRequest, nil, "")
 		return
 	}
 
@@ -220,7 +246,7 @@ func loginHandler(c *gin.Context) {
 		response.LoginRoute = getLoginURL(state)
 	}
 
-	c.JSON(http.StatusOK, response)
+	JSONN(c, http.StatusOK, response, "")
 }
 
 func logoutHandler(c *gin.Context) {
@@ -233,5 +259,5 @@ func logoutHandler(c *gin.Context) {
 
 	response.LoginRoute = getLoginURL(state)
 
-	c.JSON(http.StatusOK, response)
+	JSONN(c, http.StatusOK, response, "")
 }
