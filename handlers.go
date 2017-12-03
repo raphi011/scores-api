@@ -123,7 +123,7 @@ func matchDelete(c *gin.Context) {
 
 	deleteMatch(match)
 
-	JSONN(c, http.StatusNoContent, nil, "")
+	JSONN(c, http.StatusOK, nil, "")
 }
 
 func matchIndex(c *gin.Context) {
