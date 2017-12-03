@@ -29,7 +29,6 @@ func newRouter() *gin.Engine {
 
 	r.Use(sessions.Sessions("goquestsession", store))
 
-	r.GET("/", index)
 	r.GET("/matches", matchIndex)
 	r.GET("/matches/:matchID", matchShow)
 	r.GET("/players", playerIndex)

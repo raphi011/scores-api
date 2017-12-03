@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	db, err := initDb()
+	err := initDb()
 	initAuth()
 
 	if err != nil {

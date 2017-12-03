@@ -10,7 +10,7 @@ import (
 
 var db *gorm.DB
 
-func initDb() (*gorm.DB, error) {
+func initDb() error {
 	var err error
 	db, err = gorm.Open("sqlite3", "/tmp/gorm.db")
 
@@ -45,7 +45,7 @@ func initDb() (*gorm.DB, error) {
 		db.Create(&user6)
 	}
 
-	return db, err
+	return err
 }
 
 func getMatches() []models.Match {

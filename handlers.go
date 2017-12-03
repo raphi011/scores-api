@@ -19,13 +19,11 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
-// Credentials which stores google ids.
 type Credentials struct {
 	Cid     string `json:"client_id"`
 	Csecret string `json:"client_secret"`
 }
 
-// User is a retrieved and authentiacted user.
 type User struct {
 	Sub           string `json:"sub"`
 	Name          string `json:"name"`
@@ -73,10 +71,6 @@ func initAuth() {
 		},
 		Endpoint: google.Endpoint,
 	}
-}
-
-func index(c *gin.Context) {
-	c.String(200, "Welcome!")
 }
 
 func matchShow(c *gin.Context) {
