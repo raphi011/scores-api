@@ -55,6 +55,7 @@ func getMatches() []models.Match {
 		Preload("Team1.Player2").
 		Preload("Team2.Player1").
 		Preload("Team2.Player2").
+		Order("created_at desc").
 		Find(&matches)
 
 	return matches
@@ -134,7 +135,7 @@ func createMatch(
 
 func getPlayers() []models.Player {
 	var players []models.Player
-	db.Find(&players)
+	db.Order("name").Find(&players)
 	return players
 }
 
