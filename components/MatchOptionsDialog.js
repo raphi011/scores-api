@@ -15,7 +15,7 @@ const styles = theme => ({
 const MatchOptionsDialog = ({
   classes,
   onClose,
-  onClone,
+  onRematch,
   onDelete,
   match,
   open,
@@ -30,13 +30,13 @@ const MatchOptionsDialog = ({
           </ListItemAvatar>
           <ListItemText primary="Delete" />
         </ListItem>
-        <ListItem button onClick={() => onClone(match)}>
+        <ListItem button onClick={() => onRematch(match)}>
           <ListItemAvatar>
             <Avatar>
               <CopyIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Clone" />
+          <ListItemText primary="Rematch" />
         </ListItem>
       </List>
   </Dialog>

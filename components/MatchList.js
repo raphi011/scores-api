@@ -50,7 +50,7 @@ function MatchList({ matches = [], onMatchClick, classes }) {
                 <div className={classes.team2}>{getTeamName(m.Team2)}</div>
               </div>
             }
-            secondary={new Date(m.CreatedAt).toLocaleString()}
+            secondary={new Date(m.CreatedAt).toLocaleString("de")}
           />
         </ListItem>
       ))}

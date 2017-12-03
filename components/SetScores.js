@@ -1,14 +1,37 @@
 import React from "react";
 import TextField from "material-ui/TextField";
-import Radio from 'material-ui/Radio';
+import Radio, { RadioGroup } from "material-ui/Radio";
 import { withStyles } from "material-ui/styles";
+import Button from "material-ui/Button";
+import DoneIcon from "material-ui-icons/Done";
+import {
+  FormLabel,
+  FormControl,
+  FormControlLabel,
+  FormHelperText
+} from "material-ui/Form";
 
 const styles = theme => ({
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200
-  }
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  button: {
+    margin: theme.spacing.unit,
+    position: "fixed",
+    right: "24px",
+    bottom: "24px"
+  },
+  formControl: {
+    marginBottom: '20px',
+  },
+  root: {
+    display: "flex"
+  },
+  group: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
 });
 
 class SetScores extends React.Component {
@@ -23,6 +46,7 @@ class SetScores extends React.Component {
       targetScore,
       onChangeTargetScore,
       onChangeScore,
+      onCreateMatch,
       errors,
       classes
     } = this.props;
@@ -32,67 +56,82 @@ class SetScores extends React.Component {
     const allError = errors.all;
 
     const onChangeScoreTeam1 = e =>
-      onChangeScore(1, Number.parseInt(e.target.value));
+      onChangeScore(1, e.target.value);
     const onChangeScoreTeam2 = e =>
-      onChangeScore(2, Number.parseInt(e.target.value));
+      onChangeScore(2, e.target.value);
 
     return (
-      <div>
-        <div>
-          <Radio
-            checked={targetScore === 15}
-            onChange={onChangeTargetScore}
-            label="15 point game"
-            value="15"
+      <form onSubmit={onCreateMatch} className={classes.container}>
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend">Target Score</FormLabel>
+          <RadioGroup
+            aria-label="Score"
             name="targetScore"
-            aria-label={targetScore}
-          />
-
-          <Radio
-            checked={targetScore === 21}
+            className={classes.group}
+            value={targetScore}
             onChange={onChangeTargetScore}
-            label="21 point game"
-            value="21"
-            name="targetScore"
-            aria-label={targetScore}
+          >
+            <FormControlLabel
+              value="15"
+              control={<Radio />}
+              label="15 Points"
+            />
+            <FormControlLabel
+              value="21"
+              control={<Radio />}
+              label="21 Points"
+            />
+          </RadioGroup>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <FormLabel>
+            {player1.Name} / {player2.Name}
+          </FormLabel>
+          <TextField
+            id="number"
+            label={score1Error}
+            error={!!score1Error}
+            value={scoreTeam1}
+            onChange={onChangeScoreTeam1}
+            type="number"
+            className={classes.textField}
+            min={0}
+            InputLabelProps={{
+              shrink: true
+            }}
+            margin="normal"
           />
-        </div>
-        <p>
-          {player1.Name} / {player2.Name}
-        </p>
-        <TextField
-          id="number"
-          label={score1Error || "Score"}
-          error={!!score1Error}
-          value={scoreTeam1}
-          onChange={onChangeScoreTeam1}
-          type="number"
-          className={classes.textField}
-          min={0}
-          InputLabelProps={{
-            shrink: true
-          }}
-          margin="normal"
-        />
-        <p>
-          {player3.Name} / {player4.Name}
-        </p>
-        <TextField
-          id="number"
-          label={score2Error || "Score"}
-          error={!!score2Error}
-          value={scoreTeam2}
-          onChange={onChangeScoreTeam2}
-          type="number"
-          className={classes.textField}
-          min={0}
-          InputLabelProps={{
-            shrink: true
-          }}
-          margin="normal"
-        />
-        {allError}
-      </div>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <FormLabel>
+            {player3.Name} / {player4.Name}
+          </FormLabel>
+          <TextField
+            id="number"
+            label={score2Error}
+            error={!!score2Error}
+            value={scoreTeam2}
+            onChange={onChangeScoreTeam2}
+            type="number"
+            className={classes.textField}
+            min={0}
+            InputLabelProps={{
+              shrink: true
+            }}
+            margin="normal"
+          />
+          {allError}
+        </FormControl>
+        <Button
+          className={classes.submitButton}
+          color="primary"
+          type="submit"
+          raised
+        >
+          <DoneIcon className={classes.leftIcon} />
+          Submit
+        </Button>
+      </form>
     );
   }
 }

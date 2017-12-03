@@ -14,45 +14,36 @@ import withRoot from "../components/withRoot";
 import Layout from "../components/Layout";
 import MatchOptionsDialog from "../components/MatchOptionsDialog";
 import MatchList from "../components/MatchList";
-import initStore from "../redux/store";
+import initStore, { dispatchActions } from "../redux/store";
 import { matchesSelector } from "../redux/reducers/reducer";
 import {
   loadMatchesAction,
   setStatusAction,
-  deleteMatchAction
+  deleteMatchAction,
+  userOrLoginRouteAction,
 } from "../redux/actions/action";
 
 const styles = theme => ({
+  matchListContainer: {
+    marginBottom: "70px"
+  },
   button: {
     margin: theme.spacing.unit,
     position: "fixed",
     right: "24px",
     bottom: "24px"
-  },
-  matchListContainer: {
-    marginBottom: "70px"
   }
 });
 
 class Index extends React.Component {
   state = {
-    loginRoute: "",
     selectedMatch: null
   };
 
-  static async getInitialProps({ store }) {
-    await store.dispatch(loadMatchesAction());
-  }
+  static async getInitialProps({ store, req, res, isServer }) {
+    const actions = [loadMatchesAction(), userOrLoginRouteAction()];
 
-  async componentDidMount() {
-    const routeResponse = await fetch(
-      `${process.env.BACKEND_URL}/api/loginRoute`,
-      { credentials: "same-origin" }
-    );
-
-    const loginRoute = await routeResponse.json();
-
-    this.setState({ loginRoute });
+    await dispatchActions(store.dispatch, isServer, req, res, actions);
   }
 
   onCloseDialog = () => {
@@ -76,18 +67,19 @@ class Index extends React.Component {
     this.setState({ selectedMatch: null });
   };
 
-  onCloneMatch = () => {
+  onRematch = () => {
     const { setStatus } = this.props;
-    setStatus("Not implemented yet");
-    this.setState({ selectedMatch: null });
+    const { selectedMatch } = this.state;
+
+    Router.push(`/newMatch?rematchID=${selectedMatch.ID}`)
   };
 
   render() {
     const { matches, error, classes } = this.props;
-    const { loginRoute, selectedMatch } = this.state;
+    const { selectedMatch } = this.state;
 
     return (
-      <Layout title="Matches" loginRoute={loginRoute}>
+      <Layout title="Matches">
         <div className={classes.matchListContainer}>
           <MatchList matches={matches} onMatchClick={this.onOpenDialog} />
         </div>
@@ -95,7 +87,7 @@ class Index extends React.Component {
           open={selectedMatch != null}
           match={selectedMatch}
           onClose={this.onCloseDialog}
-          onClone={this.onCloneMatch}
+          onRematch={this.onRematch}
           onDelete={this.onDeleteMatch}
         />
         <Tooltip title="Create new Match" className={classes.button}>
@@ -117,7 +109,7 @@ function mapStateToProps(state) {
   const matches = matchesSelector(state);
 
   return {
-    matches
+    matches,
   };
 }
 

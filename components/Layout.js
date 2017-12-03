@@ -23,7 +23,6 @@ class Layout extends React.Component {
         <Drawer onRequestClose={this.onCloseDrawer} open={this.state.open} />
         <AppBar
           onOpenMenu={this.onToggleDrawer}
-          loginRoute={loginRoute}
           title={title}
         />
         {children}

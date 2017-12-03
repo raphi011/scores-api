@@ -14,22 +14,39 @@ function buildUrl(endpoint, params = {}) {
   return encodeURI(url);
 }
 
+export function serverAction(action, req, res) {
+  return {
+    ...action,
+    req,
+    res,
+    isServer: true,
+  };
+}
+
 const apiMiddleware = ({ getState, dispatch }) => next => async action => {
   if (action.type !== actionNames.API) {
     return next(action);
   }
 
+  let { headers = {} } = action;
   const {
     success,
     successParams = {},
     successStatus,
     error,
-    headers,
     url,
     body,
     params,
-    method = "GET"
+    method = "GET",
+    isServer = false,
+    req,
+    res,
   } = action;
+
+  if (isServer && req.headers.cookie) {
+    // set the client's cookie for serverside request
+    headers = { ...headers, cookie: req.headers.cookie };
+  }
 
   const endpoint = buildUrl(url, params);
 
@@ -46,7 +63,15 @@ const apiMiddleware = ({ getState, dispatch }) => next => async action => {
         type: actionNames.SET_STATUS,
         status: "You have to be logged in for this action"
       });
-      return;
+      return Promise.reject()
+    }
+
+    if (isServer) {
+      const setCookie = response.headers.get("Set-Cookie");
+
+      if (setCookie) {
+        res.setHeader('Set-Cookie', setCookie);
+      }
     }
 
     if (response.status >= 200 && response.status < 300) {
@@ -66,11 +91,17 @@ const apiMiddleware = ({ getState, dispatch }) => next => async action => {
         dispatch({ type: actionNames.SET_STATUS, status: successStatus });
       }
     } else {
+      console.error(response);
       // TODO: get error message from response
-      dispatch({ type: actionNames.SET_STATUS, error: "An error occured" });
+      dispatch({ type: actionNames.SET_STATUS, status: "An error occured" });
     }
   } catch (e) {
-    dispatch({ type: error, error: e.message });
+    console.error(e);
+    if (error) {
+      dispatch({ type: error, error: e.message });
+    } else {
+      dispatch({ type: actionNames.SET_STATUS, status: e.message });
+    }
   }
 };
 

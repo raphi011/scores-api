@@ -23,7 +23,7 @@ const playerItemStyles = theme => ({
   }
 });
 
-class CreateMatch extends React.Component {
+class SelectPlayers extends React.Component {
   playerNr = playerID => {
     const { player1ID, player2ID, player3ID, player4ID } = this.props;
 
@@ -89,15 +89,18 @@ class CreateMatch extends React.Component {
 
 function PlayerListItem({ player, onClick, playerNr, classes }) {
   let color;
+  let team;
 
   switch (playerNr) {
     case 1:
     case 2:
       color = "primary";
+      team = 1;
       break;
     case 3:
     case 4:
       color = "accent";
+      team = 2;
       break;
   }
 
@@ -105,7 +108,7 @@ function PlayerListItem({ player, onClick, playerNr, classes }) {
     <ListItem onClick={onClick} button>
       {playerNr ? (
         <ListItemIcon>
-          <Badge badgeContent={playerNr} color={color}>
+          <Badge badgeContent={team} color={color}>
             <PersonIcon />
           </Badge>
         </ListItemIcon>
@@ -115,7 +118,7 @@ function PlayerListItem({ player, onClick, playerNr, classes }) {
   );
 }
 
-const StyledCreateMatch = withStyles(styles)(CreateMatch);
+const StyledSelectPlayers = withStyles(styles)(SelectPlayers);
 const StyledPlayerListItem = withStyles(playerItemStyles)(PlayerListItem);
 
-export default StyledCreateMatch;
+export default StyledSelectPlayers;

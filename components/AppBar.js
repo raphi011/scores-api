@@ -7,8 +7,13 @@ import Button from "material-ui/Button";
 import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
 import Tooltip from "material-ui/Tooltip";
+import Avatar from 'material-ui/Avatar';
 
 const styles = theme => ({
+  row: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
   root: {
     width: "100%"
   },
@@ -31,10 +36,13 @@ function ButtonAppBar({
   classes
 }) {
   const button = isLoggedIn ? (
-    <Tooltip title={user} placement="bottom">
-      <Button color="contrast" onClick={onLogout}>
-        Logout
-      </Button>
+    <Tooltip title={user.Name} placement="bottom">
+      <div className={classes.row}>
+        <Avatar src={user.ProfileImageURL} />
+        <Button color="contrast" onClick={onLogout}>
+          Logout
+        </Button>
+        </div>
     </Tooltip>
   ) : (
     <Button color="contrast" href={loginRoute}>

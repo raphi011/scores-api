@@ -26,7 +26,7 @@ function Drawer({ open, onRequestClose, classes }) {
   const sideList = (
     <div className={classes.list}>
       <List>
-        <Link prefetch href="newMatch">
+        <Link prefetch href="/newMatch">
           <ListItem button>
             <ListItemIcon>
               <AddIcon />
@@ -36,7 +36,7 @@ function Drawer({ open, onRequestClose, classes }) {
         </Link>
         <Divider />
         <Link prefetch href="/">
-          <ListItem>
+          <ListItem button>
             <ListItemIcon>
               <FitnessCenterIcon />
             </ListItemIcon>

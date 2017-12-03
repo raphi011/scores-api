@@ -14,6 +14,14 @@ export const loadPlayersAction = () => ({
   success: actionNames.RECEIVE_PLAYERS
 });
 
+export const loadMatchAction = (ID) => ({
+  type: actionNames.API,
+  method: "GET",
+  url: `matches/${ID}`,
+  success: actionNames.RECEIVE_MATCH,
+  successParams: { ID }
+});
+
 export const createNewMatchAction = match => ({
   type: actionNames.API,
   method: "POST",
@@ -30,6 +38,13 @@ export const deleteMatchAction = match => ({
   successParams: { ID: match.ID },
   successStatus: "Match deleted"
 });
+
+export const userOrLoginRouteAction = () => ({
+  type: actionNames.API,
+  method: "GET",
+  url: "userOrLoginRoute",
+  success: actionNames.SET_USER_OR_LOGINROUTE,
+})
 
 export const loggedInAction = username => ({
   type: actionNames.LOGIN,
