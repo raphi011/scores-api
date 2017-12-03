@@ -158,8 +158,8 @@ class NewMatch extends React.Component {
 
     return {
       ...rest,
-      scoreTeam1: Number.parseInt(scoreTeam1),
-      scoreTeam2: Number.parseInt(scoreTeam2),
+      scoreTeam1: Number.parseInt(scoreTeam1) || 0,
+      scoreTeam2: Number.parseInt(scoreTeam2) || 0,
       targetScore: Number.parseInt(targetScore),
     };
   }
