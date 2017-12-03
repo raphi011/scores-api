@@ -85,7 +85,7 @@ function setStatus(state, action) {
   };
 }
 
-function clearStatus(state, action) {
+function clearStatus(state) {
   return {
     ...state,
     status: ""
