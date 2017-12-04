@@ -60,6 +60,14 @@ func getMatches() []models.Match {
 	return matches
 }
 
+func getPlayer(id uint) models.Player {
+	var player models.Player
+
+	db.First(&player, id)
+
+	return player
+}
+
 func getMatch(id uint) models.Match {
 	var match models.Match
 	db.

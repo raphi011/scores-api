@@ -80,6 +80,24 @@ func JSONN(c *gin.Context, code int, data interface{}, message string) {
 	})
 }
 
+func playerShow(c *gin.Context) {
+	playerID, err := strconv.Atoi(c.Param("playerID"))
+
+	if err != nil {
+		JSONN(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	player := getPlayer(uint(playerID))
+
+	if player.ID == 0 {
+		JSONN(c, http.StatusNotFound, nil, "Player not found")
+		return
+	}
+
+	JSONN(c, http.StatusOK, player, "")
+}
+
 func matchShow(c *gin.Context) {
 	matchID, err := strconv.Atoi(c.Param("matchID"))
 
