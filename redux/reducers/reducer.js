@@ -100,10 +100,23 @@ function removeMatch(state, action) {
   };
 }
 
+function receivePlayer(state, action) {
+  const playersMap = {
+    ...state.playersMap,
+    [action.ID]: action.payload,
+  };
+
+  return {
+    ...state,
+    playersMap,
+  };
+}
+
 const reducer = createReducer(
   {},
   {
     [actionNames.RECEIVE_MATCH]: receiveMatch,
+    [actionNames.RECEIVE_PLAYER]: receivePlayer,
     [actionNames.RECEIVE_MATCHES]: receiveMatches,
     [actionNames.RECEIVE_PLAYERS]: receivePlayers,
     [actionNames.LOGGEDOUT]: loggedOut,
@@ -121,6 +134,7 @@ export const loginRouteSelector = state => state.loginRoute;
 export const statusSelector = state => state.status;
 export const matchesSelector = state => state.matchesIDs.map(ID => state.matchesMap[ID]);
 export const matchSelector = (state, ID) => state.matchesMap[ID];
+export const playerSelector = (state, ID) => state.playersMap[ID];
 export const playersSelector = state => ({
   playersMap: state.playersMap,
   playerIDs: state.playerIDs

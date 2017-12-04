@@ -7,6 +7,14 @@ export const loadMatchesAction = () => ({
   success: actionNames.RECEIVE_MATCHES
 });
 
+export const loadPlayerAction = (ID) => ({
+  type: actionNames.API,
+  method: "GET",
+  url: `players/${ID}`,
+  success: actionNames.RECEIVE_PLAYER,
+  successParams: { ID }
+});
+
 export const loadPlayersAction = () => ({
   type: actionNames.API,
   method: "GET",
