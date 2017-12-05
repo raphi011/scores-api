@@ -7,12 +7,32 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
+const (
+	playerStatisticsView = `
+		create view if not exists playerStatistics as
+		select 
+		p.id,
+		p.name,
+		m.created_at,
+		case when (t1.player1_id = 1 or t1.player2_id = 1) and m.score_team1 > m.score_team2 then 1 else  0 end as won,
+		case when t1.player1_id = 1 or t1.player2_id = 1 then m.score_team1 else m.score_team2 end as pointsWon,
+		case when t1.player1_id = 1 or t1.player2_id = 1 then m.score_team2 else m.score_team1 end as pointsLost
+		from matches m	
+		join teams t1 on m.team1_id = t1.id
+		join teams t2 on m.team2_id = t2.id
+		join players p on t1.player1_id = p.id or t1.player2_id = p.id or t2.player1_id = p.id or t2.player2_id = p.id
+		where m.deleted_at is null
+		order by p.id
+	`
+)
+
 var db *gorm.DB
 
 func initDb() error {
 	var err error
 	db, err = gorm.Open("sqlite3", "/tmp/gorm.db")
 
+	db.Exec(playerStatisticsView)
 	db.AutoMigrate(&models.Player{})
 	db.AutoMigrate(&models.Match{})
 	db.AutoMigrate(&models.Team{})
@@ -66,6 +86,23 @@ func getPlayer(id uint) models.Player {
 	db.First(&player, id)
 
 	return player
+}
+
+type statistic struct {
+	ID        int `json:"id"`
+	Played    int `json:"played"`
+	Wongames  int `json:"gamesWon"`
+	Lostgames int `json:"gamesLost"`
+	Wonpoints int `json:"pointsWon"`
+	Lost      int `json:"pointsLost"`
+}
+
+func playersStatistic() []statistic {
+	var statistics []statistic
+
+	db.Table("playerStatistics").Select("id, sum(pointsWon) as wonpoints, sum(pointsLost) as lost, count(1) as played, sum(won) as wongames, (sum(1) - sum(won)) as lostgames").Group("id").Scan(&statistics)
+
+	return statistics
 }
 
 func getMatch(id uint) models.Match {

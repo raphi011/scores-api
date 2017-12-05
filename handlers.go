@@ -188,10 +188,17 @@ func playerIndex(c *gin.Context) {
 	JSONN(c, http.StatusOK, players, "")
 }
 
-func playerStatistic(c *gin.Context) {
-	var statistic dtos.Statistic
+type player struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
 
-	JSONN(c, http.StatusOK, statistic, "")
+func playerStatisticIndex(c *gin.Context) {
+	// timeframe := c.GetString("timeframe")
+
+	statistics := playersStatistic()
+
+	JSONN(c, http.StatusOK, statistics, "")
 }
 
 func authHandler(c *gin.Context) {

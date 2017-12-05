@@ -32,9 +32,8 @@ func newRouter() *gin.Engine {
 	r.GET("/matches", matchIndex)
 	r.GET("/matches/:matchID", matchShow)
 	r.GET("/players", playerIndex)
+	r.GET("/statistics", playerStatisticIndex)
 	r.GET("/players/:playerID", playerShow)
-	r.GET("/players/:playerID/statistic", playerStatistic)
-
 	r.GET("/userOrLoginRoute", loginHandler)
 	r.GET("/auth", authHandler)
 	r.POST("/logout", logoutHandler)
