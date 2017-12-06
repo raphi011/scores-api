@@ -22,9 +22,10 @@ const initialState = {
   user: null,
   loginRoute: null,
   status: "",
-  matches: [],
   playersMap: {},
-  playerIDs: []
+  matches: [],
+  playerIDs: [],
+  statistics: [],
 };
 
 const initStore = (state = initialState) =>

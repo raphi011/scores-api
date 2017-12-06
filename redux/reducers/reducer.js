@@ -112,9 +112,19 @@ function receivePlayer(state, action) {
   };
 }
 
+function receiveStatistics(state, action) {
+  const { payload: statistics } = action;
+
+  return {
+    ...state,
+    statistics,
+  };
+}
+
 const reducer = createReducer(
   {},
   {
+    [actionNames.RECEIVE_STATISTICS]: receiveStatistics,
     [actionNames.RECEIVE_MATCH]: receiveMatch,
     [actionNames.RECEIVE_PLAYER]: receivePlayer,
     [actionNames.RECEIVE_MATCHES]: receiveMatches,
@@ -130,6 +140,7 @@ const reducer = createReducer(
 
 export default reducer;
 
+export const statisticsSelector = state => state.statistics;
 export const loginRouteSelector = state => state.loginRoute;
 export const statusSelector = state => state.status;
 export const matchesSelector = state => state.matchesIDs.map(ID => state.matchesMap[ID]);

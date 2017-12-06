@@ -1,25 +1,25 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "material-ui/styles";
-import MaterialDrawer from "material-ui/Drawer";
-import Button from "material-ui/Button";
-import List, { ListItem, ListItemIcon, ListItemText } from "material-ui/List";
-import AddIcon from "material-ui-icons/Add";
-import PersonIcon from "material-ui-icons/Person";
-import PeopleIcon from "material-ui-icons/People";
-import StatisticsIcon from "material-ui-icons/ShowChart";
-import FitnessCenterIcon from "material-ui-icons/FitnessCenter";
-import Divider from "material-ui/Divider";
-import Link from "next/link";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from 'material-ui/styles';
+import MaterialDrawer from 'material-ui/Drawer';
+import Button from 'material-ui/Button';
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import AddIcon from 'material-ui-icons/Add';
+import PersonIcon from 'material-ui-icons/Person';
+import PeopleIcon from 'material-ui-icons/People';
+import StatisticsIcon from 'material-ui-icons/ShowChart';
+import FitnessCenterIcon from 'material-ui-icons/FitnessCenter';
+import Divider from 'material-ui/Divider';
+import Link from 'next/link';
 
 const styles = theme => ({
   list: {
     width: 250,
-    background: theme.palette.background.paper
+    background: theme.palette.background.paper,
   },
   listFull: {
-    width: "auto"
-  }
+    width: 'auto',
+  },
 });
 
 function Drawer({ open, onRequestClose, classes }) {
@@ -43,24 +43,14 @@ function Drawer({ open, onRequestClose, classes }) {
             <ListItemText primary="Matches" />
           </ListItem>
         </Link>
-        <ListItem button>
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Teams" />
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon>
-            <PersonIcon />
-          </ListItemIcon>
-          <ListItemText primary="Players" />
-        </ListItem>
-        <ListItem button>
-          <ListItemIcon>
-            <StatisticsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Statistics" />
-        </ListItem>
+        <Link prefetch href="/statistic">
+          <ListItem button>
+            <ListItemIcon>
+              <StatisticsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Statistics" />
+          </ListItem>
+        </Link>
       </List>
     </div>
   );
@@ -80,7 +70,7 @@ function Drawer({ open, onRequestClose, classes }) {
 }
 
 Drawer.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(Drawer);
