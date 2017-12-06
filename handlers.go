@@ -194,9 +194,9 @@ type player struct {
 }
 
 func playerStatisticIndex(c *gin.Context) {
-	// timeframe := c.GetString("timeframe")
+	filter := c.DefaultQuery("filter", "all")
 
-	statistics := playersStatistic()
+	statistics := playersStatistic(filter)
 
 	JSONN(c, http.StatusOK, statistics, "")
 }

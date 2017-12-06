@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"scores-backend/models"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -14,15 +16,17 @@ const (
 		p.id,
 		p.name,
 		m.created_at,
-		case when (t1.player1_id = 1 or t1.player2_id = 1) and m.score_team1 > m.score_team2 then 1 else  0 end as won,
-		case when t1.player1_id = 1 or t1.player2_id = 1 then m.score_team1 else m.score_team2 end as pointsWon,
-		case when t1.player1_id = 1 or t1.player2_id = 1 then m.score_team2 else m.score_team1 end as pointsLost
+		case when 
+			(t1.player1_id = p.id or t1.player2_id = p.id) and (m.score_team1 > m.score_team2) or 
+			(t2.player1_id = p.id or t2.player2_id = p.id) and (m.score_team2 > m.score_team1)
+		 then 1 else 0 end as won,
+		case when t1.player1_id = p.id or t1.player2_id = p.id then m.score_team1 else m.score_team2 end as pointsWon,
+		case when t1.player1_id = p.id or t1.player2_id = p.id then m.score_team2 else m.score_team1 end as pointsLost
 		from matches m	
 		join teams t1 on m.team1_id = t1.id
 		join teams t2 on m.team2_id = t2.id
 		join players p on t1.player1_id = p.id or t1.player2_id = p.id or t2.player1_id = p.id or t2.player2_id = p.id
 		where m.deleted_at is null
-		order by p.id
 	`
 )
 
@@ -89,18 +93,54 @@ func getPlayer(id uint) models.Player {
 }
 
 type statistic struct {
-	ID        int `json:"id"`
-	Played    int `json:"played"`
-	Wongames  int `json:"gamesWon"`
-	Lostgames int `json:"gamesLost"`
-	Wonpoints int `json:"pointsWon"`
-	Lost      int `json:"pointsLost"`
+	ID           int     `json:"playerId"`
+	Pname        string  `json:"name"`
+	Played       int     `json:"played"`
+	Wongames     int     `json:"gamesWon"`
+	Lostgames    int     `json:"gamesLost"`
+	Wonpoints    int     `json:"pointsWon"`
+	Lost         int     `json:"pointsLost"`
+	Percentage   float32 `json:"percentageWon"`
+	Profileimage string  `json:"profileImage"`
 }
 
-func playersStatistic() []statistic {
+func playersStatistic(filter string) []statistic {
 	var statistics []statistic
 
-	db.Table("playerStatistics").Select("id, sum(pointsWon) as wonpoints, sum(pointsLost) as lost, count(1) as played, sum(won) as wongames, (sum(1) - sum(won)) as lostgames").Group("id").Scan(&statistics)
+	timeFilter := time.Now()
+
+	switch filter {
+	case "week":
+		timeFilter = timeFilter.AddDate(0, 0, -7)
+	case "month":
+		timeFilter = timeFilter.AddDate(0, -1, 0)
+	case "quarter":
+		timeFilter = timeFilter.AddDate(0, -3, 0)
+	case "year":
+		timeFilter = timeFilter.AddDate(-1, 0, 0)
+	default: // "all"
+		timeFilter = time.Unix(0, 0)
+	}
+
+	fmt.Println(filter)
+	fmt.Println(timeFilter)
+
+	db.Table("playerStatistics").Select(`
+		playerStatistics.id,
+		users.profile_image_url as profileimage,
+		max(playerStatistics.name) as pname,
+		cast((sum(playerStatistics.won) / cast(count(1) as float) * 100) as int) as percentage,
+		sum(playerStatistics.pointsWon) as wonpoints,
+		sum(playerStatistics.pointsLost) as lost,
+		count(1) as played,
+		sum(playerStatistics.won) as wongames,
+		(sum(1) - sum(playerStatistics.won)) as lostgames
+	`).
+		Group("playerStatistics.id").
+		Joins("join users on users.player_id = playerStatistics.id").
+		Where("playerStatistics.created_at > ?", timeFilter).
+		Order("percentage desc").
+		Scan(&statistics)
 
 	return statistics
 }
