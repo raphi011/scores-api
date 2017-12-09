@@ -137,7 +137,7 @@ func playersStatistic(filter string) []statistic {
 		(sum(1) - sum(playerStatistics.won)) as lostgames
 	`).
 		Group("playerStatistics.id").
-		Joins("join users on users.player_id = playerStatistics.id").
+		Joins("left join users on users.player_id = playerStatistics.id").
 		Where("playerStatistics.created_at > ?", timeFilter).
 		Order("percentage desc").
 		Scan(&statistics)
