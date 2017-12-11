@@ -9,7 +9,7 @@ import MenuIcon from "material-ui-icons/Menu";
 import Tooltip from "material-ui/Tooltip";
 import Avatar from 'material-ui/Avatar';
 
-const styles = theme => ({
+const styles = () => ({
   row: {
     display: 'flex',
     justifyContent: 'center',

@@ -1,7 +1,6 @@
 import React from 'react';
 import withRedux from 'next-redux-wrapper';
 import { withStyles } from 'material-ui/styles';
-import Tooltip from 'material-ui/Tooltip';
 import DateRangeIcon from 'material-ui-icons/DateRange';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
@@ -19,7 +18,7 @@ import {
 } from '../redux/actions/action';
 import { statisticsSelector } from '../redux/reducers/reducer';
 
-const styles = theme => ({
+const styles = () => ({
   title: {
     flex: '0 0 auto',
   },
@@ -29,10 +28,6 @@ const styles = theme => ({
 });
 
 class Statistics extends React.Component {
-  state = {
-    filterMenuOpen: false,
-    anchorEl: null,
-  };
 
   static async getInitialProps({ store, query, req, res, isServer }) {
     let { filter = 'all' } = query;
@@ -44,6 +39,11 @@ class Statistics extends React.Component {
 
     return { filter };
   }
+
+  state = {
+    filterMenuOpen: false,
+    anchorEl: null,
+  };
 
   onOpenFilterMenu = event => {
     this.setState({ filterMenuOpen: true, anchorEl: event.currentTarget });
@@ -78,10 +78,14 @@ class Statistics extends React.Component {
     Router.push('/statistic?filter=all');
   };
 
+  onRowClick = (playerId) => {
+    Router.push(`/player?id=${playerId}`);
+  }
+
   timeFilter = () => {
     const { filter } = this.props;
 
-    if (filter == 'all') return 'Ranks';
+    if (filter === 'all') return 'Ranks';
 
     return `Ranks by ${filter}`;
   };
@@ -108,7 +112,7 @@ class Statistics extends React.Component {
             <MenuItem onClick={this.onSetAllFilter}>All</MenuItem>
           </Menu>
         </Toolbar>
-        <StatisticList statistics={statistics} />
+        <StatisticList onPlayerClick={this.onRowClick} statistics={statistics} />
       </Layout>
     );
   }

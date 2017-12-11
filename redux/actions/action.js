@@ -15,6 +15,14 @@ export const loadPlayerAction = (ID) => ({
   successParams: { ID }
 });
 
+export const loadStatisticAction = (playerID) => ({
+  type: actionNames.API,
+  method: "GET",
+  url: `statistics/${playerID}`,
+  success: actionNames.RECEIVE_STATISTIC,
+  successParams: { playerID }
+})
+
 export const loadStatisticsAction = (filter) => ({
   type: actionNames.API,
   method: "GET",

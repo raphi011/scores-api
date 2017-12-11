@@ -1,5 +1,4 @@
 import React from 'react';
-import fetch from 'isomorphic-unfetch';
 import withRedux from 'next-redux-wrapper';
 import { withStyles } from 'material-ui/styles';
 
@@ -10,9 +9,10 @@ import {
   loadPlayerAction,
   userOrLoginRouteAction,
   loadPlayersAction,
+  loadStatisticAction,
 } from '../redux/actions/action';
 import PlayerView from '../components/PlayerView';
-import { playerSelector } from '../redux/reducers/reducer';
+import { playerSelector, statisticSelector } from '../redux/reducers/reducer';
 
 const styles = theme => ({});
 
@@ -23,7 +23,7 @@ class Player extends React.Component {
     const { id } = query;
 
     if (id) {
-      actions.push(loadPlayerAction(id));
+      actions.push(loadPlayerAction(id), loadStatisticAction(id));
     } else {
       actions.push(loadPlayersAction());
     }
@@ -34,11 +34,11 @@ class Player extends React.Component {
   }
 
   render() {
-    const { player, playerId, classes } = this.props;
+    const { player, statistic, playerId, classes } = this.props;
 
     return (
       <Layout title="Players">
-        <PlayerView player={player} />
+        <PlayerView player={player} statistic={statistic} />
       </Layout>
     );
   }
@@ -46,11 +46,12 @@ class Player extends React.Component {
 
 function mapStateToProps(state, ownProps) {
   const { playerId } = ownProps;
-  console.log(playerId)
   const player = playerSelector(state, playerId);
+  const statistic = statisticSelector(state, playerId);
 
   return {
     player,
+    statistic,
   };
 }
 

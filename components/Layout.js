@@ -17,7 +17,7 @@ class Layout extends React.Component {
   };
 
   render() {
-    const { title, loginRoute, children } = this.props;
+    const { title, children } = this.props;
     return (
       <div style={{ marginTop: "56px" }}>
         <Drawer onRequestClose={this.onCloseDrawer} open={this.state.open} />

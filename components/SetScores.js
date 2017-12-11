@@ -1,15 +1,10 @@
-import React from "react";
-import TextField from "material-ui/TextField";
-import Radio, { RadioGroup } from "material-ui/Radio";
-import { withStyles } from "material-ui/styles";
-import Button from "material-ui/Button";
-import DoneIcon from "material-ui-icons/Done";
-import {
-  FormLabel,
-  FormControl,
-  FormControlLabel,
-  FormHelperText
-} from "material-ui/Form";
+import React from 'react';
+import TextField from 'material-ui/TextField';
+import Radio, { RadioGroup } from 'material-ui/Radio';
+import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button';
+import DoneIcon from 'material-ui-icons/Done';
+import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form';
 
 const styles = theme => ({
   container: {
@@ -18,15 +13,15 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing.unit,
-    position: "fixed",
-    right: "24px",
-    bottom: "24px"
+    position: 'fixed',
+    right: '24px',
+    bottom: '24px',
   },
   formControl: {
     marginBottom: '20px',
   },
   root: {
-    display: "flex"
+    display: 'flex',
   },
   group: {
     display: 'flex',
@@ -34,7 +29,17 @@ const styles = theme => ({
   },
 });
 
-class SetScores extends React.Component {
+class SetScores extends React.PureComponent {
+  onChangeScoreTeam1 = e => {
+    const { onChangeScore } = this.props;
+    onChangeScore(1, e.target.value);
+  };
+
+  onChangeScoreTeam2 = e => {
+    const { onChangeScore } = this.props;
+    onChangeScore(2, e.target.value);
+  };
+
   render() {
     const {
       player1,
@@ -45,20 +50,14 @@ class SetScores extends React.Component {
       scoreTeam2,
       targetScore,
       onChangeTargetScore,
-      onChangeScore,
       onCreateMatch,
       errors,
-      classes
+      classes,
     } = this.props;
 
     const score1Error = errors.scoreTeam1;
     const score2Error = errors.scoreTeam2;
     const allError = errors.all;
-
-    const onChangeScoreTeam1 = e =>
-      onChangeScore(1, e.target.value);
-    const onChangeScoreTeam2 = e =>
-      onChangeScore(2, e.target.value);
 
     return (
       <form onSubmit={onCreateMatch} className={classes.container}>
@@ -92,12 +91,12 @@ class SetScores extends React.Component {
             label={score1Error}
             error={!!score1Error}
             value={scoreTeam1}
-            onChange={onChangeScoreTeam1}
+            onChange={this.onChangeScoreTeam1}
             type="number"
             className={classes.textField}
             min={0}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             margin="normal"
           />
@@ -111,12 +110,12 @@ class SetScores extends React.Component {
             label={score2Error}
             error={!!score2Error}
             value={scoreTeam2}
-            onChange={onChangeScoreTeam2}
+            onChange={this.onChangeScoreTeam2}
             type="number"
             className={classes.textField}
             min={0}
             InputLabelProps={{
-              shrink: true
+              shrink: true,
             }}
             margin="normal"
           />

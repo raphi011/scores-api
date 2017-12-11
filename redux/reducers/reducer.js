@@ -4,9 +4,9 @@ function createReducer(initialState, handlers) {
   return function reducer(state = initialState, action) {
     if (handlers.hasOwnProperty(action.type)) {
       return handlers[action.type](state, action);
-    } else {
-      return state;
-    }
+    } 
+
+    return state;
   };
 }
 
@@ -112,18 +112,37 @@ function receivePlayer(state, action) {
   };
 }
 
-function receiveStatistics(state, action) {
-  const { payload: statistics } = action;
+function receiveStatistic(state, action) {
+  const statisticsMap = {
+    ...state.statisticsMap,
+    [action.playerID]: action.payload,
+  };
 
   return {
     ...state,
-    statistics,
+    statisticsMap,
+  };
+}
+
+function receiveStatistics(state, action) {
+  const statisticsMap = {};
+  const statisticIDs = [];
+  action.payload.forEach(p => {
+    statisticIDs.push(p.playerId);
+    statisticsMap[p.playerId] = p;
+  });
+
+  return {
+    ...state,
+    statisticsMap,
+    statisticIDs, 
   };
 }
 
 const reducer = createReducer(
   {},
   {
+    [actionNames.RECEIVE_STATISTIC]: receiveStatistic,
     [actionNames.RECEIVE_STATISTICS]: receiveStatistics,
     [actionNames.RECEIVE_MATCH]: receiveMatch,
     [actionNames.RECEIVE_PLAYER]: receivePlayer,
@@ -140,7 +159,8 @@ const reducer = createReducer(
 
 export default reducer;
 
-export const statisticsSelector = state => state.statistics;
+export const statisticSelector = (state, ID) => state.statisticsMap[ID];
+export const statisticsSelector = state => state.statisticIDs.map(ID => state.statisticsMap[ID]);
 export const loginRouteSelector = state => state.loginRoute;
 export const statusSelector = state => state.status;
 export const matchesSelector = state => state.matchesIDs.map(ID => state.matchesMap[ID]);

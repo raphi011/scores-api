@@ -1,9 +1,5 @@
 import React from "react";
-import fetch from "isomorphic-unfetch";
 import { withStyles } from "material-ui/styles";
-import Badge from "material-ui/Badge";
-import PersonIcon from "material-ui-icons/Person";
-import AddCircleIcon from "material-ui-icons/AddCircle";
 import withRedux from "next-redux-wrapper";
 import Button from "material-ui/Button";
 import AddIcon from "material-ui-icons/Add";
@@ -36,19 +32,23 @@ const styles = theme => ({
 });
 
 class Index extends React.Component {
-  state = {
-    selectedMatch: null
-  };
-
   static async getInitialProps({ store, req, res, isServer }) {
     const actions = [loadMatchesAction(), userOrLoginRouteAction()];
 
     await dispatchActions(store.dispatch, isServer, req, res, actions);
   }
 
+  state = {
+    selectedMatch: null
+  };
+
   onCloseDialog = () => {
     this.setState({ selectedMatch: null });
   };
+
+  onShowPlayer = (playerID) => {
+    Router.push(`/player?id=${playerID}`)
+  }
 
   onOpenDialog = selectedMatch => {
     this.setState({ selectedMatch });
@@ -59,7 +59,7 @@ class Index extends React.Component {
   };
 
   onDeleteMatch = () => {
-    const { matches, deleteMatch } = this.props;
+    const { deleteMatch } = this.props;
     const { selectedMatch } = this.state;
 
     deleteMatch(selectedMatch);
@@ -68,14 +68,13 @@ class Index extends React.Component {
   };
 
   onRematch = () => {
-    const { setStatus } = this.props;
     const { selectedMatch } = this.state;
 
     Router.push(`/newMatch?rematchID=${selectedMatch.ID}`)
   };
 
   render() {
-    const { matches, error, classes } = this.props;
+    const { matches, classes } = this.props;
     const { selectedMatch } = this.state;
 
     return (
@@ -89,6 +88,7 @@ class Index extends React.Component {
           onClose={this.onCloseDialog}
           onRematch={this.onRematch}
           onDelete={this.onDeleteMatch}
+          onShowPlayer={this.onShowPlayer}
         />
         <Tooltip title="Create new Match" className={classes.button}>
           <Button

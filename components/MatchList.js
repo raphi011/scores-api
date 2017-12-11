@@ -1,11 +1,12 @@
 import React from "react";
 import { withStyles } from "material-ui/styles";
-import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
+import List, { ListItem, ListItemText } from "material-ui/List";
+import Typography from 'material-ui/Typography';
+import { formatDateTime } from '../utils/dateFormat';
 
-const styles = theme => ({
+const styles = () => ({
   root: {
     width: "100%",
-    background: theme.palette.background.paper
   },
   listContainer: {
     display: "flex",
@@ -13,14 +14,8 @@ const styles = theme => ({
     alignItems: "center",
     width: "100%"
   },
-  team1: { flex: "1 1 0" },
-  team2: { textAlign: "right", flex: "1 1 0" },
-  points: {
-    fontSize: "40px",
-    textAlign: "center",
-    flex: "2 2 0",
-    fontWeight: "lighter"
-  }
+  team: { flex: "1 1 0" },
+  points: { fontWeight: "lighter", flex: "2 2 0" },
 });
 
 function getTeamName(team) {
@@ -43,14 +38,14 @@ function MatchList({ matches = [], onMatchClick, classes }) {
           <ListItemText
             primary={
               <div className={classes.listContainer}>
-                <div className={classes.team1}>{getTeamName(m.Team1)} </div>
-                <div className={classes.points}>
+                <Typography className={classes.team} type="body">{getTeamName(m.Team1)}</Typography>
+                <Typography className={classes.points} type="display2" align="center">
                   {m.ScoreTeam1} - {m.ScoreTeam2}
-                </div>
-                <div className={classes.team2}>{getTeamName(m.Team2)}</div>
+                </Typography>
+                <Typography className={classes.team} type="body" align="right">{getTeamName(m.Team2)}</Typography>
               </div>
             }
-            secondary={new Date(m.CreatedAt).toLocaleString("de")}
+            secondary={formatDateTime(new Date(m.CreatedAt))}
           />
         </ListItem>
       ))}

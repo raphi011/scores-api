@@ -1,12 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import MaterialDrawer from 'material-ui/Drawer';
-import Button from 'material-ui/Button';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import AddIcon from 'material-ui-icons/Add';
-import PersonIcon from 'material-ui-icons/Person';
-import PeopleIcon from 'material-ui-icons/People';
 import StatisticsIcon from 'material-ui-icons/ShowChart';
 import FitnessCenterIcon from 'material-ui-icons/FitnessCenter';
 import Divider from 'material-ui/Divider';
@@ -68,9 +64,5 @@ function Drawer({ open, onRequestClose, classes }) {
     </MaterialDrawer>
   );
 }
-
-Drawer.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
 
 export default withStyles(styles)(Drawer);

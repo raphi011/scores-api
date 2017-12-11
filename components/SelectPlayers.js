@@ -24,17 +24,6 @@ const playerItemStyles = theme => ({
 });
 
 class SelectPlayers extends React.Component {
-  playerNr = playerID => {
-    const { player1ID, player2ID, player3ID, player4ID } = this.props;
-
-    if (playerID === player1ID) return 1;
-    else if (playerID === player2ID) return 2;
-    else if (playerID === player3ID) return 3;
-    else if (playerID === player4ID) return 4;
-
-    return 0;
-  };
-
   onSelectPlayer = ID => {
     const { onUnsetPlayer, onSetPlayer } = this.props;
 
@@ -62,14 +51,21 @@ class SelectPlayers extends React.Component {
     }
   };
 
+  playerNr = playerID => {
+    const { player1ID, player2ID, player3ID, player4ID } = this.props;
+
+    if (playerID === player1ID) return 1;
+    else if (playerID === player2ID) return 2;
+    else if (playerID === player3ID) return 3;
+    else if (playerID === player4ID) return 4;
+
+    return 0;
+  };
+
   render() {
     const {
       players = [],
       classes,
-      player1,
-      player2,
-      player3,
-      player4
     } = this.props;
 
     return (
@@ -102,6 +98,10 @@ function PlayerListItem({ player, onClick, playerNr, classes }) {
       color = "accent";
       team = 2;
       break;
+    default: 
+      color = "";
+      team = null;
+    ;
   }
 
   return (
