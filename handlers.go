@@ -201,6 +201,24 @@ func playerStatisticIndex(c *gin.Context) {
 	JSONN(c, http.StatusOK, statistics, "")
 }
 
+func statisticShow(c *gin.Context) {
+	playerID, err := strconv.Atoi(c.Param("playerID"))
+
+	if err != nil {
+		JSONN(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	s := playerStatistic(uint(playerID))
+
+	if s.ID == 0 {
+		JSONN(c, http.StatusNotFound, nil, "Statistic not found")
+		return
+	}
+
+	JSONN(c, http.StatusOK, s, "")
+}
+
 func authHandler(c *gin.Context) {
 	// Handle the exchange code to initiate a transport.
 	session := sessions.Default(c)

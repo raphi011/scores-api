@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"scores-backend/models"
 	"time"
 
@@ -122,27 +121,39 @@ func playersStatistic(filter string) []statistic {
 		timeFilter = time.Unix(0, 0)
 	}
 
-	fmt.Println(filter)
-	fmt.Println(timeFilter)
-
-	db.Table("playerStatistics").Select(`
-		playerStatistics.id,
-		users.profile_image_url as profileimage,
-		max(playerStatistics.name) as pname,
-		cast((sum(playerStatistics.won) / cast(count(1) as float) * 100) as int) as percentage,
-		sum(playerStatistics.pointsWon) as wonpoints,
-		sum(playerStatistics.pointsLost) as lost,
-		count(1) as played,
-		sum(playerStatistics.won) as wongames,
-		(sum(1) - sum(playerStatistics.won)) as lostgames
-	`).
-		Group("playerStatistics.id").
-		Joins("left join users on users.player_id = playerStatistics.id").
+	statisticsQuery().
 		Where("playerStatistics.created_at > ?", timeFilter).
 		Order("percentage desc").
 		Scan(&statistics)
 
 	return statistics
+}
+
+func playerStatistic(ID uint) statistic {
+	var s statistic
+
+	statisticsQuery().Where("playerStatistics.id = ?", ID).First(&s)
+
+	return s
+}
+
+func statisticsQuery() *gorm.DB {
+	query :=
+		db.Table("playerStatistics").Select(`
+			playerStatistics.id,
+			users.profile_image_url as profileimage,
+			max(playerStatistics.name) as pname,
+			cast((sum(playerStatistics.won) / cast(count(1) as float) * 100) as int) as percentage,
+			sum(playerStatistics.pointsWon) as wonpoints,
+			sum(playerStatistics.pointsLost) as lost,
+			count(1) as played,
+			sum(playerStatistics.won) as wongames,
+			(sum(1) - sum(playerStatistics.won)) as lostgames
+		`).
+			Group("playerStatistics.id").
+			Joins("left join users on users.player_id = playerStatistics.id")
+
+	return query
 }
 
 func getMatch(id uint) models.Match {
