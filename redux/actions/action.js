@@ -1,13 +1,14 @@
 import * as actionNames from "../actionNames";
+import { ApiAction, Match } from "../../types/scores";
 
-export const loadMatchesAction = () => ({
+export const loadMatchesAction = (): ApiAction => ({
   type: actionNames.API,
   method: "GET",
   url: "matches",
   success: actionNames.RECEIVE_MATCHES
 });
 
-export const loadPlayerAction = (ID) => ({
+export const loadPlayerAction = (ID): ApiAction  => ({
   type: actionNames.API,
   method: "GET",
   url: `players/${ID}`,
@@ -15,7 +16,7 @@ export const loadPlayerAction = (ID) => ({
   successParams: { ID }
 });
 
-export const loadStatisticAction = (playerID) => ({
+export const loadStatisticAction = (playerID): ApiAction => ({
   type: actionNames.API,
   method: "GET",
   url: `statistics/${playerID}`,
@@ -23,7 +24,7 @@ export const loadStatisticAction = (playerID) => ({
   successParams: { playerID }
 })
 
-export const loadStatisticsAction = (filter) => ({
+export const loadStatisticsAction = (filter): ApiAction => ({
   type: actionNames.API,
   method: "GET",
   url: "statistics",
@@ -31,14 +32,14 @@ export const loadStatisticsAction = (filter) => ({
   success: actionNames.RECEIVE_STATISTICS,
 })
 
-export const loadPlayersAction = () => ({
+export const loadPlayersAction = (): ApiAction => ({
   type: actionNames.API,
   method: "GET",
   url: "players",
   success: actionNames.RECEIVE_PLAYERS
 });
 
-export const loadMatchAction = (ID) => ({
+export const loadMatchAction = (ID): ApiAction => ({
   type: actionNames.API,
   method: "GET",
   url: `matches/${ID}`,
@@ -46,7 +47,7 @@ export const loadMatchAction = (ID) => ({
   successParams: { ID }
 });
 
-export const createNewMatchAction = match => ({
+export const createNewMatchAction = (match: Match): ApiAction => ({
   type: actionNames.API,
   method: "POST",
   url: "matches",
@@ -54,7 +55,7 @@ export const createNewMatchAction = match => ({
   successStatus: "New Match created"
 });
 
-export const deleteMatchAction = match => ({
+export const deleteMatchAction = (match: Match): ApiAction => ({
   type: actionNames.API,
   method: "DELETE",
   url: `matches/${match.ID}`,
@@ -63,7 +64,7 @@ export const deleteMatchAction = match => ({
   successStatus: "Match deleted"
 });
 
-export const userOrLoginRouteAction = () => ({
+export const userOrLoginRouteAction = (): ApiAction => ({
   type: actionNames.API,
   method: "GET",
   url: "userOrLoginRoute",
@@ -75,7 +76,7 @@ export const loggedInAction = username => ({
   username
 });
 
-export const logoutAction = () => ({
+export const logoutAction = (): ApiAction => ({
   type: actionNames.API,
   method: "POST",
   url: "logout",

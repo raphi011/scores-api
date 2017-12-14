@@ -1,3 +1,5 @@
+// @flow
+
 import { connect } from "react-redux";
 import { userSelector, loginRouteSelector } from "../redux/reducers/reducer";
 import { logoutAction } from "../redux/actions/action";

@@ -1,10 +1,12 @@
+// @flow
+
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import Typography from 'material-ui/Typography';
 import Tooltip from 'material-ui/Tooltip';
 import Avatar from 'material-ui/Avatar';
+import type { /* Match, */ Statistic, Player } from '../types';
 
-// import MatchList from "./MatchList";
 
 const styles = () => ({
   profileHead: {
@@ -21,7 +23,14 @@ const styles = () => ({
   },
 });
 
-function PlayerView({ matches, player, statistic, classes }) {
+type Props = {
+  // matches: Array<Match>,
+  statistic: Statistic,
+  classes: Object,
+  player: Player,
+};
+
+function PlayerView({ /* matches, */ player, statistic, classes }: Props) {
   return (
     <div className={classes.profileHead} >
       <Avatar className={classes.avatar} src={statistic.profileImage} />

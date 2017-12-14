@@ -1,9 +1,20 @@
+// @flow
+
 import React from "react";
 import Drawer from "./Drawer";
 import AppBar from "../containers/AppBarContainer";
 import Snackbar from "../containers/SnackbarContainer";
 
-class Layout extends React.Component {
+type Props = {
+  title: string,
+  children: React.Node,
+};
+
+type State = {
+  open: boolean,
+}
+
+class Layout extends React.Component<Props, State> {
   state = {
     open: false
   };

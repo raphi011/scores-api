@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import withRedux from 'next-redux-wrapper';
 import { withStyles } from 'material-ui/styles';
@@ -17,6 +18,7 @@ import {
   loadStatisticsAction,
 } from '../redux/actions/action';
 import { statisticsSelector } from '../redux/reducers/reducer';
+import type { Statistic } from '../types';
 
 const styles = () => ({
   title: {
@@ -27,8 +29,18 @@ const styles = () => ({
   },
 });
 
-class Statistics extends React.Component {
+type Props = {
+  filter: string,
+  statistics: Array<Statistic>,
+  classes: Object,
+};
 
+type State = {
+  filterMenuOpen: boolean,
+  anchorEl: ?HTMLElement,
+}
+
+class Statistics extends React.Component<Props, State> {
   static async getInitialProps({ store, query, req, res, isServer }) {
     let { filter = 'all' } = query;
     filter = filter.toLowerCase();

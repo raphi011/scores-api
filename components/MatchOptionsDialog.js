@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import DeleteIcon from 'material-ui-icons/Delete';
 import CopyIcon from 'material-ui-icons/ContentCopy';
@@ -6,6 +8,7 @@ import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText, ListItemAvatar } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
+import type { Match } from '../types';
 
 const styles = () => ({
   root: {
@@ -13,7 +16,17 @@ const styles = () => ({
   },
 });
 
-class MatchOptionsDialog extends React.PureComponent {
+type Props = {
+  onRematch: Match => void,
+  match: Match,
+  onDelete: Match => void,
+  onClose: Event => void,
+  onShowPlayer: number => void,
+  open: boolean,
+  classes: Object,
+}
+
+class MatchOptionsDialog extends React.PureComponent<Props> {
   onRematch = () => {
     const { onRematch, match } = this.props;
 

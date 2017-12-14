@@ -1,12 +1,16 @@
+// @flow
+import type { Match } from '../types';
+
+/* eslint-disable import/prefer-default-export */
 export function validateMatch({
-  player1ID,
+  /* player1ID,
   player2ID,
   player3ID,
-  player4ID,
+  player4ID, */
   scoreTeam1,
   scoreTeam2,
   targetScore
-}) {
+}: Match) {
   const errors = {};
 
   let higherScore = scoreTeam1;

@@ -1,63 +1,89 @@
-import React from "react";
-import { withStyles } from "material-ui/styles";
-import fetch from "isomorphic-unfetch";
-import PersonIcon from "material-ui-icons/Person";
-import Button from "material-ui/Button";
-import BackIcon from "material-ui-icons/KeyboardArrowLeft";
-import NextIcon from "material-ui-icons/KeyboardArrowRight";
-import MobileStepper from "material-ui/MobileStepper";
-import Router from "next/router";
-import withRedux from "next-redux-wrapper";
+// @flow
 
-import { validateMatch } from "../validation/match";
-import Layout from "../components/Layout";
-import SelectPlayers from "../components/SelectPlayers";
-import SetScores from "../components/SetScores";
-import withRoot from "../components/withRoot";
-import initStore, { dispatchActions } from "../redux/store";
-import { playersSelector, matchSelector, statusSelector } from "../redux/reducers/reducer";
+import React from 'react';
+import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button';
+import BackIcon from 'material-ui-icons/KeyboardArrowLeft';
+import NextIcon from 'material-ui-icons/KeyboardArrowRight';
+import MobileStepper from 'material-ui/MobileStepper';
+import Router from 'next/router';
+import withRedux from 'next-redux-wrapper';
+
+import { validateMatch } from '../validation/match';
+import Layout from '../components/Layout';
+import SelectPlayers from '../components/SelectPlayers';
+import SetScores from '../components/SetScores';
+import withRoot from '../components/withRoot';
+import initStore, { dispatchActions } from '../redux/store';
+import { playersSelector, matchSelector } from '../redux/reducers/reducer';
 import {
   createNewMatchAction,
   loadPlayersAction,
   userOrLoginRouteAction,
-  loadMatchAction
-} from "../redux/actions/action";
-import withWidth from "material-ui/utils/withWidth";
+  loadMatchAction,
+} from '../redux/actions/action';
+import type { Match, Player } from '../types';
 
 const styles = theme => ({
   root: {
-    width: "90%"
+    width: '90%',
   },
   submitButton: {
     marginRight: theme.spacing.unit,
-    width: "100%"
+    width: '100%',
   },
   stepContainer: {
-    padding: "0 20px"
+    padding: '0 20px',
   },
   actionsContainer: {
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit,
   },
   resetContainer: {
     marginTop: 0,
-    padding: theme.spacing.unit * 3
+    padding: theme.spacing.unit * 3,
   },
   transition: {
-    paddingBottom: 4
+    paddingBottom: 4,
   },
   button: {
-    margin: theme.spacing.unit
-  }
+    margin: theme.spacing.unit,
+  },
 });
 
-class NewMatch extends React.Component {
+type Props = {
+  match: ?Match,
+  classes: Object,
+  playerIDs: Array<number>,
+  playersMap: { [number]: Player },
+  createNewMatch: Match => Promise<any>,
+  // matches
+};
+
+type State = {
+  activeStep: number,
+  teamsComplete: boolean,
+  match: {
+    player1ID: number,
+    player2ID: number,
+    player3ID: number,
+    player4ID: number,
+    scoreTeam1: string,
+    scoreTeam2: string,
+    targetScore: string,
+  },
+  errors: {
+    valid: boolean,
+  },
+};
+
+class NewMatch extends React.Component<Props, State> {
   static async getInitialProps({ store, query, isServer, req, res }) {
     const actions = [loadPlayersAction(), userOrLoginRouteAction()];
 
     const { rematchID } = query;
 
     if (rematchID) {
-      actions.push(loadMatchAction(Number.parseInt(rematchID)));
+      actions.push(loadMatchAction(Number.parseInt(rematchID, 10)));
     }
 
     await dispatchActions(store.dispatch, isServer, req, res, actions);
@@ -78,13 +104,13 @@ class NewMatch extends React.Component {
         player2ID: 0,
         player3ID: 0,
         player4ID: 0,
-        scoreTeam1: "",
-        scoreTeam2: "",
-        targetScore: "15"
+        scoreTeam1: '',
+        scoreTeam2: '',
+        targetScore: '15',
       },
       errors: {
-        valid: true
-      }
+        valid: true,
+      },
     };
 
     if (match) {
@@ -102,7 +128,7 @@ class NewMatch extends React.Component {
   onUnsetPlayer = selected => {
     const match = {
       ...this.state.match,
-      [`player${selected}ID`]: 0
+      [`player${selected}ID`]: 0,
     };
 
     this.setState({ match, teamsComplete: false });
@@ -112,17 +138,17 @@ class NewMatch extends React.Component {
     const activeStep = teamsComplete ? 1 : 0;
     const match = {
       ...this.state.match,
-      [`player${unassigned}ID`]: ID
+      [`player${unassigned}ID`]: ID,
     };
 
     this.setState({ match, teamsComplete, activeStep });
   };
 
   onPrevious = () => {
-    let { activeStep } = this.state;
+    const { activeStep } = this.state;
 
     if (activeStep === 0) {
-      Router.push("/");
+      Router.push('/');
       return;
     }
 
@@ -133,36 +159,23 @@ class NewMatch extends React.Component {
     this.setState({ activeStep: 1 });
   };
 
-  getPlayers = () => {
-    const { playerIDs = [], playersMap } = this.props;
-
-    return playerIDs.map(p => playersMap[p]);
-  };
-
   onChangeScore = (teamNr, score) => {
     const match = {
       ...this.state.match,
-      ["scoreTeam" + teamNr]: score
+      [`scoreTeam${teamNr}`]: score,
     };
 
     this.setState({ match });
   };
 
-  getMatch = () => {
-    const {
-      scoreTeam1,
-      scoreTeam2,
+  onChangeTargetScore = (e, targetScore) => {
+    const match = {
+      ...this.state.match,
       targetScore,
-      ...rest,
-    } = this.state.match;
-
-    return {
-      ...rest,
-      scoreTeam1: Number.parseInt(scoreTeam1) || 0,
-      scoreTeam2: Number.parseInt(scoreTeam2) || 0,
-      targetScore: Number.parseInt(targetScore),
     };
-  }
+
+    this.setState({ match });
+  };
 
   onCreateMatch = async e => {
     e.preventDefault();
@@ -177,22 +190,30 @@ class NewMatch extends React.Component {
     } else {
       try {
         await createNewMatch(match);
-        Router.push("/");
-      } catch (e) {}
+        Router.push('/');
+      } catch (error) {}
     }
   };
 
-  onChangeTargetScore = (e, targetScore) => {
-    const match = {
-      ...this.state.match,
-      targetScore
-    };
+  getMatch = (): Match => {
+    const { scoreTeam1, scoreTeam2, targetScore, ...rest } = this.state.match;
 
-    this.setState({ match });
+    return {
+      ...rest,
+      scoreTeam1: Number.parseInt(scoreTeam1, 10) || 0,
+      scoreTeam2: Number.parseInt(scoreTeam2, 10) || 0,
+      targetScore: Number.parseInt(targetScore, 10),
+    };
+  };
+
+  getPlayers = () => {
+    const { playerIDs, playersMap } = this.props;
+
+    return playerIDs.map(p => playersMap[p]);
   };
 
   render() {
-    const { playersMap, classes, error } = this.props;
+    const { playersMap, classes } = this.props;
     const { teamsComplete, activeStep, match, errors } = this.state;
 
     const {
@@ -202,12 +223,10 @@ class NewMatch extends React.Component {
       player2ID,
       player3ID,
       player4ID,
-      targetScore
+      targetScore,
     } = match;
 
     const players = this.getPlayers();
-
-    let body;
 
     const player1 = playersMap[player1ID];
     const player2 = playersMap[player2ID];
@@ -226,14 +245,14 @@ class NewMatch extends React.Component {
             backButton={
               <Button dense onClick={this.onPrevious}>
                 <BackIcon className={classes.button} />
-                {activeStep === 0 ? "Cancel" : "Back"}
+                {activeStep === 0 ? 'Cancel' : 'Back'}
               </Button>
             }
             nextButton={
               <Button
                 onClick={this.onSetScores}
                 dense
-                disabled={activeStep == 1 || !teamsComplete}
+                disabled={activeStep === 1 || !teamsComplete}
               >
                 Next
                 <NextIcon className={classes.button} />
@@ -241,7 +260,7 @@ class NewMatch extends React.Component {
             }
           />
           <div>
-            {activeStep == 0 ? (
+            {activeStep === 0 ? (
               <SelectPlayers
                 player1ID={player1ID}
                 player2ID={player2ID}
@@ -289,9 +308,9 @@ function mapStateToProps(state, ownProps) {
 
 const mapDispatchToProps = {
   loadPlayers: loadPlayersAction,
-  createNewMatch: createNewMatchAction
+  createNewMatch: createNewMatchAction,
 };
 
 export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-  withRoot(withStyles(styles)(NewMatch))
+  withRoot(withStyles(styles)(NewMatch)),
 );

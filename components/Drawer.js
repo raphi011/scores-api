@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import MaterialDrawer from 'material-ui/Drawer';
@@ -18,7 +20,13 @@ const styles = theme => ({
   },
 });
 
-function Drawer({ open, onRequestClose, classes }) {
+type Props = {
+  open: boolean,
+  onRequestClose: Event => void,
+  classes: Object,
+};
+
+function Drawer({ open, onRequestClose, classes }: Props) {
   const sideList = (
     <div className={classes.list}>
       <List>

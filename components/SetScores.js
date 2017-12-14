@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import TextField from 'material-ui/TextField';
 import Radio, { RadioGroup } from 'material-ui/Radio';
@@ -5,6 +7,7 @@ import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import DoneIcon from 'material-ui-icons/Done';
 import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form';
+import type { Player } from '../types';
 
 const styles = theme => ({
   container: {
@@ -29,7 +32,22 @@ const styles = theme => ({
   },
 });
 
-class SetScores extends React.PureComponent {
+type Props = {
+  onChangeScore: (number, string) => void,
+  onChangeTargetScore: (Event, number) => void,
+  player1: Player,
+  player2: Player,
+  player3: Player,
+  player4: Player,
+  scoreTeam1: string,
+  scoreTeam2: string,
+  targetScore: string,
+  onCreateMatch: Event => void,
+  errors: Object,
+  classes: Object,
+}
+
+class SetScores extends React.PureComponent<Props> {
   onChangeScoreTeam1 = e => {
     const { onChangeScore } = this.props;
     onChangeScore(1, e.target.value);

@@ -1,3 +1,5 @@
+// @flow 
+
 import React from "react";
 import Router from "next/router";
 import withRedux from "next-redux-wrapper";
@@ -5,9 +7,9 @@ import withRedux from "next-redux-wrapper";
 import { loggedInAction, setStatusAction } from "../redux/actions/action";
 import initStore from "../redux/store";
 
-class LoggedIn extends React.Component {
+class LoggedIn extends React.Component<null, null> {
   static async getInitialProps(props) {
-    const { store, query, isServer } = props;
+    const { store, query } = props;
 
     const { username, error } = query;
 

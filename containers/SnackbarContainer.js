@@ -1,3 +1,5 @@
+// @flow
+
 import { connect } from "react-redux";
 import { statusSelector } from "../redux/reducers/reducer";
 import { clearStatusAction } from "../redux/actions/action";

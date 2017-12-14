@@ -1,6 +1,7 @@
 {
   "presets": [
-    "next/babel"
+    "next/babel",
+    "flow"
   ],
   "plugins": [
     ["transform-define", "./config.js"]

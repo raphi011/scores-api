@@ -1,6 +1,7 @@
+// @flow
+
 import React from 'react';
 import withRedux from 'next-redux-wrapper';
-import { withStyles } from 'material-ui/styles';
 
 import withRoot from '../components/withRoot';
 import Layout from '../components/Layout';
@@ -13,10 +14,14 @@ import {
 } from '../redux/actions/action';
 import PlayerView from '../components/PlayerView';
 import { playerSelector, statisticSelector } from '../redux/reducers/reducer';
+import type { Player, Statistic } from '../types';
 
-const styles = theme => ({});
+type Props = {
+  player: Player,
+  statistic: Statistic,
+};
 
-class Player extends React.Component {
+class PlayerInfo extends React.Component<Props> {
   static async getInitialProps({ store, query, req, res, isServer }) {
     const actions = [userOrLoginRouteAction()];
 
@@ -34,7 +39,7 @@ class Player extends React.Component {
   }
 
   render() {
-    const { player, statistic, playerId, classes } = this.props;
+    const { player, statistic } = this.props;
 
     return (
       <Layout title="Players">
@@ -58,5 +63,5 @@ function mapStateToProps(state, ownProps) {
 const mapDispatchToProps = {};
 
 export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-  withRoot(withStyles(styles)(Player)),
+  withRoot(PlayerInfo),
 );

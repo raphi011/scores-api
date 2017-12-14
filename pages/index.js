@@ -1,37 +1,50 @@
-import React from "react";
-import { withStyles } from "material-ui/styles";
-import withRedux from "next-redux-wrapper";
-import Button from "material-ui/Button";
-import AddIcon from "material-ui-icons/Add";
-import Router from "next/router";
-import Tooltip from "material-ui/Tooltip";
+// @flow
 
-import withRoot from "../components/withRoot";
-import Layout from "../components/Layout";
-import MatchOptionsDialog from "../components/MatchOptionsDialog";
-import MatchList from "../components/MatchList";
-import initStore, { dispatchActions } from "../redux/store";
-import { matchesSelector } from "../redux/reducers/reducer";
+import React from 'react';
+import { withStyles } from 'material-ui/styles';
+import withRedux from 'next-redux-wrapper';
+import Button from 'material-ui/Button';
+import AddIcon from 'material-ui-icons/Add';
+import Router from 'next/router';
+import Tooltip from 'material-ui/Tooltip';
+
+import withRoot from '../components/withRoot';
+import Layout from '../components/Layout';
+import MatchOptionsDialog from '../components/MatchOptionsDialog';
+import MatchList from '../components/MatchList';
+import initStore, { dispatchActions } from '../redux/store';
+import { matchesSelector } from '../redux/reducers/reducer';
 import {
   loadMatchesAction,
   setStatusAction,
   deleteMatchAction,
   userOrLoginRouteAction,
-} from "../redux/actions/action";
+} from '../redux/actions/action';
+import type { Match } from '../types';
 
 const styles = theme => ({
   matchListContainer: {
-    marginBottom: "70px"
+    marginBottom: '70px',
   },
   button: {
     margin: theme.spacing.unit,
-    position: "fixed",
-    right: "24px",
-    bottom: "24px"
-  }
+    position: 'fixed',
+    right: '24px',
+    bottom: '24px',
+  },
 });
 
-class Index extends React.Component {
+type Props = {
+  deleteMatch: Match => void,
+  matches: Array<Match>,
+  classes: Object,
+};
+
+type State = {
+  selectedMatch: ?Match,
+};
+
+class Index extends React.Component<Props, State> {
   static async getInitialProps({ store, req, res, isServer }) {
     const actions = [loadMatchesAction(), userOrLoginRouteAction()];
 
@@ -39,28 +52,30 @@ class Index extends React.Component {
   }
 
   state = {
-    selectedMatch: null
+    selectedMatch: null,
   };
 
   onCloseDialog = () => {
     this.setState({ selectedMatch: null });
   };
 
-  onShowPlayer = (playerID) => {
-    Router.push(`/player?id=${playerID}`)
-  }
+  onShowPlayer = playerID => {
+    Router.push(`/player?id=${playerID}`);
+  };
 
-  onOpenDialog = selectedMatch => {
+  onOpenDialog = (selectedMatch: Match) => {
     this.setState({ selectedMatch });
   };
 
   onCreateMatch = () => {
-    Router.replace("/newMatch");
+    Router.replace('/newMatch');
   };
 
   onDeleteMatch = () => {
     const { deleteMatch } = this.props;
     const { selectedMatch } = this.state;
+
+    if (!selectedMatch) return;
 
     deleteMatch(selectedMatch);
 
@@ -70,7 +85,9 @@ class Index extends React.Component {
   onRematch = () => {
     const { selectedMatch } = this.state;
 
-    Router.push(`/newMatch?rematchID=${selectedMatch.ID}`)
+    if (!selectedMatch) return;
+
+    Router.push(`/newMatch?rematchID=${selectedMatch.ID}`);
   };
 
   render() {
@@ -116,9 +133,9 @@ function mapStateToProps(state) {
 const mapDispatchToProps = {
   loadMatches: loadMatchesAction,
   setStatus: setStatusAction,
-  deleteMatch: deleteMatchAction
+  deleteMatch: deleteMatchAction,
 };
 
 export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-  withRoot(withStyles(styles)(Index))
+  withRoot(withStyles(styles)(Index)),
 );

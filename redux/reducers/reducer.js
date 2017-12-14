@@ -1,10 +1,12 @@
-import * as actionNames from "../actionNames";
+// @flow
+
+import * as actionNames from '../actionNames';
 
 function createReducer(initialState, handlers) {
   return function reducer(state = initialState, action) {
     if (handlers.hasOwnProperty(action.type)) {
       return handlers[action.type](state, action);
-    } 
+    }
 
     return state;
   };
@@ -48,7 +50,7 @@ function receivePlayers(state, action) {
   return {
     ...state,
     playersMap,
-    playerIDs
+    playerIDs,
   };
 }
 
@@ -65,7 +67,7 @@ function loggedOut(state, action) {
 function login(state, action) {
   return {
     ...state,
-    user: action.username
+    user: action.username,
   };
 }
 
@@ -74,21 +76,21 @@ function setUserOrLoginroute(state, action) {
   return {
     ...state,
     loginRoute,
-    user
+    user,
   };
 }
 
 function setStatus(state, action) {
   return {
     ...state,
-    status: action.status
+    status: action.status,
   };
 }
 
 function clearStatus(state) {
   return {
     ...state,
-    status: ""
+    status: '',
   };
 }
 
@@ -135,7 +137,7 @@ function receiveStatistics(state, action) {
   return {
     ...state,
     statisticsMap,
-    statisticIDs, 
+    statisticIDs,
   };
 }
 
@@ -153,24 +155,26 @@ const reducer = createReducer(
     [actionNames.SET_USER_OR_LOGINROUTE]: setUserOrLoginroute,
     [actionNames.SET_STATUS]: setStatus,
     [actionNames.CLEAR_STATUS]: clearStatus,
-    [actionNames.REMOVE_MATCH]: removeMatch
-  }
+    [actionNames.REMOVE_MATCH]: removeMatch,
+  },
 );
 
 export default reducer;
 
 export const statisticSelector = (state, ID) => state.statisticsMap[ID];
-export const statisticsSelector = state => state.statisticIDs.map(ID => state.statisticsMap[ID]);
+export const statisticsSelector = state =>
+  state.statisticIDs.map(ID => state.statisticsMap[ID]);
 export const loginRouteSelector = state => state.loginRoute;
 export const statusSelector = state => state.status;
-export const matchesSelector = state => state.matchesIDs.map(ID => state.matchesMap[ID]);
+export const matchesSelector = state =>
+  state.matchesIDs.map(ID => state.matchesMap[ID]);
 export const matchSelector = (state, ID) => state.matchesMap[ID];
 export const playerSelector = (state, ID) => state.playersMap[ID];
 export const playersSelector = state => ({
   playersMap: state.playersMap,
-  playerIDs: state.playerIDs
+  playerIDs: state.playerIDs,
 });
 export const userSelector = state => ({
   isLoggedIn: !!state.user,
-  user: state.user
+  user: state.user,
 });

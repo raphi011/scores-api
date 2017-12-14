@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Table, {
@@ -6,6 +8,7 @@ import Table, {
   TableHead,
   TableRow,
 } from 'material-ui/Table';
+import type { Statistic } from '../types';
 
 import StatisticListRow from './StatisticListRow';
 
@@ -15,7 +18,13 @@ const styles = theme => ({
   },
 });
 
-function StatisticList({ statistics, onPlayerClick, classes }) {
+type Props = {
+  statistics: Array<Statistic>,
+  onPlayerClick: number => void,
+  classes: Object
+}
+
+function StatisticList({ statistics, onPlayerClick, classes }: Props) {
   return (
     <Table>
       <TableHead>

@@ -1,3 +1,5 @@
+// @flow
+
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import AppBar from "material-ui/AppBar";
@@ -8,6 +10,7 @@ import IconButton from "material-ui/IconButton";
 import MenuIcon from "material-ui-icons/Menu";
 import Tooltip from "material-ui/Tooltip";
 import Avatar from 'material-ui/Avatar';
+import type { User } from '../types';
 
 const styles = () => ({
   row: {
@@ -26,6 +29,16 @@ const styles = () => ({
   }
 });
 
+type Props = {
+  onOpenMenu: () => void,
+  loginRoute: string,
+  title: string,
+  isLoggedIn: boolean,
+  user: User,
+  onLogout: () => void,
+  classes: Object,
+};
+
 function ButtonAppBar({
   onOpenMenu,
   loginRoute,
@@ -34,7 +47,7 @@ function ButtonAppBar({
   user,
   onLogout,
   classes
-}) {
+}: Props) {
   const button = isLoggedIn ? (
     <Tooltip title={user.Name} placement="bottom">
       <div className={classes.row}>

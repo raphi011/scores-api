@@ -1,13 +1,15 @@
-import fetch from "isomorphic-unfetch";
-import * as actionNames from "./actionNames";
+// @flow
+import fetch from 'isomorphic-unfetch';
+import * as actionNames from './actionNames';
+import type { Action, ApiAction } from '../types';
 
 function buildUrl(endpoint, params = {}) {
-  let paramUrl = "";
+  let paramUrl = '';
 
   paramUrl = `?${Object.keys(params)
     .filter(key => params[key])
     .map(key => `${key}=${params[key]}`)
-    .join("&")}`;
+    .join('&')}`;
 
   const url = `${process.env.BACKEND_URL}/api/${endpoint}${paramUrl}`;
 
@@ -19,11 +21,11 @@ export function serverAction(action, req, res) {
     ...action,
     req,
     res,
-    isServer: true
+    isServer: true,
   };
 }
 
-const apiMiddleware = ({ dispatch }) => next => async action => {
+const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (next: (Action) => Promise<any>) => async (action: ApiAction) => {
   if (action.type !== actionNames.API) {
     return next(action);
   }
@@ -37,10 +39,10 @@ const apiMiddleware = ({ dispatch }) => next => async action => {
     url,
     body,
     params,
-    method = "GET",
+    method = 'GET',
     isServer = false,
     req,
-    res
+    res,
   } = action;
 
   if (isServer && req.headers.cookie) {
@@ -55,22 +57,22 @@ const apiMiddleware = ({ dispatch }) => next => async action => {
       method,
       headers,
       body,
-      credentials: "same-origin"
+      credentials: 'same-origin',
     });
     if (response.status === 401) {
       dispatch({ type: actionNames.LOGGEDOUT });
       dispatch({
         type: actionNames.SET_STATUS,
-        status: "You have to be logged in for this action"
+        status: 'You have to be logged in for this action',
       });
       return Promise.reject();
     }
 
     if (isServer) {
-      const setCookie = response.headers.get("Set-Cookie");
+      const setCookie = response.headers.get('Set-Cookie');
 
       if (setCookie) {
-        res.setHeader("Set-Cookie", setCookie);
+        res.setHeader('Set-Cookie', setCookie);
       }
     }
 

@@ -1,8 +1,11 @@
+// @flow
+
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import List, { ListItem, ListItemText, ListItemIcon } from "material-ui/List";
 import Badge from "material-ui/Badge";
 import PersonIcon from "material-ui-icons/Person";
+import type { Player } from '../types';
 
 const styles = theme => ({
   root: {
@@ -23,7 +26,18 @@ const playerItemStyles = theme => ({
   }
 });
 
-class SelectPlayers extends React.Component {
+type Props = {
+  players: Array<Player>,
+  onUnsetPlayer: number => void,
+  onSetPlayer: (number, number, boolean) => void,
+  player1ID: number,
+  player2ID: number,
+  player3ID: number,
+  player4ID: number,
+  classes: Object,
+};
+
+class SelectPlayers extends React.Component<Props> {
   onSelectPlayer = ID => {
     const { onUnsetPlayer, onSetPlayer } = this.props;
 
@@ -31,7 +45,7 @@ class SelectPlayers extends React.Component {
     let assignedCount = 0;
     let selected;
 
-    for (let i = 1; i < 5; i++) {
+    for (let i = 1; i < 5; i += 1) {
       const pID = this.props[`player${i}ID`];
 
       if (pID === ID) {
@@ -41,7 +55,7 @@ class SelectPlayers extends React.Component {
         unassigned = i;
       }
 
-      if (pID) assignedCount++;
+      if (pID) assignedCount += 1;
     }
 
     if (selected) {
@@ -83,7 +97,13 @@ class SelectPlayers extends React.Component {
   }
 }
 
-function PlayerListItem({ player, onClick, playerNr, classes }) {
+type PlayerListProps = {
+  onClick: Event => void,
+  player: Player,
+  playerNr: number,
+}
+
+function PlayerListItem({ player, onClick, playerNr }: PlayerListProps) {
   let color;
   let team;
 

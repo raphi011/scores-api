@@ -1,8 +1,8 @@
 import { createStore, applyMiddleware } from "redux";
-import reducer from "./reducers/reducer";
-import apiMiddleware from "./apiMiddleware";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { serverAction } from "./apiMiddleware";
+
+import reducer from "./reducers/reducer";
+import apiMiddleware , { serverAction } from "./apiMiddleware";
 
 export async function dispatchActions(
   dispatch,
@@ -23,9 +23,10 @@ const initialState = {
   loginRoute: null,
   status: "",
   playersMap: {},
-  matches: [],
+  statisticsMap: {},
+  matchesIDs: [],
   playerIDs: [],
-  statistics: [],
+  statisticIDs: [],
 };
 
 const initStore = (state = initialState) =>

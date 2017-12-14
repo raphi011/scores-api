@@ -1,8 +1,11 @@
+// @flow 
+
 import React from "react";
 import { withStyles } from "material-ui/styles";
 import List, { ListItem, ListItemText } from "material-ui/List";
 import Typography from 'material-ui/Typography';
 import { formatDateTime } from '../utils/dateFormat';
+import type { Match, Team } from '../types';
 
 const styles = () => ({
   root: {
@@ -18,7 +21,13 @@ const styles = () => ({
   points: { fontWeight: "lighter", flex: "2 2 0" },
 });
 
-function getTeamName(team) {
+type Props = {
+  matches: Array<Match>,
+  onMatchClick: Match => void,
+  classes: Object,
+};
+
+function getTeamName(team: Team) {
   if (team.Name) return team.Name;
 
   return (
@@ -30,7 +39,7 @@ function getTeamName(team) {
   );
 }
 
-function MatchList({ matches = [], onMatchClick, classes }) {
+function MatchList({ matches = [], onMatchClick, classes }: Props) {
   return (
     <List className={classes.root}>
       {matches.map(m => (
