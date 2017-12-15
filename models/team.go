@@ -1,6 +1,8 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type Team struct {
 	gorm.Model
@@ -12,3 +14,11 @@ type Team struct {
 }
 
 type Teams []Team
+
+func (t *Team) GetTeam(db *gorm.DB, player1ID, player2ID uint) {
+	if player1ID > player2ID {
+		player1ID, player2ID = player2ID, player1ID
+	}
+
+	db.Where(Team{Player1ID: player1ID, Player2ID: player2ID}).FirstOrCreate(&t)
+}

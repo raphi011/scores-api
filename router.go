@@ -24,28 +24,10 @@ func authRequired() gin.HandlerFunc {
 	}
 }
 
-func newRouter() *gin.Engine {
-	r := gin.Default()
-
-	r.Use(sessions.Sessions("goquestsession", store))
-
-	r.GET("/matches", matchIndex)
-	r.GET("/matches/:matchID", matchShow)
-	r.GET("/players", playerIndex)
-	r.GET("/statistics", playerStatisticIndex)
-	r.GET("/statistics/:playerID", statisticShow)
-	r.GET("/players/:playerID", playerShow)
-	r.GET("/userOrLoginRoute", loginHandler)
-	r.GET("/auth", authHandler)
-	r.POST("/logout", logoutHandler)
-
-	auth := r.Group("/")
-	auth.Use(authRequired())
-	{
-		auth.DELETE("/matches/:matchID", matchDelete)
-		auth.POST("/players", playerCreate)
-		auth.POST("/matches", matchCreate)
-	}
-
-	return r
+func JSONN(c *gin.Context, code int, data interface{}, message string) {
+	c.JSON(code, gin.H{
+		"status":  code,
+		"message": message,
+		"data":    data,
+	})
 }
