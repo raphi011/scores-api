@@ -1,12 +1,11 @@
 // @flow
 
-import React from "react";
-import { withStyles } from "material-ui/styles";
+import React from 'react';
+import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
 import Tooltip from 'material-ui/Tooltip';
 import Avatar from 'material-ui/Avatar';
 import type { /* Match, */ Statistic, Player } from '../types';
-
 
 const styles = () => ({
   profileHead: {
@@ -32,10 +31,10 @@ type Props = {
 
 function PlayerView({ /* matches, */ player, statistic, classes }: Props) {
   return (
-    <div className={classes.profileHead} >
+    <div className={classes.profileHead}>
       <Avatar className={classes.avatar} src={statistic.profileImage} />
-      <Typography type="headline">{player.Name}</Typography>
-      <Tooltip placement="top" id="tooltip-score" title="Played - Won" >
+      <Typography type="headline">{player.name}</Typography>
+      <Tooltip placement="top" id="tooltip-score" title="Played - Won">
         <Typography align="center" type="display4">
           {statistic.gamesWon} - {statistic.gamesLost}
         </Typography>

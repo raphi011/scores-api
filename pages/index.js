@@ -59,8 +59,8 @@ class Index extends React.Component<Props, State> {
     this.setState({ selectedMatch: null });
   };
 
-  onShowPlayer = playerID => {
-    Router.push(`/player?id=${playerID}`);
+  onShowPlayer = playerId => {
+    Router.push(`/player?id=${playerId}`);
   };
 
   onOpenDialog = (selectedMatch: Match) => {
@@ -87,7 +87,7 @@ class Index extends React.Component<Props, State> {
 
     if (!selectedMatch) return;
 
-    Router.push(`/newMatch?rematchID=${selectedMatch.ID}`);
+    Router.push(`/newMatch?rematchId=${selectedMatch.id}`);
   };
 
   render() {

@@ -1,30 +1,30 @@
 // @flow
 
 export type Player = {
-  ID: number,
-  Name: string,
+  id: number,
+  name: string,
 };
 
 export type Team = {
-  Name: string,
-  ID: number,
-  Player1: Player,
-  Player2: Player,
+  name: string,
+  id: number,
+  player1: Player,
+  player2: Player,
 };
 
 export type Match = {
-  ID: number,
-  ScoreTeam1: number,
-  ScoreTeam2: number,
-  CreatedAt: string,
-  Team1: Team,
-  Team2: Team,
+  id: number,
+  scoreTeam1: number,
+  scoreTeam2: number,
+  createdAt: string,
+  team1: Team,
+  team2: Team,
 };
 
 export type User = {
-  ID: number,
-  Name: string,
-  ProfileImageURL: string,
+  id: number,
+  name: string,
+  profileImageUrl: string,
 };
 
 export type Statistic = {

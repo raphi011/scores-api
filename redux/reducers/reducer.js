@@ -15,7 +15,7 @@ function createReducer(initialState, handlers) {
 function receiveMatch(state, action) {
   const matchesMap = {
     ...state.matchesMap,
-    [action.ID]: action.payload,
+    [action.id]: action.payload,
   };
 
   return {
@@ -26,31 +26,31 @@ function receiveMatch(state, action) {
 
 function receiveMatches(state, action) {
   const matchesMap = {};
-  const matchesIDs = [];
+  const matchesIds = [];
   action.payload.forEach(m => {
-    matchesIDs.push(m.ID);
-    matchesMap[m.ID] = m;
+    matchesIds.push(m.id);
+    matchesMap[m.id] = m;
   });
 
   return {
     ...state,
     matchesMap,
-    matchesIDs,
+    matchesIds,
   };
 }
 
 function receivePlayers(state, action) {
   const playersMap = {};
-  const playerIDs = [];
+  const playerIds = [];
   action.payload.forEach(p => {
-    playerIDs.push(p.ID);
-    playersMap[p.ID] = p;
+    playerIds.push(p.id);
+    playersMap[p.id] = p;
   });
 
   return {
     ...state,
     playersMap,
-    playerIDs,
+    playerIds,
   };
 }
 
@@ -95,17 +95,17 @@ function clearStatus(state) {
 }
 
 function removeMatch(state, action) {
-  const matchesIDs = state.matchesIDs.filter(ID => ID !== action.ID);
+  const matchesIds = state.matchesIds.filter(id => id !== action.id);
   return {
     ...state,
-    matchesIDs,
+    matchesIds,
   };
 }
 
 function receivePlayer(state, action) {
   const playersMap = {
     ...state.playersMap,
-    [action.ID]: action.payload,
+    [action.id]: action.payload,
   };
 
   return {
@@ -117,7 +117,7 @@ function receivePlayer(state, action) {
 function receiveStatistic(state, action) {
   const statisticsMap = {
     ...state.statisticsMap,
-    [action.playerID]: action.payload,
+    [action.playerId]: action.payload,
   };
 
   return {
@@ -128,16 +128,16 @@ function receiveStatistic(state, action) {
 
 function receiveStatistics(state, action) {
   const statisticsMap = {};
-  const statisticIDs = [];
+  const statisticIds = [];
   action.payload.forEach(p => {
-    statisticIDs.push(p.playerId);
+    statisticIds.push(p.playerId);
     statisticsMap[p.playerId] = p;
   });
 
   return {
     ...state,
     statisticsMap,
-    statisticIDs,
+    statisticIds,
   };
 }
 
@@ -161,18 +161,18 @@ const reducer = createReducer(
 
 export default reducer;
 
-export const statisticSelector = (state, ID) => state.statisticsMap[ID];
+export const statisticSelector = (state, id) => state.statisticsMap[id];
 export const statisticsSelector = state =>
-  state.statisticIDs.map(ID => state.statisticsMap[ID]);
+  state.statisticIds.map(id => state.statisticsMap[id]);
 export const loginRouteSelector = state => state.loginRoute;
 export const statusSelector = state => state.status;
 export const matchesSelector = state =>
-  state.matchesIDs.map(ID => state.matchesMap[ID]);
-export const matchSelector = (state, ID) => state.matchesMap[ID];
-export const playerSelector = (state, ID) => state.playersMap[ID];
+  state.matchesIds.map(id => state.matchesMap[id]);
+export const matchSelector = (state, id) => state.matchesMap[id];
+export const playerSelector = (state, id) => state.playersMap[id];
 export const playersSelector = state => ({
   playersMap: state.playersMap,
-  playerIDs: state.playerIDs,
+  playerIds: state.playerIds,
 });
 export const userSelector = state => ({
   isLoggedIn: !!state.user,

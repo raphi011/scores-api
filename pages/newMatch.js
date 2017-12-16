@@ -53,7 +53,7 @@ const styles = theme => ({
 type Props = {
   match: ?Match,
   classes: Object,
-  playerIDs: Array<number>,
+  playerIds: Array<number>,
   playersMap: { [number]: Player },
   createNewMatch: Match => Promise<any>,
   // matches
@@ -63,10 +63,10 @@ type State = {
   activeStep: number,
   teamsComplete: boolean,
   match: {
-    player1ID: number,
-    player2ID: number,
-    player3ID: number,
-    player4ID: number,
+    player1Id: number,
+    player2Id: number,
+    player3Id: number,
+    player4Id: number,
     scoreTeam1: string,
     scoreTeam2: string,
     targetScore: string,
@@ -80,15 +80,15 @@ class NewMatch extends React.Component<Props, State> {
   static async getInitialProps({ store, query, isServer, req, res }) {
     const actions = [loadPlayersAction(), userOrLoginRouteAction()];
 
-    const { rematchID } = query;
+    const { rematchId } = query;
 
-    if (rematchID) {
-      actions.push(loadMatchAction(Number.parseInt(rematchID, 10)));
+    if (rematchId) {
+      actions.push(loadMatchAction(Number.parseInt(rematchId, 10)));
     }
 
     await dispatchActions(store.dispatch, isServer, req, res, actions);
 
-    return { rematchID };
+    return { rematchId };
   }
 
   constructor(props) {
@@ -100,10 +100,10 @@ class NewMatch extends React.Component<Props, State> {
       activeStep: 0,
       teamsComplete: false,
       match: {
-        player1ID: 0,
-        player2ID: 0,
-        player3ID: 0,
-        player4ID: 0,
+        player1Id: 0,
+        player2Id: 0,
+        player3Id: 0,
+        player4Id: 0,
         scoreTeam1: '',
         scoreTeam2: '',
         targetScore: '15',
@@ -116,10 +116,10 @@ class NewMatch extends React.Component<Props, State> {
     if (match) {
       state.activeStep = 1;
       state.teamsComplete = true;
-      state.match.player1ID = match.Team1.Player1ID;
-      state.match.player2ID = match.Team1.Player2ID;
-      state.match.player3ID = match.Team2.Player1ID;
-      state.match.player4ID = match.Team2.Player2ID;
+      state.match.player1Id = match.team1.player1Id;
+      state.match.player2Id = match.team1.player2Id;
+      state.match.player3Id = match.team2.player1Id;
+      state.match.player4Id = match.team2.player2Id;
     }
 
     this.state = state;
@@ -128,17 +128,17 @@ class NewMatch extends React.Component<Props, State> {
   onUnsetPlayer = selected => {
     const match = {
       ...this.state.match,
-      [`player${selected}ID`]: 0,
+      [`player${selected}Id`]: 0,
     };
 
     this.setState({ match, teamsComplete: false });
   };
 
-  onSetPlayer = (unassigned, ID, teamsComplete) => {
+  onSetPlayer = (unassigned, id, teamsComplete) => {
     const activeStep = teamsComplete ? 1 : 0;
     const match = {
       ...this.state.match,
-      [`player${unassigned}ID`]: ID,
+      [`player${unassigned}Id`]: id,
     };
 
     this.setState({ match, teamsComplete, activeStep });
@@ -207,9 +207,9 @@ class NewMatch extends React.Component<Props, State> {
   };
 
   getPlayers = () => {
-    const { playerIDs, playersMap } = this.props;
+    const { playerIds, playersMap } = this.props;
 
-    return playerIDs.map(p => playersMap[p]);
+    return playerIds.map(p => playersMap[p]);
   };
 
   render() {
@@ -219,19 +219,19 @@ class NewMatch extends React.Component<Props, State> {
     const {
       scoreTeam1,
       scoreTeam2,
-      player1ID,
-      player2ID,
-      player3ID,
-      player4ID,
+      player1Id,
+      player2Id,
+      player3Id,
+      player4Id,
       targetScore,
     } = match;
 
     const players = this.getPlayers();
 
-    const player1 = playersMap[player1ID];
-    const player2 = playersMap[player2ID];
-    const player3 = playersMap[player3ID];
-    const player4 = playersMap[player4ID];
+    const player1 = playersMap[player1Id];
+    const player2 = playersMap[player2Id];
+    const player3 = playersMap[player3Id];
+    const player4 = playersMap[player4Id];
 
     return (
       <Layout title="New Match">
@@ -262,10 +262,10 @@ class NewMatch extends React.Component<Props, State> {
           <div>
             {activeStep === 0 ? (
               <SelectPlayers
-                player1ID={player1ID}
-                player2ID={player2ID}
-                player3ID={player3ID}
-                player4ID={player4ID}
+                player1Id={player1Id}
+                player2Id={player2Id}
+                player3Id={player3Id}
+                player4Id={player4Id}
                 players={players}
                 onSetPlayer={this.onSetPlayer}
                 onUnsetPlayer={this.onUnsetPlayer}
@@ -295,13 +295,13 @@ class NewMatch extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state, ownProps) {
-  const { rematchID } = ownProps;
-  const { playersMap, playerIDs } = playersSelector(state);
-  const match = rematchID ? matchSelector(state, rematchID) : null;
+  const { rematchId } = ownProps;
+  const { playersMap, playerIds } = playersSelector(state);
+  const match = rematchId ? matchSelector(state, rematchId) : null;
 
   return {
     playersMap,
-    playerIDs,
+    playerIds,
     match,
   };
 }
@@ -311,6 +311,6 @@ const mapDispatchToProps = {
   createNewMatch: createNewMatchAction,
 };
 
-export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-  withRoot(withStyles(styles)(NewMatch)),
+export default withStyles(styles)(
+  withRedux(initStore, mapStateToProps, mapDispatchToProps)(withRoot(NewMatch)),
 );

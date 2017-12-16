@@ -45,7 +45,7 @@ type Props = {
   onCreateMatch: Event => void,
   errors: Object,
   classes: Object,
-}
+};
 
 class SetScores extends React.PureComponent<Props> {
   onChangeScoreTeam1 = e => {
@@ -102,7 +102,7 @@ class SetScores extends React.PureComponent<Props> {
         </FormControl>
         <FormControl className={classes.formControl}>
           <FormLabel>
-            {player1.Name} / {player2.Name}
+            {player1.name} / {player2.name}
           </FormLabel>
           <TextField
             id="number"
@@ -121,7 +121,7 @@ class SetScores extends React.PureComponent<Props> {
         </FormControl>
         <FormControl className={classes.formControl}>
           <FormLabel>
-            {player3.Name} / {player4.Name}
+            {player3.name} / {player4.name}
           </FormLabel>
           <TextField
             id="number"

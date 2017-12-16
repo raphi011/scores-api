@@ -24,7 +24,7 @@ type Props = {
   onShowPlayer: number => void,
   open: boolean,
   classes: Object,
-}
+};
 
 class MatchOptionsDialog extends React.PureComponent<Props> {
   onRematch = () => {
@@ -42,19 +42,25 @@ class MatchOptionsDialog extends React.PureComponent<Props> {
   render() {
     const { classes, onClose, match, onShowPlayer, open } = this.props;
 
-    const playerInfos = open ? [
-      { playerID: match.Team1.Player1.ID, name: match.Team1.Player1.Name },
-      { playerID: match.Team1.Player2.ID, name: match.Team1.Player2.Name },
-      { playerID: match.Team2.Player1.ID, name: match.Team2.Player1.Name },
-      { playerID: match.Team2.Player2.ID, name: match.Team2.Player2.Name },
-    ] : [];
+    const playerInfos = open
+      ? [
+          { playerId: match.team1.player1.id, name: match.team1.player1.name },
+          { playerId: match.team1.player2.id, name: match.team1.player2.name },
+          { playerId: match.team2.player1.id, name: match.team2.player1.name },
+          { playerId: match.team2.player2.id, name: match.team2.player2.name },
+        ]
+      : [];
 
     return (
       <Dialog onRequestClose={onClose} open={open}>
         <DialogTitle>Options</DialogTitle>
         <List className={classes.root}>
-          {playerInfos.map(({ playerID, name }) => (
-            <ListItem button key={playerID} onClick={() => onShowPlayer(playerID)}>
+          {playerInfos.map(({ playerId, name }) => (
+            <ListItem
+              button
+              key={playerId}
+              onClick={() => onShowPlayer(playerId)}
+            >
               <ListItemText inset primary={name} />
             </ListItem>
           ))}
