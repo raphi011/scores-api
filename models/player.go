@@ -5,8 +5,8 @@ import (
 )
 
 type Player struct {
-	gorm.Model
-	Name string
+	Model
+	Name string `json:"name"`
 }
 
 type Players []Player

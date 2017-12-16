@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	app := App{}
-	app.Initialize(os.Getenv("APP_ENV"))
+	app := App{Production: os.Getenv("APP_ENV") == "production"}
+	app.Initialize()
 	app.Run()
 }

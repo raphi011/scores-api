@@ -1,19 +1,17 @@
-package main_test
+package main
 
 import (
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
-
-	"."
 )
 
-var a main.App
+var a App
 
 func TestMain(m *testing.M) {
-	a = main.App{}
-	a.Initialize("development")
+	a = App{Production: false}
+	a.Initialize()
 
 	// ensureTableExists()
 
@@ -34,5 +32,18 @@ func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 func checkResponseCode(t *testing.T, expected, actual int) {
 	if expected != actual {
 		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
+	}
+}
+
+func TestEmptyTable(t *testing.T) {
+	// clearTable()
+
+	req, _ := http.NewRequest("GET", "/matches", nil)
+	response := executeRequest(req)
+
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	if body := response.Body.String(); body != "[]" {
+		t.Errorf("Expected an empty array. Got %s", body)
 	}
 }

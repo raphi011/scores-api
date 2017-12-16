@@ -5,11 +5,11 @@ import (
 )
 
 type User struct {
-	gorm.Model
-	Email           string
-	Player          Player
-	PlayerID        uint
-	ProfileImageURL string
+	Model
+	Email           string `json:"email"`
+	Player          Player `json:"player"`
+	PlayerID        uint   `json:"playerId"`
+	ProfileImageURL string `json:"profileImageUrl"`
 }
 
 type Users []User

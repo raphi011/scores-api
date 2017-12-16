@@ -5,12 +5,12 @@ import (
 )
 
 type Team struct {
-	gorm.Model
-	Name      string
-	Player1   Player
-	Player1ID uint
-	Player2   Player
-	Player2ID uint
+	Model
+	Name      string `json:"name"`
+	Player1   Player `json:"player1"`
+	Player1ID uint   `json:"player1Id"`
+	Player2   Player `json:"player2"`
+	Player2ID uint   `json:"player2Id"`
 }
 
 type Teams []Team

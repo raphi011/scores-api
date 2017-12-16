@@ -41,9 +41,10 @@ type credentials struct {
 }
 
 type App struct {
-	Router *gin.Engine
-	Db     *gorm.DB
-	Conf   *oauth2.Config
+	Router     *gin.Engine
+	Db         *gorm.DB
+	Conf       *oauth2.Config
+	Production bool
 }
 
 func (a *App) initDb() {
@@ -88,7 +89,13 @@ func (a *App) initDb() {
 }
 
 func (a *App) initRouter() {
-	a.Router = gin.Default()
+	if a.Production {
+		a.Router = gin.Default()
+	} else {
+		gin.SetMode(gin.TestMode)
+		a.Router = gin.New()
+		a.Router.Use(gin.Recovery())
+	}
 
 	a.Router.Use(sessions.Sessions("goquestsession", store))
 
@@ -111,7 +118,7 @@ func (a *App) initRouter() {
 	}
 }
 
-func (a *App) initAuth(env string) {
+func (a *App) initAuth() {
 	var redirectURL string
 	var cred credentials
 	file, err := ioutil.ReadFile("./client_secret.json")
@@ -121,7 +128,7 @@ func (a *App) initAuth(env string) {
 	}
 	json.Unmarshal(file, &cred)
 
-	if env == "production" {
+	if a.Production {
 		redirectURL = "https://scores.raphi011.com/api/auth"
 	} else {
 		redirectURL = "http://localhost:3000/api/auth"
@@ -138,9 +145,9 @@ func (a *App) initAuth(env string) {
 	}
 }
 
-func (a *App) Initialize(env string) {
+func (a *App) Initialize() {
 	a.initDb()
-	a.initAuth(env)
+	a.initAuth()
 	a.initRouter()
 }
 
