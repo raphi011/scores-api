@@ -23,7 +23,7 @@ export type Match = {
 
 export type User = {
   id: number,
-  name: string,
+  email: string,
   profileImageUrl: string,
 };
 

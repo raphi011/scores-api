@@ -52,7 +52,7 @@ class MatchOptionsDialog extends React.PureComponent<Props> {
       : [];
 
     return (
-      <Dialog onRequestClose={onClose} open={open}>
+      <Dialog onClose={onClose} open={open}>
         <DialogTitle>Options</DialogTitle>
         <List className={classes.root}>
           {playerInfos.map(({ playerId, name }) => (

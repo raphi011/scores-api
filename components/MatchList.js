@@ -47,7 +47,7 @@ function MatchList({ matches = [], onMatchClick, classes }: Props) {
           <ListItemText
             primary={
               <div className={classes.listContainer}>
-                <Typography className={classes.team} type="body">
+                <Typography className={classes.team} type="body1">
                   {getTeamName(m.team1)}
                 </Typography>
                 <Typography
@@ -57,7 +57,7 @@ function MatchList({ matches = [], onMatchClick, classes }: Props) {
                 >
                   {m.scoreTeam1} - {m.scoreTeam2}
                 </Typography>
-                <Typography className={classes.team} type="body" align="right">
+                <Typography className={classes.team} type="body1" align="right">
                   {getTeamName(m.team2)}
                 </Typography>
               </div>

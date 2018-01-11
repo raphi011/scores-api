@@ -36,7 +36,7 @@ const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
     }}
     open={open}
     autoHideDuration={6000}
-    onRequestClose={handleRequestClose(onClose)}
+    onClose={handleRequestClose(onClose)}
     SnackbarContentProps={{
       'aria-describedby': 'message-id',
     }}

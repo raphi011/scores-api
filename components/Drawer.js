@@ -60,7 +60,7 @@ function Drawer({ open, onRequestClose, classes }: Props) {
   );
 
   return (
-    <MaterialDrawer open={open} onRequestClose={onRequestClose}>
+    <MaterialDrawer open={open} onClose={onRequestClose}>
       <div
         tabIndex={0}
         role="button"

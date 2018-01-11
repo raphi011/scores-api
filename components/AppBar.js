@@ -49,7 +49,7 @@ function ButtonAppBar({
   classes,
 }: Props) {
   const button = isLoggedIn ? (
-    <Tooltip title={user.name} placement="bottom">
+    <Tooltip title={user.email} placement="bottom">
       <div className={classes.row}>
         <Avatar src={user.profileImageUrl} />
         <Button color="contrast" onClick={onLogout}>
