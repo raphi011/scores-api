@@ -51,29 +51,12 @@ func (s *MatchService) Create(match *scores.Match) error {
 }
 
 func (s *MatchService) Match(ID uint) (*scores.Match, error) {
-	// db.
-	// 	Preload("Team1.Player1").
-	// 	Preload("Team1.Player2").
-	// 	Preload("Team2.Player1").
-	// 	Preload("Team2.Player2").
-	// 	Preload("CreatedBy").
-	// 	First(&m, ID)
 
 	return nil, nil
 }
 
 func (s *MatchService) Matches() (*scores.Matches, error) {
-	// var matches []Match
-
-	// db.
-	// 	Preload("Team1.Player1").
-	// 	Preload("Team1.Player2").
-	// 	Preload("Team2.Player1").
-	// 	Preload("Team2.Player2").
-	// 	Order("created_at desc").
-	// 	Find(&matches)
-
-	// return matches
+	// var matches scores.Matches
 
 	return nil, nil
 }

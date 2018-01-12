@@ -34,6 +34,33 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
+func TestUsers(t *testing.T) {
+	db, _ := Open("file::memory:?mode=memory&cache=shared")
+	defer ClearTables(db)
+
+	userService := UserService{DB: db}
+	userService.Create(&scores.User{
+		Email:           "test@test.at",
+		ProfileImageURL: "image.url",
+	})
+	userService.Create(&scores.User{
+		Email:           "test2@test.at",
+		ProfileImageURL: "image.url",
+	})
+
+	users, err := userService.Users()
+
+	if err != nil {
+		t.Error("UserService.Users() err: %s", err)
+	}
+
+	userCount := len(users)
+	if userCount != 2 {
+		t.Errorf("len(UserService.Users()), want 2, got %d", userCount)
+	}
+
+}
+
 func TestUpdateUser(t *testing.T) {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
 	defer ClearTables(db)

@@ -46,29 +46,6 @@ func ClearTables(db *sql.DB) error {
 	return err
 }
 
-// func seedDb() {
-// 		player1 := Player{Name: "Raphi"}
-// 		player2 := Player{Name: "Robert"}
-// 		player3 := Player{Name: "Lukas"}
-// 		player4 := Player{Name: "Richie"}
-// 		player5 := Player{Name: "Dominik"}
-// 		player6 := Player{Name: "Roman"}
-
-// 		user1 := User{Email: "raphi011@gmail.com", Player: player1}
-// 		user2 := User{Email: "", Player: player2}
-// 		user3 := User{Email: "", Player: player3}
-// 		user4 := User{Email: "Rb1@outlook.at", Player: player4}
-// 		user5 := User{Email: "Rieder.dominik@gmail.com", Player: player5}
-// 		user6 := User{Email: "", Player: player6}
-
-// 		a.Db.Create(&user1)
-// 		a.Db.Create(&user2)
-// 		a.Db.Create(&user3)
-// 		a.Db.Create(&user4)
-// 		a.Db.Create(&user5)
-// 		a.Db.Create(&user6)
-// }
-
 func execMultiple(db *sql.DB, statements ...string) error {
 	for _, statement := range statements {
 		_, err := db.Exec(statement)

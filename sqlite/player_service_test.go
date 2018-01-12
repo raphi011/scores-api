@@ -40,10 +40,10 @@ func TestCreatePlayer(t *testing.T) {
 	player, err = playerService.Player(playerID)
 
 	if err != nil {
-		t.Errorf("playerService.Player() err: %s", err)
+		t.Errorf("PlayerService.Player() err: %s", err)
 	}
 	if player.ID != playerID {
-		t.Errorf("playerService.Player(), want ID %d, got %d", playerID, player.ID)
+		t.Errorf("PlayerService.Player(), want ID %d, got %d", playerID, player.ID)
 	}
 }
 
@@ -58,14 +58,14 @@ func TestDeletePlayer(t *testing.T) {
 	err := playerService.Delete(player.ID)
 
 	if err != nil {
-		t.Errorf("playerService.Delete() err: %s", err)
+		t.Errorf("PlayerService.Delete() err: %s", err)
 	}
 
 	players, _ := playerService.Players()
 	playerCount := len(players)
 
 	if playerCount != 1 {
-		t.Errorf("len(playerService.Players()), want 1, got %d", playerCount)
+		t.Errorf("len(PlayerService.Players()), want 1, got %d", playerCount)
 	}
 
 }

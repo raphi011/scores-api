@@ -13,7 +13,7 @@ type PlayerService struct {
 }
 
 func (s *PlayerService) Players() (scores.Players, error) {
-	players := []scores.Player{}
+	players := scores.Players{}
 
 	rows, err := s.DB.Query(`
 		SELECT
