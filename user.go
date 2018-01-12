@@ -11,7 +11,8 @@ type User struct {
 type Users []User
 
 type UserService interface {
+	Create(*User) (*User, error)
 	User(userID uint) (*User, error)
 	ByEmail(email string) (*User, error)
-	// UpdateUser()
+	Update(*User) error
 }

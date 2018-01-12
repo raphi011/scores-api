@@ -2,7 +2,6 @@ package sqlite
 
 import (
 	"database/sql"
-	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -18,7 +17,6 @@ func Open(filename string) (*sql.DB, error) {
 	err = db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='dbVersion'").Scan()
 
 	if err == sql.ErrNoRows {
-		log.Println("Creating sqlite tables")
 		err := execMultiple(
 			db,
 			versionTable,
@@ -120,15 +118,13 @@ const (
 
 	teamTable = `
 		CREATE TABLE "teams" (
-			"id" integer PRIMARY KEY autoincrement,
 			"created_at" datetime NOT NULL,
-			"updated_at" datetime,
-			"deleted_at" datetime,
 			"name" varchar(255),
 			"player1_id" integer NOT NULL,
 			"player2_id" integer NOT NULL,
 			FOREIGN KEY(player1_id) REFERENCES players(id),
-			FOREIGN KEY(player2_id) REFERENCES players(id)
+			FOREIGN KEY(player2_id) REFERENCES players(id),
+			PRIMARY KEY (player1_id, player2_id)
 		)
 	`
 
