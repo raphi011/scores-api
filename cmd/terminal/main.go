@@ -1,14 +1,16 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"os"
+	scores "scores-backend"
 	"scores-backend/sqlite"
 )
 
 func main() {
-	// cmd := flag.String("cmd", "", "command to execute, available: 'createdb'")
+	dbPath := flag.String("db", "scores.db", "Path to sqlite db")
 	flag.Parse()
 
 	args := flag.Args()
@@ -22,16 +24,37 @@ func main() {
 
 	switch cmd {
 	case "createdb":
-		createDb()
+		db, err := getDb(*dbPath)
+		if err != nil {
+			fmt.Println(err)
+		}
+		db.Close()
+	case "seed":
+		seedDb(*dbPath)
 	}
 }
 
-func createDb() {
-	db, err := sqlite.Open("test")
+func seedDb(path string) {
+	db, err := getDb(path)
 
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
-	db.Close()
+
+	ps := sqlite.PlayerService{DB: db}
+
+	ps.Create(&scores.Player{Name: "Raphi"})
+	ps.Create(&scores.Player{Name: "Richie"})
+	ps.Create(&scores.Player{Name: "Dominik"})
+	ps.Create(&scores.Player{Name: "Lukas"})
+}
+
+func getDb(path string) (*sql.DB, error) {
+	db, err := sqlite.Open(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
