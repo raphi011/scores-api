@@ -42,6 +42,8 @@ const teamSelectSQL = `
 func (s *TeamService) ByPlayers(player1ID, player2ID uint) (*scores.Team, error) {
 	team := &scores.Team{}
 
+	player1ID, player2ID = TeamPlayerOrder(player1ID, player2ID)
+
 	err := s.DB.QueryRow(teamSelectSQL, player1ID, player2ID).
 		Scan(&team.CreatedAt, &team.Name, &team.Player1ID, &team.Player2ID)
 

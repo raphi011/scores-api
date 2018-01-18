@@ -44,20 +44,26 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 	} else {
 		team1, err1 := h.teamService.ByPlayers(newMatch.Player1ID, newMatch.Player2ID)
 		team2, err2 := h.teamService.ByPlayers(newMatch.Player3ID, newMatch.Player4ID)
+		user, err3 := h.userService.User(uint(userID))
 
-		if err1 != nil || err2 != nil {
+		if err1 != nil || err2 != nil || err3 != nil {
 			jsonn(c, http.StatusBadRequest, nil, "Bad request")
 		}
 
 		// TODO: additional score validation
 
-		match := h.matchService.Create(&scores.Match{
-			Team1ID:     team1.ID,
-			Team2ID:     team2.ID,
-			ScoreTeam1:  newMatch.ScoreTeam1,
-			ScoreTeam2:  newMatch.ScoreTeam2,
-			CreatedByID: uint(userID),
+		match, err := h.matchService.Create(&scores.Match{
+			Team1:      team1,
+			Team2:      team2,
+			ScoreTeam1: newMatch.ScoreTeam1,
+			ScoreTeam2: newMatch.ScoreTeam2,
+			CreatedBy:  user,
 		})
+
+		if err != nil {
+			jsonn(c, http.StatusBadRequest, nil, "Bad request")
+			return
+		}
 
 		jsonn(c, http.StatusCreated, match, "")
 	}
@@ -104,7 +110,7 @@ func (a *matchHandler) matchDelete(c *gin.Context) {
 		return
 	}
 
-	if user.ID != match.CreatedByID {
+	if user.ID != match.CreatedBy.ID {
 		jsonn(c, http.StatusForbidden, nil, "Match was not created by you")
 		return
 	}

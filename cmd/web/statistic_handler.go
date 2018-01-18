@@ -26,6 +26,7 @@ func (h *statisticHandler) players(c *gin.Context) {
 }
 
 func (h *statisticHandler) player(c *gin.Context) {
+	filter := c.DefaultQuery("filter", "all")
 	playerID, err := strconv.Atoi(c.Param("playerID"))
 
 	if err != nil {
@@ -33,9 +34,10 @@ func (h *statisticHandler) player(c *gin.Context) {
 		return
 	}
 
-	statistic, err := h.statisticService.Player(uint(playerID))
+	statistic, err := h.statisticService.Player(uint(playerID), filter)
 
-	if statistic.ID == 0 {
+	if err != nil {
+		// TODO: check if not found or other error
 		jsonn(c, http.StatusNotFound, nil, "Statistic not found")
 		return
 	}

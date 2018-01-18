@@ -42,7 +42,7 @@ func main() {
 		redirectURL = "http://localhost:3000/api/auth"
 	}
 
-	db, err := sqlite.Open("/tmp/gorm.db")
+	db, err := sqlite.Open("./scores.db")
 
 	if err != nil {
 		log.Printf("DB error: %v\n", err)
