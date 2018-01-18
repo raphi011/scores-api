@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	scores "scores-backend"
+	"time"
 )
 
 var _ scores.StatisticService = &StatisticService{}
@@ -11,63 +12,85 @@ type StatisticService struct {
 	DB *sql.DB
 }
 
-// func statisticsQuery(db *gorm.DB) *gorm.DB {
-// 	query :=
-// 		db.Table("playerStatistics").Select(`
-// 			playerStatistics.id,
-// 			users.profile_image_url as profileimage,
-// 			max(playerStatistics.name) as pname,
-// 			cast((sum(playerStatistics.won) / cast(count(1) as float) * 100) as int) as percentage,
-// 			sum(playerStatistics.pointsWon) as wonpoints,
-// 			sum(playerStatistics.pointsLost) as lost,
-// 			count(1) as played,
-// 			sum(playerStatistics.won) as wongames,
-// 			(sum(1) - sum(playerStatistics.won)) as lostgames
-// 		`).
-// 			Group("playerStatistics.id").
-// 			Joins("left join users on users.player_id = playerStatistics.id")
+const (
+	statisticsSelectSQL = `
+		SELECT 
+			s.id,
+			u.profile_image_url
+			max(s.name)
+			cast((sum(s.won) / cast(count(1) as float) * 100) as int) as percentage,
+			sum(s.pointsWon),
+			sum(s.pointsLost),
+			count(1),
+			sum(s.won),
+			(sum(1) - sum(s.won))
+		FROM playerStatistics s
+		GROUP BY s.id 
+		JOIN players p ON s.id = p.id
+		LEFT JOIN users u ON p.user_id = u.id 
+		WHERE s.created_at > $1
+		ORDER BY percentage DESC
+	`
+)
 
-// 	return query
-// }
+func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, error) {
+	statistics := scores.PlayerStatistics{}
 
-func (s *StatisticService) Players(filter string) (*scores.Statistics, error) {
-	// var statistics []Statistic
+	timeFilter := time.Now()
 
-	// timeFilter := time.Now()
+	switch filter {
+	case "week":
+		timeFilter = timeFilter.AddDate(0, 0, -7)
+	case "month":
+		timeFilter = timeFilter.AddDate(0, -1, 0)
+	case "quarter":
+		timeFilter = timeFilter.AddDate(0, -3, 0)
+	case "year":
+		timeFilter = timeFilter.AddDate(-1, 0, 0)
+	default: // "all"
+		timeFilter = time.Unix(0, 0)
+	}
 
-	// switch filter {
-	// case "week":
-	// 	timeFilter = timeFilter.AddDate(0, 0, -7)
-	// case "month":
-	// 	timeFilter = timeFilter.AddDate(0, -1, 0)
-	// case "quarter":
-	// 	timeFilter = timeFilter.AddDate(0, -3, 0)
-	// case "year":
-	// 	timeFilter = timeFilter.AddDate(-1, 0, 0)
-	// default: // "all"
-	// 	timeFilter = time.Unix(0, 0)
-	// }
+	rows, err := s.DB.Query(statisticsSelectSQL, timeFilter)
 
-	// statisticsQuery(db).
-	// 	Where("playerStatistics.created_at > ?", timeFilter).
-	// 	Order("percentage desc").
-	// 	Scan(&statistics)
+	for rows.Next() {
+		s := scores.PlayerStatistic{
+			Player: &scores.Player{},
+		}
 
-	// return statistics
+		err = rows.Scan(
+			&s.PlayerID,
+			&s.Player.ProfileImageURL,
+			&s.Player.Name,
+			&s.PercentageWon,
+			&s.PointsWon,
+			&s.PointsLost,
+			&s.GamesWon,
+			&s.GamesLost,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		s.Player.ID = s.PlayerID
+
+		statistics = append(statistics, s)
+	}
+
+	return statistics, nil
+}
+
+func (s *StatisticService) Player(playerID uint) (*scores.PlayerStatistic, error) {
 	return nil, nil
 }
 
-func (s *StatisticService) Player(playerID uint) (*scores.Statistic, error) {
-	// statisticsQuery(db).Where("playerStatistics.id = ?", playerID).First(&s)
-	return nil, nil
-}
-
-func (s *StatisticService) Team(teamID uint) (*scores.Statistic, error) {
+func (s *StatisticService) Team(teamID uint) (*scores.TeamStatistic, error) {
 
 	return nil, nil
 }
 
-func (s *StatisticService) Teams() (*scores.Statistics, error) {
+func (s *StatisticService) Teams() (scores.TeamStatistics, error) {
 
 	return nil, nil
 }
@@ -88,30 +111,4 @@ func (s *StatisticService) Teams() (*scores.Statistics, error) {
 // 		// Joins("left join users on users.player_id = playerStatistics.id")
 
 // 	return query
-// }
-
-// func GetTeamStatistics(db *gorm.DB) []Statistic {
-// 	var statistics []TeamStatistic
-
-// 	timeFilter := time.Now()
-
-// 	switch filter {
-// 	case "week":
-// 		timeFilter = timeFilter.AddDate(0, 0, -7)
-// 	case "month":
-// 		timeFilter = timeFilter.AddDate(0, -1, 0)
-// 	case "quarter":
-// 		timeFilter = timeFilter.AddDate(0, -3, 0)
-// 	case "year":
-// 		timeFilter = timeFilter.AddDate(-1, 0, 0)
-// 	default: // "all"
-// 		timeFilter = time.Unix(0, 0)
-// 	}
-
-// 	statisticsQuery(db).
-// 		Where("playerStatistics.created_at > ?", timeFilter).
-// 		Order("percentage desc").
-// 		Scan(&statistics)
-
-// 	return statistics
 // }

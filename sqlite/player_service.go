@@ -12,57 +12,75 @@ type PlayerService struct {
 	DB *sql.DB
 }
 
+const (
+	playersSelectSQL = `
+		SELECT
+			p.id,
+			p.name,
+			p.user_id,
+			u.profile_image_url
+		FROM players p
+		LEFT JOIN users u on u.id = p.user_id 
+		WHERE p.deleted_at is null
+	`
+
+	playerSelectSQL = playersSelectSQL + " and p.id = $1"
+)
+
+func scanPlayer(scanner scan) (*scores.Player, error) {
+	var userID sql.NullInt64
+	var profileImageURL sql.NullString
+
+	p := &scores.Player{}
+	err := scanner.Scan(&p.ID, &p.Name, &userID, &profileImageURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if profileImageURL.Valid {
+		p.ProfileImageURL = profileImageURL.String
+	}
+	if userID.Valid {
+		p.UserID = uint(userID.Int64)
+	}
+
+	return p, nil
+}
+
 func (s *PlayerService) Players() (scores.Players, error) {
 	players := scores.Players{}
 
-	rows, err := s.DB.Query(`
-		SELECT
-			id,
-			name,
-			user_id
-		FROM players
-		WHERE deleted_at is null
-	`)
+	rows, err := s.DB.Query(playersSelectSQL)
 
-	var userID sql.NullInt64
+	if err != nil {
+		return nil, err
+	}
 
 	for rows.Next() {
-		p := scores.Player{}
-		err = rows.Scan(&p.ID, &p.Name, &userID)
+		p, err := scanPlayer(rows)
 		if err != nil {
 			return nil, err
 		}
-		if userID.Valid {
-			p.UserId = uint(userID.Int64)
-		}
-		players = append(players, p)
+
+		players = append(players, *p)
 	}
 
 	return players, nil
 }
 
 func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
-	player := &scores.Player{}
+	p := &scores.Player{}
 
-	var userID sql.NullInt64
+	row := s.DB.QueryRow(playersSelectSQL, ID)
 
-	err := s.DB.QueryRow(`
-		SELECT 
-			id,
-			name,
-			user_id
-		FROM players
-		WHERE id = $1 and deleted_at is null
-	`, ID).Scan(&player.ID, &player.Name, &userID)
+	p, err := scanPlayer(row)
 
 	if err != nil {
 		return nil, err
 	}
-	if userID.Valid {
-		player.UserId = uint(userID.Int64)
-	}
 
-	return player, nil
+	return p, nil
 }
 
 func (s *PlayerService) Create(player *scores.Player) (*scores.Player, error) {

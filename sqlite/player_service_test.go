@@ -6,13 +6,12 @@ import (
 )
 
 func TestGetPlayers(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	s := createServices()
+	defer ClearTables(s.db)
 
-	playerService := &PlayerService{DB: db}
-	playerService.Create(&scores.Player{Name: "Test1"})
-	playerService.Create(&scores.Player{Name: "Test2"})
-	players, err := playerService.Players()
+	s.playerService.Create(&scores.Player{Name: "Test1"})
+	s.playerService.Create(&scores.Player{Name: "Test2"})
+	players, err := s.playerService.Players()
 
 	if err != nil {
 		t.Errorf("PlayerService.Players() err: %s", err)
@@ -22,11 +21,10 @@ func TestGetPlayers(t *testing.T) {
 }
 
 func TestCreatePlayer(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	s := createServices()
+	defer ClearTables(s.db)
 
-	playerService := &PlayerService{DB: db}
-	player, err := playerService.Create(&scores.Player{Name: "Test"})
+	player, err := s.playerService.Create(&scores.Player{Name: "Test"})
 
 	if err != nil {
 		t.Error("Can't create player")
@@ -37,7 +35,7 @@ func TestCreatePlayer(t *testing.T) {
 
 	playerID := player.ID
 
-	player, err = playerService.Player(playerID)
+	player, err = s.playerService.Player(playerID)
 
 	if err != nil {
 		t.Errorf("PlayerService.Player() err: %s", err)
@@ -48,20 +46,19 @@ func TestCreatePlayer(t *testing.T) {
 }
 
 func TestDeletePlayer(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	s := createServices()
+	defer ClearTables(s.db)
 
-	playerService := &PlayerService{DB: db}
-	player, _ := playerService.Create(&scores.Player{Name: "Test"})
-	playerService.Create(&scores.Player{Name: "Test2"})
+	player, _ := s.playerService.Create(&scores.Player{Name: "Test"})
+	s.playerService.Create(&scores.Player{Name: "Test2"})
 
-	err := playerService.Delete(player.ID)
+	err := s.playerService.Delete(player.ID)
 
 	if err != nil {
 		t.Errorf("PlayerService.Delete() err: %s", err)
 	}
 
-	players, _ := playerService.Players()
+	players, _ := s.playerService.Players()
 	playerCount := len(players)
 
 	if playerCount != 1 {

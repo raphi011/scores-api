@@ -6,6 +6,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type scan interface {
+	Scan(src ...interface{}) error
+}
+
 func Open(filename string) (*sql.DB, error) {
 
 	db, err := sql.Open("sqlite3", filename)
@@ -70,14 +74,18 @@ const (
 			"created_at" datetime NOT NULL,
 			"updated_at" datetime,
 			"deleted_at" datetime,
-			"team1_id" integer NOT NULL,
-			"team2_id" integer NOT NULL,
+			"team1_player1_id" integer NOT NULL,
+			"team1_player2_id" integer NOT NULL,
+			"team2_player1_id" integer NOT NULL,
+			"team2_player2_id" integer NOT NULL,
 			"score_team1" integer NOT NULL,
 			"score_team2" integer NOT NULL,
 			"created_by_user_id" integer NOT NULL,
 			FOREIGN KEY(created_by_user_id) REFERENCES user(id),
-			FOREIGN KEY(team1_id) REFERENCES team(id),
-			FOREIGN KEY(team2_id) REFERENCES team(id)
+			FOREIGN KEY(team1_player1_id, team1_player2_id)
+			REFERENCES teams(player1_id, player2_id),
+			FOREIGN KEY(team2_player1_id, team2_player2_id)
+			REFERENCES teams(player1_id, player2_id)
 		)
 	`
 

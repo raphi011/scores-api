@@ -2,8 +2,9 @@ package scores
 
 type Player struct {
 	Model
-	Name   string `json:"name"`
-	UserId uint
+	Name            string `json:"name"`
+	UserID          uint   `json:"userId"`
+	ProfileImageURL string `json:"profileImageUrl"`
 }
 
 type Players []Player

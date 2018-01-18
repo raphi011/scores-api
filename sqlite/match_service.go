@@ -17,46 +17,176 @@ func (s *MatchService) Delete(matchID uint) error {
 	return err
 }
 
-func (s *MatchService) PlayerMatches(playerID uint) (*scores.Matches, error) {
+const (
+	matchesInsertSQL = `
+		INSERT INTO matches
+		(
+			created_at,
+			team1_player1_id,
+			team1_player2_id,
+			team2_player1_id,
+			team2_player2_id,
+			score_team1,
+			score_team2,
+			created_by_user_id
+		)
+		VALUES
+		(
+			CURRENT_TIMESTAMP,
+			$1,
+			$2,
+			$3,
+			$4,
+			$5,
+			$6,
+			$7
+		)
+	`
+)
 
-	return nil, nil
+func (s *MatchService) Create(match *scores.Match) (*scores.Match, error) {
+	result, err := s.DB.Exec(matchesInsertSQL,
+		match.Team1.Player1ID,
+		match.Team1.Player2ID,
+		match.Team2.Player1ID,
+		match.Team2.Player2ID,
+		match.ScoreTeam1,
+		match.ScoreTeam2,
+		match.CreatedBy.ID,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ID, _ := result.LastInsertId()
+
+	return s.Match(uint(ID))
 }
 
-func (s *MatchService) Create(match *scores.Match) error {
+const (
+	matchesSelectSQL = `
+	SELECT
+		m.id,
+		m.created_at,
+		m.team1_player1_id,
+		p1.name as team1_player1_name,
+		m.team1_player2_id,
+		p2.name as team1_player2_name,
+		m.team2_player1_id,
+		p3.name as team2_player1_name,
+		m.team2_player2_id,
+		p4.name as team2_player2_name,
+		m.score_team1,
+		m.score_team2,
+		m.created_by_user_id
+	FROM matches m
+	JOIN players p1 on m.team1_player1_id = p1.id
+	JOIN players p2 on m.team1_player2_id = p2.id
+	JOIN players p3 on m.team2_player1_id = p3.id
+	JOIN players p4 on m.team2_player2_id = p4.id
+	WHERE m.deleted_at is null
+`
+	matchesByPlaerSelectSQL = matchesSelectSQL + `
+ 	AND (
+		m.team1_player1_id = $1 OR 
+		m.team1_player2_id = $1 OR 
+		m.team2_player1_id = $1 OR 
+		m.team2_player2_id = $1 OR 
+	)
+`
+	matchSelectSQL = matchesSelectSQL + " and m.id = $1"
+)
 
-	// player1ID uint,
-	// player2ID uint,
-	// player3ID uint,
-	// player4ID uint,
-	// scoreTeam1 int,
-	// scoreTeam2 int,
-	// userEmail string) {
+func scanMatch(scanner scan) (*scores.Match, error) {
+	m := &scores.Match{
+		Team1: &scores.Team{
+			Player1: &scores.Player{},
+			Player2: &scores.Player{},
+		},
+		Team2: &scores.Team{
+			Player1: &scores.Player{},
+			Player2: &scores.Player{},
+		},
+		CreatedBy: &scores.User{},
+	}
 
-	// user := &User{}
-	// team1 := &Team{}
-	// team2 := &Team{}
+	err := scanner.Scan(
+		&m.ID,
+		&m.CreatedAt,
+		&m.Team1.Player1.ID,
+		&m.Team1.Player1.Name,
+		&m.Team1.Player2.ID,
+		&m.Team1.Player2.Name,
+		&m.Team2.Player1.ID,
+		&m.Team2.Player1.Name,
+		&m.Team2.Player2.ID,
+		&m.Team2.Player2.Name,
+		&m.ScoreTeam1,
+		&m.ScoreTeam2,
+		&m.CreatedBy.ID,
+	)
 
-	// user.GetUserByEmail(db, userEmail)
-	// team1.GetTeam(db, player1ID, player2ID)
-	// team2.GetTeam(db, player3ID, player4ID)
+	if err != nil {
+		return nil, err
+	}
 
-	// m.Team1 = *team1
-	// m.Team2 = *team2
-	// m.ScoreTeam1 = scoreTeam1
-	// m.ScoreTeam2 = scoreTeam2
-	// m.CreatedByID = user.ID
+	m.Team1.Player1ID = m.Team1.Player1.ID
+	m.Team1.Player2ID = m.Team1.Player2.ID
+	m.Team2.Player1ID = m.Team2.Player1.ID
+	m.Team2.Player2ID = m.Team2.Player2.ID
 
-	// db.Create(&m)
-	return nil
+	return m, nil
 }
 
 func (s *MatchService) Match(ID uint) (*scores.Match, error) {
+	row := s.DB.QueryRow(matchSelectSQL, ID)
 
-	return nil, nil
+	match, err := scanMatch(row)
+
+	return match, err
 }
 
-func (s *MatchService) Matches() (*scores.Matches, error) {
-	// var matches scores.Matches
+func (s *MatchService) Matches() (scores.Matches, error) {
+	matches := scores.Matches{}
 
-	return nil, nil
+	rows, err := s.DB.Query(matchesSelectSQL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		match, err := scanMatch(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		matches = append(matches, *match)
+	}
+
+	return matches, nil
+}
+
+func (s *MatchService) PlayerMatches(playerID uint) (scores.Matches, error) {
+	matches := scores.Matches{}
+
+	rows, err := s.DB.Query(matchesByPlaerSelectSQL, playerID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		match, err := scanMatch(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		matches = append(matches, *match)
+	}
+
+	return matches, nil
 }

@@ -1,68 +1,47 @@
 package sqlite
 
-/*
+import (
+	"testing"
+)
+
 func TestGetMatches(t *testing.T) {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
 	defer ClearTables(db)
 
-	matchService := &MatchService{DB: db}
-	matchService.Create(&scores.Match{Name: "Test1"})
-	matchService.Create(&scores.Match{Name: "Test2"})
-	players, err := matchService.Players()
+	t.Skip()
+}
+
+func TestCreateMatch(t *testing.T) {
+	s := createServices()
+	defer ClearTables(s.db)
+
+	match := newMatch(s)
+
+	match, err := s.matchService.Create(match)
 
 	if err != nil {
-		t.Errorf("MatchService.Players() err: %s", err)
-	} else if len(players) != 2 {
-		t.Errorf("MatchService.Players(), want 2 players, got %d ", len(players))
+		t.Error("Can't create match", err)
+	} else if match.ID == 0 {
+		t.Error("MatchID not assigned")
 	}
 }
 
-func TestCreatePlayer(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+func TestDeleteMatch(t *testing.T) {
+	s := createServices()
+	defer ClearTables(s.db)
 
-	matchService := &MatchService{DB: db}
-	player, err := matchService.Create(&scores.Match{Name: "Test"})
+	match := newMatch(s)
+	match, _ = s.matchService.Create(match)
 
-	if err != nil {
-		t.Error("Can't create player")
-	}
-	if player.ID == 0 {
-		t.Error("PlayerID not assigned")
-	}
-
-	playerID := player.ID
-
-	player, err = matchService.Player(playerID)
+	err := s.matchService.Delete(match.ID)
 
 	if err != nil {
-		t.Errorf("matchService.Player() err: %s", err)
+		t.Errorf("MatchService.Delete() err: %s", err)
 	}
-	if player.ID != playerID {
-		t.Errorf("matchService.Player(), want ID %d, got %d", playerID, player.ID)
+
+	match, err = s.matchService.Match(match.ID)
+
+	if err == nil {
+		t.Errorf("MatchService.Delete() err: %s", err)
 	}
 }
-
-func TestDeletePlayer(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
-
-	matchService := &MatchService{DB: db}
-	player, _ := matchService.Create(&scores.Match{Name: "Test"})
-	matchService.Create(&scores.Match{Name: "Test2"})
-
-	err := matchService.Delete(player.ID)
-
-	if err != nil {
-		t.Errorf("matchService.Delete() err: %s", err)
-	}
-
-	players, _ := matchService.Players()
-	playerCount := len(players)
-
-	if playerCount != 1 {
-		t.Errorf("len(matchService.Players()), want 1, got %d", playerCount)
-	}
-
-}
-*/
