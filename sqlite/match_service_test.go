@@ -5,8 +5,8 @@ import (
 )
 
 func TestGetMatches(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	s := createServices()
+	defer ClearTables(s.db)
 
 	t.Skip()
 }

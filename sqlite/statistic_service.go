@@ -13,29 +13,33 @@ type StatisticService struct {
 }
 
 const (
-	statisticsSelectSQL = `
+	ungroupedPlayerStatisticSelectSQL = `
 		SELECT 
-			s.id,
-			u.profile_image_url
-			max(s.name)
-			cast((sum(s.won) / cast(count(1) as float) * 100) as int) as percentage,
-			sum(s.pointsWon),
-			sum(s.pointsLost),
-			count(1),
-			sum(s.won),
-			(sum(1) - sum(s.won))
+			s.player_id,
+			u.profile_image_url as profileImage,
+			max(s.name) as name,
+			cast((sum(s.won) / cast(count(1) as float) * 100) as int) as percentageWon,
+			sum(s.pointsWon) as pointsWon,
+			sum(s.pointsLost) as pointsLost,
+			count(1) as played,
+			sum(s.won) as gamesWon,
+			sum(1) - sum(s.won) as gamesLost
 		FROM playerStatistics s
-		GROUP BY s.id 
-		JOIN players p ON s.id = p.id
+		JOIN players p ON s.player_id = p.id
 		LEFT JOIN users u ON p.user_id = u.id 
 		WHERE s.created_at > $1
-		ORDER BY percentage DESC
 	`
+	groupedPlayerStatisticSQL = `
+		GROUP BY s.player_id 
+		ORDER BY percentageWon DESC
+	`
+	playersStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL + groupedPlayerStatisticSQL
+
+	playerStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL +
+		" and s.player_id = $2 " + groupedPlayerStatisticSQL
 )
 
-func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, error) {
-	statistics := scores.PlayerStatistics{}
-
+func parseTimeFilter(filter string) time.Time {
 	timeFilter := time.Now()
 
 	switch filter {
@@ -51,38 +55,77 @@ func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, erro
 		timeFilter = time.Unix(0, 0)
 	}
 
-	rows, err := s.DB.Query(statisticsSelectSQL, timeFilter)
+	return timeFilter
+}
+
+func scanPlayerStatistic(scanner scan) (*scores.PlayerStatistic, error) {
+	s := &scores.PlayerStatistic{
+		Player: &scores.Player{},
+	}
+
+	var profileImageURL sql.NullString
+
+	err := scanner.Scan(
+		&s.PlayerID,
+		&profileImageURL,
+		&s.Player.Name,
+		&s.PercentageWon,
+		&s.PointsWon,
+		&s.PointsLost,
+		&s.Played,
+		&s.GamesWon,
+		&s.GamesLost,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if profileImageURL.Valid {
+		s.Player.ProfileImageURL = profileImageURL.String
+	}
+
+	s.Player.ID = s.PlayerID
+
+	return s, nil
+}
+
+func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, error) {
+	statistics := scores.PlayerStatistics{}
+
+	timeFilter := parseTimeFilter(filter)
+
+	rows, err := s.DB.Query(playersStatisticSelectSQL, timeFilter)
+
+	if err != nil {
+		return nil, err
+	}
 
 	for rows.Next() {
-		s := scores.PlayerStatistic{
-			Player: &scores.Player{},
-		}
-
-		err = rows.Scan(
-			&s.PlayerID,
-			&s.Player.ProfileImageURL,
-			&s.Player.Name,
-			&s.PercentageWon,
-			&s.PointsWon,
-			&s.PointsLost,
-			&s.GamesWon,
-			&s.GamesLost,
-		)
+		st, err := scanPlayerStatistic(rows)
 
 		if err != nil {
 			return nil, err
 		}
 
-		s.Player.ID = s.PlayerID
-
-		statistics = append(statistics, s)
+		statistics = append(statistics, *st)
 	}
 
 	return statistics, nil
 }
 
-func (s *StatisticService) Player(playerID uint) (*scores.PlayerStatistic, error) {
-	return nil, nil
+func (s *StatisticService) Player(playerID uint, filter string) (*scores.PlayerStatistic, error) {
+	timeFilter := parseTimeFilter(filter)
+
+	row := s.DB.QueryRow(playersStatisticSelectSQL, timeFilter, playerID)
+
+	st, err := scanPlayerStatistic(row)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return st, nil
 }
 
 func (s *StatisticService) Team(teamID uint) (*scores.TeamStatistic, error) {
@@ -94,21 +137,3 @@ func (s *StatisticService) Teams() (scores.TeamStatistics, error) {
 
 	return nil, nil
 }
-
-// func teamStatisticsQuery(db *gorm.DB) *gorm.DB {
-// 	query :=
-// 		db.Table("teamStatistics").Select(`
-// 			team_id,
-// 			max(teamStatistics.name) as pname,
-// 			cast((sum(teamStatistics.won) / cast(count(1) as float) * 100) as int) as percentage,
-// 			sum(teamStatistics.pointsWon) as wonpoints,
-// 			sum(teamStatistics.pointsLost) as lost,
-// 			count(1) as played,
-// 			sum(teamStatistics.won) as wongames,
-// 			(sum(1) - sum(teamStatistics.won)) as lostgames
-// 		`).
-// 			Group("team_id")
-// 		// Joins("left join users on users.player_id = playerStatistics.id")
-
-// 	return query
-// }

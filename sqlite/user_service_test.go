@@ -51,7 +51,7 @@ func TestUsers(t *testing.T) {
 	users, err := userService.Users()
 
 	if err != nil {
-		t.Error("UserService.Users() err: %s", err)
+		t.Errorf("UserService.Users() err: %s", err)
 	}
 
 	userCount := len(users)

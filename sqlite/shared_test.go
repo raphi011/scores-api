@@ -6,21 +6,23 @@ import (
 )
 
 type services struct {
-	db            *sql.DB
-	playerService *PlayerService
-	userService   *UserService
-	teamService   *TeamService
-	matchService  *MatchService
+	db               *sql.DB
+	playerService    *PlayerService
+	userService      *UserService
+	teamService      *TeamService
+	matchService     *MatchService
+	statisticService *StatisticService
 }
 
 func createServices() *services {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
 	s := &services{
-		playerService: &PlayerService{DB: db},
-		userService:   &UserService{DB: db},
-		teamService:   &TeamService{DB: db},
-		matchService:  &MatchService{DB: db},
-		db:            db,
+		playerService:    &PlayerService{DB: db},
+		userService:      &UserService{DB: db},
+		teamService:      &TeamService{DB: db},
+		matchService:     &MatchService{DB: db},
+		statisticService: &StatisticService{DB: db},
+		db:               db,
 	}
 
 	return s

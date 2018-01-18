@@ -27,6 +27,6 @@ type PlayerStatistics []PlayerStatistic
 type StatisticService interface {
 	Team(teamID uint) (*TeamStatistic, error)
 	Teams() (TeamStatistics, error)
-	Player(playerID uint) (*PlayerStatistic, error)
+	Player(playerID uint, filter string) (*PlayerStatistic, error)
 	Players(filter string) (PlayerStatistics, error)
 }

@@ -29,7 +29,7 @@ func Open(filename string) (*sql.DB, error) {
 			teamTable,
 			matchTable,
 			playerStatisticsView,
-			teamStatisticsView)
+			/* teamStatisticsView */)
 
 		if err != nil {
 			return nil, err
@@ -125,36 +125,35 @@ const (
 	`
 
 	playerStatisticsView = `
-		CREATE VIEW IF NOT EXISTS playerStatistics AS
+		CREATE VIEW "playerStatistics" AS
 		SELECT
-			p.id,
+			p.id as player_id,
 			p.name,
 			m.created_at,
 			CASE
 				WHEN
-					(t1.player1_id = p.id	OR t1.player2_id = p.id)
+					(m.team1_player1_id = p.id OR m.team1_player2_id = p.id)
 					AND (m.score_team1 > m.score_team2)
-					OR (t2.player1_id = p.id OR t2.player2_id = p.id)
+					OR (m.team2_player1_id = p.id OR m.team2_player2_id = p.id)
 					AND (m.score_team2 > m.score_team1)
 				THEN 1
 				ELSE 0
 			END AS won,
 			CASE
-				WHEN t1.player1_id = p.id	OR t1.player2_id = p.id THEN m.score_team1
+				WHEN m.team1_player1_id = p.id OR m.team1_player2_id = p.id THEN m.score_team1
 				ELSE m.score_team2
 			END AS pointsWon,
 			CASE
-				WHEN t1.player1_id = p.id
-					OR t1.player2_id = p.id THEN m.score_team2
+				WHEN m.team1_player1_id = p.id
+					OR m.team1_player2_id = p.id THEN m.score_team2
 				ELSE m.score_team1
 			END AS pointsLost
 		FROM matches m
-		JOIN teams t1 ON m.team1_id = t1.id
-		JOIN teams t2 ON m.team2_id = t2.id
-		JOIN players p ON t1.player1_id = p.id
-		OR t1.player2_id = p.id
-		OR t2.player1_id = p.id
-		OR t2.player2_id = p.id
+		JOIN players p ON 
+			m.team1_player1_id = p.id OR
+			m.team1_player2_id = p.id OR
+			m.team2_player1_id = p.id OR
+			m.team2_player2_id = p.id
 		WHERE m.deleted_at IS NULL
 	`
 	teamStatisticsView = `
