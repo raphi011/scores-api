@@ -73,7 +73,7 @@ func (s *PlayerService) Players() (scores.Players, error) {
 func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
 	p := &scores.Player{}
 
-	row := s.DB.QueryRow(playersSelectSQL, ID)
+	row := s.DB.QueryRow(playerSelectSQL, ID)
 
 	p, err := scanPlayer(row)
 

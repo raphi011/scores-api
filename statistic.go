@@ -7,8 +7,9 @@ type PlayerStatistic struct {
 }
 
 type TeamStatistic struct {
-	TeamID uint `json:"teamId"`
-	Team   Team `json:"team"`
+	Player1ID uint `json:"player1Id"`
+	Player2ID uint `json:"player2Id"`
+	Team      Team `json:"team"`
 	Statistic
 }
 

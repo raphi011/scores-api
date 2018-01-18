@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -19,9 +20,10 @@ type createMatchDto struct {
 }
 
 type matchHandler struct {
-	matchService scores.MatchService
-	teamService  scores.TeamService
-	userService  scores.UserService
+	playerService scores.PlayerService
+	matchService  scores.MatchService
+	teamService   scores.TeamService
+	userService   scores.UserService
 }
 
 func (a *matchHandler) index(c *gin.Context) {
@@ -37,36 +39,50 @@ func (a *matchHandler) index(c *gin.Context) {
 
 func (h *matchHandler) matchCreate(c *gin.Context) {
 	var newMatch createMatchDto
-	userID, _ := strconv.Atoi(c.GetString("userID"))
+	userEmail := c.GetString("userID")
 
 	if err := c.ShouldBindJSON(&newMatch); err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
-	} else {
-		team1, err1 := h.teamService.ByPlayers(newMatch.Player1ID, newMatch.Player2ID)
-		team2, err2 := h.teamService.ByPlayers(newMatch.Player3ID, newMatch.Player4ID)
-		user, err3 := h.userService.User(uint(userID))
-
-		if err1 != nil || err2 != nil || err3 != nil {
-			jsonn(c, http.StatusBadRequest, nil, "Bad request")
-		}
-
-		// TODO: additional score validation
-
-		match, err := h.matchService.Create(&scores.Match{
-			Team1:      team1,
-			Team2:      team2,
-			ScoreTeam1: newMatch.ScoreTeam1,
-			ScoreTeam2: newMatch.ScoreTeam2,
-			CreatedBy:  user,
-		})
-
-		if err != nil {
-			jsonn(c, http.StatusBadRequest, nil, "Bad request")
-			return
-		}
-
-		jsonn(c, http.StatusCreated, match, "")
+		return
 	}
+
+	_, pErr1 := h.playerService.Player(newMatch.Player1ID)
+	_, pErr2 := h.playerService.Player(newMatch.Player2ID)
+	_, pErr3 := h.playerService.Player(newMatch.Player3ID)
+	_, pErr4 := h.playerService.Player(newMatch.Player4ID)
+	user, uErr := h.userService.ByEmail(userEmail)
+
+	if pErr1 != nil || pErr2 != nil || pErr3 != nil || pErr4 != nil || uErr != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		log.Printf("Player not found, %s %s", pErr1, uErr)
+		return
+	}
+
+	team1, tErr1 := h.teamService.GetOrCreate(newMatch.Player1ID, newMatch.Player2ID)
+	team2, tErr2 := h.teamService.GetOrCreate(newMatch.Player3ID, newMatch.Player4ID)
+
+	if tErr1 != nil || tErr2 != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		log.Println("Team not found")
+		return
+	}
+
+	// TODO: additional score validation
+
+	match, err := h.matchService.Create(&scores.Match{
+		Team1:      team1,
+		Team2:      team2,
+		ScoreTeam1: newMatch.ScoreTeam1,
+		ScoreTeam2: newMatch.ScoreTeam2,
+		CreatedBy:  user,
+	})
+
+	if err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	jsonn(c, http.StatusCreated, match, "")
 }
 
 func (a *matchHandler) matchShow(c *gin.Context) {

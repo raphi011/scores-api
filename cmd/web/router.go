@@ -21,6 +21,7 @@ func initRouter(app app) *gin.Engine {
 		router.Use(gin.Recovery())
 	}
 
+	teamService := &sqlite.TeamService{DB: app.db}
 	userService := &sqlite.UserService{DB: app.db}
 	matchService := &sqlite.MatchService{DB: app.db}
 	playerService := &sqlite.PlayerService{DB: app.db}
@@ -28,7 +29,7 @@ func initRouter(app app) *gin.Engine {
 
 	authHandler := authHandler{userService: userService, conf: app.conf}
 	playerHandler := playerHandler{playerService: playerService}
-	matchHandler := matchHandler{matchService: matchService, userService: userService}
+	matchHandler := matchHandler{matchService: matchService, userService: userService, playerService: playerService, teamService: teamService}
 	statisticHandler := statisticHandler{statisticService: statisticService}
 
 	router.Use(sessions.Sessions("goquestsession", store))

@@ -56,17 +56,61 @@ func (s *UserService) Update(user *scores.User) error {
 	return nil
 }
 
-const userSelectSQL = `
-	SELECT email, profile_image_url
-	FROM users 
-	WHERE id = $1
-`
+func scanUser(scanner scan) (*scores.User, error) {
+	u := scores.User{}
+	var profileImageURL sql.NullString
+	err := scanner.Scan(&u.ID, &u.Email, &profileImageURL)
+
+	if err != nil {
+		return nil, err
+	}
+	if profileImageURL.Valid {
+		u.ProfileImageURL = profileImageURL.String
+	}
+
+	return &u, nil
+}
+
+const (
+	usersSelectSQL = `
+		SELECT
+			id,
+			email,
+			profile_image_url
+		FROM users 
+		WHERE deleted_at is null
+	`
+
+	userByIDSelectSQL    = usersSelectSQL + " and id = $1"
+	userByEmailSelectSQL = usersSelectSQL + " and email = $1"
+)
+
+func (s *UserService) Users() (scores.Users, error) {
+	users := scores.Users{}
+
+	rows, err := s.DB.Query(usersSelectSQL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		u, err := scanUser(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, *u)
+	}
+
+	return users, nil
+}
 
 func (s *UserService) User(userID uint) (*scores.User, error) {
-	user := &scores.User{}
-	user.ID = userID
+	row := s.DB.QueryRow(userByIDSelectSQL, userID)
 
-	err := s.DB.QueryRow(userSelectSQL, userID).Scan(&user.Email, &user.ProfileImageURL)
+	user, err := scanUser(row)
 
 	if err != nil {
 		return nil, err
@@ -75,43 +119,10 @@ func (s *UserService) User(userID uint) (*scores.User, error) {
 	return user, nil
 }
 
-const usersSelectSQL = `
-		SELECT
-			id,
-			email,
-			profile_image_url
-		FROM users 
-		WHERE deleted_at is null
-`
-
-func (s *UserService) Users() (scores.Users, error) {
-	users := scores.Users{}
-
-	rows, err := s.DB.Query(usersSelectSQL)
-
-	for rows.Next() {
-		u := scores.User{}
-		err = rows.Scan(&u.ID, &u.Email, &u.ProfileImageURL)
-		if err != nil {
-			return nil, err
-		}
-
-		users = append(users, u)
-	}
-
-	return users, nil
-}
-
-const userByEmailSelectSQL = `
-	SELECT id, profile_image_url
-	FROM users 
-	WHERE email = $1
-`
-
 func (s *UserService) ByEmail(email string) (*scores.User, error) {
-	user := &scores.User{Email: email}
+	row := s.DB.QueryRow(userByEmailSelectSQL, email)
 
-	err := s.DB.QueryRow(userByEmailSelectSQL, email).Scan(&user.ID, &user.ProfileImageURL)
+	user, err := scanUser(row)
 
 	if err != nil {
 		return nil, err

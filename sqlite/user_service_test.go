@@ -40,8 +40,7 @@ func TestUsers(t *testing.T) {
 
 	userService := UserService{DB: db}
 	userService.Create(&scores.User{
-		Email:           "test@test.at",
-		ProfileImageURL: "image.url",
+		Email: "test@test.at",
 	})
 	userService.Create(&scores.User{
 		Email:           "test2@test.at",

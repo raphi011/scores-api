@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	scores "scores-backend"
 	"scores-backend/sqlite"
@@ -90,14 +91,16 @@ func (a *authHandler) authenticate(c *gin.Context) {
 	user, err := a.userService.ByEmail(googleUser.Email)
 
 	// TODO: check err
-
-	if user.ID == 0 {
+	if err != nil {
+		log.Printf("Error getting user: %s", err)
 		c.Redirect(http.StatusFound, "/loggedIn?error=USER_NOT_FOUND")
 	} else {
 		if user.ProfileImageURL != googleUser.Picture {
 			user.ProfileImageURL = googleUser.Picture
-			// TODO
-			// user.UpdateUser(a.Db)
+			err := a.userService.Update(user)
+			if err != nil {
+				log.Printf("Error updating user profile image, id: %d", user.ID)
+			}
 		}
 
 		session.Set("user-id", user.Email)
