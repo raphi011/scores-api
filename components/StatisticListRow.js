@@ -6,7 +6,7 @@ import {
   TableCell,
   TableRow,
 } from 'material-ui/Table';
-import type { Statistic } from '../types';
+import type { PlayerStatistic } from '../types';
 
 const styles = theme => ({
   denseCell: {
@@ -16,7 +16,7 @@ const styles = theme => ({
 
 type Props = {
   onPlayerClick: number => void,
-  statistic: Statistic,
+  statistic: PlayerStatistic,
   rank: number,
   classes: Object,
 }
@@ -34,7 +34,7 @@ class StatisticListRow extends React.PureComponent<Props> {
     return (
       <TableRow key={statistic.playerId} onClick={this.onPlayerClick} >
         <TableCell className={classes.denseCell}>{rank}</TableCell>
-        <TableCell className={classes.denseCell}>{statistic.name}</TableCell>
+        <TableCell className={classes.denseCell}>{statistic.player.name}</TableCell>
         <TableCell className={classes.denseCell} numeric>{statistic.percentageWon}%</TableCell>
         <TableCell className={classes.denseCell} padding="dense">
           {statistic.gamesWon} - {statistic.gamesLost}

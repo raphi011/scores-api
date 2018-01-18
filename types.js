@@ -3,6 +3,8 @@
 export type Player = {
   id: number,
   name: string,
+  userId: ?number,
+  profileImageUrl: ?string,
 };
 
 export type Team = {
@@ -24,17 +26,28 @@ export type Match = {
 export type User = {
   id: number,
   email: string,
-  profileImageUrl: string,
+  profileImageUrl: ?string,
 };
 
 export type Statistic = {
-  playerId: number,
-  name: string,
-  profileImage: string,
+  played: number,
   gamesWon: number,
   gamesLost: number,
+  pointsWon: number,
+  pointsLost: number,
   percentageWon: number,
 };
+
+export type TeamStatistic = {
+  player2Id: number,
+  player2Id: number,
+  team: Team,
+} & Statistic;
+
+export type PlayerStatistic = {
+  playerId: number,
+  player: Player,
+} & Statistic;
 
 export type Action = {
   type: string,

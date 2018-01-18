@@ -8,7 +8,7 @@ import Table, {
   TableHead,
   TableRow,
 } from 'material-ui/Table';
-import type { Statistic } from '../types';
+import type { PlayerStatistic } from '../types';
 
 import StatisticListRow from './StatisticListRow';
 
@@ -19,7 +19,7 @@ const styles = theme => ({
 });
 
 type Props = {
-  statistics: Array<Statistic>,
+  statistics: Array<PlayerStatistic>,
   onPlayerClick: number => void,
   classes: Object
 }
