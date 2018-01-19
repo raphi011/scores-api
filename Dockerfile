@@ -4,13 +4,14 @@ ARG app_env
 ENV APP_ENV $app_env
 
 WORKDIR /go/src/scores-backend/
-COPY . .
 
 RUN go get "github.com/gin-contrib/sessions"
 RUN go get "github.com/gin-gonic/gin"
 RUN go get "github.com/mattn/go-sqlite3"
 RUN go get "golang.org/x/oauth2"
 RUN go get "golang.org/x/oauth2/google"
+
+COPY . .
 
 # RUN go-wrapper download
 
