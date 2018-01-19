@@ -3,12 +3,11 @@ FROM arm32v7/golang:1.9.2
 ARG app_env
 ENV APP_ENV $app_env
 
-WORKDIR /go/src/scores-backend
+WORKDIR /go/src/scores-backend/cmd/web
 
 RUN go get "github.com/gin-contrib/sessions"
 RUN go get "github.com/gin-gonic/gin"
-RUN go get "github.com/jinzhu/gorm/dialects/sqlite"
-RUN go get "github.com/jinzhu/gorm"
+RUN go get "github.com/mattn/go-sqlite3"
 RUN go get "golang.org/x/oauth2"
 RUN go get "golang.org/x/oauth2/google"
 
