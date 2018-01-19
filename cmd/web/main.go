@@ -27,12 +27,13 @@ type app struct {
 
 func main() {
 	dbPath := flag.String("db", "./scores.db", "Path to sqlite db")
+	gSecret := flag.String("goauth", "./client_secret.json", "Path to google oauth secret")
 	flag.Parse()
 
 	var redirectURL string
 	var cred credentials
 	production := os.Getenv("APP_ENV") == "production"
-	file, err := ioutil.ReadFile("./client_secret.json")
+	file, err := ioutil.ReadFile(*gSecret)
 
 	if err != nil {
 		log.Printf("Client secret error: %v\n", err)

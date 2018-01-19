@@ -16,6 +16,6 @@ COPY . .
 # RUN go-wrapper download
 RUN go-wrapper install
 
-CMD ["go-wrapper", "run", "-db /srv/scores/scores.db"]
+CMD ["go-wrapper", "run", "-db /srv/scores/scoresdb -goauth /srv/scores/client_secret.json"]
 
 EXPOSE 8080
