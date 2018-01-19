@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"flag"
 	"io/ioutil"
 	"log"
 	"os"
@@ -25,6 +26,9 @@ type app struct {
 }
 
 func main() {
+	dbPath := flag.String("db", "./scores.db", "Path to sqlite db")
+	flag.Parse()
+
 	var redirectURL string
 	var cred credentials
 	production := os.Getenv("APP_ENV") == "production"
@@ -42,7 +46,7 @@ func main() {
 		redirectURL = "http://localhost:3000/api/auth"
 	}
 
-	db, err := sqlite.Open("./scores.db")
+	db, err := sqlite.Open(*dbPath)
 
 	if err != nil {
 		log.Printf("DB error: %v\n", err)
