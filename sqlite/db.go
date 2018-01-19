@@ -81,7 +81,7 @@ const (
 			"score_team1" integer NOT NULL,
 			"score_team2" integer NOT NULL,
 			"created_by_user_id" integer NOT NULL,
-			FOREIGN KEY(created_by_user_id) REFERENCES user(id),
+			FOREIGN KEY(created_by_user_id) REFERENCES users(id),
 			FOREIGN KEY(team1_player1_id, team1_player2_id)
 			REFERENCES teams(player1_id, player2_id),
 			FOREIGN KEY(team2_player1_id, team2_player2_id)

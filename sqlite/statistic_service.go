@@ -117,7 +117,7 @@ func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, erro
 func (s *StatisticService) Player(playerID uint, filter string) (*scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
-	row := s.DB.QueryRow(playersStatisticSelectSQL, timeFilter, playerID)
+	row := s.DB.QueryRow(playerStatisticSelectSQL, timeFilter, playerID)
 
 	st, err := scanPlayerStatistic(row)
 

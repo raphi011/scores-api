@@ -65,7 +65,7 @@ func (s *MatchService) Create(match *scores.Match) (*scores.Match, error) {
 }
 
 const (
-	matchesSelectSQL = `
+	matchesBaseSelectSQL = `
 	SELECT
 		m.id,
 		m.created_at,
@@ -87,15 +87,21 @@ const (
 	JOIN players p4 on m.team2_player2_id = p4.id
 	WHERE m.deleted_at is null
 `
-	matchesByPlaerSelectSQL = matchesSelectSQL + `
+
+	matchesSelectSQL = matchesBaseSelectSQL + matchesOrderBySQL
+
+	matchesOrderBySQL = " ORDER BY m.created_at DESC"
+
+	matchesByPlayerSelectSQL = matchesBaseSelectSQL + `
  	AND (
 		m.team1_player1_id = $1 OR 
 		m.team1_player2_id = $1 OR 
 		m.team2_player1_id = $1 OR 
 		m.team2_player2_id = $1 OR 
 	)
-`
-	matchSelectSQL = matchesSelectSQL + " and m.id = $1"
+` + matchesOrderBySQL
+
+	matchSelectSQL = matchesBaseSelectSQL + " and m.id = $1"
 )
 
 func scanMatch(scanner scan) (*scores.Match, error) {
@@ -172,7 +178,7 @@ func (s *MatchService) Matches() (scores.Matches, error) {
 func (s *MatchService) PlayerMatches(playerID uint) (scores.Matches, error) {
 	matches := scores.Matches{}
 
-	rows, err := s.DB.Query(matchesByPlaerSelectSQL, playerID)
+	rows, err := s.DB.Query(matchesByPlayerSelectSQL, playerID)
 
 	if err != nil {
 		return nil, err
