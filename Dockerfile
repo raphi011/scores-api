@@ -18,6 +18,6 @@ COPY . .
 WORKDIR /go/src/scores-backend/cmd/web
 RUN go-wrapper install
 
-CMD ["go-wrapper", "run", "-db", "/srv/scores/scoresdb", "-goauth", "/srv/scores/client_secret.json"]
+CMD ["go-wrapper", "run", "-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
 
 EXPOSE 8080
