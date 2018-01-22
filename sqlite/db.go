@@ -158,30 +158,34 @@ const (
 	`
 	teamStatisticsView = `
 		CREATE VIEW IF NOT EXISTS teamStatistics AS
-		SELECT t.id AS team_id,
+		SELECT
 			t.player1_id,
 			t.player2_id,
-			m.id AS match_id,
+			m.created_at,
 			CASE
 				WHEN
-					(m.team1_id = t.id AND m.score_team1 > m.score_team2)
-					OR (m.team2_id = t.id
-					AND m.score_team2 > m.score_team1)
+					(m.team1_player1_id = t.player1_id AND m.team1_player2_id = t.player2_id
+						AND m.score_team1 > m.score_team2)
+					OR 
+					(m.team2_player1_id = t.player1_id AND m.team2_player2_id = t.player2_id
+						AND m.score_team2 > m.score_team1)
 				THEN 1
 				ELSE 0
 			END AS won,
 			CASE
-				WHEN m.team1_id = t.id THEN m.score_team1
+				WHEN m.team1_player1_id = t.player1_id AND m.team1_player2_id = t.player2_id
+				THEN m.score_team1
 				ELSE m.score_team2
 			END AS pointsWon,
 			CASE
-				WHEN m.team1_id = t.id
+				WHEN m.team1_player1_id = t.player1_id AND m.team1_player2_id = t.player2_id
 				THEN m.score_team2
 				ELSE m.score_team1
 			END AS pointsLost
 		FROM matches m
-		JOIN teams t ON m.team1_id = t.id
-		OR m.team2_id = t.id
+		JOIN teams t
+		ON (m.team1_player1_id = t.player1_id AND m.team1_player2_id = t.player2_id)
+		OR (m.team2_player1_id = t.player1_id AND m.team2_player2_id = t.player2_id)
 		WHERE m.deleted_at IS NULL
 	`
 )
