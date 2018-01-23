@@ -13,10 +13,7 @@ type StatisticService struct {
 }
 
 const (
-	ungroupedPlayerStatisticSelectSQL = `
-		SELECT 
-			s.player_id,
-			u.profile_image_url as profileImage,
+	statisticFieldsSelectSQL = `
 			max(s.name) as name,
 			cast((sum(s.won) / cast(count(1) as float) * 100) as int) as percentageWon,
 			sum(s.pointsWon) as pointsWon,
@@ -24,6 +21,12 @@ const (
 			count(1) as played,
 			sum(s.won) as gamesWon,
 			sum(1) - sum(s.won) as gamesLost
+	`
+	ungroupedPlayerStatisticSelectSQL = `
+		SELECT 
+			s.player_id,
+			u.profile_image_url as profileImage,
+	` + statisticFieldsSelectSQL + `
 		FROM playerStatistics s
 		JOIN players p ON s.player_id = p.id
 		LEFT JOIN users u ON p.user_id = u.id 

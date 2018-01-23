@@ -26,11 +26,38 @@ type matchHandler struct {
 	userService   scores.UserService
 }
 
-func (a *matchHandler) index(c *gin.Context) {
-	matches, err := a.matchService.Matches()
+func (h *matchHandler) index(c *gin.Context) {
+	matches, err := h.matchService.Matches()
 
 	if err != nil {
 		jsonn(c, http.StatusInternalServerError, nil, "Unknown error")
+		return
+	}
+
+	jsonn(c, http.StatusOK, matches, "")
+}
+
+func (h *matchHandler) byPlayer(c *gin.Context) {
+	playerID, err := strconv.Atoi(c.Param("playerID"))
+
+	if err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	_, err = h.playerService.Player(uint(playerID))
+
+	if err != nil {
+		jsonn(c, http.StatusNotFound, nil, "Player not found")
+		return
+	}
+
+	matches, err := h.matchService.PlayerMatches(uint(playerID))
+
+	log.Println(err)
+
+	if err != nil {
+		jsonn(c, http.StatusNotFound, nil, "Match not found")
 		return
 	}
 
@@ -103,7 +130,7 @@ func (a *matchHandler) matchShow(c *gin.Context) {
 	jsonn(c, http.StatusOK, match, "")
 }
 
-func (a *matchHandler) matchDelete(c *gin.Context) {
+func (h *matchHandler) matchDelete(c *gin.Context) {
 	matchID, err := strconv.Atoi(c.Param("matchID"))
 	userID := c.GetString("userID")
 
@@ -112,14 +139,14 @@ func (a *matchHandler) matchDelete(c *gin.Context) {
 		return
 	}
 
-	match, err := a.matchService.Match(uint(matchID))
+	match, err := h.matchService.Match(uint(matchID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Match not found")
 		return
 	}
 
-	user, err := a.userService.ByEmail(userID)
+	user, err := h.userService.ByEmail(userID)
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "User not found")
@@ -131,7 +158,7 @@ func (a *matchHandler) matchDelete(c *gin.Context) {
 		return
 	}
 
-	a.matchService.Delete(match.ID)
+	h.matchService.Delete(match.ID)
 
 	jsonn(c, http.StatusOK, nil, "")
 }
