@@ -92,14 +92,12 @@ const (
 
 	matchesOrderBySQL = " ORDER BY m.created_at DESC"
 
-	matchesByPlayerSelectSQL = matchesBaseSelectSQL + `
- 	AND (
-		m.team1_player1_id = $1 OR 
-		m.team1_player2_id = $1 OR 
-		m.team2_player1_id = $1 OR 
-		m.team2_player2_id = $1 OR 
-	)
-` + matchesOrderBySQL
+	matchesByPlayerSelectSQL = matchesBaseSelectSQL + ` 
+ 	AND (m.team1_player1_id = $1 OR 
+			 m.team1_player2_id = $1 OR 
+			 m.team2_player1_id = $1 OR 
+			 m.team2_player2_id = $1)` +
+		matchesOrderBySQL
 
 	matchSelectSQL = matchesBaseSelectSQL + " and m.id = $1"
 )
