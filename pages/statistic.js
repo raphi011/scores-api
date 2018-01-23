@@ -18,7 +18,7 @@ import {
   loadStatisticsAction,
 } from '../redux/actions/action';
 import { statisticsSelector } from '../redux/reducers/reducer';
-import type { Statistic } from '../types';
+import type { Statistic, StatisticFilter } from '../types';
 
 const styles = () => ({
   title: {
@@ -30,7 +30,7 @@ const styles = () => ({
 });
 
 type Props = {
-  filter: string,
+  filter: StatisticFilter,
   statistics: Array<Statistic>,
   classes: Object,
 };

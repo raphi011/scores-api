@@ -2,6 +2,9 @@
 
 import React from 'react';
 import withRedux from 'next-redux-wrapper';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Typography from 'material-ui/Typography';
+import MatchList from '../components/MatchList';
 
 import withRoot from '../components/withRoot';
 import Layout from '../components/Layout';
@@ -11,24 +14,31 @@ import {
   userOrLoginRouteAction,
   loadPlayersAction,
   loadStatisticAction,
+  loadPlayerMatchesAction,
 } from '../redux/actions/action';
 import PlayerView from '../components/PlayerView';
-import { playerSelector, statisticSelector } from '../redux/reducers/reducer';
+import { playerSelector, statisticSelector, playerMatchesSelector } from '../redux/reducers/reducer';
 import type { Player, Statistic } from '../types';
 
 type Props = {
   player: Player,
   statistic: Statistic,
+  matches: Array<MatchList>,
+  playerId: number,
 };
 
-class PlayerInfo extends React.Component<Props> {
+type State = {
+  tabOpen: number,
+};
+
+class PlayerInfo extends React.Component<Props, State> {
   static async getInitialProps({ store, query, req, res, isServer }) {
     const actions = [userOrLoginRouteAction()];
 
     const { id } = query;
 
     if (id) {
-      actions.push(loadPlayerAction(id), loadStatisticAction(id));
+      actions.push(loadPlayerAction(id), loadPlayerMatchesAction(id), loadStatisticAction(id));
     } else {
       actions.push(loadPlayersAction());
     }
@@ -38,12 +48,45 @@ class PlayerInfo extends React.Component<Props> {
     return { playerId: id };
   }
 
+  state = {
+    tabOpen: 0,
+  };
+
+  onTabClick = (event, index) => {
+    this.setState({ tabOpen: index });
+  }
+
   render() {
-    const { player, statistic } = this.props;
+    const { player, matches, statistic, playerId } = this.props;
+
+    if (!playerId) {
+      return (
+        <Layout title="Players">
+          <Typography align="center" type="display4">
+            Players: todo!
+          </Typography>
+        </Layout>
+      );
+    }
 
     return (
       <Layout title="Players">
         <PlayerView player={player} statistic={statistic} />
+        <Tabs
+          onChange={this.onTabClick}
+          value={this.state.tabOpen}
+          textColor="primary"
+          fullWidth>
+          <Tab label={`Matches (${matches.length})`} />
+          <Tab label="Teams" />
+        </Tabs>
+        {this.state.tabOpen === 0 ? (
+          <MatchList matches={matches} />
+        ) : (
+        <Typography align="center">
+          List of teams
+        </Typography>
+        )}
       </Layout>
     );
   }
@@ -53,10 +96,12 @@ function mapStateToProps(state, ownProps) {
   const { playerId } = ownProps;
   const player = playerSelector(state, playerId);
   const statistic = statisticSelector(state, playerId);
+  const matches = playerMatchesSelector(state, playerId);
 
   return {
     player,
     statistic,
+    matches,
   };
 }
 

@@ -44,6 +44,8 @@ export type TeamStatistic = {
   team: Team,
 } & Statistic;
 
+export type StatisticFilter = "week" | "month" | "quarter" | "year";
+
 export type PlayerStatistic = {
   playerId: number,
   player: Player,

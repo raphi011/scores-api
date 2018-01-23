@@ -56,7 +56,6 @@ type Props = {
   playerIds: Array<number>,
   playersMap: { [number]: Player },
   createNewMatch: Match => Promise<any>,
-  // matches
 };
 
 type State = {

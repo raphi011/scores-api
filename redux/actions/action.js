@@ -1,5 +1,5 @@
 import * as actionNames from '../actionNames';
-import type { ApiAction, Match } from '../../types';
+import type { ApiAction, Match, StatisticFilter } from '../../types';
 
 export const loadMatchesAction = (): ApiAction => ({
   type: actionNames.API,
@@ -8,7 +8,15 @@ export const loadMatchesAction = (): ApiAction => ({
   success: actionNames.RECEIVE_MATCHES,
 });
 
-export const loadPlayerAction = (id): ApiAction => ({
+export const loadPlayerMatchesAction = (playerId: number): ApiAction => ({
+  type: actionNames.API,
+  method: 'GET',
+  url: `playerMatches/${playerId}`,
+  success: actionNames.RECEIVE_PLAYER_MATCHES,
+  successParams: { playerId },
+});
+
+export const loadPlayerAction = (id: number): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
   url: `players/${id}`,
@@ -16,7 +24,7 @@ export const loadPlayerAction = (id): ApiAction => ({
   successParams: { id },
 });
 
-export const loadStatisticAction = (playerId): ApiAction => ({
+export const loadStatisticAction = (playerId: number): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
   url: `statistics/${playerId}`,
@@ -24,7 +32,7 @@ export const loadStatisticAction = (playerId): ApiAction => ({
   successParams: { playerId },
 });
 
-export const loadStatisticsAction = (filter): ApiAction => ({
+export const loadStatisticsAction = (filter: StatisticFilter): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
   url: 'statistics',
@@ -39,7 +47,7 @@ export const loadPlayersAction = (): ApiAction => ({
   success: actionNames.RECEIVE_PLAYERS,
 });
 
-export const loadMatchAction = (id): ApiAction => ({
+export const loadMatchAction = (id: number): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
   url: `matches/${id}`,
