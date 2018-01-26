@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -11,12 +10,13 @@ import (
 )
 
 type createMatchDto struct {
-	Player1ID  uint `json:"player1Id"`
-	Player2ID  uint `json:"player2Id"`
-	Player3ID  uint `json:"player3Id"`
-	Player4ID  uint `json:"player4Id"`
-	ScoreTeam1 int  `json:"scoreTeam1"`
-	ScoreTeam2 int  `json:"scoreTeam2"`
+	Player1ID   uint `json:"player1Id"`
+	Player2ID   uint `json:"player2Id"`
+	Player3ID   uint `json:"player3Id"`
+	Player4ID   uint `json:"player4Id"`
+	ScoreTeam1  int  `json:"scoreTeam1"`
+	ScoreTeam2  int  `json:"scoreTeam2"`
+	TargetScore int  `json:"targetScore"`
 }
 
 type matchHandler struct {
@@ -54,8 +54,6 @@ func (h *matchHandler) byPlayer(c *gin.Context) {
 
 	matches, err := h.matchService.PlayerMatches(uint(playerID))
 
-	log.Println(err)
-
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Match not found")
 		return
@@ -81,7 +79,6 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 
 	if pErr1 != nil || pErr2 != nil || pErr3 != nil || pErr4 != nil || uErr != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
-		log.Printf("Player not found, %s %s", pErr1, uErr)
 		return
 	}
 
@@ -90,18 +87,18 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 
 	if tErr1 != nil || tErr2 != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
-		log.Println("Team not found")
 		return
 	}
 
 	// TODO: additional score validation
 
 	match, err := h.matchService.Create(&scores.Match{
-		Team1:      team1,
-		Team2:      team2,
-		ScoreTeam1: newMatch.ScoreTeam1,
-		ScoreTeam2: newMatch.ScoreTeam2,
-		CreatedBy:  user,
+		Team1:       team1,
+		Team2:       team2,
+		ScoreTeam1:  newMatch.ScoreTeam1,
+		ScoreTeam2:  newMatch.ScoreTeam2,
+		TargetScore: newMatch.TargetScore,
+		CreatedBy:   user,
 	})
 
 	if err != nil {
