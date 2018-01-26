@@ -30,7 +30,7 @@ function Drawer({ open, onRequestClose, classes }: Props) {
   const sideList = (
     <div className={classes.list}>
       <List>
-        <Link prefetch href="/newMatch">
+        <Link prefetch href="/createMatch">
           <ListItem button>
             <ListItemIcon>
               <AddIcon />

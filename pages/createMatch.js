@@ -22,7 +22,7 @@ import {
   userOrLoginRouteAction,
   loadMatchAction,
 } from '../redux/actions/action';
-import type { Match, Player } from '../types';
+import type { NewMatch, Match, Player } from '../types';
 
 const styles = theme => ({
   root: {
@@ -50,12 +50,22 @@ const styles = theme => ({
   },
 });
 
+function calcWinnerScore(loserScore: number, targetScore: number): number {
+  const winnerScore = loserScore <= (targetScore - 2)
+    ? targetScore
+    : loserScore + 2;
+
+  return winnerScore;
+}
+
 type Props = {
   match: ?Match,
   classes: Object,
   playerIds: Array<number>,
   playersMap: { [number]: Player },
-  createNewMatch: Match => Promise<any>,
+  createNewMatch: NewMatch => Promise<any>,
+  /* eslint-disable react/no-unused-prop-types */
+  rematchId: number,
 };
 
 type State = {
@@ -75,14 +85,15 @@ type State = {
   },
 };
 
-class NewMatch extends React.Component<Props, State> {
+class CreateMatch extends React.Component<Props, State> {
   static async getInitialProps({ store, query, isServer, req, res }) {
     const actions = [loadPlayersAction(), userOrLoginRouteAction()];
 
-    const { rematchId } = query;
+    let { rematchId } = query;
 
     if (rematchId) {
-      actions.push(loadMatchAction(Number.parseInt(rematchId, 10)));
+      rematchId = Number.parseInt(rematchId, 10);
+      actions.push(loadMatchAction(rematchId));
     }
 
     await dispatchActions(store.dispatch, isServer, req, res, actions);
@@ -90,7 +101,7 @@ class NewMatch extends React.Component<Props, State> {
     return { rematchId };
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     const { match } = props;
@@ -127,18 +138,32 @@ class NewMatch extends React.Component<Props, State> {
   onUnsetPlayer = selected => {
     const match = {
       ...this.state.match,
-      [`player${selected}Id`]: 0,
     };
+
+    switch (selected) {
+      case 1: match.player1Id = 0; break;
+      case 2: match.player2Id = 0; break;
+      case 3: match.player3Id = 0; break;
+      case 4: match.player4Id = 0; break;
+      default: throw new Error(`Can't unset player: ${selected}`);
+    }
 
     this.setState({ match, teamsComplete: false });
   };
 
-  onSetPlayer = (unassigned, id, teamsComplete) => {
+  onSetPlayer = (player, playerId, teamsComplete) => {
     const activeStep = teamsComplete ? 1 : 0;
     const match = {
       ...this.state.match,
-      [`player${unassigned}Id`]: id,
     };
+
+    switch (player) {
+      case 1: match.player1Id = playerId; break;
+      case 2: match.player2Id = playerId; break;
+      case 3: match.player3Id = playerId; break;
+      case 4: match.player4Id = playerId; break;
+      default: throw new Error(`Can't set player: ${player}`);
+    }
 
     this.setState({ match, teamsComplete, activeStep });
   };
@@ -158,16 +183,21 @@ class NewMatch extends React.Component<Props, State> {
     this.setState({ activeStep: 1 });
   };
 
-  onChangeScore = (teamNr, score) => {
+  onChangeScore = (teamNr: number, score: string) => {
     const match = {
       ...this.state.match,
-      [`scoreTeam${teamNr}`]: score,
     };
+
+    switch (teamNr) {
+      case 1: match.scoreTeam1 = score; break;
+      case 2: match.scoreTeam2 = score; break;
+      default: throw new Error(`Can't set score for team: ${teamNr}`);
+    }
 
     this.setState({ match });
   };
 
-  onChangeTargetScore = (e, targetScore) => {
+  onChangeTargetScore = (e, targetScore: string) => {
     const match = {
       ...this.state.match,
       targetScore,
@@ -176,7 +206,35 @@ class NewMatch extends React.Component<Props, State> {
     this.setState({ match });
   };
 
-  onCreateMatch = async e => {
+  onScoreLoseFocus = (teamNr: number) => {
+    const match = {
+      ...this.state.match,
+    };
+
+    const scoreTeam1 = Number.parseInt(match.scoreTeam1, 10);
+    const scoreTeam2 = Number.parseInt(match.scoreTeam2, 10);
+    const targetScore = Number.parseInt(match.targetScore, 10);
+
+    switch (teamNr) {
+      case 1: {
+        if (Number.isNaN(scoreTeam1) || Number.isInteger(scoreTeam2)) return;
+
+        match.scoreTeam2 = calcWinnerScore(scoreTeam1, targetScore).toString();
+        break;
+      }
+      case 2: {
+        if (Number.isNaN(scoreTeam2) || Number.isInteger(scoreTeam1)) return;
+
+        match.scoreTeam1 = calcWinnerScore(scoreTeam2, targetScore).toString();
+        break;
+      }
+      default: throw new Error(`Can't set score for team: ${teamNr}`);
+    }
+
+    this.setState({ match });
+  }
+
+  onCreateMatch = async (e:  SyntheticInputEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const { createNewMatch } = this.props;
@@ -190,18 +248,20 @@ class NewMatch extends React.Component<Props, State> {
       try {
         await createNewMatch(match);
         Router.push('/');
-      } catch (error) {}
+      } catch (error) {
+        // ignore
+      }
     }
   };
 
-  getMatch = (): Match => {
+  getMatch = (): NewMatch => {
     const { scoreTeam1, scoreTeam2, targetScore, ...rest } = this.state.match;
 
     return {
       ...rest,
       scoreTeam1: Number.parseInt(scoreTeam1, 10) || 0,
       scoreTeam2: Number.parseInt(scoreTeam2, 10) || 0,
-      targetScore: Number.parseInt(targetScore, 10),
+      targetScore: Number.parseInt(targetScore, 10) || 0,
     };
   };
 
@@ -280,6 +340,7 @@ class NewMatch extends React.Component<Props, State> {
                   scoreTeam1={scoreTeam1}
                   scoreTeam2={scoreTeam2}
                   targetScore={targetScore}
+                  onLoseFocus={this.onScoreLoseFocus}
                   onChangeScore={this.onChangeScore}
                   onChangeTargetScore={this.onChangeTargetScore}
                   onCreateMatch={this.onCreateMatch}
@@ -293,7 +354,7 @@ class NewMatch extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state, ownProps: Props) {
   const { rematchId } = ownProps;
   const { playersMap, playerIds } = playersSelector(state);
   const match = rematchId ? matchSelector(state, rematchId) : null;
@@ -311,5 +372,5 @@ const mapDispatchToProps = {
 };
 
 export default withStyles(styles)(
-  withRedux(initStore, mapStateToProps, mapDispatchToProps)(withRoot(NewMatch)),
+  withRedux(initStore, mapStateToProps, mapDispatchToProps)(withRoot(CreateMatch)),
 );

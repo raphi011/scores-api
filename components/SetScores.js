@@ -33,8 +33,9 @@ const styles = theme => ({
 });
 
 type Props = {
-  onChangeScore: (number, string) => void,
   onChangeTargetScore: (Event, number) => void,
+  onChangeScore: (number, SyntheticInputEvent<HTMLButtonElement>) => void,
+  onLoseFocus: (number, SyntheticInputEvent<HTMLButtonElement>) => void,
   player1: Player,
   player2: Player,
   player3: Player,
@@ -57,6 +58,16 @@ class SetScores extends React.PureComponent<Props> {
     const { onChangeScore } = this.props;
     onChangeScore(2, e.target.value);
   };
+
+  onLoseFocusScoreTeam1 = e => {
+    const { onLoseFocus } = this.props;
+    onLoseFocus(1, e);
+  }
+
+  onLoseFocusScoreTeam2 = e => {
+    const { onLoseFocus } = this.props;
+    onLoseFocus(2, e);
+  }
 
   render() {
     const {
@@ -105,11 +116,12 @@ class SetScores extends React.PureComponent<Props> {
             {player1.name} / {player2.name}
           </FormLabel>
           <TextField
-            id="number"
+            id="scoreTeam1"
             label={score1Error}
             error={!!score1Error}
             value={scoreTeam1}
             onChange={this.onChangeScoreTeam1}
+            onBlur={this.onLoseFocusScoreTeam1}
             type="number"
             className={classes.textField}
             min={0}
@@ -124,11 +136,12 @@ class SetScores extends React.PureComponent<Props> {
             {player3.name} / {player4.name}
           </FormLabel>
           <TextField
-            id="number"
+            id="scoreTeam1"
             label={score2Error}
             error={!!score2Error}
             value={scoreTeam2}
             onChange={this.onChangeScoreTeam2}
+            onBlur={this.onLoseFocusScoreTeam2}
             type="number"
             className={classes.textField}
             min={0}

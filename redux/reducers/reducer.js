@@ -1,6 +1,8 @@
 // @flow
 
 import * as actionNames from '../actionNames';
+import { createReducer } from '../reduxHelper';
+import type { Match } from '../../types';
 
 function normalizeMatchList(matches = []) {
   const matchesMap = {};
@@ -12,16 +14,6 @@ function normalizeMatchList(matches = []) {
   });
 
   return { matchesIds, matchesMap };
-}
-
-function createReducer(initialState, handlers) {
-  return function reducer(state = initialState, action) {
-    if (handlers.hasOwnProperty(action.type)) {
-      return handlers[action.type](state, action);
-    }
-
-    return state;
-  };
 }
 
 function receiveMatch(state, action) {
@@ -206,7 +198,7 @@ export const loginRouteSelector = state => state.loginRoute;
 export const statusSelector = state => state.status;
 export const matchesSelector = state =>
   state.matchesIds.map(id => state.matchesMap[id]);
-export const matchSelector = (state, id: number) => state.matchesMap[id];
+export const matchSelector = (state, id: number): Match => state.matchesMap[id];
 export const playerSelector = (state, id: number) => state.playersMap[id];
 export const playersSelector = state => ({
   playersMap: state.playersMap,

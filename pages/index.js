@@ -7,6 +7,7 @@ import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import Router from 'next/router';
 import Tooltip from 'material-ui/Tooltip';
+import Link from 'next/link';
 
 import withRoot from '../components/withRoot';
 import Layout from '../components/Layout';
@@ -59,7 +60,7 @@ class Index extends React.Component<Props, State> {
     this.setState({ selectedMatch: null });
   };
 
-  onShowPlayer = playerId => {
+  onShowPlayer = (playerId: number) => {
     Router.push(`/player?id=${playerId}`);
   };
 
@@ -68,7 +69,7 @@ class Index extends React.Component<Props, State> {
   };
 
   onCreateMatch = () => {
-    Router.replace('/newMatch');
+    Router.replace('/createMatch');
   };
 
   onDeleteMatch = () => {
@@ -80,14 +81,6 @@ class Index extends React.Component<Props, State> {
     deleteMatch(selectedMatch);
 
     this.setState({ selectedMatch: null });
-  };
-
-  onRematch = () => {
-    const { selectedMatch } = this.state;
-
-    if (!selectedMatch) return;
-
-    Router.push(`/newMatch?rematchId=${selectedMatch.id}`);
   };
 
   render() {
@@ -103,18 +96,14 @@ class Index extends React.Component<Props, State> {
           open={selectedMatch != null}
           match={selectedMatch}
           onClose={this.onCloseDialog}
-          onRematch={this.onRematch}
           onDelete={this.onDeleteMatch}
           onShowPlayer={this.onShowPlayer}
         />
         <Tooltip title="Create new Match" className={classes.button}>
-          <Button
-            fab
-            color="primary"
-            aria-label="add"
-            onClick={this.onCreateMatch}
-          >
-            <AddIcon />
+          <Button fab color="primary" aria-label="add">
+            <Link prefetch href="/createMatch">
+              <AddIcon />
+            </Link>
           </Button>
         </Tooltip>
       </Layout>

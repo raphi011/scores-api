@@ -19,6 +19,7 @@ const styles = () => ({
     margin: 10,
     width: 128,
     height: 128,
+    fontSize: '50px',
   },
 });
 
@@ -29,9 +30,15 @@ type Props = {
 };
 
 function PlayerView({ player, statistic, classes }: Props) {
+  const avatar = statistic.player.profileImageUrl ? (
+    <Avatar className={classes.avatar} src={statistic.player.profileImageUrl} />
+  ) : (
+    <Avatar className={classes.avatar}>{player.name.substring(0, 1)}</Avatar>
+  );
+
   return (
     <div className={classes.profileHead}>
-      <Avatar className={classes.avatar} src={statistic.player.profileImageUrl} />
+      {avatar}
       <Typography type="headline">{player.name}</Typography>
       <Tooltip placement="top" id="tooltip-score" title="Played - Won">
         <Typography align="center" type="display4">

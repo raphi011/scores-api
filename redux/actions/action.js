@@ -55,7 +55,7 @@ export const loadMatchAction = (id: number): ApiAction => ({
   successParams: { id },
 });
 
-export const createNewMatchAction = (match: Match): ApiAction => ({
+export const createNewMatchAction = (match: NewMatch): ApiAction => ({
   type: actionNames.API,
   method: 'POST',
   url: 'matches',

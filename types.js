@@ -11,7 +11,9 @@ export type Team = {
   name: string,
   id: number,
   player1: Player,
+  player1Id: number,
   player2: Player,
+  player2Id: number,
 };
 
 export type Match = {
@@ -21,6 +23,16 @@ export type Match = {
   createdAt: string,
   team1: Team,
   team2: Team,
+};
+
+export type NewMatch = {
+  player1Id: number,
+  player2Id: number,
+  player3Id: number,
+  player4Id: number,
+  scoreTeam1: number,
+  scoreTeam2: number,
+  targetScore: number,
 };
 
 export type User = {

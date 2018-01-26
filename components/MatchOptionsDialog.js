@@ -8,6 +8,8 @@ import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText, ListItemAvatar } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
+import Link from 'next/link';
+
 import type { Match } from '../types';
 
 const styles = () => ({
@@ -17,7 +19,6 @@ const styles = () => ({
 });
 
 type Props = {
-  onRematch: Match => void,
   match: Match,
   onDelete: Match => void,
   onClose: Event => void,
@@ -27,12 +28,6 @@ type Props = {
 };
 
 class MatchOptionsDialog extends React.PureComponent<Props> {
-  onRematch = () => {
-    const { onRematch, match } = this.props;
-
-    onRematch(match);
-  };
-
   onDelete = () => {
     const { onDelete, match } = this.props;
 
@@ -42,6 +37,7 @@ class MatchOptionsDialog extends React.PureComponent<Props> {
   render() {
     const { classes, onClose, match, onShowPlayer, open } = this.props;
 
+    const rematchLink = open ? `/createMatch?rematchId=${match.id}` : '';
     const playerInfos = open
       ? [
           { playerId: match.team1.player1.id, name: match.team1.player1.name },
@@ -65,14 +61,16 @@ class MatchOptionsDialog extends React.PureComponent<Props> {
             </ListItem>
           ))}
           <Divider />
-          <ListItem button onClick={this.onRematch}>
-            <ListItemAvatar>
-              <Avatar>
-                <CopyIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Rematch" />
-          </ListItem>
+          <Link href={rematchLink}>
+            <ListItem button>
+              <ListItemAvatar>
+                <Avatar>
+                  <CopyIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary="Rematch" />
+            </ListItem>
+          </Link>
           <Divider />
           <ListItem button onClick={this.onDelete}>
             <ListItemAvatar>
