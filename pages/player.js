@@ -4,7 +4,7 @@ import React from 'react';
 import withRedux from 'next-redux-wrapper';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-import MatchList from '../components/MatchList';
+import MatchList from '../containers/MatchListContainer';
 
 import withRoot from '../components/withRoot';
 import Layout from '../components/Layout';
