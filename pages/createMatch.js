@@ -13,11 +13,12 @@ import { validateMatch } from '../validation/match';
 import Layout from '../components/Layout';
 import SelectPlayers from '../components/SelectPlayers';
 import SetScores from '../components/SetScores';
-import withRoot from '../components/withRoot';
+import withRoot from '../styles/withRoot';
 import initStore, { dispatchActions } from '../redux/store';
 import { playersSelector, matchSelector } from '../redux/reducers/reducer';
 import {
   createNewMatchAction,
+  setStatusAction,
   loadPlayersAction,
   userOrLoginRouteAction,
   loadMatchAction,
@@ -51,9 +52,8 @@ const styles = theme => ({
 });
 
 function calcWinnerScore(loserScore: number, targetScore: number): number {
-  const winnerScore = loserScore <= (targetScore - 2)
-    ? targetScore
-    : loserScore + 2;
+  const winnerScore =
+    loserScore <= targetScore - 2 ? targetScore : loserScore + 2;
 
   return winnerScore;
 }
@@ -64,6 +64,7 @@ type Props = {
   playerIds: Array<number>,
   playersMap: { [number]: Player },
   createNewMatch: NewMatch => Promise<any>,
+  setStatus: string => void,
   /* eslint-disable react/no-unused-prop-types */
   rematchId: number,
 };
@@ -141,11 +142,20 @@ class CreateMatch extends React.Component<Props, State> {
     };
 
     switch (selected) {
-      case 1: match.player1Id = 0; break;
-      case 2: match.player2Id = 0; break;
-      case 3: match.player3Id = 0; break;
-      case 4: match.player4Id = 0; break;
-      default: throw new Error(`Can't unset player: ${selected}`);
+      case 1:
+        match.player1Id = 0;
+        break;
+      case 2:
+        match.player2Id = 0;
+        break;
+      case 3:
+        match.player3Id = 0;
+        break;
+      case 4:
+        match.player4Id = 0;
+        break;
+      default:
+        throw new Error(`Can't unset player: ${selected}`);
     }
 
     this.setState({ match, teamsComplete: false });
@@ -158,11 +168,20 @@ class CreateMatch extends React.Component<Props, State> {
     };
 
     switch (player) {
-      case 1: match.player1Id = playerId; break;
-      case 2: match.player2Id = playerId; break;
-      case 3: match.player3Id = playerId; break;
-      case 4: match.player4Id = playerId; break;
-      default: throw new Error(`Can't set player: ${player}`);
+      case 1:
+        match.player1Id = playerId;
+        break;
+      case 2:
+        match.player2Id = playerId;
+        break;
+      case 3:
+        match.player3Id = playerId;
+        break;
+      case 4:
+        match.player4Id = playerId;
+        break;
+      default:
+        throw new Error(`Can't set player: ${player}`);
     }
 
     this.setState({ match, teamsComplete, activeStep });
@@ -189,9 +208,14 @@ class CreateMatch extends React.Component<Props, State> {
     };
 
     switch (teamNr) {
-      case 1: match.scoreTeam1 = score; break;
-      case 2: match.scoreTeam2 = score; break;
-      default: throw new Error(`Can't set score for team: ${teamNr}`);
+      case 1:
+        match.scoreTeam1 = score;
+        break;
+      case 2:
+        match.scoreTeam2 = score;
+        break;
+      default:
+        throw new Error(`Can't set score for team: ${teamNr}`);
     }
 
     this.setState({ match });
@@ -228,16 +252,17 @@ class CreateMatch extends React.Component<Props, State> {
         match.scoreTeam1 = calcWinnerScore(scoreTeam2, targetScore).toString();
         break;
       }
-      default: throw new Error(`Can't set score for team: ${teamNr}`);
+      default:
+        throw new Error(`Can't set score for team: ${teamNr}`);
     }
 
     this.setState({ match });
-  }
+  };
 
-  onCreateMatch = async (e:  SyntheticInputEvent<HTMLButtonElement>) => {
+  onCreateMatch = async (e: SyntheticInputEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const { createNewMatch } = this.props;
+    const { createNewMatch, setStatus } = this.props;
     const match = this.getMatch();
 
     const errors = validateMatch(match);
@@ -247,7 +272,8 @@ class CreateMatch extends React.Component<Props, State> {
     } else {
       try {
         await createNewMatch(match);
-        Router.push('/');
+        await Router.push('/');
+        setStatus('New match created');
       } catch (error) {
         // ignore
       }
@@ -302,7 +328,7 @@ class CreateMatch extends React.Component<Props, State> {
             activeStep={activeStep}
             orientation="vertical"
             backButton={
-              <Button dense onClick={this.onPrevious}>
+              <Button size="small" onClick={this.onPrevious}>
                 <BackIcon className={classes.button} />
                 {activeStep === 0 ? 'Cancel' : 'Back'}
               </Button>
@@ -310,7 +336,7 @@ class CreateMatch extends React.Component<Props, State> {
             nextButton={
               <Button
                 onClick={this.onSetScores}
-                dense
+                size="small"
                 disabled={activeStep === 1 || !teamsComplete}
               >
                 Next
@@ -369,8 +395,11 @@ function mapStateToProps(state, ownProps: Props) {
 const mapDispatchToProps = {
   loadPlayers: loadPlayersAction,
   createNewMatch: createNewMatchAction,
+  setStatus: setStatusAction,
 };
 
 export default withStyles(styles)(
-  withRedux(initStore, mapStateToProps, mapDispatchToProps)(withRoot(CreateMatch)),
+  withRedux(initStore, mapStateToProps, mapDispatchToProps)(
+    withRoot(CreateMatch),
+  ),
 );

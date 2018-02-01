@@ -60,7 +60,7 @@ export const createNewMatchAction = (match: NewMatch): ApiAction => ({
   method: 'POST',
   url: 'matches',
   body: JSON.stringify(match),
-  successStatus: 'New Match created',
+  // successStatus: 'New Match created',
 });
 
 export const deleteMatchAction = (match: Match): ApiAction => ({

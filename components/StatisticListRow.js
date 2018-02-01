@@ -32,7 +32,7 @@ class StatisticListRow extends React.PureComponent<Props> {
     const { statistic, rank, classes } = this.props;
 
     return (
-      <TableRow key={statistic.playerId} onClick={this.onPlayerClick} >
+      <TableRow hover key={statistic.playerId} onClick={this.onPlayerClick} >
         <TableCell className={classes.denseCell}>{rank}</TableCell>
         <TableCell className={classes.denseCell}>{statistic.player.name}</TableCell>
         <TableCell className={classes.denseCell} numeric>{statistic.percentageWon}%</TableCell>

@@ -6,7 +6,7 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import MatchList from '../containers/MatchListContainer';
 
-import withRoot from '../components/withRoot';
+import withRoot from '../styles/withRoot';
 import Layout from '../components/Layout';
 import initStore, { dispatchActions } from '../redux/store';
 import {
@@ -17,7 +17,11 @@ import {
   loadPlayerMatchesAction,
 } from '../redux/actions/action';
 import PlayerView from '../components/PlayerView';
-import { playerSelector, statisticSelector, playerMatchesSelector } from '../redux/reducers/reducer';
+import {
+  playerSelector,
+  statisticSelector,
+  playerMatchesSelector,
+} from '../redux/reducers/reducer';
 import type { Player, Statistic } from '../types';
 
 type Props = {
@@ -38,7 +42,11 @@ class PlayerInfo extends React.Component<Props, State> {
     const { id } = query;
 
     if (id) {
-      actions.push(loadPlayerAction(id), loadPlayerMatchesAction(id), loadStatisticAction(id));
+      actions.push(
+        loadPlayerAction(id),
+        loadPlayerMatchesAction(id),
+        loadStatisticAction(id),
+      );
     } else {
       actions.push(loadPlayersAction());
     }
@@ -54,7 +62,7 @@ class PlayerInfo extends React.Component<Props, State> {
 
   onTabClick = (event, index) => {
     this.setState({ tabOpen: index });
-  }
+  };
 
   render() {
     const { player, matches, statistic, playerId } = this.props;
@@ -76,16 +84,15 @@ class PlayerInfo extends React.Component<Props, State> {
           onChange={this.onTabClick}
           value={this.state.tabOpen}
           textColor="primary"
-          fullWidth>
+          fullWidth
+        >
           <Tab label={`Matches (${matches.length})`} />
           <Tab label="Teams" />
         </Tabs>
         {this.state.tabOpen === 0 ? (
           <MatchList matches={matches} />
         ) : (
-        <Typography align="center">
-          List of teams
-        </Typography>
+          <Typography align="center">List of teams</Typography>
         )}
       </Layout>
     );

@@ -52,13 +52,13 @@ function ButtonAppBar({
     <Tooltip title={user.email} placement="bottom">
       <div className={classes.row}>
         <Avatar src={user.profileImageUrl} />
-        <Button color="contrast" onClick={onLogout}>
+        <Button color="inherit" onClick={onLogout}>
           Logout
         </Button>
       </div>
     </Tooltip>
   ) : (
-    <Button color="contrast" href={loginRoute}>
+    <Button color="inherit" href={loginRoute}>
       Login
     </Button>
   );
@@ -68,9 +68,9 @@ function ButtonAppBar({
       <AppBar position="fixed">
         <Toolbar>
           <IconButton
+            color="inherit"
             onClick={onOpenMenu}
             className={classes.menuButton}
-            color="contrast"
             aria-label="Menu"
           >
             <MenuIcon />

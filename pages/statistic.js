@@ -9,7 +9,7 @@ import Toolbar from 'material-ui/Toolbar';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Router from 'next/router';
 
-import withRoot from '../components/withRoot';
+import withRoot from '../styles/withRoot';
 import Layout from '../components/Layout';
 import StatisticList from '../components/StatisticList';
 import initStore, { dispatchActions } from '../redux/store';
@@ -38,7 +38,7 @@ type Props = {
 type State = {
   filterMenuOpen: boolean,
   anchorEl: ?HTMLElement,
-}
+};
 
 class Statistics extends React.Component<Props, State> {
   static async getInitialProps({ store, query, req, res, isServer }) {
@@ -90,9 +90,9 @@ class Statistics extends React.Component<Props, State> {
     Router.push('/statistic?filter=all');
   };
 
-  onRowClick = (playerId) => {
+  onRowClick = playerId => {
     Router.push(`/player?id=${playerId}`);
-  }
+  };
 
   timeFilter = () => {
     const { filter } = this.props;
@@ -124,7 +124,10 @@ class Statistics extends React.Component<Props, State> {
             <MenuItem onClick={this.onSetAllFilter}>All</MenuItem>
           </Menu>
         </Toolbar>
-        <StatisticList onPlayerClick={this.onRowClick} statistics={statistics} />
+        <StatisticList
+          onPlayerClick={this.onRowClick}
+          statistics={statistics}
+        />
       </Layout>
     );
   }

@@ -8,7 +8,7 @@ import AddIcon from 'material-ui-icons/Add';
 import Tooltip from 'material-ui/Tooltip';
 import Link from 'next/link';
 
-import withRoot from '../components/withRoot';
+import withRoot from '../styles/withRoot';
 import Layout from '../components/Layout';
 import MatchList from '../containers/MatchListContainer';
 import initStore, { dispatchActions } from '../redux/store';
@@ -36,7 +36,6 @@ type Props = {
   classes: Object,
   matches: Array<Match>,
 };
-
 
 class Index extends React.Component<Props> {
   static async getInitialProps({ store, req, res, isServer }) {

@@ -112,7 +112,7 @@ function PlayerListItem({ player, onClick, playerNr }: PlayerListProps) {
       break;
     case 3:
     case 4:
-      color = 'accent';
+      color = 'secondary';
       team = 2;
       break;
     default:
