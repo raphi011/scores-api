@@ -18,7 +18,7 @@ import {
   setStatusAction,
   userOrLoginRouteAction,
 } from '../redux/actions/action';
-import type { Match } from '../types';
+import type { Match, Classes } from '../types';
 
 const styles = theme => ({
   matchListContainer: {
@@ -33,7 +33,7 @@ const styles = theme => ({
 });
 
 type Props = {
-  classes: Object,
+  classes: Classes,
   matches: Array<Match>,
 };
 

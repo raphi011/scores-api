@@ -3,6 +3,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 
 import reducer from './reducers/reducer';
 import apiMiddleware, { serverAction } from './apiMiddleware';
+import type { Store } from './storeTypes';
 
 export async function dispatchActions(
   dispatch,
@@ -24,12 +25,13 @@ const initialState = {
   status: '',
   playersMap: {},
   statisticsMap: {},
+  matchesMap: {},
   matchesIds: [],
   playerIds: [],
   statisticIds: [],
 };
 
-const initStore = (state = initialState) =>
+const initStore = (state: Store = initialState) =>
   createStore(
     reducer,
     state,

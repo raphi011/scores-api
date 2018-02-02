@@ -10,7 +10,7 @@ import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import Tooltip from 'material-ui/Tooltip';
 import Avatar from 'material-ui/Avatar';
-import type { User } from '../types';
+import type { User, Classes } from '../types';
 
 const styles = () => ({
   row: {
@@ -36,7 +36,7 @@ type Props = {
   isLoggedIn: boolean,
   user: User,
   onLogout: () => void,
-  classes: Object,
+  classes: Classes,
 };
 
 function ButtonAppBar({

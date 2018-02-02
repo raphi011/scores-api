@@ -3,15 +3,18 @@ import fetch from 'isomorphic-unfetch';
 import * as actionNames from './actionNames';
 import type { Action, ApiAction } from '../types';
 
-function buildUrl(endpoint, params = {}) {
+type Params = { [string]: string };
+
+function buildUrl(endpoint: string, params: Params = {}) {
   let paramUrl = '';
+  const backendUrl = process.env.BACKEND_URL || '';
 
   paramUrl = `?${Object.keys(params)
     .filter(key => params[key])
     .map(key => `${key}=${params[key]}`)
     .join('&')}`;
 
-  const url = `${process.env.BACKEND_URL}/api/${endpoint}${paramUrl}`;
+  const url = `${backendUrl}/api/${endpoint}${paramUrl}`;
 
   return encodeURI(url);
 }
@@ -25,7 +28,9 @@ export function serverAction(action, req, res) {
   };
 }
 
-const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (next: (Action) => Promise<any>) => async (action: ApiAction) => {
+const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
+  next: Action => Promise<any>,
+) => async (action: ApiAction) => {
   if (action.type !== actionNames.API) {
     return next(action);
   }

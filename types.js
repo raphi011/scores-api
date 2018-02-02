@@ -5,6 +5,7 @@ export type Player = {
   name: string,
   userId: ?number,
   profileImageUrl: ?string,
+  matchesIds: Array<number>,
 };
 
 export type Team = {
@@ -56,7 +57,7 @@ export type TeamStatistic = {
   team: Team,
 } & Statistic;
 
-export type StatisticFilter = "week" | "month" | "quarter" | "year";
+export type StatisticFilter = 'week' | 'month' | 'quarter' | 'year';
 
 export type PlayerStatistic = {
   playerId: number,
@@ -66,6 +67,8 @@ export type PlayerStatistic = {
 export type Action = {
   type: string,
 };
+
+export type Classes = { [string]: string };
 
 export type ApiAction = {
   type: 'API',

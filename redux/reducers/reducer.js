@@ -3,8 +3,9 @@
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
 import type { Match } from '../../types';
+import type { Store } from '../storeTypes';
 
-function normalizeMatchList(matches = []) {
+function normalizeMatchList(matches: Array<Match> = []) {
   const matchesMap = {};
   const matchesIds = [];
 
@@ -16,7 +17,7 @@ function normalizeMatchList(matches = []) {
   return { matchesIds, matchesMap };
 }
 
-function receiveMatch(state, action) {
+function receiveMatch(state: Store, action) {
   const matchesMap = {
     ...state.matchesMap,
     [action.id]: action.payload,
@@ -28,7 +29,7 @@ function receiveMatch(state, action) {
   };
 }
 
-function receiveMatches(state, action) {
+function receiveMatches(state: Store, action): Store {
   const { matchesIds, matchesMap } = normalizeMatchList(action.payload);
 
   return {
@@ -38,7 +39,7 @@ function receiveMatches(state, action) {
   };
 }
 
-function receivePlayers(state, action) {
+function receivePlayers(state: Store, action): Store {
   const playersMap = {};
   const playerIds = [];
   action.payload.forEach(p => {
@@ -53,7 +54,7 @@ function receivePlayers(state, action) {
   };
 }
 
-function loggedOut(state, action) {
+function loggedOut(state: Store, action): Store {
   const { loginRoute } = action.payload;
 
   return {
@@ -63,14 +64,14 @@ function loggedOut(state, action) {
   };
 }
 
-function login(state, action) {
+function login(state: Store, action): Store {
   return {
     ...state,
     user: action.username,
   };
 }
 
-function setUserOrLoginroute(state, action) {
+function setUserOrLoginroute(state: Store, action): Store {
   const { user, loginRoute } = action.payload;
   return {
     ...state,
@@ -79,21 +80,21 @@ function setUserOrLoginroute(state, action) {
   };
 }
 
-function setStatus(state, action) {
+function setStatus(state: Store, action): Store {
   return {
     ...state,
     status: action.status,
   };
 }
 
-function clearStatus(state) {
+function clearStatus(state: Store): Store {
   return {
     ...state,
     status: '',
   };
 }
 
-function removeMatch(state, action) {
+function removeMatch(state: Store, action): Store {
   const matchesIds = state.matchesIds.filter(id => id !== action.id);
   return {
     ...state,
@@ -101,7 +102,7 @@ function removeMatch(state, action) {
   };
 }
 
-function receivePlayer(state, action) {
+function receivePlayer(state: Store, action): Store {
   const playersMap = {
     ...state.playersMap,
     [action.id]: action.payload,
@@ -113,7 +114,7 @@ function receivePlayer(state, action) {
   };
 }
 
-function receiveStatistic(state, action) {
+function receiveStatistic(state: Store, action): Store {
   const statisticsMap = {
     ...state.statisticsMap,
     [action.playerId]: action.payload,
@@ -125,11 +126,11 @@ function receiveStatistic(state, action) {
   };
 }
 
-function receivePlayerMatches(state, action) {
+function receivePlayerMatches(state: Store, action): Store {
   const { payload, playerId } = action;
   const { matchesIds, matchesMap } = normalizeMatchList(payload);
 
-  const player =  {
+  const player = {
     ...state.playersMap[playerId],
     matchesIds,
   };
@@ -147,7 +148,7 @@ function receivePlayerMatches(state, action) {
   };
 }
 
-function receiveStatistics(state, action) {
+function receiveStatistics(state: Store, action): Store {
   const statisticsMap = {};
   const statisticIds = [];
   action.payload.forEach(p => {
@@ -183,28 +184,31 @@ const reducer = createReducer(
 
 export default reducer;
 
-export const playerMatchesSelector = (state, playerId: number) => {
+export const playerMatchesSelector = (state: Store, playerId: number) => {
   const player = state.playersMap[playerId];
 
   if (!player || !player.matchesIds) return [];
 
   return player.matchesIds.map(id => state.matchesMap[id]);
-}
+};
 
-export const statisticSelector = (state, id: number) => state.statisticsMap[id];
-export const statisticsSelector = state =>
+export const statisticSelector = (state: Store, id: number) =>
+  state.statisticsMap[id];
+export const statisticsSelector = (state: Store) =>
   state.statisticIds.map(id => state.statisticsMap[id]);
-export const loginRouteSelector = state => state.loginRoute;
-export const statusSelector = state => state.status;
-export const matchesSelector = state =>
+export const loginRouteSelector = (state: Store) => state.loginRoute;
+export const statusSelector = (state: Store) => state.status;
+export const matchesSelector = (state: Store) =>
   state.matchesIds.map(id => state.matchesMap[id]);
-export const matchSelector = (state, id: number): Match => state.matchesMap[id];
-export const playerSelector = (state, id: number) => state.playersMap[id];
-export const playersSelector = state => ({
+export const matchSelector = (state: Store, id: number): Match =>
+  state.matchesMap[id];
+export const playerSelector = (state: Store, id: number) =>
+  state.playersMap[id];
+export const playersSelector = (state: Store) => ({
   playersMap: state.playersMap,
   playerIds: state.playerIds,
 });
-export const userSelector = state => ({
+export const userSelector = (state: Store) => ({
   isLoggedIn: !!state.user,
   user: state.user,
 });

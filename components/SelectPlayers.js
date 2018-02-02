@@ -38,7 +38,7 @@ type Props = {
 };
 
 class SelectPlayers extends React.Component<Props> {
-  onSelectPlayer = id => {
+  onSelectPlayer = (id: number) => {
     const { onUnsetPlayer, onSetPlayer } = this.props;
 
     let unassigned;
@@ -65,7 +65,7 @@ class SelectPlayers extends React.Component<Props> {
     }
   };
 
-  playerNr = playerId => {
+  playerNr = (playerId: number): number => {
     const { player1Id, player2Id, player3Id, player4Id } = this.props;
 
     if (playerId === player1Id) return 1;
