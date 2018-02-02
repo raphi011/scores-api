@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 	"os"
@@ -9,36 +8,51 @@ import (
 	"scores-backend/sqlite"
 )
 
+var dbPath = flag.String("db", "scores.db", "Path to sqlite db")
+
 func main() {
-	dbPath := flag.String("db", "scores.db", "Path to sqlite db")
 	flag.Parse()
 
 	args := flag.Args()
 
 	if len(args) != 1 {
-		fmt.Println("Possible commands: 'createdb'")
+		fmt.Println("Possible commands: createdb, seed")
 		os.Exit(1)
 	}
 
 	cmd := args[0]
 
 	switch cmd {
-	case "createdb":
-		db, err := getDb(*dbPath)
-		if err != nil {
-			fmt.Println(err)
-		}
-		db.Close()
+	case "migrate":
+		migrate()
 	case "seed":
-		seedDb(*dbPath)
+		seedDb()
+	default:
+		flag.PrintDefaults()
 	}
 }
 
-func seedDb(path string) {
-	db, err := getDb(path)
+func migrate() {
+	db, err := sqlite.Open(*dbPath)
 
 	if err != nil {
 		fmt.Println(err)
+		return
+	}
+
+	err = sqlite.Migrate(db)
+
+	if err != nil {
+		fmt.Printf("Error migrating %v", err)
+	}
+}
+
+func seedDb() {
+	db, err := sqlite.Open(*dbPath)
+
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
 	ps := sqlite.PlayerService{DB: db}
@@ -47,14 +61,4 @@ func seedDb(path string) {
 	ps.Create(&scores.Player{Name: "Richie"})
 	ps.Create(&scores.Player{Name: "Dominik"})
 	ps.Create(&scores.Player{Name: "Lukas"})
-}
-
-func getDb(path string) (*sql.DB, error) {
-	db, err := sqlite.Open(path)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
 }
