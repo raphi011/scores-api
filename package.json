@@ -6,17 +6,18 @@
   "dependencies": {
     "express": "^4.16.2",
     "isomorphic-unfetch": "^2.0.0",
-    "material-ui-icons": "latest",
-    "material-ui": "next",
     "jss": "latest",
+    "material-ui": "next",
+    "material-ui-icons": "latest",
     "next": "latest",
+    "next-redux-wrapper": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-redux": "latest",
     "react-jss": "latest",
-    "redux-devtools-extension": "latest",
+    "react-redux": "latest",
+    "react-waypoint": "^8.0.0",
     "redux": "latest",
-    "next-redux-wrapper": "latest"
+    "redux-devtools-extension": "latest"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.3",

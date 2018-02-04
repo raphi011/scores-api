@@ -1,10 +1,13 @@
-import * as actionNames from '../actionNames';
-import type { ApiAction, Match, StatisticFilter } from '../../types';
+// @flow
 
-export const loadMatchesAction = (): ApiAction => ({
+import * as actionNames from '../actionNames';
+import type { ApiAction, Match, NewMatch, StatisticFilter } from '../../types';
+
+export const loadMatchesAction = (after?: string): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
   url: 'matches',
+  params: { after },
   success: actionNames.RECEIVE_MATCHES,
 });
 
@@ -60,7 +63,6 @@ export const createNewMatchAction = (match: NewMatch): ApiAction => ({
   method: 'POST',
   url: 'matches',
   body: JSON.stringify(match),
-  // successStatus: 'New Match created',
 });
 
 export const deleteMatchAction = (match: Match): ApiAction => ({
@@ -79,7 +81,7 @@ export const userOrLoginRouteAction = (): ApiAction => ({
   success: actionNames.SET_USER_OR_LOGINROUTE,
 });
 
-export const loggedInAction = username => ({
+export const loggedInAction = (username: string) => ({
   type: actionNames.LOGIN,
   username,
 });
@@ -96,7 +98,7 @@ export const loggedOutAction = () => ({
   type: actionNames.LOGGEDOUT,
 });
 
-export const setStatusAction = status => ({
+export const setStatusAction = (status: string) => ({
   type: actionNames.SET_STATUS,
   status,
 });

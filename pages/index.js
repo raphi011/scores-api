@@ -35,22 +35,62 @@ const styles = theme => ({
 type Props = {
   classes: Classes,
   matches: Array<Match>,
+  loadMatches: string => Promise<any>,
 };
 
-class Index extends React.Component<Props> {
+type State = {
+  loading: boolean,
+  hasMore: boolean,
+};
+
+class Index extends React.Component<Props, State> {
   static async getInitialProps({ store, req, res, isServer }) {
     const actions = [loadMatchesAction(), userOrLoginRouteAction()];
 
     await dispatchActions(store.dispatch, isServer, req, res, actions);
   }
 
+  state = {
+    loading: false,
+    hasMore: true,
+  };
+
+  onLoadMore = async () => {
+    const { loadMatches, matches } = this.props;
+
+    this.setState({ loading: true });
+
+    const lastElement = matches[matches.length - 1];
+
+    const after = lastElement ? lastElement.createdAt : '';
+
+    const newState = {
+      loading: false,
+      hasMore: true,
+    };
+
+    try {
+      await loadMatches(after);
+    } catch (e) {
+      newState.hasMore = false;
+    } finally {
+      this.setState(newState);
+    }
+  };
+
   render() {
     const { matches, classes } = this.props;
+    const { loading, hasMore } = this.state;
 
     return (
       <Layout title="Matches">
         <div className={classes.matchListContainer}>
-          <MatchList matches={matches} />
+          <MatchList
+            matches={matches}
+            onLoadMore={this.onLoadMore}
+            loading={loading}
+            hasMore={hasMore}
+          />
         </div>
         <Tooltip title="Create new Match" className={classes.button}>
           <Button fab color="primary" aria-label="add">

@@ -34,8 +34,11 @@ function receiveMatches(state: Store, action): Store {
 
   return {
     ...state,
-    matchesMap,
-    matchesIds,
+    matchesMap: {
+      ...matchesMap,
+      ...state.matchesMap,
+    },
+    matchesIds: [...state.matchesIds, ...matchesIds],
   };
 }
 

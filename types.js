@@ -74,12 +74,12 @@ export type ApiAction = {
   type: 'API',
   method: string,
   url: string,
-  success: string,
-  params: Object,
-  isServer: boolean,
+  success?: string,
+  isServer?: boolean,
+  params?: Object,
   req?: Object, // todo
   res?: Object, // todo
-  headers: Object,
+  headers?: Object,
 
   error?: string,
   body?: string,
