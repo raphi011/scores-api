@@ -4,6 +4,7 @@ var V2 = []string{
 	teamStatisticsView,
 	groupTable,
 	groupPlayerTable,
+	alterMatchTable,
 }
 
 var ResetV2 = []string{
@@ -34,8 +35,13 @@ const (
 		 "role" varchar(32) NOT NULL,
 			FOREIGN KEY(group_id) REFERENCES groups(id),
 			FOREIGN KEY(player_id) REFERENCES players(id),
-			PRIMARY KEY (group_id, player_id)
+			PRIMARY KEY(group_id, player_id)
 	 	)
+	`
+
+	alterMatchTable = `
+		ALTER TABLE "matches"
+			ADD "group_id" integer REFERENCES groups(id)
 	`
 
 	teamStatisticsView = `

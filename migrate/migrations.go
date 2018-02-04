@@ -37,12 +37,6 @@ func Reset(db *sql.DB, resets []TableNames) error {
 	return nil
 }
 
-func setDBVersion(db *sql.Tx, version uint16) error {
-	_, err := db.Exec("UPDATE dbVersion SET version=$1", version)
-
-	return err
-}
-
 func Migrate(db *sql.DB, migrations []Migration) error {
 	dbVersion, err := GetDBVersion(db)
 
@@ -136,4 +130,10 @@ func execMultiple(db *sql.Tx, statements ...string) error {
 	}
 
 	return nil
+}
+
+func setDBVersion(db *sql.Tx, version uint16) error {
+	_, err := db.Exec("UPDATE dbVersion SET version=$1", version)
+
+	return err
 }
