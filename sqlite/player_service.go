@@ -58,6 +58,8 @@ func (s *PlayerService) Players() (scores.Players, error) {
 		return nil, err
 	}
 
+	defer rows.Close()
+
 	for rows.Next() {
 		p, err := scanPlayer(rows)
 		if err != nil {

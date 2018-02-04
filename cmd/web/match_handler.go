@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"scores-backend"
 
@@ -19,6 +20,11 @@ type createMatchDto struct {
 	TargetScore int  `json:"targetScore"`
 }
 
+type matchQueryDto struct {
+	After time.Time `json:"after"`
+	count uint      `json:"count"`
+}
+
 type matchHandler struct {
 	playerService scores.PlayerService
 	matchService  scores.MatchService
@@ -27,7 +33,20 @@ type matchHandler struct {
 }
 
 func (h *matchHandler) index(c *gin.Context) {
-	matches, err := h.matchService.Matches()
+	var err error
+	after := time.Now()
+	count := uint(25)
+
+	if afterParam := c.Query("after"); afterParam != "" {
+		after, err = time.Parse(time.RFC3339, afterParam)
+
+		if err != nil {
+			jsonn(c, http.StatusBadRequest, nil, "Bad request")
+			return
+		}
+	}
+
+	matches, err := h.matchService.Matches(after, count)
 
 	if err != nil {
 		jsonn(c, http.StatusInternalServerError, nil, "Unknown error")

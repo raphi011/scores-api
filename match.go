@@ -1,5 +1,9 @@
 package scores
 
+import (
+	"time"
+)
+
 type Match struct {
 	Model
 	Team1       *Team  `json:"team1"`
@@ -16,7 +20,7 @@ type Matches []Match
 type MatchService interface {
 	Match(matchID uint) (*Match, error)
 	PlayerMatches(playerID uint) (Matches, error)
-	Matches() (Matches, error)
+	Matches(after time.Time, count uint) (Matches, error)
 	Create(*Match) (*Match, error)
 	Delete(matchID uint) error
 }

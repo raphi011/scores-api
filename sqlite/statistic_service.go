@@ -104,6 +104,8 @@ func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, erro
 		return nil, err
 	}
 
+	defer rows.Close()
+
 	for rows.Next() {
 		st, err := scanPlayerStatistic(rows)
 

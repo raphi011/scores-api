@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	scores "scores-backend"
+	"time"
 )
 
 var _ scores.MatchService = &MatchService{}
@@ -88,7 +89,10 @@ const (
 	WHERE m.deleted_at is null
 `
 
-	matchesSelectSQL = matchesBaseSelectSQL + matchesOrderBySQL
+	matchesSelectSQL = matchesBaseSelectSQL +
+		"AND m.created_at < $1" +
+		matchesOrderBySQL +
+		" LIMIT $2"
 
 	matchesOrderBySQL = " ORDER BY m.created_at DESC"
 
@@ -151,14 +155,16 @@ func (s *MatchService) Match(ID uint) (*scores.Match, error) {
 	return match, err
 }
 
-func (s *MatchService) Matches() (scores.Matches, error) {
+func (s *MatchService) Matches(after time.Time, count uint) (scores.Matches, error) {
 	matches := scores.Matches{}
 
-	rows, err := s.DB.Query(matchesSelectSQL)
+	rows, err := s.DB.Query(matchesSelectSQL, after, count)
 
 	if err != nil {
 		return nil, err
 	}
+
+	defer rows.Close()
 
 	for rows.Next() {
 		match, err := scanMatch(rows)
@@ -181,6 +187,8 @@ func (s *MatchService) PlayerMatches(playerID uint) (scores.Matches, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	defer rows.Close()
 
 	for rows.Next() {
 		match, err := scanMatch(rows)

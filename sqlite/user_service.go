@@ -94,6 +94,8 @@ func (s *UserService) Users() (scores.Users, error) {
 		return nil, err
 	}
 
+	defer rows.Close()
+
 	for rows.Next() {
 		u, err := scanUser(rows)
 
