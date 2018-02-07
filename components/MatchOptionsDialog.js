@@ -27,7 +27,11 @@ type Props = {
   classes: Object,
 };
 
-class MatchOptionsDialog extends React.PureComponent<Props> {
+class MatchOptionsDialog extends React.Component<Props> {
+  shouldComponentUpdate(nextProps) {
+    return this.props.open !== nextProps.open;
+  }
+
   onDelete = () => {
     const { onDelete, match } = this.props;
 
@@ -37,8 +41,8 @@ class MatchOptionsDialog extends React.PureComponent<Props> {
   render() {
     const { classes, onClose, match, onShowPlayer, open } = this.props;
 
-    const rematchLink = open ? `/createMatch?rematchId=${match.id}` : '';
-    const playerInfos = open
+    const rematchLink = match ? `/createMatch?rematchId=${match.id}` : '';
+    const playerInfos = match
       ? [
           { playerId: match.team1.player1.id, name: match.team1.player1.name },
           { playerId: match.team1.player2.id, name: match.team1.player2.name },

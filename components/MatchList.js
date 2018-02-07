@@ -54,49 +54,58 @@ const DayHeader = ({ date }) => (
   </ListItem>
 );
 
-function MatchList({ matches = [], onMatchClick, classes }: Props) {
-  return (
-    <List className={classes.root}>
-      {matches.map((m, i) => {
-        const currentDate = new Date(m.createdAt);
-        const lastDate = i ? new Date(matches[i - 1].createdAt) : null;
+class MatchList extends React.PureComponent<Props> {
+  render() {
+    const { matches = [], onMatchClick, classes } = this.props;
 
-        return (
-          <React.Fragment>
-            {!lastDate || !isSameDay(currentDate, lastDate) ? (
-              <DayHeader key={currentDate.getTime()} date={currentDate} />
-            ) : null}
-            <ListItem divider key={m.id} button onClick={() => onMatchClick(m)}>
-              <ListItemText
-                primary={
-                  <div className={classes.listContainer}>
-                    <Typography className={classes.team} variant="body1">
-                      {getTeamName(m.team1)}
-                    </Typography>
-                    <Typography
-                      className={classes.points}
-                      variant="display2"
-                      align="center"
-                    >
-                      {m.scoreTeam1} - {m.scoreTeam2}
-                    </Typography>
-                    <Typography
-                      className={classes.team}
-                      variant="body1"
-                      align="right"
-                    >
-                      {getTeamName(m.team2)}
-                    </Typography>
-                  </div>
-                }
-                // secondary={formatDateTime(currentDate)}
-              />
-            </ListItem>
-          </React.Fragment>
-        );
-      })}
-    </List>
-  );
+    return (
+      <List className={classes.root}>
+        {matches.map((m, i) => {
+          const currentDate = new Date(m.createdAt);
+          const lastDate = i ? new Date(matches[i - 1].createdAt) : null;
+
+          return (
+            <React.Fragment>
+              {!lastDate || !isSameDay(currentDate, lastDate) ? (
+                <DayHeader key={currentDate.getTime()} date={currentDate} />
+              ) : null}
+              <ListItem
+                divider
+                key={m.id}
+                button
+                onClick={() => onMatchClick(m)}
+              >
+                <ListItemText
+                  primary={
+                    <div className={classes.listContainer}>
+                      <Typography className={classes.team} variant="body1">
+                        {getTeamName(m.team1)}
+                      </Typography>
+                      <Typography
+                        className={classes.points}
+                        variant="display2"
+                        align="center"
+                      >
+                        {m.scoreTeam1} - {m.scoreTeam2}
+                      </Typography>
+                      <Typography
+                        className={classes.team}
+                        variant="body1"
+                        align="right"
+                      >
+                        {getTeamName(m.team2)}
+                      </Typography>
+                    </div>
+                  }
+                  // secondary={formatDateTime(currentDate)}
+                />
+              </ListItem>
+            </React.Fragment>
+          );
+        })}
+      </List>
+    );
+  }
 }
 
 const StyledMatchList = withStyles(styles)(MatchList);

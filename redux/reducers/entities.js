@@ -1,5 +1,7 @@
 // @flow
 
+import { createSelector } from 'reselect';
+
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
 import { denorm, norm } from '../entitySchemas';
@@ -56,8 +58,6 @@ function deleteEntities(state, action: DeleteEntityAction) {
     },
   };
 }
-
-function removeFromLists(listNames: Array<string>, state, id: number) {}
 
 function receiveEntities(state: EntityStore, action: ReceiveEntityAction) {
   // STEP 1: normalize entites
@@ -117,48 +117,67 @@ const reducer = createReducer(initialEntitiesState, {
 
 export default reducer;
 
-function entityMap(state: Store): EntityMap {
-  const entities = {
-    player: state.entities.player.values,
-    team: state.entities.team.values,
-    match: state.entities.match.values,
-    statistic: state.entities.statistic.values,
-  };
+const playerMap = state => state.entities.player.values;
+const teamMap = state => state.entities.team.values;
+const matchMap = state => state.entities.match.values;
+const statisticMap = state => state.entities.statistic.values;
 
-  return entities;
-}
+export const entityMapSelector = createSelector(
+  playerMap,
+  teamMap,
+  matchMap,
+  statisticMap,
+  (player, team, match, statistic) => ({
+    player,
+    team,
+    match,
+    statistic,
+  }),
+);
 
 export const allPlayersSelector = (state: Store) =>
   state.entities.player.all.length
-    ? denorm('player', entityMap(state), state.entities.player.all)
+    ? denorm('player', entityMapSelector(state), state.entities.player.all)
     : [];
 
 export const matchSelector = (state: Store, id: number) =>
-  denorm('match', entityMap(state), id);
+  denorm('match', entityMapSelector(state), id);
 
-export const allMatchesSelector = (state: Store) =>
-  state.entities.match.all.length
-    ? denorm('match', entityMap(state), state.entities.match.all)
-    : [];
+const allMatchIdsSelector = state =>
+  state.entities.match.all.length ? state.entities.match.all : [];
+
+export const allMatchesSelector = createSelector(
+  allMatchIdsSelector,
+  entityMapSelector,
+  (ids, entities) => denorm('match', entities, ids),
+);
 
 export const playerSelector = (state: Store, playerId: number) =>
-  denorm('player', entityMap(state), playerId);
+  denorm('player', entityMapSelector(state), playerId);
 
 export const matchesByPlayerSelector = (state: Store, playerId: number) =>
   (state.entities.match.byPlayer[playerId] || []).length
-    ? denorm('match', entityMap(state), state.entities.match.byPlayer[playerId])
+    ? denorm(
+        'match',
+        entityMapSelector(state),
+        state.entities.match.byPlayer[playerId],
+      )
     : [];
 
 export const allStatisticSelector = (state: Store) =>
   state.entities.statistic.all.length
-    ? denorm('statistic', entityMap(state), state.entities.statistic.all)
+    ? denorm(
+        'statistic',
+        entityMapSelector(state),
+        state.entities.statistic.all,
+      )
     : [];
 
 export const statisticByPlayerSelector = (state: Store, playerId: number) =>
   (state.entities.statistic.byPlayer[playerId] || []).length
     ? denorm(
         'statistic',
-        entityMap(state),
+        entityMapSelector(state),
         state.entities.statistic.byPlayer[playerId][0],
       )
     : null;

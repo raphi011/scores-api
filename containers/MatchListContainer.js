@@ -12,6 +12,8 @@ import { deleteMatchAction } from '../redux/actions/entities';
 
 import type { Match } from '../types';
 
+const Fragment = React.Fragment;
+
 type Props = {
   matches: Array<Match>,
   deleteMatch: Match => void,
@@ -22,15 +24,17 @@ type Props = {
 
 type State = {
   selectedMatch: ?Match,
+  dialogOpen: boolean,
 };
 
-class MatchListContainer extends React.Component<Props, State> {
+class MatchListContainer extends React.PureComponent<Props, State> {
   state = {
     selectedMatch: null,
+    dialogOpen: false,
   };
 
   onCloseDialog = () => {
-    this.setState({ selectedMatch: null });
+    this.setState({ dialogOpen: false });
   };
 
   onShowPlayer = (playerId: number) => {
@@ -39,7 +43,7 @@ class MatchListContainer extends React.Component<Props, State> {
   };
 
   onOpenDialog = (selectedMatch: Match) => {
-    this.setState({ selectedMatch });
+    this.setState({ dialogOpen: true, selectedMatch });
   };
 
   onDeleteMatch = () => {
@@ -55,10 +59,10 @@ class MatchListContainer extends React.Component<Props, State> {
 
   render() {
     const { matches, onLoadMore, loading, hasMore } = this.props;
-    const { selectedMatch } = this.state;
+    const { selectedMatch, dialogOpen } = this.state;
 
     return (
-      <React.Fragment>
+      <Fragment>
         <MatchList matches={matches} onMatchClick={this.onOpenDialog} />
         <div style={{ height: '50px', textAlign: 'center' }}>
           {loading ? (
@@ -68,13 +72,13 @@ class MatchListContainer extends React.Component<Props, State> {
           ) : null}
         </div>
         <MatchOptionsDialog
-          open={selectedMatch != null}
+          open={dialogOpen}
           match={selectedMatch}
           onClose={this.onCloseDialog}
           onDelete={this.onDeleteMatch}
           onShowPlayer={this.onShowPlayer}
         />
-      </React.Fragment>
+      </Fragment>
     );
   }
 }

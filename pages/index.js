@@ -82,7 +82,6 @@ class Index extends React.Component<Props, State> {
     } catch (e) {
       newState.hasMore = false;
     } finally {
-      console.log('has more: ' + newState.hasMore);
       this.setState(newState);
     }
   };
