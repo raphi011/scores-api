@@ -32,7 +32,7 @@ const styles = theme => ({
 type Props = {
   classes: Classes,
   matches: Array<Match>,
-  loadMatches: (?string) => Promise<any>,
+  loadMatches: (?string) => Promise<{ empty: boolean }>,
 };
 
 type State = {
@@ -56,8 +56,9 @@ class Index extends React.Component<Props, State> {
     const { loadMatches } = this.props;
     try {
       await loadMatches();
+      this.setState({ loading: false, hasMore: true });
     } catch (e) {
-      // ignore
+      this.setState({ loading: false, hasMore: false });
     }
   };
 
@@ -76,10 +77,12 @@ class Index extends React.Component<Props, State> {
     };
 
     try {
-      await loadMatches(after);
+      const result = await loadMatches(after);
+      newState.hasMore = !result.empty;
     } catch (e) {
       newState.hasMore = false;
     } finally {
+      console.log('has more: ' + newState.hasMore);
       this.setState(newState);
     }
   };
@@ -92,7 +95,7 @@ class Index extends React.Component<Props, State> {
       <Layout title="Matches">
         <div>
           <Toolbar>
-            <Button color="secondary" onClick={this.onRefresh} raised>
+            <Button color="secondary" onClick={this.onRefresh} variant="raised">
               Refresh
             </Button>
           </Toolbar>
@@ -106,7 +109,7 @@ class Index extends React.Component<Props, State> {
         </div>
 
         <Tooltip title="Create new Match" className={classes.button}>
-          <Button fab color="primary" aria-label="add">
+          <Button variant="fab" color="primary" aria-label="add">
             <Link prefetch href="/createMatch">
               <AddIcon />
             </Link>

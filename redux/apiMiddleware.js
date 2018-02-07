@@ -105,7 +105,12 @@ const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
         dispatch({ type: actionNames.SET_STATUS, status: successStatus });
       }
 
-      return Promise.resolve();
+      if (Array.isArray(payload)) {
+        const empty = !payload.length;
+        return Promise.resolve({ empty });
+      }
+
+      return Promise.resolve({ empty: false });
     }
 
     // error ...

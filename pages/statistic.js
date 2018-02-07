@@ -106,7 +106,7 @@ class Statistics extends React.Component<Props, State> {
     return (
       <Layout title="Players">
         <Toolbar className={classes.toolbar}>
-          <Typography type="title">{this.timeFilter()}</Typography>
+          <Typography variant="title">{this.timeFilter()}</Typography>
           <IconButton onClick={this.onOpenFilterMenu}>
             <DateRangeIcon />
           </IconButton>

@@ -64,28 +64,25 @@ function MatchList({ matches = [], onMatchClick, classes }: Props) {
         return (
           <React.Fragment>
             {!lastDate || !isSameDay(currentDate, lastDate) ? (
-              <DayHeader date={currentDate} />
-            ) : // <ListItem key={currentDate.getTime()}>
-            //   <ListItemText />
-            // </ListItem>
-            null}
+              <DayHeader key={currentDate.getTime()} date={currentDate} />
+            ) : null}
             <ListItem divider key={m.id} button onClick={() => onMatchClick(m)}>
               <ListItemText
                 primary={
                   <div className={classes.listContainer}>
-                    <Typography className={classes.team} type="body1">
+                    <Typography className={classes.team} variant="body1">
                       {getTeamName(m.team1)}
                     </Typography>
                     <Typography
                       className={classes.points}
-                      type="display2"
+                      variant="display2"
                       align="center"
                     >
                       {m.scoreTeam1} - {m.scoreTeam2}
                     </Typography>
                     <Typography
                       className={classes.team}
-                      type="body1"
+                      variant="body1"
                       align="right"
                     >
                       {getTeamName(m.team2)}

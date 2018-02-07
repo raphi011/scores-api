@@ -39,13 +39,13 @@ function PlayerView({ player, statistic, classes }: Props) {
   return (
     <div className={classes.profileHead}>
       {avatar}
-      <Typography type="headline">{player.name}</Typography>
+      <Typography variant="headline">{player.name}</Typography>
       <Tooltip placement="top" id="tooltip-score" title="Played - Won">
-        <Typography align="center" type="display4">
+        <Typography align="center" variant="display4">
           {statistic.gamesWon} - {statistic.gamesLost}
         </Typography>
       </Tooltip>
-      <Typography align="center" type="display3">
+      <Typography align="center" variant="display3">
         {statistic.percentageWon}%
       </Typography>
     </div>

@@ -75,7 +75,7 @@ function ButtonAppBar({
           >
             <MenuIcon />
           </IconButton>
-          <Typography type="title" color="inherit" className={classes.flex}>
+          <Typography variant="title" color="inherit" className={classes.flex}>
             {title}
           </Typography>
           {button}

@@ -99,7 +99,7 @@ class PlayerInfo extends React.Component<Props, State> {
     if (!playerId) {
       return (
         <Layout title="Players">
-          <Typography align="center" type="display4">
+          <Typography align="center" variant="display4">
             Players: todo!
           </Typography>
         </Layout>
