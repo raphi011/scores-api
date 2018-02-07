@@ -1,4 +1,5 @@
 // @flow
+
 import fetch from 'isomorphic-unfetch';
 import * as actionNames from './actionNames';
 import type { Action, ApiAction } from '../types';
@@ -17,6 +18,12 @@ function buildUrl(endpoint: string, params: Params = {}) {
   const url = `${backendUrl}/api/${endpoint}${paramUrl}`;
 
   return encodeURI(url);
+}
+
+function isJson(response): boolean {
+  const contentType = response.headers.get('content-type');
+
+  return contentType && contentType.indexOf('application/json') !== -1;
 }
 
 export function serverAction(action, req, res) {
@@ -81,17 +88,34 @@ const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
       }
     }
 
-    const { data, message } = await response.json();
+    let payload;
+    let statusMessage = 'Unknown error';
+
+    if (isJson(response)) {
+      const { data, message } = await response.json();
+      payload = data;
+      statusMessage = message;
+    }
 
     if (response.status >= 200 && response.status < 300) {
       if (success) {
-        dispatch({ type: success, payload: data, ...successParams });
+        dispatch({ type: success, payload, ...successParams });
       }
       if (successStatus) {
         dispatch({ type: actionNames.SET_STATUS, status: successStatus });
       }
+
+      return Promise.resolve();
+    }
+
+    // error ...
+    if (response.status === 504) {
+      dispatch({
+        type: actionNames.SET_STATUS,
+        status: 'Cannot connect to server, please try again',
+      });
     } else {
-      dispatch({ type: actionNames.SET_STATUS, status: message });
+      dispatch({ type: actionNames.SET_STATUS, status: statusMessage });
     }
   } catch (e) {
     if (error) {
@@ -101,7 +125,7 @@ const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
     }
   }
 
-  return Promise.resolve();
+  return Promise.reject();
 };
 
 export default apiMiddleware;

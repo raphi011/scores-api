@@ -1,11 +1,12 @@
 // @flow
 
+export type EntityName = 'player' | 'team' | 'match';
+
 export type Player = {
   id: number,
   name: string,
   userId: ?number,
   profileImageUrl: ?string,
-  matchesIds: Array<number>,
 };
 
 export type Team = {
@@ -63,6 +64,10 @@ export type PlayerStatistic = {
   playerId: number,
   player: Player,
 } & Statistic;
+
+export type GenericStatistic = PlayerStatistic | TeamStatistic;
+
+export type EntityType = Player | Team | Match | GenericStatistic;
 
 export type Action = {
   type: string,

@@ -13,11 +13,9 @@ import withRoot from '../styles/withRoot';
 import Layout from '../components/Layout';
 import StatisticList from '../components/StatisticList';
 import initStore, { dispatchActions } from '../redux/store';
-import {
-  userOrLoginRouteAction,
-  loadStatisticsAction,
-} from '../redux/actions/action';
-import { statisticsSelector } from '../redux/reducers/reducer';
+import { userOrLoginRouteAction } from '../redux/actions/auth';
+import { loadStatisticsAction } from '../redux/actions/entities';
+import { allStatisticSelector } from '../redux/reducers/entities';
 import type { Statistic, StatisticFilter } from '../types';
 
 const styles = () => ({
@@ -115,7 +113,7 @@ class Statistics extends React.Component<Props, State> {
           <Menu
             anchorEl={this.state.anchorEl}
             open={this.state.filterMenuOpen}
-            onRequestClose={this.onCloseFilterMenu}
+            onClose={this.onCloseFilterMenu}
           >
             <MenuItem onClick={this.onSetWeekFilter}>Last Week</MenuItem>
             <MenuItem onClick={this.onSetMonthFilter}>Last Month</MenuItem>
@@ -134,7 +132,7 @@ class Statistics extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
-  const statistics = statisticsSelector(state);
+  const statistics = allStatisticSelector(state);
 
   return {
     statistics,

@@ -1,9 +1,9 @@
 // @flow
 
-import { connect } from "react-redux";
-import { userSelector, loginRouteSelector } from "../redux/reducers/reducer";
-import { logoutAction } from "../redux/actions/action";
-import AppBar from "../components/AppBar";
+import { connect } from 'react-redux';
+import { loginRouteSelector, userSelector } from '../redux/reducers/auth';
+import { logoutAction } from '../redux/actions/auth';
+import AppBar from '../components/AppBar';
 
 function mapStateToProps(state) {
   const { isLoggedIn, user } = userSelector(state);
@@ -17,7 +17,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  onLogout: logoutAction
+  onLogout: logoutAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppBar);

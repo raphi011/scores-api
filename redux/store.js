@@ -1,9 +1,18 @@
 import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import reducer from './reducers/reducer';
+import reducer, { initialState } from './reducers';
 import apiMiddleware, { serverAction } from './apiMiddleware';
-import type { Store } from './storeTypes';
+
+import type { AuthStore } from './reducers/auth';
+import type { EntitiesStore } from './reducers/entities';
+import type { StatusStore } from './reducers/status';
+
+export type Store = {
+  auth: AuthStore,
+  entities: EntitiesStore,
+  status: StatusStore,
+};
 
 export async function dispatchActions(
   dispatch,
@@ -18,18 +27,6 @@ export async function dispatchActions(
     await dispatch(action);
   }
 }
-
-const initialState = {
-  user: null,
-  loginRoute: null,
-  status: '',
-  playersMap: {},
-  statisticsMap: {},
-  matchesMap: {},
-  matchesIds: [],
-  playerIds: [],
-  statisticIds: [],
-};
 
 const initStore = (state: Store = initialState) =>
   createStore(

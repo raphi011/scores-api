@@ -6,24 +6,21 @@ import withRedux from 'next-redux-wrapper';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import Tooltip from 'material-ui/Tooltip';
+import Toolbar from 'material-ui/Toolbar';
 import Link from 'next/link';
 
 import withRoot from '../styles/withRoot';
 import Layout from '../components/Layout';
 import MatchList from '../containers/MatchListContainer';
 import initStore, { dispatchActions } from '../redux/store';
-import { matchesSelector } from '../redux/reducers/reducer';
-import {
-  loadMatchesAction,
-  setStatusAction,
-  userOrLoginRouteAction,
-} from '../redux/actions/action';
+import { allMatchesSelector } from '../redux/reducers/entities';
+import { loadMatchesAction } from '../redux/actions/entities';
+import { setStatusAction } from '../redux/actions/status';
+import { userOrLoginRouteAction } from '../redux/actions/auth';
+
 import type { Match, Classes } from '../types';
 
 const styles = theme => ({
-  matchListContainer: {
-    marginBottom: '70px',
-  },
   button: {
     margin: theme.spacing.unit,
     position: 'fixed',
@@ -35,7 +32,7 @@ const styles = theme => ({
 type Props = {
   classes: Classes,
   matches: Array<Match>,
-  loadMatches: string => Promise<any>,
+  loadMatches: (?string) => Promise<any>,
 };
 
 type State = {
@@ -53,6 +50,15 @@ class Index extends React.Component<Props, State> {
   state = {
     loading: false,
     hasMore: true,
+  };
+
+  onRefresh = async () => {
+    const { loadMatches } = this.props;
+    try {
+      await loadMatches();
+    } catch (e) {
+      // ignore
+    }
   };
 
   onLoadMore = async () => {
@@ -84,7 +90,13 @@ class Index extends React.Component<Props, State> {
 
     return (
       <Layout title="Matches">
-        <div className={classes.matchListContainer}>
+        <div>
+          <Toolbar>
+            <Button color="secondary" onClick={this.onRefresh} raised>
+              Refresh
+            </Button>
+          </Toolbar>
+
           <MatchList
             matches={matches}
             onLoadMore={this.onLoadMore}
@@ -92,6 +104,7 @@ class Index extends React.Component<Props, State> {
             hasMore={hasMore}
           />
         </div>
+
         <Tooltip title="Create new Match" className={classes.button}>
           <Button fab color="primary" aria-label="add">
             <Link prefetch href="/createMatch">
@@ -105,7 +118,7 @@ class Index extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
-  const matches = matchesSelector(state);
+  const matches = allMatchesSelector(state);
 
   return {
     matches,

@@ -11,17 +11,17 @@ import Layout from '../components/Layout';
 import initStore, { dispatchActions } from '../redux/store';
 import {
   loadPlayerAction,
-  userOrLoginRouteAction,
   loadPlayersAction,
-  loadStatisticAction,
+  loadPlayerStatisticAction,
   loadPlayerMatchesAction,
-} from '../redux/actions/action';
+} from '../redux/actions/entities';
+import { userOrLoginRouteAction } from '../redux/actions/auth';
 import PlayerView from '../components/PlayerView';
 import {
   playerSelector,
-  statisticSelector,
-  playerMatchesSelector,
-} from '../redux/reducers/reducer';
+  statisticByPlayerSelector,
+  matchesByPlayerSelector,
+} from '../redux/reducers/entities';
 import type { Player, Statistic } from '../types';
 
 type Props = {
@@ -29,10 +29,13 @@ type Props = {
   statistic: Statistic,
   matches: Array<MatchList>,
   playerId: number,
+  loadMatches: (number, ?string) => Promise<any>,
 };
 
 type State = {
   tabOpen: number,
+  loading: boolean,
+  hasMore: boolean,
 };
 
 class PlayerInfo extends React.Component<Props, State> {
@@ -45,7 +48,7 @@ class PlayerInfo extends React.Component<Props, State> {
       actions.push(
         loadPlayerAction(id),
         loadPlayerMatchesAction(id),
-        loadStatisticAction(id),
+        loadPlayerStatisticAction(id),
       );
     } else {
       actions.push(loadPlayersAction());
@@ -58,6 +61,31 @@ class PlayerInfo extends React.Component<Props, State> {
 
   state = {
     tabOpen: 0,
+    loading: false,
+    hasMore: true,
+  };
+
+  onLoadMore = async () => {
+    const { playerId, loadMatches, matches } = this.props;
+
+    this.setState({ loading: true });
+
+    const lastElement = matches[matches.length - 1];
+
+    const after = lastElement ? lastElement.createdAt : '';
+
+    const newState = {
+      loading: false,
+      hasMore: true,
+    };
+
+    try {
+      await loadMatches(playerId, after);
+    } catch (e) {
+      newState.hasMore = false;
+    } finally {
+      this.setState(newState);
+    }
   };
 
   onTabClick = (event, index) => {
@@ -66,6 +94,7 @@ class PlayerInfo extends React.Component<Props, State> {
 
   render() {
     const { player, matches, statistic, playerId } = this.props;
+    const { loading, hasMore } = this.state;
 
     if (!playerId) {
       return (
@@ -90,7 +119,12 @@ class PlayerInfo extends React.Component<Props, State> {
           <Tab label="Teams" />
         </Tabs>
         {this.state.tabOpen === 0 ? (
-          <MatchList matches={matches} />
+          <MatchList
+            matches={matches}
+            onLoadMore={this.onLoadMore}
+            loading={loading}
+            hasMore={hasMore}
+          />
         ) : (
           <Typography align="center">List of teams</Typography>
         )}
@@ -102,8 +136,8 @@ class PlayerInfo extends React.Component<Props, State> {
 function mapStateToProps(state, ownProps) {
   const { playerId } = ownProps;
   const player = playerSelector(state, playerId);
-  const statistic = statisticSelector(state, playerId);
-  const matches = playerMatchesSelector(state, playerId);
+  const statistic = statisticByPlayerSelector(state, playerId);
+  const matches = matchesByPlayerSelector(state, playerId);
 
   return {
     player,
@@ -112,7 +146,9 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  loadMatches: loadPlayerMatchesAction,
+};
 
 export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
   withRoot(PlayerInfo),

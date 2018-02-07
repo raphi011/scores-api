@@ -8,7 +8,7 @@ import { CircularProgress } from 'material-ui/Progress';
 
 import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';
-import { deleteMatchAction } from '../redux/actions/action';
+import { deleteMatchAction } from '../redux/actions/entities';
 
 import type { Match } from '../types';
 

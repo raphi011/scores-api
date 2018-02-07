@@ -15,14 +15,14 @@ import SelectPlayers from '../components/SelectPlayers';
 import SetScores from '../components/SetScores';
 import withRoot from '../styles/withRoot';
 import initStore, { dispatchActions } from '../redux/store';
-import { playersSelector, matchSelector } from '../redux/reducers/reducer';
+import { allPlayersSelector, matchSelector } from '../redux/reducers/entities';
 import {
   createNewMatchAction,
-  setStatusAction,
   loadPlayersAction,
-  userOrLoginRouteAction,
   loadMatchAction,
-} from '../redux/actions/action';
+} from '../redux/actions/entities';
+import { setStatusAction } from '../redux/actions/status';
+import { userOrLoginRouteAction } from '../redux/actions/auth';
 import type { NewMatch, Match, Player } from '../types';
 
 const styles = theme => ({
@@ -61,8 +61,7 @@ function calcWinnerScore(loserScore: number, targetScore: number): number {
 type Props = {
   match: ?Match,
   classes: Object,
-  playerIds: Array<number>,
-  playersMap: { [number]: Player },
+  players: Array<Player>,
   createNewMatch: NewMatch => Promise<any>,
   setStatus: string => void,
   /* eslint-disable react/no-unused-prop-types */
@@ -73,10 +72,10 @@ type State = {
   activeStep: number,
   teamsComplete: boolean,
   match: {
-    player1Id: number,
-    player2Id: number,
-    player3Id: number,
-    player4Id: number,
+    player1: ?Player,
+    player2: ?Player,
+    player3: ?Player,
+    player4: ?Player,
     scoreTeam1: string,
     scoreTeam2: string,
     targetScore: string,
@@ -107,14 +106,14 @@ class CreateMatch extends React.Component<Props, State> {
 
     const { match } = props;
 
-    const state = {
+    const state: State = {
       activeStep: 0,
       teamsComplete: false,
       match: {
-        player1Id: 0,
-        player2Id: 0,
-        player3Id: 0,
-        player4Id: 0,
+        player1: null,
+        player2: null,
+        player3: null,
+        player4: null,
         scoreTeam1: '',
         scoreTeam2: '',
         targetScore: '15',
@@ -127,32 +126,32 @@ class CreateMatch extends React.Component<Props, State> {
     if (match) {
       state.activeStep = 1;
       state.teamsComplete = true;
-      state.match.player1Id = match.team1.player1Id;
-      state.match.player2Id = match.team1.player2Id;
-      state.match.player3Id = match.team2.player1Id;
-      state.match.player4Id = match.team2.player2Id;
+      state.match.player1 = match.team1.player1;
+      state.match.player2 = match.team1.player2;
+      state.match.player3 = match.team2.player1;
+      state.match.player4 = match.team2.player2;
     }
 
     this.state = state;
   }
 
-  onUnsetPlayer = selected => {
+  onUnsetPlayer = (selected: number) => {
     const match = {
       ...this.state.match,
     };
 
     switch (selected) {
       case 1:
-        match.player1Id = 0;
+        match.player1 = null;
         break;
       case 2:
-        match.player2Id = 0;
+        match.player2 = null;
         break;
       case 3:
-        match.player3Id = 0;
+        match.player3 = null;
         break;
       case 4:
-        match.player4Id = 0;
+        match.player4 = null;
         break;
       default:
         throw new Error(`Can't unset player: ${selected}`);
@@ -161,27 +160,27 @@ class CreateMatch extends React.Component<Props, State> {
     this.setState({ match, teamsComplete: false });
   };
 
-  onSetPlayer = (player, playerId, teamsComplete) => {
+  onSetPlayer = (playerNr: number, player: Player, teamsComplete: boolean) => {
     const activeStep = teamsComplete ? 1 : 0;
     const match = {
       ...this.state.match,
     };
 
-    switch (player) {
+    switch (playerNr) {
       case 1:
-        match.player1Id = playerId;
+        match.player1 = player;
         break;
       case 2:
-        match.player2Id = playerId;
+        match.player2 = player;
         break;
       case 3:
-        match.player3Id = playerId;
+        match.player3 = player;
         break;
       case 4:
-        match.player4Id = playerId;
+        match.player4 = player;
         break;
       default:
-        throw new Error(`Can't set player: ${player}`);
+        throw new Error(`Can't set player: ${playerNr}`);
     }
 
     this.setState({ match, teamsComplete, activeStep });
@@ -281,42 +280,40 @@ class CreateMatch extends React.Component<Props, State> {
   };
 
   getMatch = (): NewMatch => {
-    const { scoreTeam1, scoreTeam2, targetScore, ...rest } = this.state.match;
+    const {
+      scoreTeam1,
+      scoreTeam2,
+      targetScore,
+      player1,
+      player2,
+      player3,
+      player4,
+    } = this.state.match;
 
     return {
-      ...rest,
+      player1Id: player1 ? player1.id : 0,
+      player2Id: player2 ? player2.id : 0,
+      player3Id: player3 ? player3.id : 0,
+      player4Id: player4 ? player4.id : 0,
       scoreTeam1: Number.parseInt(scoreTeam1, 10) || 0,
       scoreTeam2: Number.parseInt(scoreTeam2, 10) || 0,
       targetScore: Number.parseInt(targetScore, 10) || 0,
     };
   };
 
-  getPlayers = () => {
-    const { playerIds, playersMap } = this.props;
-
-    return playerIds.map(p => playersMap[p]);
-  };
-
   render() {
-    const { playersMap, classes } = this.props;
+    const { players, classes } = this.props;
     const { teamsComplete, activeStep, match, errors } = this.state;
 
     const {
       scoreTeam1,
       scoreTeam2,
-      player1Id,
-      player2Id,
-      player3Id,
-      player4Id,
+      player1,
+      player2,
+      player3,
+      player4,
       targetScore,
     } = match;
-
-    const players = this.getPlayers();
-
-    const player1 = playersMap[player1Id];
-    const player2 = playersMap[player2Id];
-    const player3 = playersMap[player3Id];
-    const player4 = playersMap[player4Id];
 
     return (
       <Layout title="New Match">
@@ -347,10 +344,10 @@ class CreateMatch extends React.Component<Props, State> {
           <div>
             {activeStep === 0 ? (
               <SelectPlayers
-                player1Id={player1Id}
-                player2Id={player2Id}
-                player3Id={player3Id}
-                player4Id={player4Id}
+                player1={player1}
+                player2={player2}
+                player3={player3}
+                player4={player4}
                 players={players}
                 onSetPlayer={this.onSetPlayer}
                 onUnsetPlayer={this.onUnsetPlayer}
@@ -382,12 +379,11 @@ class CreateMatch extends React.Component<Props, State> {
 
 function mapStateToProps(state, ownProps: Props) {
   const { rematchId } = ownProps;
-  const { playersMap, playerIds } = playersSelector(state);
+  const players = allPlayersSelector(state);
   const match = rematchId ? matchSelector(state, rematchId) : null;
 
   return {
-    playersMap,
-    playerIds,
+    players,
     match,
   };
 }

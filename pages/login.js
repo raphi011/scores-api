@@ -1,13 +1,13 @@
-// @flow 
+// @flow
 
-import React from "react";
-import Router from "next/router";
-import withRedux from "next-redux-wrapper";
+import React from 'react';
+import Router from 'next/router';
+import withRedux from 'next-redux-wrapper';
 
 import Button from 'material-ui/Button';
-import { userOrLoginRouteAction } from "../redux/actions/action";
-import initStore, { dispatchActions } from "../redux/store";
-import { userSelector, loginRouteSelector } from "../redux/reducers/reducer";
+import { userOrLoginRouteAction } from '../redux/actions/auth';
+import initStore, { dispatchActions } from '../redux/store';
+import { userSelector, loginRouteSelector } from '../redux/reducers/auth';
 
 type Props = {
   isLoggedIn: boolean,
@@ -28,9 +28,9 @@ class Login extends React.Component<Props> {
 
   componentDidMount() {
     const { isLoggedIn, redirect } = this.props;
- 
+
     if (isLoggedIn) {
-      Router.replace(redirect || "/");
+      Router.replace(redirect || '/');
     }
   }
 

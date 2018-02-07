@@ -1,11 +1,12 @@
-// @flow 
+// @flow
 
-import React from "react";
-import Router from "next/router";
-import withRedux from "next-redux-wrapper";
+import React from 'react';
+import Router from 'next/router';
+import withRedux from 'next-redux-wrapper';
 
-import { loggedInAction, setStatusAction } from "../redux/actions/action";
-import initStore from "../redux/store";
+import { loggedInAction } from '../redux/actions/auth';
+import { setStatusAction } from '../redux/actions/status';
+import initStore from '../redux/store';
 
 class LoggedIn extends React.Component<null, null> {
   static async getInitialProps(props) {
@@ -16,12 +17,12 @@ class LoggedIn extends React.Component<null, null> {
     if (!error) {
       await store.dispatch(loggedInAction(username));
     } else {
-      await store.dispatch(setStatusAction("User not found"));
+      await store.dispatch(setStatusAction('User not found'));
     }
   }
 
   componentDidMount() {
-    Router.replace("/");
+    Router.replace('/');
   }
 
   render() {
