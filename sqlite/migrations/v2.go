@@ -5,6 +5,7 @@ var V2 = []string{
 	groupTable,
 	groupPlayerTable,
 	alterMatchTable,
+	matchCreatedAtIndex,
 }
 
 var ResetV2 = []string{
@@ -75,5 +76,9 @@ const (
 		ON (m.team1_player1_id = t.player1_id AND m.team1_player2_id = t.player2_id)
 		OR (m.team2_player1_id = t.player1_id AND m.team2_player2_id = t.player2_id)
 		WHERE m.deleted_at IS NULL
+	`
+
+	matchCreatedAtIndex = `
+		CREATE INDEX idx_matches_created_at ON matches(created_at);
 	`
 )
