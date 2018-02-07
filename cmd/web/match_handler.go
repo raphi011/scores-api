@@ -176,5 +176,5 @@ func (h *matchHandler) matchDelete(c *gin.Context) {
 
 	h.matchService.Delete(match.ID)
 
-	jsonn(c, http.StatusOK, nil, "")
+	jsonn(c, http.StatusOK, match, "")
 }
