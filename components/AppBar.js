@@ -31,7 +31,6 @@ const styles = () => ({
 
 type Props = {
   onOpenMenu: () => void,
-  loginRoute: string,
   title: string,
   isLoggedIn: boolean,
   user: User,
@@ -41,7 +40,6 @@ type Props = {
 
 function ButtonAppBar({
   onOpenMenu,
-  loginRoute,
   title,
   isLoggedIn,
   user,
@@ -57,11 +55,7 @@ function ButtonAppBar({
         </Button>
       </div>
     </Tooltip>
-  ) : (
-    <Button color="inherit" href={loginRoute}>
-      Login
-    </Button>
-  );
+  ) : null;
 
   return (
     <div className={classes.root}>

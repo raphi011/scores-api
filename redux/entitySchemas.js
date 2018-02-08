@@ -50,7 +50,6 @@ function getSchemaMap(entityName: string, isList: boolean) {
 
 function getArtificialId(): number {
   const id = Math.floor(Math.random() * Math.floor(100000));
-  console.debug('assigning id: ' + id);
   // TODO: fix this, id collisions possible
   return id;
 }

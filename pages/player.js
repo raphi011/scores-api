@@ -1,21 +1,21 @@
 // @flow
 
 import React from 'react';
-import withRedux from 'next-redux-wrapper';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
-import MatchList from '../containers/MatchListContainer';
 
-import withRoot from '../styles/withRoot';
+import MatchList from '../containers/MatchListContainer';
+import withAuth from '../containers/AuthContainer';
+
 import Layout from '../components/Layout';
-import initStore, { dispatchActions } from '../redux/store';
+import { dispatchAction } from '../redux/store';
 import {
   loadPlayerAction,
   loadPlayersAction,
   loadPlayerStatisticAction,
   loadPlayerMatchesAction,
 } from '../redux/actions/entities';
-import { userOrLoginRouteAction } from '../redux/actions/auth';
+import { multiApiAction } from '../redux/actions/api';
 import PlayerView from '../components/PlayerView';
 import {
   playerSelector,
@@ -40,24 +40,41 @@ type State = {
 
 class PlayerInfo extends React.Component<Props, State> {
   static async getInitialProps({ store, query, req, res, isServer }) {
-    const actions = [userOrLoginRouteAction()];
+    let action;
 
     const { id } = query;
 
     if (id) {
-      actions.push(
+      action = multiApiAction([
         loadPlayerAction(id),
         loadPlayerMatchesAction(id),
         loadPlayerStatisticAction(id),
-      );
+      ]);
     } else {
-      actions.push(loadPlayersAction());
+      action = loadPlayersAction();
     }
 
-    await dispatchActions(store.dispatch, isServer, req, res, actions);
+    await dispatchAction(store.dispatch, isServer, req, res, action);
 
     return { playerId: id };
   }
+
+  static mapStateToProps(state, ownProps) {
+    const { playerId } = ownProps;
+    const player = playerSelector(state, playerId);
+    const statistic = statisticByPlayerSelector(state, playerId);
+    const matches = matchesByPlayerSelector(state, playerId);
+
+    return {
+      player,
+      statistic,
+      matches,
+    };
+  }
+
+  static mapDispatchToProps = {
+    loadMatches: loadPlayerMatchesAction,
+  };
 
   state = {
     tabOpen: 0,
@@ -80,7 +97,8 @@ class PlayerInfo extends React.Component<Props, State> {
     };
 
     try {
-      await loadMatches(playerId, after);
+      const result = await loadMatches(playerId, after);
+      newState.hasMore = !result.empty;
     } catch (e) {
       newState.hasMore = false;
     } finally {
@@ -133,23 +151,4 @@ class PlayerInfo extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  const { playerId } = ownProps;
-  const player = playerSelector(state, playerId);
-  const statistic = statisticByPlayerSelector(state, playerId);
-  const matches = matchesByPlayerSelector(state, playerId);
-
-  return {
-    player,
-    statistic,
-    matches,
-  };
-}
-
-const mapDispatchToProps = {
-  loadMatches: loadPlayerMatchesAction,
-};
-
-export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-  withRoot(PlayerInfo),
-);
+export default withAuth(PlayerInfo);

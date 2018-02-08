@@ -24,13 +24,6 @@ function loggedOut(state: AuthStore, action): AuthStore {
   };
 }
 
-function login(state: AuthStore, action): AuthStore {
-  return {
-    ...state,
-    user: action.username,
-  };
-}
-
 function setUserOrLoginroute(state: AuthStore, action): AuthStore {
   const { user, loginRoute } = action.payload;
   return {
@@ -42,7 +35,6 @@ function setUserOrLoginroute(state: AuthStore, action): AuthStore {
 
 const reducer = createReducer(initialAuthState, {
   [actionNames.LOGGEDOUT]: loggedOut,
-  [actionNames.LOGIN]: login,
   [actionNames.SET_USER_OR_LOGINROUTE]: setUserOrLoginroute,
 });
 

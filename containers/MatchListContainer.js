@@ -38,7 +38,7 @@ class MatchListContainer extends React.PureComponent<Props, State> {
   };
 
   onShowPlayer = (playerId: number) => {
-    this.setState({ selectedMatch: null });
+    this.onCloseDialog();
     Router.push(`/player?id=${playerId}`);
   };
 

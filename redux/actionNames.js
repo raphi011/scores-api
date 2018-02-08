@@ -1,8 +1,8 @@
 export const API = 'API';
+export const API_MULTI = 'API_MULTI';
 
 export const SET_USER_OR_LOGINROUTE = 'SET_USER_OR_LOGINROUTE';
 export const LOGGEDOUT = 'LOGGEDOUT';
-export const LOGIN = 'LOGIN';
 export const SET_LOGINROUTE = 'SET_LOGINROUTE';
 
 export const RECEIVE_ENTITIES = 'RECEIVE_ENTITIES';

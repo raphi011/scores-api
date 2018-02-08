@@ -35,13 +35,7 @@ export function serverAction(action, req, res) {
   };
 }
 
-const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
-  next: Action => Promise<any>,
-) => async (action: ApiAction) => {
-  if (action.type !== actionNames.API) {
-    return next(action);
-  }
-
+async function doAction(dispatch, action) {
   let { headers = {} } = action;
   const {
     success,
@@ -110,7 +104,7 @@ const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
         return Promise.resolve({ empty });
       }
 
-      return Promise.resolve({ empty: false });
+      return Promise.resolve({ empty: false, response: payload });
     }
 
     // error ...
@@ -131,6 +125,29 @@ const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
   }
 
   return Promise.reject();
+}
+
+const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
+  next: Action => Promise<any>,
+) => async (action: ApiAction) => {
+  if (
+    action.type !== actionNames.API &&
+    action.type !== actionNames.API_MULTI
+  ) {
+    return next(action);
+  }
+
+  let result;
+
+  if (action.type === actionNames.API_MULTI) {
+    const { actions } = action;
+
+    result = await Promise.all(actions.map(a => doAction(dispatch, a)));
+  } else {
+    result = await doAction(dispatch, action);
+  }
+
+  return result;
 };
 
 export default apiMiddleware;

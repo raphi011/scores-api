@@ -91,3 +91,8 @@ export type ApiAction = {
   successStatus?: string,
   successParams?: Object,
 };
+
+export type ApiActions = {
+  type: 'API_MULTI',
+  actions: Array<ApiAction>,
+};

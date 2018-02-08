@@ -7,14 +7,13 @@ import BackIcon from 'material-ui-icons/KeyboardArrowLeft';
 import NextIcon from 'material-ui-icons/KeyboardArrowRight';
 import MobileStepper from 'material-ui/MobileStepper';
 import Router from 'next/router';
-import withRedux from 'next-redux-wrapper';
 
+import withAuth from '../containers/AuthContainer';
 import { validateMatch } from '../validation/match';
 import Layout from '../components/Layout';
 import SelectPlayers from '../components/SelectPlayers';
 import SetScores from '../components/SetScores';
-import withRoot from '../styles/withRoot';
-import initStore, { dispatchActions } from '../redux/store';
+import { dispatchActions } from '../redux/store';
 import { allPlayersSelector, matchSelector } from '../redux/reducers/entities';
 import {
   createNewMatchAction,
@@ -22,7 +21,6 @@ import {
   loadMatchAction,
 } from '../redux/actions/entities';
 import { setStatusAction } from '../redux/actions/status';
-import { userOrLoginRouteAction } from '../redux/actions/auth';
 import type { NewMatch, Match, Player } from '../types';
 
 const styles = theme => ({
@@ -87,7 +85,7 @@ type State = {
 
 class CreateMatch extends React.Component<Props, State> {
   static async getInitialProps({ store, query, isServer, req, res }) {
-    const actions = [loadPlayersAction(), userOrLoginRouteAction()];
+    const actions = [loadPlayersAction()];
 
     let { rematchId } = query;
 
@@ -100,6 +98,23 @@ class CreateMatch extends React.Component<Props, State> {
 
     return { rematchId };
   }
+
+  static mapStateToProps(state, ownProps: Props) {
+    const { rematchId } = ownProps;
+    const players = allPlayersSelector(state);
+    const match = rematchId ? matchSelector(state, rematchId) : null;
+
+    return {
+      players,
+      match,
+    };
+  }
+
+  static mapDispatchToProps = {
+    loadPlayers: loadPlayersAction,
+    createNewMatch: createNewMatchAction,
+    setStatus: setStatusAction,
+  };
 
   constructor(props: Props) {
     super(props);
@@ -377,25 +392,4 @@ class CreateMatch extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state, ownProps: Props) {
-  const { rematchId } = ownProps;
-  const players = allPlayersSelector(state);
-  const match = rematchId ? matchSelector(state, rematchId) : null;
-
-  return {
-    players,
-    match,
-  };
-}
-
-const mapDispatchToProps = {
-  loadPlayers: loadPlayersAction,
-  createNewMatch: createNewMatchAction,
-  setStatus: setStatusAction,
-};
-
-export default withStyles(styles)(
-  withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-    withRoot(CreateMatch),
-  ),
-);
+export default withAuth(withStyles(styles)(CreateMatch));

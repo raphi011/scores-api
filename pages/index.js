@@ -2,21 +2,19 @@
 
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
-import withRedux from 'next-redux-wrapper';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import Tooltip from 'material-ui/Tooltip';
 import Toolbar from 'material-ui/Toolbar';
 import Link from 'next/link';
 
-import withRoot from '../styles/withRoot';
+import withAuth from '../containers/AuthContainer';
 import Layout from '../components/Layout';
 import MatchList from '../containers/MatchListContainer';
-import initStore, { dispatchActions } from '../redux/store';
+import { dispatchActions } from '../redux/store';
 import { allMatchesSelector } from '../redux/reducers/entities';
 import { loadMatchesAction } from '../redux/actions/entities';
 import { setStatusAction } from '../redux/actions/status';
-import { userOrLoginRouteAction } from '../redux/actions/auth';
 
 import type { Match, Classes } from '../types';
 
@@ -42,10 +40,23 @@ type State = {
 
 class Index extends React.Component<Props, State> {
   static async getInitialProps({ store, req, res, isServer }) {
-    const actions = [loadMatchesAction(), userOrLoginRouteAction()];
+    const actions = [loadMatchesAction()];
 
     await dispatchActions(store.dispatch, isServer, req, res, actions);
   }
+
+  static mapStateToProps(state) {
+    const matches = allMatchesSelector(state);
+
+    return {
+      matches,
+    };
+  }
+
+  static mapDispatchToProps = {
+    loadMatches: loadMatchesAction,
+    setStatus: setStatusAction,
+  };
 
   state = {
     loading: false,
@@ -119,19 +130,4 @@ class Index extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state) {
-  const matches = allMatchesSelector(state);
-
-  return {
-    matches,
-  };
-}
-
-const mapDispatchToProps = {
-  loadMatches: loadMatchesAction,
-  setStatus: setStatusAction,
-};
-
-export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-  withRoot(withStyles(styles)(Index)),
-);
+export default withAuth(withStyles(styles)(Index));

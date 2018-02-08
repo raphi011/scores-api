@@ -10,11 +10,6 @@ export const userOrLoginRouteAction = (): ApiAction => ({
   success: actionNames.SET_USER_OR_LOGINROUTE,
 });
 
-export const loggedInAction = (username: string) => ({
-  type: actionNames.LOGIN,
-  username,
-});
-
 export const logoutAction = (): ApiAction => ({
   type: actionNames.API,
   method: 'POST',

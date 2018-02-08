@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import withRedux from 'next-redux-wrapper';
 import { withStyles } from 'material-ui/styles';
 import DateRangeIcon from 'material-ui-icons/DateRange';
 import IconButton from 'material-ui/IconButton';
@@ -9,10 +8,10 @@ import Toolbar from 'material-ui/Toolbar';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Router from 'next/router';
 
-import withRoot from '../styles/withRoot';
+import withAuth from '../containers/AuthContainer';
 import Layout from '../components/Layout';
 import StatisticList from '../components/StatisticList';
-import initStore, { dispatchActions } from '../redux/store';
+import { dispatchActions } from '../redux/store';
 import { userOrLoginRouteAction } from '../redux/actions/auth';
 import { loadStatisticsAction } from '../redux/actions/entities';
 import { allStatisticSelector } from '../redux/reducers/entities';
@@ -48,6 +47,14 @@ class Statistics extends React.Component<Props, State> {
     await dispatchActions(store.dispatch, isServer, req, res, actions);
 
     return { filter };
+  }
+
+  static mapStateToProps(state) {
+    const statistics = allStatisticSelector(state);
+
+    return {
+      statistics,
+    };
   }
 
   state = {
@@ -131,16 +138,4 @@ class Statistics extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state) {
-  const statistics = allStatisticSelector(state);
-
-  return {
-    statistics,
-  };
-}
-
-const mapDispatchToProps = {};
-
-export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(
-  withRoot(withStyles(styles)(Statistics)),
-);
+export default withAuth(withStyles(styles)(Statistics));

@@ -48,7 +48,11 @@ function isSameDay(date1: Date, date2: Date): boolean {
   );
 }
 
-const DayHeader = ({ date }) => (
+type DayHeaderProps = {
+  date: Date,
+};
+
+const DayHeader = ({ date }: DayHeaderProps) => (
   <ListItem dense style={{ justifyContent: 'center' }}>
     <Chip label={formatDate(date)} />
   </ListItem>
@@ -63,18 +67,13 @@ class MatchList extends React.PureComponent<Props> {
         {matches.map((m, i) => {
           const currentDate = new Date(m.createdAt);
           const lastDate = i ? new Date(matches[i - 1].createdAt) : null;
+          const showHeader = !lastDate || !isSameDay(currentDate, lastDate);
+          const matchKey = m.id;
 
           return (
-            <React.Fragment>
-              {!lastDate || !isSameDay(currentDate, lastDate) ? (
-                <DayHeader key={currentDate.getTime()} date={currentDate} />
-              ) : null}
-              <ListItem
-                divider
-                key={m.id}
-                button
-                onClick={() => onMatchClick(m)}
-              >
+            <React.Fragment key={matchKey}>
+              {showHeader ? <DayHeader date={currentDate} /> : null}
+              <ListItem divider button onClick={() => onMatchClick(m)}>
                 <ListItemText
                   primary={
                     <div className={classes.listContainer}>

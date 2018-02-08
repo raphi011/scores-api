@@ -62,12 +62,12 @@ class SetScores extends React.PureComponent<Props> {
   onLoseFocusScoreTeam1 = e => {
     const { onLoseFocus } = this.props;
     onLoseFocus(1, e);
-  }
+  };
 
   onLoseFocusScoreTeam2 = e => {
     const { onLoseFocus } = this.props;
     onLoseFocus(2, e);
-  }
+  };
 
   render() {
     const {
@@ -156,7 +156,7 @@ class SetScores extends React.PureComponent<Props> {
           className={classes.submitButton}
           color="primary"
           type="submit"
-          raised
+          variant="raised"
         >
           <DoneIcon className={classes.leftIcon} />
           Submit
