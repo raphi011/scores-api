@@ -104,7 +104,7 @@ func (a *authHandler) authenticate(c *gin.Context) {
 
 		session.Set("user-id", user.Email)
 		session.Save()
-		c.Redirect(http.StatusFound, "/loggedIn?username="+user.Email)
+		c.Redirect(http.StatusFound, "/")
 	}
 }
 

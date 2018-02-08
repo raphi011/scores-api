@@ -19,7 +19,7 @@ type Matches []Match
 
 type MatchService interface {
 	Match(matchID uint) (*Match, error)
-	PlayerMatches(playerID uint) (Matches, error)
+	PlayerMatches(playerID uint, after time.Time, count uint) (Matches, error)
 	Matches(after time.Time, count uint) (Matches, error)
 	Create(*Match) (*Match, error)
 	Delete(matchID uint) error

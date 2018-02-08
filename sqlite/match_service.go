@@ -101,7 +101,9 @@ const (
 			 m.team1_player2_id = $1 OR 
 			 m.team2_player1_id = $1 OR 
 			 m.team2_player2_id = $1)` +
-		matchesOrderBySQL
+		" AND m.created_at < $2" +
+		matchesOrderBySQL +
+		" LIMIT $3"
 
 	matchSelectSQL = matchesBaseSelectSQL + " and m.id = $1"
 )
@@ -179,10 +181,10 @@ func (s *MatchService) Matches(after time.Time, count uint) (scores.Matches, err
 	return matches, nil
 }
 
-func (s *MatchService) PlayerMatches(playerID uint) (scores.Matches, error) {
+func (s *MatchService) PlayerMatches(playerID uint, after time.Time, count uint) (scores.Matches, error) {
 	matches := scores.Matches{}
 
-	rows, err := s.DB.Query(matchesByPlayerSelectSQL, playerID)
+	rows, err := s.DB.Query(matchesByPlayerSelectSQL, playerID, after, count)
 
 	if err != nil {
 		return nil, err

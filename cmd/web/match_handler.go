@@ -57,6 +57,19 @@ func (h *matchHandler) index(c *gin.Context) {
 }
 
 func (h *matchHandler) byPlayer(c *gin.Context) {
+	var err error
+	after := time.Now()
+	count := uint(25)
+
+	if afterParam := c.Query("after"); afterParam != "" {
+		after, err = time.Parse(time.RFC3339, afterParam)
+
+		if err != nil {
+			jsonn(c, http.StatusBadRequest, nil, "Bad request")
+			return
+		}
+	}
+
 	playerID, err := strconv.Atoi(c.Param("playerID"))
 
 	if err != nil {
@@ -71,7 +84,7 @@ func (h *matchHandler) byPlayer(c *gin.Context) {
 		return
 	}
 
-	matches, err := h.matchService.PlayerMatches(uint(playerID))
+	matches, err := h.matchService.PlayerMatches(uint(playerID), after, count)
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Match not found")
