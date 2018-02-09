@@ -105,7 +105,7 @@ class Index extends React.Component<Props, State> {
       <Layout title="Matches">
         <div>
           <Toolbar>
-            <Button color="secondary" onClick={this.onRefresh} variant="raised">
+            <Button color="primary" onClick={this.onRefresh}>
               Refresh
             </Button>
           </Toolbar>
