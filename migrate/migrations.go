@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+	"strings"
 )
 
 const (
@@ -123,9 +124,14 @@ func runMigrations(db *sql.DB, migrations []Migration, fromVersion uint16) error
 
 func execMultiple(db *sql.Tx, statements ...string) error {
 	for _, statement := range statements {
-		_, err := db.Exec(statement)
-		if err != nil {
-			return err
+		innerStatements := strings.Split(statement, ";")
+
+		for _, s := range innerStatements {
+			_, err := db.Exec(s)
+
+			if err != nil {
+				return err
+			}
 		}
 	}
 

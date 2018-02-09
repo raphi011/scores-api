@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"scores-backend/sqlite"
 
@@ -73,9 +75,16 @@ func authRequired() gin.HandlerFunc {
 }
 
 func jsonn(c *gin.Context, code int, data interface{}, message string) {
-	c.JSON(code, gin.H{
+
+	out, _ := json.Marshal(gin.H{
 		"status":  code,
 		"message": message,
 		"data":    data,
 	})
+
+	c.Writer.Header().Set("Content-Type", "application/json; charset=utf-8")
+	c.Writer.Header().Set("Content-Length", strconv.Itoa(len(out)))
+
+	c.Writer.WriteHeader(code)
+	c.Writer.Write(out)
 }

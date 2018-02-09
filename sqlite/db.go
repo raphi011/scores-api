@@ -25,9 +25,9 @@ func Open(filename string) (*sql.DB, error) {
 }
 
 func Migrate(db *sql.DB) error {
-	return migrate.Migrate(db, []migrate.Migration{migrations.V1, migrations.V2})
+	return migrate.Migrate(db, migrations.MigrationSet)
 }
 
 func Reset(db *sql.DB) error {
-	return migrate.Reset(db, []migrate.TableNames{migrations.ResetV1, migrations.ResetV2})
+	return migrate.Reset(db, migrations.ResetSet)
 }
