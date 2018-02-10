@@ -22,7 +22,6 @@ function withAuth(WrappedComponent) {
       const { isServer, store, res, req } = ctx;
 
       let user;
-      let path;
       let url;
       let isLoggedIn;
       let loginRoute = '';
@@ -38,20 +37,18 @@ function withAuth(WrappedComponent) {
 
         user = result.response.user;
         loginRoute = result.response.loginRoute;
-        path = req.path;
         url = req.url;
         isLoggedIn = !!user;
       } else {
         const authState = userSelector(store.getState());
 
-        path = Router.pathname;
         url = Router.asPath;
         isLoggedIn = authState.isLoggedIn;
         user = authState.user;
       }
 
       if (!isLoggedIn) {
-        if (path !== '/login') {
+        if (!url.includes('/login')) {
           // redirect to '/login'
           const redir = url ? `?r=${encodeURIComponent(url)}` : '';
 
