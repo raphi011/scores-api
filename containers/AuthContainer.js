@@ -54,8 +54,8 @@ function withAuth(WrappedComponent) {
         const redir = url ? `?r=${encodeURIComponent(url)}` : '';
 
         if (isServer) {
-          const host = req.get('Host');
-          const loginUrl = `${req.protocol}://${host}/login${redir}`;
+          const host = req.headers.host;
+          const loginUrl = `http://${host}/login${redir}`;
           res.writeHead(302, {
             Location: loginUrl,
           });
