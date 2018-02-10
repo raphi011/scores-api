@@ -50,38 +50,49 @@ function withAuth(WrappedComponent) {
         user = authState.user;
       }
 
-      if (path !== '/login' && !isLoggedIn) {
-        const redir = url ? `?r=${encodeURIComponent(url)}` : '';
+      if (!isLoggedIn) {
+        if (path !== '/login') {
+          // redirect to '/login'
+          const redir = url ? `?r=${encodeURIComponent(url)}` : '';
 
-        if (isServer) {
-          const host = req.headers.host;
-          const loginUrl = `http://${host}/login${redir}`;
-          res.writeHead(302, {
-            Location: loginUrl,
-          });
-          res.end();
-          res.finished = true;
-        } else {
-          Router.push(`/login${redir}`);
+          if (isServer) {
+            // TODO: improve this
+            const protocol =
+              process.env.NODE_ENV === 'development' ? 'http' : 'https';
+
+            const host = req.headers.host;
+            const loginUrl = `${protocol}://${host}/login${redir}`;
+            res.writeHead(302, {
+              Location: loginUrl,
+            });
+            res.end();
+            res.finished = true;
+          } else {
+            Router.push(`/login${redir}`);
+          }
+
+          return {};
         }
 
-        return {};
+        return { user, isLoggedIn, loginRoute };
       }
+
+      const props = {
+        user,
+        isLoggedIn,
+      };
 
       // All good, auth okay!
       if (WrappedComponent.getInitialProps) {
         const wrappedProps = await WrappedComponent.getInitialProps(ctx);
 
-        const combinedProps = {
+        return {
+          ...props,
           ...wrappedProps,
-          user,
-          isLoggedIn,
         };
-
-        return combinedProps;
       }
 
-      return { user, isLoggedIn, loginRoute };
+      return props;
     }
 
     render() {
