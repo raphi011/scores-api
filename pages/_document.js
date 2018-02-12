@@ -30,6 +30,11 @@ class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
           />
+          <style>
+            {`html, body, #__next {
+              height: 100%
+            }`}
+          </style>
         </Head>
         <body>
           <Main />
