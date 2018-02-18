@@ -16,7 +16,7 @@ import { allMatchesSelector } from '../redux/reducers/entities';
 import { loadMatchesAction } from '../redux/actions/entities';
 import { setStatusAction } from '../redux/actions/status';
 
-import type { Match, Classes } from '../types';
+import type { Match, User, Classes } from '../types';
 
 const styles = theme => ({
   button: {
@@ -29,6 +29,7 @@ const styles = theme => ({
 
 type Props = {
   classes: Classes,
+  user: User,
   matches: Array<Match>,
   loadMatches: (?string) => Promise<{ empty: boolean }>,
 };
@@ -98,7 +99,7 @@ class Index extends React.Component<Props, State> {
   };
 
   render() {
-    const { matches, classes } = this.props;
+    const { matches, user, classes } = this.props;
     const { loading, hasMore } = this.state;
 
     return (
@@ -111,6 +112,7 @@ class Index extends React.Component<Props, State> {
           </Toolbar>
 
           <MatchList
+            highlightPlayerId={user.playerId}
             matches={matches}
             onLoadMore={this.onLoadMore}
             loading={loading}

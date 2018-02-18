@@ -44,10 +44,26 @@ class MatchOptionsDialog extends React.Component<Props> {
     const rematchLink = match ? `/createMatch?rematchId=${match.id}` : '';
     const playerInfos = match
       ? [
-          { playerId: match.team1.player1.id, name: match.team1.player1.name },
-          { playerId: match.team1.player2.id, name: match.team1.player2.name },
-          { playerId: match.team2.player1.id, name: match.team2.player1.name },
-          { playerId: match.team2.player2.id, name: match.team2.player2.name },
+          {
+            playerId: match.team1.player1.id,
+            profileImageUrl: match.team1.player1.profileImageUrl,
+            name: match.team1.player1.name,
+          },
+          {
+            playerId: match.team1.player2.id,
+            profileImageUrl: match.team1.player2.profileImageUrl,
+            name: match.team1.player2.name,
+          },
+          {
+            playerId: match.team2.player1.id,
+            profileImageUrl: match.team2.player1.profileImageUrl,
+            name: match.team2.player1.name,
+          },
+          {
+            playerId: match.team2.player2.id,
+            profileImageUrl: match.team2.player2.profileImageUrl,
+            name: match.team2.player2.name,
+          },
         ]
       : [];
 
@@ -55,33 +71,30 @@ class MatchOptionsDialog extends React.Component<Props> {
       <Dialog onClose={onClose} open={open}>
         <DialogTitle>Options</DialogTitle>
         <List className={classes.root}>
-          {playerInfos.map(({ playerId, name }) => (
+          {playerInfos.map(({ playerId, profileImageUrl, name }) => (
             <ListItem
               button
               key={playerId}
               onClick={() => onShowPlayer(playerId)}
             >
+              <Avatar src={profileImageUrl} />
               <ListItemText inset primary={name} />
             </ListItem>
           ))}
           <Divider />
           <Link href={rematchLink}>
             <ListItem button>
-              <ListItemAvatar>
-                <Avatar>
-                  <CopyIcon />
-                </Avatar>
-              </ListItemAvatar>
+              <Avatar>
+                <CopyIcon />
+              </Avatar>
               <ListItemText primary="Rematch" />
             </ListItem>
           </Link>
           <Divider />
           <ListItem button onClick={this.onDelete}>
-            <ListItemAvatar>
-              <Avatar>
-                <DeleteIcon />
-              </Avatar>
-            </ListItemAvatar>
+            <Avatar>
+              <DeleteIcon />
+            </Avatar>
             <ListItemText primary="Delete" />
           </ListItem>
         </List>

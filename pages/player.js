@@ -139,6 +139,7 @@ class PlayerInfo extends React.Component<Props, State> {
         {this.state.tabOpen === 0 ? (
           <MatchList
             matches={matches}
+            highlightPlayerId={playerId}
             onLoadMore={this.onLoadMore}
             loading={loading}
             hasMore={hasMore}

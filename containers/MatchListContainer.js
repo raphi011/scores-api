@@ -18,6 +18,7 @@ type Props = {
   matches: Array<Match>,
   deleteMatch: Match => void,
   onLoadMore: () => void,
+  highlightPlayerId: number,
   loading: boolean,
   hasMore: boolean,
 };
@@ -58,12 +59,22 @@ class MatchListContainer extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const { matches, onLoadMore, loading, hasMore } = this.props;
+    const {
+      matches,
+      onLoadMore,
+      loading,
+      hasMore,
+      highlightPlayerId,
+    } = this.props;
     const { selectedMatch, dialogOpen } = this.state;
 
     return (
       <Fragment>
-        <MatchList matches={matches} onMatchClick={this.onOpenDialog} />
+        <MatchList
+          matches={matches}
+          onMatchClick={this.onOpenDialog}
+          highlightPlayerId={highlightPlayerId}
+        />
         <div style={{ height: '50px', textAlign: 'center' }}>
           {loading ? (
             <CircularProgress />

@@ -41,6 +41,7 @@ export type User = {
   id: number,
   email: string,
   profileImageUrl: ?string,
+  playerId: number,
 };
 
 export type Statistic = {
