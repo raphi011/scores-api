@@ -38,9 +38,10 @@ class MatchListContainer extends React.PureComponent<Props, State> {
     this.setState({ dialogOpen: false });
   };
 
-  onShowPlayer = (playerId: number) => {
+  onShowPlayer = async (playerId: number) => {
     this.onCloseDialog();
-    Router.push(`/player?id=${playerId}`);
+    await Router.push(`/player?id=${playerId}`);
+    scroll(0, 0);
   };
 
   onOpenDialog = (selectedMatch: Match) => {

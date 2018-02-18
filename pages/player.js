@@ -3,12 +3,12 @@
 import React from 'react';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
+import { CircularProgress } from 'material-ui/Progress';
 
 import MatchList from '../containers/MatchListContainer';
 import withAuth from '../containers/AuthContainer';
 
 import Layout from '../components/Layout';
-import { dispatchAction } from '../redux/store';
 import {
   loadPlayerAction,
   loadPlayersAction,
@@ -39,24 +39,38 @@ type State = {
 };
 
 class PlayerInfo extends React.Component<Props, State> {
-  static async getInitialProps({ store, query, req, res, isServer }) {
-    let action;
-
+  static getParameters(query) {
     const { id } = query;
 
-    if (id) {
+    const playerId = Number.parseInt(id, 10);
+
+    if (Number.isInteger(playerId)) {
+      return { playerId };
+    }
+
+    return {};
+  }
+
+  static shouldComponentUpdate(lastProps, nextProps) {
+    return lastProps.playerId !== nextProps.playerId;
+  }
+
+  static buildActions({ playerId }) {
+    let action;
+
+    console.log('loading for playerId: ' + playerId);
+
+    if (playerId) {
       action = multiApiAction([
-        loadPlayerAction(id),
-        loadPlayerMatchesAction(id),
-        loadPlayerStatisticAction(id),
+        loadPlayerAction(playerId),
+        loadPlayerMatchesAction(playerId),
+        loadPlayerStatisticAction(playerId),
       ]);
     } else {
       action = loadPlayersAction();
     }
 
-    await dispatchAction(store.dispatch, isServer, req, res, action);
-
-    return { playerId: id };
+    return [action];
   }
 
   static mapStateToProps(state, ownProps) {
@@ -124,9 +138,15 @@ class PlayerInfo extends React.Component<Props, State> {
       );
     }
 
+    const loadingPlayer = !(player && statistic);
+
     return (
       <Layout title="Players">
-        <PlayerView player={player} statistic={statistic} />
+        {loadingPlayer ? (
+          <CircularProgress />
+        ) : (
+          <PlayerView player={player} statistic={statistic} />
+        )}
         <Tabs
           onChange={this.onTabClick}
           value={this.state.tabOpen}

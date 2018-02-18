@@ -8,12 +8,13 @@ import TeamName from './TeamName';
 
 import type { Match, Team } from '../types';
 
-const itemStyles = () => ({
+const itemStyles = theme => ({
   listContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
+    backgroundColor: theme.palette.background.paper,
   },
   team: { flex: '1 1 0' },
   points: { fontWeight: 'lighter', flex: '2 2 0' },
@@ -60,7 +61,7 @@ const MatchListItem = ({
   const result = WinnerAndLoser(match);
 
   return (
-    <ListItem divider button onClick={() => onMatchClick(match)}>
+    <ListItem button onClick={() => onMatchClick(match)}>
       <ListItemText
         primary={
           <div className={classes.listContainer}>

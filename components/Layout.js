@@ -1,22 +1,32 @@
 // @flow
 
-import React from "react";
-import Drawer from "./Drawer";
-import AppBar from "../containers/AppBarContainer";
-import Snackbar from "../containers/SnackbarContainer";
+import React from 'react';
+import { withStyles } from 'material-ui/styles';
+
+import Drawer from './Drawer';
+import AppBar from '../containers/AppBarContainer';
+import Snackbar from '../containers/SnackbarContainer';
 
 type Props = {
   title: string,
   children: React.Node,
+  classes: Object,
 };
+
+const styles = theme => ({
+  style: {
+    backgroundColor: theme.palette.background.paper,
+    marginTop: '56px',
+  },
+});
 
 type State = {
   open: boolean,
-}
+};
 
 class Layout extends React.Component<Props, State> {
   state = {
-    open: false
+    open: false,
   };
 
   onToggleDrawer = () => {
@@ -28,14 +38,11 @@ class Layout extends React.Component<Props, State> {
   };
 
   render() {
-    const { title, children } = this.props;
+    const { title, children, classes } = this.props;
     return (
-      <div style={{ marginTop: "56px" }}>
+      <div className={classes.style}>
         <Drawer onRequestClose={this.onCloseDrawer} open={this.state.open} />
-        <AppBar
-          onOpenMenu={this.onToggleDrawer}
-          title={title}
-        />
+        <AppBar onOpenMenu={this.onToggleDrawer} title={title} />
         {children}
         <Snackbar />
       </div>
@@ -43,4 +50,4 @@ class Layout extends React.Component<Props, State> {
   }
 }
 
-export default Layout;
+export default withStyles(styles)(Layout);

@@ -14,7 +14,7 @@ export type Store = {
   status: StatusStore,
 };
 
-export async function dispatchAction(dispatch, isServer, req, res, action) {
+export async function dispatchAction(dispatch, action, isServer, req, res) {
   const result = await dispatch(
     isServer ? serverAction(action, req, res) : action,
   );
@@ -23,10 +23,10 @@ export async function dispatchAction(dispatch, isServer, req, res, action) {
 
 export async function dispatchActions(
   dispatch,
+  actions = [],
   isServer,
   req,
   res,
-  actions = [],
 ) {
   for (let i = 0; i < actions.length; i += 1) {
     const action = isServer ? serverAction(actions[i], req, res) : actions[i];

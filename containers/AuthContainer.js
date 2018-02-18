@@ -5,7 +5,7 @@ import React from 'react';
 import Router from 'next/router';
 import withRedux from 'next-redux-wrapper';
 
-import initStore, { dispatchAction } from '../redux/store';
+import initStore, { dispatchAction, dispatchActions } from '../redux/store';
 import { userSelector } from '../redux/reducers/auth';
 import type { User } from '../types';
 import withRoot from '../styles/withRoot';
@@ -19,7 +19,9 @@ type Props = {
 function withAuth(WrappedComponent) {
   class Auth extends React.Component<Props> {
     static async getInitialProps(ctx) {
-      const { isServer, store, res, req } = ctx;
+      const { isServer, store, res, req, query } = ctx;
+
+      const dispatch = store.dispatch;
 
       let user;
       let url;
@@ -28,11 +30,11 @@ function withAuth(WrappedComponent) {
 
       if (isServer) {
         const result = await dispatchAction(
-          store.dispatch,
+          dispatch,
+          userOrLoginRouteAction(),
           isServer,
           req,
           res,
-          userOrLoginRouteAction(),
         );
 
         user = result.response.user;
@@ -46,6 +48,14 @@ function withAuth(WrappedComponent) {
         isLoggedIn = authState.isLoggedIn;
         user = authState.user;
       }
+
+      let props = {
+        user,
+        isLoggedIn,
+        loginRoute: '',
+        fromServer: isServer,
+        dispatch,
+      };
 
       if (!isLoggedIn) {
         if (!url.includes('/login')) {
@@ -71,25 +81,55 @@ function withAuth(WrappedComponent) {
           return {};
         }
 
-        return { user, isLoggedIn, loginRoute };
+        props.loginRoute = loginRoute;
       }
 
-      const props = {
-        user,
-        isLoggedIn,
-      };
+      // All good, return props!
+      if (WrappedComponent.getParameters) {
+        const parameters = await WrappedComponent.getParameters(query);
 
-      // All good, auth okay!
-      if (WrappedComponent.getInitialProps) {
-        const wrappedProps = await WrappedComponent.getInitialProps(ctx);
-
-        return {
+        props = {
           ...props,
-          ...wrappedProps,
+          ...parameters,
         };
       }
 
+      // Execute these only on the server side to avoid waiting for
+      // api calls before rendering the page
+      if (isServer && WrappedComponent.buildActions) {
+        const actions = WrappedComponent.buildActions(props);
+
+        await dispatchActions(dispatch, actions, isServer, req, res);
+      }
+
       return props;
+    }
+
+    async componentDidMount() {
+      const { fromServer, dispatch } = this.props;
+
+      if (!WrappedComponent.buildActions || fromServer) {
+        return;
+      }
+
+      const actions = WrappedComponent.buildActions(this.props);
+      await dispatchActions(dispatch, actions, false);
+    }
+
+    async componentWillUpdate(nextProps) {
+      if (
+        !WrappedComponent.shouldComponentUpdate ||
+        !WrappedComponent.buildActions ||
+        !WrappedComponent.shouldComponentUpdate(this.props, nextProps)
+      ) {
+        return;
+      }
+
+      const { dispatch } = nextProps;
+
+      const actions = WrappedComponent.buildActions(nextProps);
+
+      await dispatchActions(dispatch, actions, false);
     }
 
     render() {

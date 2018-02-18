@@ -11,7 +11,6 @@ import Link from 'next/link';
 import withAuth from '../containers/AuthContainer';
 import Layout from '../components/Layout';
 import MatchList from '../containers/MatchListContainer';
-import { dispatchActions } from '../redux/store';
 import { allMatchesSelector } from '../redux/reducers/entities';
 import { loadMatchesAction } from '../redux/actions/entities';
 import { setStatusAction } from '../redux/actions/status';
@@ -40,10 +39,10 @@ type State = {
 };
 
 class Index extends React.Component<Props, State> {
-  static async getInitialProps({ store, req, res, isServer }) {
+  static buildActions() {
     const actions = [loadMatchesAction()];
 
-    await dispatchActions(store.dispatch, isServer, req, res, actions);
+    return actions;
   }
 
   static mapStateToProps(state) {
@@ -106,7 +105,12 @@ class Index extends React.Component<Props, State> {
       <Layout title="Matches">
         <div>
           <Toolbar>
-            <Button color="primary" onClick={this.onRefresh}>
+            <Button
+              color="primary"
+              variant="raised"
+              size="small"
+              onClick={this.onRefresh}
+            >
               Refresh
             </Button>
           </Toolbar>

@@ -4,6 +4,7 @@ import { withStyles } from 'material-ui/styles';
 import DateRangeIcon from 'material-ui-icons/DateRange';
 import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
+import Paper from 'material-ui/Paper';
 import Toolbar from 'material-ui/Toolbar';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Router from 'next/router';
@@ -11,7 +12,6 @@ import Router from 'next/router';
 import withAuth from '../containers/AuthContainer';
 import Layout from '../components/Layout';
 import StatisticList from '../components/StatisticList';
-import { dispatchActions } from '../redux/store';
 import { userOrLoginRouteAction } from '../redux/actions/auth';
 import { loadStatisticsAction } from '../redux/actions/entities';
 import { allStatisticSelector } from '../redux/reducers/entities';
@@ -38,15 +38,20 @@ type State = {
 };
 
 class Statistics extends React.Component<Props, State> {
-  static async getInitialProps({ store, query, req, res, isServer }) {
+  static getParameters(query) {
     let { filter = 'all' } = query;
+
     filter = filter.toLowerCase();
+
+    return { filter };
+  }
+
+  static buildActions(parameters) {
+    const { filter } = parameters;
 
     const actions = [loadStatisticsAction(filter), userOrLoginRouteAction()];
 
-    await dispatchActions(store.dispatch, isServer, req, res, actions);
-
-    return { filter };
+    return actions;
   }
 
   static mapStateToProps(state) {
@@ -129,10 +134,12 @@ class Statistics extends React.Component<Props, State> {
             <MenuItem onClick={this.onSetAllFilter}>All</MenuItem>
           </Menu>
         </Toolbar>
-        <StatisticList
-          onPlayerClick={this.onRowClick}
-          statistics={statistics}
-        />
+        <Paper>
+          <StatisticList
+            onPlayerClick={this.onRowClick}
+            statistics={statistics}
+          />
+        </Paper>
       </Layout>
     );
   }

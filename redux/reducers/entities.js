@@ -36,7 +36,7 @@ export const initialEntitiesState = {
   player: { values: {}, all: [] },
   team: { values: {} },
   match: { values: {}, all: [], byPlayer: {} },
-  statistic: { values: {}, byPlayer: {} },
+  statistic: { values: {}, all: [], byPlayer: {} },
 };
 
 function deleteEntities(state, action: DeleteEntityAction) {

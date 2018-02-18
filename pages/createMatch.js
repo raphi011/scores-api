@@ -13,7 +13,6 @@ import { validateMatch } from '../validation/match';
 import Layout from '../components/Layout';
 import SelectPlayers from '../components/SelectPlayers';
 import SetScores from '../components/SetScores';
-import { dispatchActions } from '../redux/store';
 import { allPlayersSelector, matchSelector } from '../redux/reducers/entities';
 import {
   createNewMatchAction,
@@ -84,19 +83,28 @@ type State = {
 };
 
 class CreateMatch extends React.Component<Props, State> {
-  static async getInitialProps({ store, query, isServer, req, res }) {
-    const actions = [loadPlayersAction()];
-
+  static getParameters(query) {
     let { rematchId } = query;
 
     if (rematchId) {
       rematchId = Number.parseInt(rematchId, 10);
+
+      if (Number.isInteger(rematchId)) {
+        return { rematchId };
+      }
+    }
+
+    return {};
+  }
+
+  static buildActions({ rematchId }) {
+    const actions = [loadPlayersAction()];
+
+    if (rematchId) {
       actions.push(loadMatchAction(rematchId));
     }
 
-    await dispatchActions(store.dispatch, isServer, req, res, actions);
-
-    return { rematchId };
+    return actions;
   }
 
   static mapStateToProps(state, ownProps: Props) {
