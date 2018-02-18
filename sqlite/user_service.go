@@ -59,7 +59,7 @@ func (s *UserService) Update(user *scores.User) error {
 func scanUser(scanner scan) (*scores.User, error) {
 	u := scores.User{}
 
-	err := scanner.Scan(&u.ID, &u.Email, &u.ProfileImageURL, &u.PlayerID)
+	err := scanner.Scan(&u.ID, &u.Email, &u.ProfileImageURL, &u.PlayerID, &u.CreatedAt)
 
 	if err != nil {
 		return nil, err
@@ -74,7 +74,8 @@ const (
 			u.id,
 			u.email,
 			COALESCE(u.profile_image_url, "") as profile_image_url,
-			COALESCE(p.id, 0) as player_id
+			COALESCE(p.id, 0) as player_id,
+			u.created_at
 		FROM users u
 		LEFT JOIN players p on u.id = p.user_id
 		WHERE u.deleted_at is null

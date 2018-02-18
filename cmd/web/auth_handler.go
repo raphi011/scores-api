@@ -92,7 +92,7 @@ func (a *authHandler) authenticate(c *gin.Context) {
 
 	// TODO: check err
 	if err != nil {
-		c.Redirect(http.StatusFound, "/loggedIn?error=USER_NOT_FOUND")
+		c.Redirect(http.StatusFound, "/login?error=USER_NOT_FOUND")
 	} else {
 		if user.ProfileImageURL != googleUser.Picture {
 			user.ProfileImageURL = googleUser.Picture
