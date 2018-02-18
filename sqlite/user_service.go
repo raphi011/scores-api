@@ -58,14 +58,11 @@ func (s *UserService) Update(user *scores.User) error {
 
 func scanUser(scanner scan) (*scores.User, error) {
 	u := scores.User{}
-	var profileImageURL sql.NullString
-	err := scanner.Scan(&u.ID, &u.Email, &profileImageURL)
+
+	err := scanner.Scan(&u.ID, &u.Email, &u.ProfileImageURL, &u.PlayerID)
 
 	if err != nil {
 		return nil, err
-	}
-	if profileImageURL.Valid {
-		u.ProfileImageURL = profileImageURL.String
 	}
 
 	return &u, nil
@@ -74,11 +71,13 @@ func scanUser(scanner scan) (*scores.User, error) {
 const (
 	usersSelectSQL = `
 		SELECT
-			id,
-			email,
-			profile_image_url
-		FROM users 
-		WHERE deleted_at is null
+			u.id,
+			u.email,
+			COALESCE(u.profile_image_url, "") as profile_image_url,
+			COALESCE(p.id, 0) as player_id
+		FROM users u
+		LEFT JOIN players p on u.id = p.user_id
+		WHERE u.deleted_at is null
 	`
 
 	userByIDSelectSQL    = usersSelectSQL + " and id = $1"
