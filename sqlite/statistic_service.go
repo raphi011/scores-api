@@ -44,16 +44,18 @@ const (
 
 func parseTimeFilter(filter string) time.Time {
 	timeFilter := time.Now()
+	year := timeFilter.Year()
+	month := timeFilter.Month()
+	day := timeFilter.Day()
+	loc := timeFilter.Location()
 
 	switch filter {
-	case "week":
-		timeFilter = timeFilter.AddDate(0, 0, -7)
+	case "today":
+		timeFilter = time.Date(year, month, day, 0, 0, 0, 0, loc)
 	case "month":
-		timeFilter = timeFilter.AddDate(0, -1, 0)
-	case "quarter":
-		timeFilter = timeFilter.AddDate(0, -3, 0)
-	case "year":
-		timeFilter = timeFilter.AddDate(-1, 0, 0)
+		timeFilter = time.Date(year, month-1, day, 0, 0, 0, 0, loc)
+	case "thisyear":
+		timeFilter = time.Date(year, 1, 1, 0, 0, 0, 0, loc)
 	default: // "all"
 		timeFilter = time.Unix(0, 0)
 	}
