@@ -56,7 +56,7 @@ function calcWinnerScore(loserScore: number, targetScore: number): number {
 }
 
 type Props = {
-  match: ?Match,
+  rematch: ?Match,
   classes: Object,
   players: Array<Player>,
   createNewMatch: NewMatch => Promise<any>,
@@ -110,11 +110,11 @@ class CreateMatch extends React.Component<Props, State> {
   static mapStateToProps(state, ownProps: Props) {
     const { rematchId } = ownProps;
     const players = allPlayersSelector(state);
-    const match = rematchId ? matchSelector(state, rematchId) : null;
+    const rematch = rematchId ? matchSelector(state, rematchId) : null;
 
     return {
       players,
-      match,
+      rematch,
     };
   }
 
@@ -124,38 +124,74 @@ class CreateMatch extends React.Component<Props, State> {
     setStatus: setStatusAction,
   };
 
-  constructor(props: Props) {
-    super(props);
+  rematchPlayersSet = false;
 
-    const { match } = props;
+  state = {
+    activeStep: 0,
+    teamsComplete: false,
+    match: {
+      player1: null,
+      player2: null,
+      player3: null,
+      player4: null,
+      scoreTeam1: '',
+      scoreTeam2: '',
+      targetScore: '15',
+    },
+    errors: {
+      valid: true,
+    },
+  };
 
-    const state: State = {
-      activeStep: 0,
-      teamsComplete: false,
-      match: {
-        player1: null,
-        player2: null,
-        player3: null,
-        player4: null,
-        scoreTeam1: '',
-        scoreTeam2: '',
-        targetScore: '15',
-      },
-      errors: {
-        valid: true,
-      },
-    };
+  setRematch = (props: Props) => {
+    const { rematchId, rematch, players } = props;
 
-    if (match) {
-      state.activeStep = 1;
-      state.teamsComplete = true;
-      state.match.player1 = match.team1.player1;
-      state.match.player2 = match.team1.player2;
-      state.match.player3 = match.team2.player1;
-      state.match.player4 = match.team2.player2;
+    if (rematchId && !this.rematchPlayersSet) {
+      if (!rematch || !players.length) {
+        return; // rematch or players not loaded yet
+      }
+
+      const newState = {
+        activeStep: 1,
+        teamsComplete: true,
+        match: {
+          player1: rematch.team1.player1,
+          player2: rematch.team1.player2,
+          player3: rematch.team2.player1,
+          player4: rematch.team2.player2,
+          scoreTeam1: '',
+          scoreTeam2: '',
+          targetScore: '15',
+        },
+      };
+
+      this.rematchPlayersSet = true;
+
+      return newState;
     }
 
-    this.state = state;
+    return null;
+  };
+
+  constructor(props) {
+    super(props);
+
+    const state = this.setRematch(props);
+
+    if (state) {
+      this.state = {
+        ...this.state,
+        ...state,
+      };
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const state = this.setRematch(nextProps);
+
+    if (state) {
+      this.setState(state);
+    }
   }
 
   onUnsetPlayer = (selected: number) => {
