@@ -1,10 +1,12 @@
 // @flow
 
 import React from 'react';
+import Avatar from 'material-ui/Avatar';
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText, ListItemIcon } from 'material-ui/List';
 import Badge from 'material-ui/Badge';
 import PersonIcon from 'material-ui-icons/Person';
+
 import type { Player } from '../types';
 
 const styles = theme => ({
@@ -66,13 +68,19 @@ class SelectPlayers extends React.Component<Props> {
     }
   };
 
+  isSamePlayer = (p1, p2) => {
+    if (!p1 || !p2) return false;
+
+    return p1.id === p2.id;
+  };
+
   playerNr = (player: Player): number => {
     const { player1, player2, player3, player4 } = this.props;
 
-    if (player === player1) return 1;
-    else if (player === player2) return 2;
-    else if (player === player3) return 3;
-    else if (player === player4) return 4;
+    if (this.isSamePlayer(player, player1)) return 1;
+    else if (this.isSamePlayer(player, player2)) return 2;
+    else if (this.isSamePlayer(player, player3)) return 3;
+    else if (this.isSamePlayer(player, player4)) return 4;
 
     return 0;
   };
@@ -121,15 +129,23 @@ function PlayerListItem({ player, onClick, playerNr }: PlayerListProps) {
       team = null;
   }
 
+  let avatar = player.profileImageUrl ? (
+    <Avatar src={player.profileImageUrl} />
+  ) : (
+    <Avatar>{player.name.substring(0, 1)}</Avatar>
+  );
+
+  if (playerNr) {
+    avatar = (
+      <Badge badgeContent={team} color={color}>
+        {avatar}
+      </Badge>
+    );
+  }
+
   return (
     <ListItem onClick={onClick} button>
-      {playerNr ? (
-        <ListItemIcon>
-          <Badge badgeContent={team} color={color}>
-            <PersonIcon />
-          </Badge>
-        </ListItemIcon>
-      ) : null}
+      {avatar}
       <ListItemText inset primary={player.name} />
     </ListItem>
   );
