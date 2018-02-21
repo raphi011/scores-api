@@ -39,7 +39,7 @@ type State = {
 
 class Statistics extends React.Component<Props, State> {
   static getParameters(query) {
-    let { filter = 'all' } = query;
+    let { filter = 'month' } = query;
 
     filter = filter.toLowerCase();
 
@@ -52,6 +52,10 @@ class Statistics extends React.Component<Props, State> {
     const actions = [loadStatisticsAction(filter), userOrLoginRouteAction()];
 
     return actions;
+  }
+
+  static shouldComponentUpdate(lastProps, nextProps) {
+    return lastProps.filter !== nextProps.filter;
   }
 
   static mapStateToProps(state) {
@@ -75,9 +79,9 @@ class Statistics extends React.Component<Props, State> {
     this.setState({ filterMenuOpen: false, anchorEl: null });
   };
 
-  onSetWeekFilter = () => {
+  onSetTodayFilter = () => {
     this.onCloseFilterMenu();
-    Router.push('/statistic?filter=week');
+    Router.push('/statistic?filter=today');
   };
 
   onSetMonthFilter = () => {
@@ -85,14 +89,9 @@ class Statistics extends React.Component<Props, State> {
     Router.push('/statistic?filter=month');
   };
 
-  onSet3MonthsFilter = () => {
+  onSetThisYearFilter = () => {
     this.onCloseFilterMenu();
-    Router.push('/statistic?filter=quarter');
-  };
-
-  onSetYearFilter = () => {
-    this.onCloseFilterMenu();
-    Router.push('/statistic?filter=year');
+    Router.push('/statistic?filter=thisyear');
   };
 
   onSetAllFilter = () => {
@@ -127,10 +126,9 @@ class Statistics extends React.Component<Props, State> {
             open={this.state.filterMenuOpen}
             onClose={this.onCloseFilterMenu}
           >
-            <MenuItem onClick={this.onSetWeekFilter}>Last Week</MenuItem>
-            <MenuItem onClick={this.onSetMonthFilter}>Last Month</MenuItem>
-            <MenuItem onClick={this.onSet3MonthsFilter}>Last 3 Months</MenuItem>
-            <MenuItem onClick={this.onSetYearFilter}>Last Year</MenuItem>
+            <MenuItem onClick={this.onSetTodayFilter}>Today</MenuItem>
+            <MenuItem onClick={this.onSetMonthFilter}>Last month</MenuItem>
+            <MenuItem onClick={this.onSetThisYearFilter}>This year</MenuItem>
             <MenuItem onClick={this.onSetAllFilter}>All</MenuItem>
           </Menu>
         </Toolbar>

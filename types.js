@@ -59,7 +59,7 @@ export type TeamStatistic = {
   team: Team,
 } & Statistic;
 
-export type StatisticFilter = 'week' | 'month' | 'quarter' | 'year';
+export type StatisticFilter = 'today' | 'month' | 'thisyear' | 'all';
 
 export type PlayerStatistic = {
   playerId: number,
