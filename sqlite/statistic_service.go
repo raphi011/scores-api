@@ -135,12 +135,51 @@ func (s *StatisticService) Player(playerID uint, filter string) (*scores.PlayerS
 	return st, nil
 }
 
-func (s *StatisticService) Team(teamID uint) (*scores.TeamStatistic, error) {
+const (
+	playerTeamsStatisticSelectSQL = `
+		SELECT 
+			MAX(CASE WHEN s.player1_id = $1 THEN s.player2_id ELSE s.player1_id END) AS player_id,
+			MAX(CASE WHEN s.player1_id = $1 THEN u2.profile_image_url ELSE u1.profile_image_url END) AS profileImage,
+			MAX(CASE WHEN s.player1_id = $1 THEN p2.name ELSE p1.name END) AS name,
+			CAST((SUM(s.won) / CAST(COUNT(1) AS float) * 100) AS int) AS percentageWon,
+			SUM(s.pointsWon) AS pointsWon,
+			SUM(s.pointsLost) AS pointsLost,
+			COUNT(1) AS played,
+			SUM(s.won) AS gamesWon,
+			SUM(1) - SUM(s.won) AS gamesLost
+		FROM teamStatistics s
+		JOIN players p1 ON s.player1_id = p1.id
+		JOIN players p2 ON s.player2_id = p2.id
+		LEFT JOIN users u1 ON p1.user_id = u1.id 
+		LEFT JOIN users u2 ON p2.user_id = u2.id 
+		WHERE (s.player1_id = $1 OR s.player2_id = $1) and s.created_at > $2
+		GROUP BY s.player1_id, s.player2_id 
+		ORDER BY percentageWon DESC
+	`
+)
 
-	return nil, nil
-}
+func (s *StatisticService) PlayerTeams(playerID uint, filter string) (scores.PlayerStatistics, error) {
+	statistics := scores.PlayerStatistics{}
 
-func (s *StatisticService) Teams() (scores.TeamStatistics, error) {
+	timeFilter := parseTimeFilter(filter)
 
-	return nil, nil
+	rows, err := s.DB.Query(playerTeamsStatisticSelectSQL, playerID, timeFilter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		st, err := scanPlayerStatistic(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		statistics = append(statistics, *st)
+	}
+
+	return statistics, nil
 }

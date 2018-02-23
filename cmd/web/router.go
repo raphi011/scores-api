@@ -36,21 +36,21 @@ func initRouter(app app) *gin.Engine {
 
 	router.Use(sessions.Sessions("goquestsession", store))
 
-	router.GET("/matches", matchHandler.index)
-	router.GET("/playerMatches/:playerID", matchHandler.byPlayer)
-	router.GET("/matches/:matchID", matchHandler.matchShow)
-	router.GET("/players", playerHandler.playerIndex)
-	router.GET("/players/:playerID", playerHandler.playerShow)
-	router.GET("/statistics", statisticHandler.players)
-	router.GET("/statistics/:playerID", statisticHandler.player)
-
 	router.GET("/userOrLoginRoute", authHandler.loginRouteOrUser)
 	router.GET("/auth", authHandler.authenticate)
-	router.POST("/logout", authHandler.logout)
 
 	auth := router.Group("/")
 	auth.Use(authRequired())
 	{
+		auth.POST("/logout", authHandler.logout)
+		auth.GET("/matches", matchHandler.index)
+		auth.GET("/playerMatches/:playerID", matchHandler.byPlayer)
+		auth.GET("/matches/:matchID", matchHandler.matchShow)
+		auth.GET("/players", playerHandler.playerIndex)
+		auth.GET("/players/:playerID", playerHandler.playerShow)
+		auth.GET("/statistics", statisticHandler.players)
+		auth.GET("/statistics/:playerID", statisticHandler.player)
+		auth.GET("/playerTeamStatistics/:playerID", statisticHandler.playerTeams)
 		auth.DELETE("/matches/:matchID", matchHandler.matchDelete)
 		auth.POST("/players", playerHandler.playerCreate)
 		auth.POST("/matches", matchHandler.matchCreate)
