@@ -57,6 +57,20 @@ export const loadPlayersAction = (): ApiAction => ({
   },
 });
 
+export const loadPlayerTeamStatisticAction = (playerId: number): ApiAction => ({
+  type: actionNames.API,
+  method: 'GET',
+  url: `playerTeamStatistics/${playerId}`,
+  success: actionNames.RECEIVE_ENTITIES,
+  successParams: {
+    entityName: 'statistic',
+    listName: 'byPlayerTeam',
+    listKey: playerId,
+    mode: 'replace',
+    assignId: true,
+  },
+});
+
 export const loadPlayerStatisticAction = (playerId: number): ApiAction => ({
   type: actionNames.API,
   method: 'GET',

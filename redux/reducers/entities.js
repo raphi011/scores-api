@@ -36,7 +36,7 @@ export const initialEntitiesState = {
   player: { values: {}, all: [] },
   team: { values: {} },
   match: { values: {}, all: [], byPlayer: {} },
-  statistic: { values: {}, all: [], byPlayer: {} },
+  statistic: { values: {}, all: [], byPlayer: {}, byPlayerTeam: {} },
 };
 
 function deleteEntities(state, action: DeleteEntityAction) {
@@ -172,6 +172,15 @@ export const allStatisticSelector = (state: Store) =>
         state.entities.statistic.all,
       )
     : [];
+
+export const statisticByPlayerTeamSelector = (state: Store, playerId: number) =>
+  (state.entities.statistic.byPlayerTeam[playerId] || []).length
+    ? denorm(
+        'statistic',
+        entityMapSelector(state),
+        state.entities.statistic.byPlayerTeam[playerId],
+      )
+    : null;
 
 export const statisticByPlayerSelector = (state: Store, playerId: number) =>
   (state.entities.statistic.byPlayer[playerId] || []).length

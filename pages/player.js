@@ -7,11 +7,13 @@ import { CircularProgress } from 'material-ui/Progress';
 
 import MatchList from '../containers/MatchListContainer';
 import withAuth from '../containers/AuthContainer';
+import StatisticList from '../components/StatisticList';
 
 import Layout from '../components/Layout';
 import {
   loadPlayerAction,
   loadPlayersAction,
+  loadPlayerTeamStatisticAction,
   loadPlayerStatisticAction,
   loadPlayerMatchesAction,
 } from '../redux/actions/entities';
@@ -20,6 +22,7 @@ import PlayerView from '../components/PlayerView';
 import {
   playerSelector,
   statisticByPlayerSelector,
+  statisticByPlayerTeamSelector,
   matchesByPlayerSelector,
 } from '../redux/reducers/entities';
 import type { Player, Statistic } from '../types';
@@ -27,6 +30,7 @@ import type { Player, Statistic } from '../types';
 type Props = {
   player: Player,
   statistic: Statistic,
+  teamStatistic: Array<Statistic>,
   matches: Array<MatchList>,
   playerId: number,
   loadMatches: (number, ?string) => Promise<any>,
@@ -58,13 +62,12 @@ class PlayerInfo extends React.Component<Props, State> {
   static buildActions({ playerId }) {
     let action;
 
-    console.log('loading for playerId: ' + playerId);
-
     if (playerId) {
       action = multiApiAction([
         loadPlayerAction(playerId),
         loadPlayerMatchesAction(playerId),
         loadPlayerStatisticAction(playerId),
+        loadPlayerTeamStatisticAction(playerId),
       ]);
     } else {
       action = loadPlayersAction();
@@ -78,11 +81,13 @@ class PlayerInfo extends React.Component<Props, State> {
     const player = playerSelector(state, playerId);
     const statistic = statisticByPlayerSelector(state, playerId);
     const matches = matchesByPlayerSelector(state, playerId);
+    const teamStatistic = statisticByPlayerTeamSelector(state, playerId);
 
     return {
       player,
       statistic,
       matches,
+      teamStatistic,
     };
   }
 
@@ -125,7 +130,7 @@ class PlayerInfo extends React.Component<Props, State> {
   };
 
   render() {
-    const { player, matches, statistic, playerId } = this.props;
+    const { player, matches, statistic, teamStatistic, playerId } = this.props;
     const { loading, hasMore } = this.state;
 
     if (!playerId) {
@@ -165,7 +170,7 @@ class PlayerInfo extends React.Component<Props, State> {
             hasMore={hasMore}
           />
         ) : (
-          <Typography align="center">List of teams</Typography>
+          <StatisticList statistics={teamStatistic} />
         )}
       </Layout>
     );
