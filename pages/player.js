@@ -4,6 +4,7 @@ import React from 'react';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 import { CircularProgress } from 'material-ui/Progress';
+import Router from 'next/router';
 
 import MatchList from '../containers/MatchListContainer';
 import withAuth from '../containers/AuthContainer';
@@ -125,6 +126,10 @@ class PlayerInfo extends React.Component<Props, State> {
     }
   };
 
+  onRowClick = playerId => {
+    Router.push(`/player?id=${playerId}`);
+  };
+
   onTabClick = (event, index) => {
     this.setState({ tabOpen: index });
   };
@@ -170,7 +175,10 @@ class PlayerInfo extends React.Component<Props, State> {
             hasMore={hasMore}
           />
         ) : (
-          <StatisticList statistics={teamStatistic} />
+          <StatisticList
+            statistics={teamStatistic}
+            onPlayerClick={this.onRowClick}
+          />
         )}
       </Layout>
     );
