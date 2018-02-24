@@ -180,7 +180,7 @@ export const statisticByPlayerTeamSelector = (state: Store, playerId: number) =>
         entityMapSelector(state),
         state.entities.statistic.byPlayerTeam[playerId],
       )
-    : null;
+    : [];
 
 export const statisticByPlayerSelector = (state: Store, playerId: number) =>
   (state.entities.statistic.byPlayer[playerId] || []).length
