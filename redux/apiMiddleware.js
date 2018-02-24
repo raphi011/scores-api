@@ -35,7 +35,7 @@ export function serverAction(action, req, res) {
   };
 }
 
-async function doAction(dispatch, action) {
+async function doAction(dispatch, action, isServer = false, req, res) {
   let { headers = {} } = action;
   const {
     success,
@@ -46,9 +46,6 @@ async function doAction(dispatch, action) {
     body,
     params,
     method = 'GET',
-    isServer = false,
-    req,
-    res,
   } = action;
 
   if (isServer && req.headers.cookie) {
@@ -137,14 +134,18 @@ const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
     return next(action);
   }
 
+  const { req, res, isServer } = action;
+
   let result;
 
   if (action.type === actionNames.API_MULTI) {
     const { actions } = action;
 
-    result = await Promise.all(actions.map(a => doAction(dispatch, a)));
+    result = await Promise.all(
+      actions.map(a => doAction(dispatch, a, isServer, req, res)),
+    );
   } else {
-    result = await doAction(dispatch, action);
+    result = await doAction(dispatch, action, isServer, req, res);
   }
 
   return result;
