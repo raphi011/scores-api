@@ -1,9 +1,4 @@
 {
-  "presets": [
-    "next/babel",
-    "flow"
-  ],
-  "plugins": [
-    ["transform-define", "./config.js"]
-  ]
+  "presets": ["env", "react", "next/babel", "flow"],
+  "plugins": [["transform-define", "./config.js"]]
 }
