@@ -60,6 +60,11 @@ const MatchListItem = ({
 }: Props) => {
   const result = WinnerAndLoser(match);
 
+  const winnerScore = result.winnerScore.toString().padStart(2, '0');
+  const loserScore = result.loserScore.toString().padStart(2, '0');
+
+  const score = `${winnerScore} - ${loserScore}`;
+
   return (
     <ListItem button onClick={() => onMatchClick(match)}>
       <ListItemText
@@ -76,7 +81,7 @@ const MatchListItem = ({
               variant="display2"
               align="center"
             >
-              {result.winnerScore} - {result.loserScore}
+              {score}
             </Typography>
             <Typography className={classes.team} variant="body1" align="right">
               <TeamName

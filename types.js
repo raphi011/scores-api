@@ -76,24 +76,31 @@ export type Action = {
 
 export type Classes = { [string]: string };
 
-export type ApiAction = {
-  type: 'API',
-  method: string,
-  url: string,
-  success?: string,
-  isServer?: boolean,
-  params?: Object,
-  req?: Object, // todo
-  res?: Object, // todo
-  headers?: Object,
+export type ApiAction =
+  | {
+      type: 'API',
+      method: string,
+      url: string,
+      success?: string,
+      isServer?: boolean,
+      params?: Object,
+      req?: Object, // todo
+      res?: Object, // todo
+      headers?: Object,
 
-  error?: string,
-  body?: string,
-  successStatus?: string,
-  successParams?: Object,
-};
+      error?: string,
+      body?: string,
+      successStatus?: string,
+      successParams?: Object,
+    }
+  | Action;
 
-export type ApiActions = {
-  type: 'API_MULTI',
-  actions: Array<ApiAction>,
-};
+export type ApiActions =
+  | {
+      type: 'API_MULTI',
+      actions: Array<ApiAction>,
+      req?: Object, // todo
+      res?: Object, // todo
+      isServer?: boolean,
+    }
+  | Action;

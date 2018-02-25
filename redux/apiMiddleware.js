@@ -2,7 +2,7 @@
 
 import fetch from 'isomorphic-unfetch';
 import * as actionNames from './actionNames';
-import type { Action, ApiAction } from '../types';
+import type { Action, ApiAction, ApiActions } from '../types';
 
 type Params = { [string]: string };
 
@@ -35,7 +35,13 @@ export function serverAction(action, req, res) {
   };
 }
 
-async function doAction(dispatch, action, isServer = false, req, res) {
+async function doAction(
+  dispatch,
+  action: ApiAction,
+  isServer = false,
+  req,
+  res,
+) {
   let { headers = {} } = action;
   const {
     success,
@@ -126,7 +132,7 @@ async function doAction(dispatch, action, isServer = false, req, res) {
 
 const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
   next: Action => Promise<any>,
-) => async (action: ApiAction) => {
+) => async (action: Action) => {
   if (
     action.type !== actionNames.API &&
     action.type !== actionNames.API_MULTI
@@ -134,18 +140,20 @@ const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
     return next(action);
   }
 
-  const { req, res, isServer } = action;
+  const apiAction: ApiAction | ApiActions = action;
+
+  const { req, res, isServer } = apiAction;
 
   let result;
 
-  if (action.type === actionNames.API_MULTI) {
-    const { actions } = action;
+  if (apiAction.type === actionNames.API_MULTI) {
+    const { actions } = apiAction;
 
     result = await Promise.all(
       actions.map(a => doAction(dispatch, a, isServer, req, res)),
     );
   } else {
-    result = await doAction(dispatch, action, isServer, req, res);
+    result = await doAction(dispatch, apiAction, isServer, req, res);
   }
 
   return result;
