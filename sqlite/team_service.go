@@ -2,7 +2,8 @@ package sqlite
 
 import (
 	"database/sql"
-	scores "scores-backend"
+
+	"github.com/raphi011/scores"
 )
 
 var _ scores.TeamService = &TeamService{}

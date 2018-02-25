@@ -1,8 +1,9 @@
 package sqlite
 
 import (
-	scores "scores-backend"
 	"testing"
+
+	"github.com/raphi011/scores"
 )
 
 func TestTeamPlayerOrder(t *testing.T) {

@@ -3,7 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
-	"scores-backend"
+	"github.com/raphi011/scores"
 )
 
 var _ scores.UserService = &UserService{}

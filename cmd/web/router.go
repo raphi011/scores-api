@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"scores-backend/sqlite"
+	"github.com/raphi011/scores/sqlite"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

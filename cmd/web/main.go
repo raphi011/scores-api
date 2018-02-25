@@ -11,7 +11,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
-	"scores-backend/sqlite"
+	"github.com/raphi011/scores/sqlite"
 )
 
 type credentials struct {

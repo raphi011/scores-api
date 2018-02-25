@@ -1,6 +1,6 @@
 package migrations
 
-import "scores-backend/migrate"
+import "github.com/raphi011/scores/migrate"
 
 var (
 	MigrationSet = []migrate.Migration{V1, V2, V3}

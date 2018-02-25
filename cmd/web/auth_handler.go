@@ -7,8 +7,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	scores "scores-backend"
-	"scores-backend/sqlite"
+
+	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/sqlite"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

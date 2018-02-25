@@ -2,8 +2,9 @@ package sqlite
 
 import (
 	"database/sql"
-	scores "scores-backend"
 	"time"
+
+	"github.com/raphi011/scores"
 )
 
 var _ scores.StatisticService = &StatisticService{}

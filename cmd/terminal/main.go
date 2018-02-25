@@ -4,8 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	scores "scores-backend"
-	"scores-backend/sqlite"
+
+	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/sqlite"
 )
 
 var dbPath = flag.String("db", "scores.db", "Path to sqlite db")

@@ -1,8 +1,9 @@
 package sqlite
 
 import (
-	"scores-backend"
 	"testing"
+
+	"github.com/raphi011/scores"
 )
 
 func TestCreateUser(t *testing.T) {
