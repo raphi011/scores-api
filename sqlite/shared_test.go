@@ -17,6 +17,7 @@ type services struct {
 
 func createServices() *services {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
+	Migrate(db)
 	s := &services{
 		playerService:    &PlayerService{DB: db},
 		userService:      &UserService{DB: db},

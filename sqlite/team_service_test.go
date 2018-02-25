@@ -27,7 +27,7 @@ func TestTeamPlayerOrder(t *testing.T) {
 
 func TestCreate(t *testing.T) {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	defer Reset(db)
 
 	playerService := &PlayerService{DB: db}
 	player1, _ := playerService.Create(&scores.Player{Name: "Player1"})

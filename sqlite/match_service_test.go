@@ -6,14 +6,14 @@ import (
 
 func TestGetMatches(t *testing.T) {
 	s := createServices()
-	defer ClearTables(s.db)
+	defer Reset(s.db)
 
 	t.Skip()
 }
 
 func TestCreateMatch(t *testing.T) {
 	s := createServices()
-	defer ClearTables(s.db)
+	defer Reset(s.db)
 
 	match := newMatch(s)
 
@@ -28,7 +28,7 @@ func TestCreateMatch(t *testing.T) {
 
 func TestDeleteMatch(t *testing.T) {
 	s := createServices()
-	defer ClearTables(s.db)
+	defer Reset(s.db)
 
 	match := newMatch(s)
 	match, _ = s.matchService.Create(match)

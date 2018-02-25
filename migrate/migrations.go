@@ -27,6 +27,10 @@ func Reset(db *sql.DB, resets []TableNames) error {
 		return err
 	}
 
+	if dbVersion == 0 {
+		return nil
+	}
+
 	for _, tableName := range resets[dbVersion-1] {
 		_, err := db.Exec("DELETE FROM " + tableName)
 

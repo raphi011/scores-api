@@ -4,7 +4,7 @@ import "testing"
 
 func TestPlayerStatistic(t *testing.T) {
 	s := createServices()
-	defer ClearTables(s.db)
+	defer Reset(s.db)
 
 	m := newMatch(s)
 	_, _ = s.matchService.Create(m)

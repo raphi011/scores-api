@@ -8,7 +8,7 @@ import (
 
 func TestCreateUser(t *testing.T) {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	defer Reset(db)
 
 	email := "test@test.com"
 
@@ -37,7 +37,7 @@ func TestCreateUser(t *testing.T) {
 
 func TestUsers(t *testing.T) {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	defer Reset(db)
 
 	userService := UserService{DB: db}
 	userService.Create(&scores.User{
@@ -63,7 +63,7 @@ func TestUsers(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer ClearTables(db)
+	defer Reset(db)
 
 	email := "test@test.com"
 	newEmail := "test2@test.com"
