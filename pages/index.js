@@ -124,13 +124,16 @@ class Index extends React.Component<Props, State> {
           />
         </div>
 
-        <Tooltip title="Create new Match" className={classes.button}>
-          <Button variant="fab" color="primary" aria-label="add">
-            <Link prefetch href="/createMatch">
-              <AddIcon />
-            </Link>
-          </Button>
-        </Tooltip>
+        <Button
+          variant="fab"
+          color="primary"
+          aria-label="add"
+          className={classes.button}
+        >
+          <Link prefetch href="/createMatch">
+            <AddIcon />
+          </Link>
+        </Button>
       </Layout>
     );
   }
