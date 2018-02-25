@@ -59,8 +59,9 @@ func (s *TeamService) ByPlayers(player1ID, player2ID uint) (*scores.Team, error)
 	return team, nil
 }
 
-// TODO: test this!
 func (s *TeamService) GetOrCreate(player1ID, player2ID uint) (*scores.Team, error) {
+	player1ID, player2ID = TeamPlayerOrder(player1ID, player2ID)
+
 	t, err := s.ByPlayers(player1ID, player2ID)
 
 	if err == nil {
