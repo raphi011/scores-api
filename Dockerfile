@@ -10,10 +10,9 @@ RUN go get "github.com/gin-gonic/gin"
 RUN go get "github.com/mattn/go-sqlite3"
 RUN go get "golang.org/x/oauth2"
 RUN go get "golang.org/x/oauth2/google"
+RUN go get "golang.org/x/crypto/pbkdf2"
 
 COPY . .
-
-# RUN go-wrapper download
 
 WORKDIR /go/src/scores-backend/cmd/web
 RUN go-wrapper install
