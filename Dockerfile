@@ -1,9 +1,9 @@
-FROM arm32v7/golang:1.9.2
+FROM arm32v7/golang:latest
 
 ARG app_env
 ENV APP_ENV $app_env
 
-WORKDIR /go/src/scores-backend/
+WORKDIR /go/src/github.com/raphi011/scores
 
 RUN go get "github.com/gin-contrib/sessions"
 RUN go get "github.com/gin-gonic/gin"
@@ -14,7 +14,7 @@ RUN go get "golang.org/x/crypto/pbkdf2"
 
 COPY . .
 
-WORKDIR /go/src/scores-backend/cmd/web
+WORKDIR /go/src/github.com/raphi011/scores/cmd/web
 RUN go-wrapper install
 
 CMD ["go-wrapper", "run", "-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
