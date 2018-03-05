@@ -13,11 +13,16 @@ type services struct {
 	teamService      *TeamService
 	matchService     *MatchService
 	statisticService *StatisticService
+	pwService        scores.PasswordService
 }
 
 func createServices() *services {
 	db, _ := Open("file::memory:?mode=memory&cache=shared")
 	Migrate(db)
+
+	saltBytes := 16
+	iterations := 10000
+
 	s := &services{
 		playerService:    &PlayerService{DB: db},
 		userService:      &UserService{DB: db},
@@ -25,6 +30,10 @@ func createServices() *services {
 		matchService:     &MatchService{DB: db},
 		statisticService: &StatisticService{DB: db},
 		db:               db,
+		pwService: &scores.PBKDF2PasswordService{
+			SaltBytes:  saltBytes,
+			Iterations: iterations,
+		},
 	}
 
 	return s

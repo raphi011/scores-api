@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
+
 	"github.com/raphi011/scores"
 )
 
@@ -10,6 +11,7 @@ var _ scores.UserService = &UserService{}
 
 type UserService struct {
 	DB *sql.DB
+	PW scores.PasswordService
 }
 
 const userInsertSQL = `
@@ -29,6 +31,37 @@ func (s *UserService) Create(user *scores.User) (*scores.User, error) {
 	user.ID = uint(ID)
 
 	return user, nil
+}
+
+const userPasswordUpdateSQL = `
+	UPDATE users
+	SET salt = $1, hash = $2, iterations = $3
+	WHERE id = $4
+
+`
+
+func (s *UserService) UpdatePasswordAuthentication(
+	userID uint,
+	auth *scores.PasswordInfo,
+) error {
+	result, err := s.DB.Exec(
+		userPasswordUpdateSQL,
+		auth.Salt,
+		auth.Hash,
+		auth.Iterations,
+		userID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+
+	if rowsAffected != 1 {
+		return errors.New("User not found")
+	}
+
+	return nil
 }
 
 const userUpdateSQL = `
@@ -59,7 +92,16 @@ func (s *UserService) Update(user *scores.User) error {
 func scanUser(scanner scan) (*scores.User, error) {
 	u := scores.User{}
 
-	err := scanner.Scan(&u.ID, &u.Email, &u.ProfileImageURL, &u.PlayerID, &u.CreatedAt)
+	err := scanner.Scan(
+		&u.ID,
+		&u.Email,
+		&u.ProfileImageURL,
+		&u.PlayerID,
+		&u.CreatedAt,
+		&u.PasswordInfo.Salt,
+		&u.PasswordInfo.Hash,
+		&u.PasswordInfo.Iterations,
+	)
 
 	if err != nil {
 		return nil, err
@@ -75,14 +117,17 @@ const (
 			u.email,
 			COALESCE(u.profile_image_url, "") as profile_image_url,
 			COALESCE(p.id, 0) as player_id,
-			u.created_at
+			u.created_at,
+			u.salt,
+			u.hash,
+			COALESCE(u.iterations, 0) as iterations
 		FROM users u
 		LEFT JOIN players p on u.id = p.user_id
 		WHERE u.deleted_at is null
 	`
 
-	userByIDSelectSQL    = usersSelectSQL + " and id = $1"
-	userByEmailSelectSQL = usersSelectSQL + " and email = $1"
+	userByIDSelectSQL    = usersSelectSQL + " and u.id = $1"
+	userByEmailSelectSQL = usersSelectSQL + " and u.email = $1"
 )
 
 func (s *UserService) Users() (scores.Users, error) {

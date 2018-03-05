@@ -1,19 +1,53 @@
 package sqlite
 
 import (
+	"log"
 	"testing"
 
 	"github.com/raphi011/scores"
 )
 
-func TestCreateUser(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer Reset(db)
+func TestSetPassword(t *testing.T) {
+	s := createServices()
+	defer Reset(s.db)
 
 	email := "test@test.com"
 
-	userService := UserService{DB: db}
-	user, err := userService.Create(&scores.User{
+	user, err := s.userService.Create(&scores.User{
+		Email:           email,
+		ProfileImageURL: "image.url",
+	})
+
+	pw := []byte("password")
+
+	info, _ := s.pwService.HashPassword(pw)
+
+	log.Printf("%v %v", info, user)
+
+	err = s.userService.UpdatePasswordAuthentication(user.ID, info)
+
+	if err != nil {
+		t.Errorf("userService.UpdatePasswordAuthentication(), err: %s", err)
+	}
+
+	user, err = s.userService.User(user.ID)
+
+	if err != nil {
+		t.Errorf("userService.User(), err: %s", err)
+	}
+
+	if !s.pwService.ComparePassword(pw, &user.PasswordInfo) {
+		t.Error("PasswordService.ComparePassword(), want true, got false")
+	}
+}
+
+func TestCreateUser(t *testing.T) {
+	s := createServices()
+	defer Reset(s.db)
+
+	email := "test@test.com"
+
+	user, err := s.userService.Create(&scores.User{
 		Email:           email,
 		ProfileImageURL: "image.url",
 	})
@@ -28,7 +62,7 @@ func TestCreateUser(t *testing.T) {
 
 	userID := user.ID
 
-	user, _ = userService.ByEmail(email)
+	user, _ = s.userService.ByEmail(email)
 
 	if user.ID != userID {
 		t.Errorf("userService.Create(), user not persisted")
@@ -36,19 +70,18 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestUsers(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer Reset(db)
+	s := createServices()
+	defer Reset(s.db)
 
-	userService := UserService{DB: db}
-	userService.Create(&scores.User{
+	s.userService.Create(&scores.User{
 		Email: "test@test.at",
 	})
-	userService.Create(&scores.User{
+	s.userService.Create(&scores.User{
 		Email:           "test2@test.at",
 		ProfileImageURL: "image.url",
 	})
 
-	users, err := userService.Users()
+	users, err := s.userService.Users()
 
 	if err != nil {
 		t.Errorf("UserService.Users() err: %s", err)

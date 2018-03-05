@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/sqlite"
 
 	"github.com/gin-contrib/sessions"
@@ -24,7 +25,10 @@ func initRouter(app app) *gin.Engine {
 	}
 
 	teamService := &sqlite.TeamService{DB: app.db}
-	userService := &sqlite.UserService{DB: app.db}
+	userService := &sqlite.UserService{DB: app.db, PW: &scores.PBKDF2PasswordService{
+		SaltBytes:  16,
+		Iterations: 10000,
+	}}
 	matchService := &sqlite.MatchService{DB: app.db}
 	playerService := &sqlite.PlayerService{DB: app.db}
 	statisticService := &sqlite.StatisticService{DB: app.db}
@@ -37,7 +41,8 @@ func initRouter(app app) *gin.Engine {
 	router.Use(sessions.Sessions("goquestsession", store))
 
 	router.GET("/userOrLoginRoute", authHandler.loginRouteOrUser)
-	router.GET("/auth", authHandler.authenticate)
+	router.GET("/auth", authHandler.googleAuthenticate)
+	router.POST("/pwAuth", authHandler.passwordAuthenticate)
 
 	auth := router.Group("/")
 	auth.Use(authRequired())

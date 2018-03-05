@@ -29,6 +29,11 @@ type userDto struct {
 	ProfileImageURL string        `json:"profileImageUrl"`
 }
 
+type credentialsDto struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type oauthUser struct {
 	Sub           string `json:"sub"`
 	Name          string `json:"name"`
@@ -54,7 +59,31 @@ type authHandler struct {
 	conf        *oauth2.Config
 }
 
-func (a *authHandler) authenticate(c *gin.Context) {
+func (a *authHandler) passwordAuthenticate(c *gin.Context) {
+	session := sessions.Default(c)
+	var credentials credentialsDto
+
+	if err := c.ShouldBindJSON(&credentials); err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	user, err := a.userService.ByEmail(credentials.Email)
+
+	if err != nil {
+		jsonn(c, http.StatusUnauthorized, nil, "")
+		return
+	}
+
+	if !a.userService.PW.ComparePassword([]byte(credentials.Password), &user.PasswordInfo) {
+		jsonn(c, http.StatusUnauthorized, nil, "")
+		return
+	}
+
+	successfullLogin(c, session, user.Email)
+}
+
+func (a *authHandler) googleAuthenticate(c *gin.Context) {
 	// Handle the exchange code to initiate a transport.
 	session := sessions.Default(c)
 	retrievedState := session.Get("state")
@@ -103,10 +132,14 @@ func (a *authHandler) authenticate(c *gin.Context) {
 			}
 		}
 
-		session.Set("user-id", user.Email)
-		session.Save()
-		c.Redirect(http.StatusFound, "/")
+		successfullLogin(c, session, user.Email)
 	}
+}
+
+func successfullLogin(c *gin.Context, session sessions.Session, email string) {
+	session.Set("user-id", email)
+	session.Save()
+	c.Redirect(http.StatusFound, "/")
 }
 
 func (a *authHandler) loginRouteOrUser(c *gin.Context) {
