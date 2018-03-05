@@ -15,8 +15,8 @@ RUN go get "golang.org/x/crypto/pbkdf2"
 COPY . .
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/web
-RUN go-wrapper install
+RUN go install
 
-CMD ["go-wrapper", "run", "-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
+CMD ["/go/bin/web", "-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
 
 EXPOSE 8080
