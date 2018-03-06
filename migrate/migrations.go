@@ -57,8 +57,6 @@ func Migrate(db *sql.DB, migrations []Migration) error {
 
 	if newestVersion != dbVersion {
 		err = runMigrations(db, migrations, dbVersion)
-	} else {
-		log.Print("DB version is up to date")
 	}
 
 	return err

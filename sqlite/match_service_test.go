@@ -4,13 +4,6 @@ import (
 	"testing"
 )
 
-func TestGetMatches(t *testing.T) {
-	s := createServices()
-	defer Reset(s.db)
-
-	t.Skip()
-}
-
 func TestCreateMatch(t *testing.T) {
 	s := createServices()
 	defer Reset(s.db)

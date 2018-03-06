@@ -1,7 +1,6 @@
 package sqlite
 
 import (
-	"log"
 	"testing"
 
 	"github.com/raphi011/scores"
@@ -21,8 +20,6 @@ func TestSetPassword(t *testing.T) {
 	pw := []byte("password")
 
 	info, _ := s.pwService.HashPassword(pw)
-
-	log.Printf("%v %v", info, user)
 
 	err = s.userService.UpdatePasswordAuthentication(user.ID, info)
 
