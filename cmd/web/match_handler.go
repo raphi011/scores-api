@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gin-gonic/gin/binding"
+
 	"github.com/raphi011/scores"
 
 	"github.com/gin-gonic/gin"
@@ -98,7 +100,7 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 	var newMatch createMatchDto
 	userEmail := c.GetString("userID")
 
-	if err := c.ShouldBindJSON(&newMatch); err != nil {
+	if err := c.ShouldBindWith(&newMatch, binding.JSON); err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
 		return
 	}

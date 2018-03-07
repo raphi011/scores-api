@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-gonic/gin/binding"
+
 	"github.com/raphi011/scores"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +22,7 @@ type playerHandler struct {
 func (h *playerHandler) playerCreate(c *gin.Context) {
 	var newPlayer createPlayerDto
 
-	if err := c.ShouldBindJSON(&newPlayer); err != nil {
+	if err := c.ShouldBindWith(&newPlayer, binding.JSON); err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
 	} else {
 		player, err := h.playerService.Create(&scores.Player{Name: newPlayer.Name})

@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gin-gonic/gin/binding"
+
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/sqlite"
 
@@ -63,7 +65,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 	session := sessions.Default(c)
 	var credentials credentialsDto
 
-	if err := c.ShouldBindJSON(&credentials); err != nil {
+	if err := c.ShouldBindWith(&credentials, binding.JSON); err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
 		return
 	}
