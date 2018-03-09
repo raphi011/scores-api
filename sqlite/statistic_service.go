@@ -26,7 +26,7 @@ const (
 	ungroupedPlayerStatisticSelectSQL = `
 		SELECT 
 			s.player_id,
-			u.profile_image_url as profileImage,
+			COALESCE(u.profile_image_url, "") as profileImage,
 	` + statisticFieldsSelectSQL + `
 		FROM playerStatistics s
 		JOIN players p ON s.player_id = p.id
@@ -69,11 +69,9 @@ func scanPlayerStatistic(scanner scan) (*scores.PlayerStatistic, error) {
 		Player: &scores.Player{},
 	}
 
-	var profileImageURL sql.NullString
-
 	err := scanner.Scan(
 		&s.PlayerID,
-		&profileImageURL,
+		&s.Player.ProfileImageURL,
 		&s.Player.Name,
 		&s.PercentageWon,
 		&s.PointsWon,
@@ -87,10 +85,7 @@ func scanPlayerStatistic(scanner scan) (*scores.PlayerStatistic, error) {
 		return nil, err
 	}
 
-	if profileImageURL.Valid {
-		s.Player.ProfileImageURL = profileImageURL.String
-	}
-
+	s.Rank = scores.CalculateRank(int(s.PercentageWon))
 	s.Player.ID = s.PlayerID
 
 	return s, nil

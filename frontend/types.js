@@ -51,6 +51,7 @@ export type Statistic = {
   pointsWon: number,
   pointsLost: number,
   percentageWon: number,
+  rank: string,
 };
 
 export type TeamStatistic = {

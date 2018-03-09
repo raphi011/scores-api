@@ -20,6 +20,7 @@ type Statistic struct {
 	PointsWon     int     `json:"pointsWon"`
 	PointsLost    int     `json:"pointsLost"`
 	PercentageWon float32 `json:"percentageWon"`
+	Rank          string  `json:"rank"`
 }
 
 type TeamStatistics []TeamStatistic
@@ -29,4 +30,14 @@ type StatisticService interface {
 	Player(playerID uint, filter string) (*PlayerStatistic, error)
 	Players(filter string) (PlayerStatistics, error)
 	PlayerTeams(playerID uint, filter string) (PlayerStatistics, error)
+}
+
+func CalculateRank(percentage int) string {
+	for _, r := range ranks {
+		if percentage >= r.percentage {
+			return r.name
+		}
+	}
+
+	return ""
 }
