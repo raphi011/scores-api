@@ -13,5 +13,5 @@ type GroupService interface {
 	Groups() (Groups, error)
 	Group(groupID uint) (*Group, error)
 	Create(*Group) (*Group, error)
-	AddPlayerToGroup(playerID uint) error
+	AddPlayerToGroup(playerID, groupID uint) error
 }
