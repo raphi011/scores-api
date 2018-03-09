@@ -5,3 +5,4 @@ node_modules
 client_secret.json
 debug
 vendor
+*.db
