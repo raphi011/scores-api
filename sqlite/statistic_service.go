@@ -135,7 +135,7 @@ const (
 	playerTeamsStatisticSelectSQL = `
 		SELECT 
 			MAX(CASE WHEN s.player1_id = $1 THEN s.player2_id ELSE s.player1_id END) AS player_id,
-			MAX(CASE WHEN s.player1_id = $1 THEN u2.profile_image_url ELSE u1.profile_image_url END) AS profileImage,
+			COALESCE(MAX(CASE WHEN s.player1_id = $1 THEN u2.profile_image_url ELSE u1.profile_image_url END), "") AS profileImage,
 			MAX(CASE WHEN s.player1_id = $1 THEN p2.name ELSE p1.name END) AS name,
 			CAST((SUM(s.won) / CAST(COUNT(1) AS float) * 100) AS int) AS percentageWon,
 			SUM(s.pointsWon) AS pointsWon,
