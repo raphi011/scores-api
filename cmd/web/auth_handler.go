@@ -82,7 +82,10 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
+	response := loginRouteOrUserDto{User: user}
+
 	successfullLogin(c, session, user.Email)
+	jsonn(c, http.StatusOK, response, "")
 }
 
 func (a *authHandler) googleAuthenticate(c *gin.Context) {
@@ -135,13 +138,13 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 		}
 
 		successfullLogin(c, session, user.Email)
+		c.Redirect(http.StatusFound, "/")
 	}
 }
 
 func successfullLogin(c *gin.Context, session sessions.Session, email string) {
 	session.Set("user-id", email)
 	session.Save()
-	c.Redirect(http.StatusFound, "/")
 }
 
 func (a *authHandler) loginRouteOrUser(c *gin.Context) {

@@ -1,27 +1,70 @@
 // @flow
 
 import React from 'react';
+import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Typography from 'material-ui/Typography';
+import TextField from 'material-ui/TextField';
 import Paper from 'material-ui/Paper';
 import Router from 'next/router';
+import { CircularProgress } from 'material-ui/Progress';
 import Red from 'material-ui/colors/red';
 import WarningIcon from 'material-ui-icons/Warning';
+import { FormGroup } from 'material-ui/Form';
 
 import withAuth from '../containers/AuthContainer';
+import { loginWithPasswordAction } from '../redux/actions/auth';
+import { setStatusAction } from '../redux/actions/status';
+import Snackbar from '../containers/SnackbarContainer';
+
+import type { Classes } from '../types';
 
 type Props = {
   loginRoute: string,
   fromServer: boolean,
   error: string,
+  classes: Classes,
+  loginWithPassword: (string, string) => Promise<any>,
+  setStatus: string => void,
 };
 
-class Login extends React.Component<Props> {
+type State = {
+  email: string,
+  password: string,
+  loggingIn: boolean,
+};
+
+const styles = theme => ({
+  wrapper: {
+    margin: theme.spacing.unit,
+    position: 'relative',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+});
+
+class Login extends React.Component<Props, State> {
   static getParameters(query) {
     const { error } = query;
 
     return { error };
   }
+
+  static mapDispatchToProps = {
+    loginWithPassword: loginWithPasswordAction,
+    setStatus: setStatusAction,
+  };
+
+  state = {
+    email: '',
+    password: '',
+    loggingIn: false,
+  };
 
   componentDidMount() {
     // TODO: load new loginRoute after logout
@@ -32,8 +75,37 @@ class Login extends React.Component<Props> {
     }
   }
 
+  onEmailChange = e => {
+    this.setState({ email: e.target.value });
+  };
+
+  onPasswordChange = e => {
+    this.setState({ password: e.target.value });
+  };
+
+  loginWithPassword = async () => {
+    const { setStatus, loginWithPassword } = this.props;
+    const { email, password } = this.state;
+
+    this.setState({ loggingIn: true });
+
+    const credentials = {
+      email,
+      password,
+    };
+
+    try {
+      await loginWithPassword(credentials);
+      await Router.push('/');
+    } catch (e) {
+      setStatus('Something went wrong there');
+      this.setState({ loggingIn: false });
+    }
+  };
+
   render() {
-    const { loginRoute, error } = this.props;
+    const { loginRoute, error, classes } = this.props;
+    const { email, password, loggingIn } = this.state;
 
     const errorBox = error ? (
       <span
@@ -62,7 +134,40 @@ class Login extends React.Component<Props> {
         <Paper style={{ textAlign: 'center', padding: '30px' }}>
           <Typography variant="display2">Welcome</Typography>
           <br />
-          <Button color="primary" variant="raised" href={loginRoute}>
+          <FormGroup>
+            <TextField
+              label="Email"
+              type="email"
+              value={email}
+              onChange={this.onEmailChange}
+              autoComplete="email"
+              margin="normal"
+            />
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={this.onPasswordChange}
+              autoComplete="current-password"
+              margin="normal"
+            />
+          </FormGroup>
+          <div className={classes.wrapper}>
+            <Button
+              color="primary"
+              fullWidth
+              variant="raised"
+              disabled={loggingIn}
+              onClick={this.loginWithPassword}
+            >
+              Login
+            </Button>
+            {loggingIn && (
+              <CircularProgress size={24} className={classes.buttonProgress} />
+            )}
+          </div>
+          <div style={{ margin: '20px 0' }}>- or -</div>
+          <Button color="primary" fullWidth variant="raised" href={loginRoute}>
             Login with Google
           </Button>
           <div
@@ -71,9 +176,10 @@ class Login extends React.Component<Props> {
             {errorBox}
           </div>
         </Paper>
+        <Snackbar />
       </div>
     );
   }
 }
 
-export default withAuth(Login);
+export default withStyles(styles)(withAuth(Login));

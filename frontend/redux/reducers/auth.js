@@ -16,7 +16,12 @@ export type AuthStore = {
 };
 
 function loggedOut(state: AuthStore, action): AuthStore {
-  const { loginRoute } = action.payload;
+  // todo
+  let loginRoute = '';
+
+  if (action.payload) {
+    loginRoute = action.payload.loginRoute;
+  }
 
   return {
     ...state,
