@@ -7,9 +7,12 @@ import Drawer from './Drawer';
 import AppBar from '../containers/AppBarContainer';
 import Snackbar from '../containers/SnackbarContainer';
 
+import type { Group } from '../types';
+
 type Props = {
   title: string,
   children: React.Node,
+  groups: Array<Group>,
   classes: Object,
 };
 
@@ -38,10 +41,14 @@ class Layout extends React.Component<Props, State> {
   };
 
   render() {
-    const { title, children, classes } = this.props;
+    const { title, groups = [], children, classes } = this.props;
     return (
       <div className={classes.style}>
-        <Drawer onRequestClose={this.onCloseDrawer} open={this.state.open} />
+        <Drawer
+          onRequestClose={this.onCloseDrawer}
+          groups={groups}
+          open={this.state.open}
+        />
         <AppBar onOpenMenu={this.onToggleDrawer} title={title} />
         {children}
         <Snackbar />

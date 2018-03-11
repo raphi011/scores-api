@@ -2,6 +2,12 @@
 
 export type EntityName = 'player' | 'team' | 'match';
 
+export type Group = {
+  id: number,
+  name: string,
+  imageUrl: string,
+};
+
 export type Player = {
   id: number,
   name: string,

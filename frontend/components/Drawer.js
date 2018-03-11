@@ -3,12 +3,19 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import MaterialDrawer from 'material-ui/Drawer';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import List, {
+  ListItemAvatar,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from 'material-ui/List';
 import AddIcon from 'material-ui-icons/Add';
 import StatisticsIcon from 'material-ui-icons/ShowChart';
 import FitnessCenterIcon from 'material-ui-icons/FitnessCenter';
 import Divider from 'material-ui/Divider';
 import Link from 'next/link';
+
+import type { Group } from '../types';
 
 const styles = theme => ({
   list: {
@@ -22,11 +29,19 @@ const styles = theme => ({
 
 type Props = {
   open: boolean,
+  groups: Array<Group>,
   onRequestClose: Event => void,
   classes: Object,
 };
 
-function Drawer({ open, onRequestClose, classes }: Props) {
+function Drawer({ open, groups, onRequestClose, classes }: Props) {
+  const groupList = groups.map(g => (
+    <ListItem button>
+      <ListItemAvatar src={g.imageUrl} />
+      <ListItemText primary={g.name} />
+    </ListItem>
+  ));
+
   const sideList = (
     <div className={classes.list}>
       <List>
@@ -55,6 +70,11 @@ function Drawer({ open, onRequestClose, classes }: Props) {
             <ListItemText primary="Statistics" />
           </ListItem>
         </Link>
+        <Divider />
+        <ListItem>
+          <ListItemText secondary="Groups" />
+        </ListItem>
+        {groupList}
       </List>
     </div>
   );
