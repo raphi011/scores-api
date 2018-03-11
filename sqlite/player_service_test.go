@@ -6,6 +6,28 @@ import (
 	"github.com/raphi011/scores"
 )
 
+func TestGetPlayersByGroup(t *testing.T) {
+	s := createServices()
+	defer Reset(s.db)
+
+	g, _ := s.groupService.Create(&scores.Group{Name: "Testgroup"})
+
+	p1, _ := s.playerService.Create(&scores.Player{Name: "Test1"})
+	p2, _ := s.playerService.Create(&scores.Player{Name: "Test2"})
+	s.playerService.Create(&scores.Player{Name: "Test3"})
+
+	s.groupService.AddPlayerToGroup(p1.ID, g.ID, "user")
+	s.groupService.AddPlayerToGroup(p2.ID, g.ID, "user")
+
+	players, err := s.playerService.ByGroup(g.ID)
+
+	if err != nil {
+		t.Errorf("PlayerService.ByGroup() err: %s", err)
+	} else if len(players) != 2 {
+		t.Errorf("PlayerService.ByGroup(), want 2 players, got %d ", len(players))
+	}
+}
+
 func TestGetPlayers(t *testing.T) {
 	s := createServices()
 	defer Reset(s.db)

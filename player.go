@@ -12,6 +12,7 @@ type Players []Player
 type PlayerService interface {
 	Player(playerID uint) (*Player, error)
 	Players() (Players, error)
+	ByGroup(groupID uint) (Players, error)
 	Create(*Player) (*Player, error)
 	Delete(playerID uint) error
 }

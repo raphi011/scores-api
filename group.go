@@ -3,6 +3,7 @@ package scores
 type Group struct {
 	Model
 	Name     string `json:"name"`
+	Role     string `json:"role"`
 	ImageURL string `json:"imageUrl"`
 }
 
@@ -13,5 +14,5 @@ type GroupService interface {
 	Groups() (Groups, error)
 	Group(groupID uint) (*Group, error)
 	Create(*Group) (*Group, error)
-	AddPlayerToGroup(playerID, groupID uint) error
+	AddPlayerToGroup(playerID, groupID uint, role string) error
 }

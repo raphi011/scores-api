@@ -8,6 +8,7 @@ import (
 
 type services struct {
 	db               *sql.DB
+	groupService     *GroupService
 	playerService    *PlayerService
 	userService      *UserService
 	teamService      *TeamService
@@ -24,6 +25,7 @@ func createServices() *services {
 	iterations := 10000
 
 	s := &services{
+		groupService:     &GroupService{DB: db},
 		playerService:    &PlayerService{DB: db},
 		userService:      &UserService{DB: db},
 		teamService:      &TeamService{DB: db},

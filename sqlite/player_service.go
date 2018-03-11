@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
+	"log"
 
 	"github.com/raphi011/scores"
 )
@@ -14,7 +15,7 @@ type PlayerService struct {
 }
 
 const (
-	playersSelectSQL = `
+	playersBaseSelectSQL = `
 		SELECT
 			p.id,
 			p.name,
@@ -23,10 +24,15 @@ const (
 			p.created_at
 		FROM players p
 		LEFT JOIN users u on u.id = p.user_id 
-		WHERE p.deleted_at is null
+		`
+	playersSelectSQL    = playersBaseSelectSQL + playersWhereSQL
+	playersWhereSQL     = " WHERE p.deleted_at is null"
+	playersGroupJoinSQL = " JOIN groupPlayers gp on gp.player_id = p.id"
+	playersByGroupSQL   = playersBaseSelectSQL + playersGroupJoinSQL + playersWhereSQL + `
+	 AND gp.group_id = $1	
 	`
 
-	playerSelectSQL = playersSelectSQL + " and p.id = $1"
+	playerSelectSQL = playersBaseSelectSQL + playersWhereSQL + " and p.id = $1"
 )
 
 func scanPlayer(scanner scan) (*scores.Player, error) {
@@ -50,10 +56,9 @@ func scanPlayer(scanner scan) (*scores.Player, error) {
 	return p, nil
 }
 
-func (s *PlayerService) Players() (scores.Players, error) {
+func scanPlayers(db *sql.DB, query string, args ...interface{}) (scores.Players, error) {
 	players := scores.Players{}
-
-	rows, err := s.DB.Query(playersSelectSQL)
+	rows, err := db.Query(query, args...)
 
 	if err != nil {
 		return nil, err
@@ -71,6 +76,15 @@ func (s *PlayerService) Players() (scores.Players, error) {
 	}
 
 	return players, nil
+}
+
+func (s *PlayerService) ByGroup(groupID uint) (scores.Players, error) {
+	log.Print(playersByGroupSQL)
+	return scanPlayers(s.DB, playersByGroupSQL, groupID)
+}
+
+func (s *PlayerService) Players() (scores.Players, error) {
+	return scanPlayers(s.DB, playersSelectSQL)
 }
 
 func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
