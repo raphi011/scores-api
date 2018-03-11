@@ -20,6 +20,7 @@ import Snackbar from '../containers/SnackbarContainer';
 import type { Classes } from '../types';
 
 type Props = {
+  r: string,
   loginRoute: string,
   fromServer: boolean,
   error: string,
@@ -50,9 +51,9 @@ const styles = theme => ({
 
 class Login extends React.Component<Props, State> {
   static getParameters(query) {
-    const { error } = query;
+    const { error, r } = query;
 
-    return { error };
+    return { error, r };
   }
 
   static mapDispatchToProps = {
@@ -84,7 +85,7 @@ class Login extends React.Component<Props, State> {
   };
 
   loginWithPassword = async () => {
-    const { setStatus, loginWithPassword } = this.props;
+    const { setStatus, loginWithPassword, r } = this.props;
     const { email, password } = this.state;
 
     this.setState({ loggingIn: true });
@@ -96,7 +97,8 @@ class Login extends React.Component<Props, State> {
 
     try {
       await loginWithPassword(credentials);
-      await Router.push('/');
+      const path = r ? r : '/';
+      await Router.push(path);
     } catch (e) {
       setStatus('Something went wrong there');
       this.setState({ loggingIn: false });
