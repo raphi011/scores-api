@@ -89,6 +89,12 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 }
 
 func (a *authHandler) googleAuthenticate(c *gin.Context) {
+	if a.conf == nil {
+		// google oauth config is missing, only password
+		// authentication is available
+		jsonn(c, http.StatusNotImplemented, nil, "")
+		return
+	}
 	// Handle the exchange code to initiate a transport.
 	session := sessions.Default(c)
 	retrievedState := session.Get("state")
@@ -167,7 +173,9 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 	session.Set("state", state)
 	session.Save()
 
-	response.LoginRoute = a.conf.AuthCodeURL(state)
+	if a.conf != nil {
+		response.LoginRoute = a.conf.AuthCodeURL(state)
+	}
 
 	jsonn(c, http.StatusOK, response, "")
 }
@@ -180,7 +188,9 @@ func (a *authHandler) logout(c *gin.Context) {
 	session.Set("state", state)
 	session.Save()
 
-	response.LoginRoute = a.conf.AuthCodeURL(state)
+	if a.conf != nil {
+		response.LoginRoute = a.conf.AuthCodeURL(state)
+	}
 
 	jsonn(c, http.StatusOK, response, "")
 }

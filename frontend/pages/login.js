@@ -169,7 +169,13 @@ class Login extends React.Component<Props, State> {
             )}
           </div>
           <div style={{ margin: '20px 0' }}>- or -</div>
-          <Button color="primary" fullWidth variant="raised" href={loginRoute}>
+          <Button
+            color="primary"
+            disabled={!loginRoute}
+            fullWidth
+            variant="raised"
+            href={loginRoute}
+          >
             Login with Google
           </Button>
           <div

@@ -20,7 +20,7 @@ function loggedOut(state: AuthStore, action): AuthStore {
   let loginRoute = '';
 
   if (action.payload) {
-    loginRoute = action.payload.loginRoute;
+    loginRoute = action.payload.loginRoute || '';
   }
 
   return {
