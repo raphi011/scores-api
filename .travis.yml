@@ -1,3 +1,9 @@
-language: go
-go:
-  - "1.10"
+matrix:
+  include:
+    - language: go
+      go:
+        - "1.10"
+
+    - language: node_js
+      node_js:
+        - "node"
