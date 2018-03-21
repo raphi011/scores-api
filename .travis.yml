@@ -1,9 +1,11 @@
 matrix:
   include:
     - language: go
-      go:
-        - "1.10"
+      go: 1.10
+      install: godep restore
+      script: go test ./...
 
     - language: node_js
-      node_js:
-        - "node"
+      node_js: node
+      install: npm install
+      script: npm test
