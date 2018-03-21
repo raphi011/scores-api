@@ -2,8 +2,6 @@ matrix:
   include:
     - language: go
       go: "1.10"
-      install: dep restore
-      script: go test ./...
 
     - language: node_js
       node_js: node
