@@ -53,7 +53,7 @@ const (
 		g.id,
 		g.created_at,	
 		g.name,
-		g.image_url
+		COALESCE(g.image_url, "") as image_url
 	FROM groups g
 	`
 

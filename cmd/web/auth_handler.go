@@ -57,8 +57,9 @@ func randToken() string {
 }
 
 type authHandler struct {
-	userService *sqlite.UserService
-	conf        *oauth2.Config
+	userService   *sqlite.UserService
+	playerService *sqlite.PlayerService
+	conf          *oauth2.Config
 }
 
 func (a *authHandler) passwordAuthenticate(c *gin.Context) {
@@ -70,7 +71,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
-	user, err := a.userService.ByEmail(credentials.Email)
+	user, err := a.getUser(credentials.Email)
 
 	if err != nil {
 		jsonn(c, http.StatusUnauthorized, nil, "")
@@ -129,9 +130,8 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 		return
 	}
 
-	user, err := a.userService.ByEmail(googleUser.Email)
+	user, err := a.getUser(googleUser.Email)
 
-	// TODO: check err
 	if err != nil {
 		c.Redirect(http.StatusFound, "/login?error=USER_NOT_FOUND")
 	} else {
@@ -148,6 +148,27 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 	}
 }
 
+func (a *authHandler) getUser(email string) (*scores.User, error) {
+	user, err := a.userService.ByEmail(email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if user.PlayerID > 0 {
+		var player *scores.Player
+		player, err = a.playerService.Player(user.PlayerID)
+
+		if err != nil {
+			return nil, err
+		}
+
+		user.Player = player
+	}
+
+	return user, nil
+}
+
 func successfullLogin(c *gin.Context, session sessions.Session, email string) {
 	session.Set("user-id", email)
 	session.Save()
@@ -158,7 +179,7 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
 	if userID := session.Get("user-id"); userID != nil {
-		user, err := a.userService.ByEmail(userID.(string))
+		user, err := a.getUser(userID.(string))
 
 		if err != nil {
 			session.Delete("user-id")

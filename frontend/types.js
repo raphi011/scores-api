@@ -13,6 +13,7 @@ export type Player = {
   name: string,
   userId: ?number,
   profileImageUrl: ?string,
+  groups: Group[],
 };
 
 export type Team = {

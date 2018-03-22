@@ -3,8 +3,9 @@ package scores
 type User struct {
 	Model
 	Email           string       `json:"email"`
-	PlayerID        uint         `json:"playerId"`
 	ProfileImageURL string       `json:"profileImageUrl"`
+	PlayerID        uint         `json:"playerId"`
+	Player          *Player      `json:"player"`
 	PasswordInfo    PasswordInfo `json:"-"`
 }
 

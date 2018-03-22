@@ -33,6 +33,7 @@ export type DeleteEntityAction = {
 };
 
 export const initialEntitiesState = {
+  group: { values: {}, all: [] },
   player: { values: {}, all: [] },
   team: { values: {} },
   match: { values: {}, all: [], byPlayer: {} },
@@ -110,24 +111,41 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityAction) {
   return newState;
 }
 
+function receiveUser(state: EntityStore, action) {
+  const { user } = action.payload;
+
+  if (!user || !user.player) {
+    return state;
+  }
+
+  return receiveEntities(state, {
+    entityName: 'player',
+    payload: user.player,
+  });
+}
+
 const reducer = createReducer(initialEntitiesState, {
   [actionNames.RECEIVE_ENTITIES]: receiveEntities,
   [actionNames.DELETE_ENTITIES]: deleteEntities,
+  [actionNames.SET_USER_OR_LOGINROUTE]: receiveUser,
 });
 
 export default reducer;
 
+const groupMap = state => state.entities.group.values;
 const playerMap = state => state.entities.player.values;
 const teamMap = state => state.entities.team.values;
 const matchMap = state => state.entities.match.values;
 const statisticMap = state => state.entities.statistic.values;
 
 export const entityMapSelector = createSelector(
+  groupMap,
   playerMap,
   teamMap,
   matchMap,
   statisticMap,
-  (player, team, match, statistic) => ({
+  (group, player, team, match, statistic) => ({
+    group,
     player,
     team,
     match,

@@ -2,9 +2,17 @@ import { normalize, denormalize, schema } from 'normalizr';
 
 import type { EntityName } from './../types';
 
-const player = new schema.Entity('player');
+const group = new schema.Entity('group');
+
+const groupList = new schema.Array(group);
+
+const player = new schema.Entity('player', { groups: groupList });
 
 const playerList = new schema.Array(player);
+
+const user = new schema.Entity('user', { player });
+
+const userList = new schema.Array(user);
 
 const team = new schema.Entity(
   'team',
@@ -29,6 +37,10 @@ const statistic = new schema.Entity('statistic');
 const statisticList = new schema.Array(statistic);
 
 const entitySchemaMap = {
+  group,
+  groupList,
+  user,
+  userList,
   player,
   playerList,
   team,

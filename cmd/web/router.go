@@ -33,7 +33,7 @@ func initRouter(app app) *gin.Engine {
 	playerService := &sqlite.PlayerService{DB: app.db}
 	statisticService := &sqlite.StatisticService{DB: app.db}
 
-	authHandler := authHandler{userService: userService, conf: app.conf}
+	authHandler := authHandler{playerService: playerService, userService: userService, conf: app.conf}
 	playerHandler := playerHandler{playerService: playerService}
 	matchHandler := matchHandler{matchService: matchService, userService: userService, playerService: playerService, teamService: teamService}
 	statisticHandler := statisticHandler{statisticService: statisticService}

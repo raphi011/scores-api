@@ -88,6 +88,8 @@ func (s *PlayerService) Players() (scores.Players, error) {
 }
 
 func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
+	groupService := GroupService{DB: s.DB}
+
 	p := &scores.Player{}
 
 	row := s.DB.QueryRow(playerSelectSQL, ID)
@@ -97,6 +99,15 @@ func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	groups, err := groupService.GroupsByPlayer(p.ID)
+
+	if err != nil {
+		log.Print(err)
+		return nil, err
+	}
+
+	p.Groups = groups
 
 	return p, nil
 }

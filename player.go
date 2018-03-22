@@ -5,6 +5,7 @@ type Player struct {
 	Name            string `json:"name"`
 	UserID          uint   `json:"userId"`
 	ProfileImageURL string `json:"profileImageUrl"`
+	Groups          Groups `json:"groups"`
 }
 
 type Players []Player
