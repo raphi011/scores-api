@@ -5,5 +5,5 @@ matrix:
 
     - language: node_js
       node_js: node
-      install: npm --prefix ./frontend install ./frontend
-      script: npm --prefix ./frontend test
+      install: npm --prefix ./web install ./web
+      script: npm --prefix ./web test
