@@ -27,6 +27,7 @@ export type Team = {
 
 export type Match = {
   id: number,
+  groupId: number,
   scoreTeam1: number,
   scoreTeam2: number,
   createdAt: string,
@@ -35,6 +36,7 @@ export type Match = {
 };
 
 export type NewMatch = {
+  groupId: number,
   player1Id: number,
   player2Id: number,
   player3Id: number,

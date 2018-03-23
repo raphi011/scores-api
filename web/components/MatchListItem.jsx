@@ -14,7 +14,6 @@ const itemStyles = theme => ({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
   },
   team: { flex: '1 1 0' },
   points: { fontWeight: 'lighter', flex: '2 2 0' },

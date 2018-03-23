@@ -3,9 +3,8 @@
 import React from 'react';
 import Avatar from 'material-ui/Avatar';
 import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText, ListItemIcon } from 'material-ui/List';
+import List, { ListItem, ListItemText } from 'material-ui/List';
 import Badge from 'material-ui/Badge';
-import PersonIcon from 'material-ui-icons/Person';
 
 import type { Player } from '../types';
 

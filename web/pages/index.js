@@ -4,12 +4,11 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
-import Tooltip from 'material-ui/Tooltip';
 import Toolbar from 'material-ui/Toolbar';
 import Link from 'next/link';
 
 import withAuth from '../containers/AuthContainer';
-import Layout from '../components/Layout';
+import Layout from '../containers/LayoutContainer';
 import MatchList from '../containers/MatchListContainer';
 import { allMatchesSelector } from '../redux/reducers/entities';
 import { loadMatchesAction } from '../redux/actions/entities';

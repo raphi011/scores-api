@@ -42,6 +42,7 @@ func createServices() *services {
 }
 
 func newMatch(s *services) *scores.Match {
+	g, _ := s.groupService.Create(&scores.Group{Name: "TestGroup"})
 	u, _ := s.userService.Create(&scores.User{Email: "test@test.at"})
 	p1, _ := s.playerService.Create(&scores.Player{Name: "p1"})
 	p2, _ := s.playerService.Create(&scores.Player{Name: "p2"})
@@ -51,6 +52,7 @@ func newMatch(s *services) *scores.Match {
 	t2, _ := s.teamService.Create(&scores.Team{Name: "", Player1ID: p3.ID, Player2ID: p4.ID})
 
 	return &scores.Match{
+		Group:      g,
 		Team1:      t1,
 		Team2:      t2,
 		ScoreTeam1: 15,

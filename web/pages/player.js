@@ -10,7 +10,7 @@ import MatchList from '../containers/MatchListContainer';
 import withAuth from '../containers/AuthContainer';
 import StatisticList from '../components/StatisticList';
 
-import Layout from '../components/Layout';
+import Layout from '../containers/LayoutContainer';
 import {
   loadPlayerAction,
   loadPlayersAction,

@@ -10,7 +10,7 @@ import Router from 'next/router';
 
 import withAuth from '../containers/AuthContainer';
 import { validateMatch } from '../validation/match';
-import Layout from '../components/Layout';
+import Layout from '../containers/LayoutContainer';
 import SelectPlayers from '../components/SelectPlayers';
 import SetScores from '../components/SetScores';
 import { allPlayersSelector, matchSelector } from '../redux/reducers/entities';
@@ -62,6 +62,7 @@ type Props = {
   createNewMatch: NewMatch => Promise<any>,
   setStatus: string => void,
   /* eslint-disable react/no-unused-prop-types */
+  groupId: number,
   rematchId: number,
 };
 
@@ -69,6 +70,7 @@ type State = {
   activeStep: number,
   teamsComplete: boolean,
   match: {
+    groupId: number,
     player1: ?Player,
     player2: ?Player,
     player3: ?Player,
@@ -84,17 +86,12 @@ type State = {
 
 class CreateMatch extends React.Component<Props, State> {
   static getParameters(query) {
-    let { rematchId } = query;
+    let { rematchId, groupId } = query;
 
-    if (rematchId) {
-      rematchId = Number.parseInt(rematchId, 10);
+    rematchId = Number.parseInt(rematchId, 10) || 0;
+    groupId = Number.parseInt(groupId, 10) || 0;
 
-      if (Number.isInteger(rematchId)) {
-        return { rematchId };
-      }
-    }
-
-    return {};
+    return { groupId, rematchId };
   }
 
   static buildActions({ rematchId }) {
@@ -124,55 +121,6 @@ class CreateMatch extends React.Component<Props, State> {
     setStatus: setStatusAction,
   };
 
-  rematchPlayersSet = false;
-
-  state = {
-    activeStep: 0,
-    teamsComplete: false,
-    match: {
-      player1: null,
-      player2: null,
-      player3: null,
-      player4: null,
-      scoreTeam1: '',
-      scoreTeam2: '',
-      targetScore: '15',
-    },
-    errors: {
-      valid: true,
-    },
-  };
-
-  setRematch = (props: Props) => {
-    const { rematchId, rematch, players } = props;
-
-    if (rematchId && !this.rematchPlayersSet) {
-      if (!rematch || !players.length) {
-        return; // rematch or players not loaded yet
-      }
-
-      const newState = {
-        activeStep: 1,
-        teamsComplete: true,
-        match: {
-          player1: rematch.team1.player1,
-          player2: rematch.team1.player2,
-          player3: rematch.team2.player1,
-          player4: rematch.team2.player2,
-          scoreTeam1: '',
-          scoreTeam2: '',
-          targetScore: '15',
-        },
-      };
-
-      this.rematchPlayersSet = true;
-
-      return newState;
-    }
-
-    return null;
-  };
-
   constructor(props) {
     super(props);
 
@@ -185,6 +133,24 @@ class CreateMatch extends React.Component<Props, State> {
       };
     }
   }
+
+  state = {
+    activeStep: 0,
+    teamsComplete: false,
+    match: {
+      groupId: 0,
+      player1: null,
+      player2: null,
+      player3: null,
+      player4: null,
+      scoreTeam1: '',
+      scoreTeam2: '',
+      targetScore: '15',
+    },
+    errors: {
+      valid: true,
+    },
+  };
 
   componentWillReceiveProps(nextProps) {
     const state = this.setRematch(nextProps);
@@ -218,6 +184,39 @@ class CreateMatch extends React.Component<Props, State> {
 
     this.setState({ match, teamsComplete: false });
   };
+
+  setRematch = (props: Props) => {
+    const { rematchId, rematch, players } = props;
+
+    if (rematchId && !this.rematchPlayersSet) {
+      if (!rematch || !players.length) {
+        return null; // rematch or players not loaded yet
+      }
+
+      const newState = {
+        activeStep: 1,
+        teamsComplete: true,
+        match: {
+          groupId: rematch.groupId,
+          player1: rematch.team1.player1,
+          player2: rematch.team1.player2,
+          player3: rematch.team2.player1,
+          player4: rematch.team2.player2,
+          scoreTeam1: '',
+          scoreTeam2: '',
+          targetScore: '15',
+        },
+      };
+
+      this.rematchPlayersSet = true;
+
+      return newState;
+    }
+
+    return null;
+  };
+
+  rematchPlayersSet = false;
 
   onSetPlayer = (playerNr: number, player: Player, teamsComplete: boolean) => {
     const activeStep = teamsComplete ? 1 : 0;
@@ -340,6 +339,7 @@ class CreateMatch extends React.Component<Props, State> {
 
   getMatch = (): NewMatch => {
     const {
+      groupId,
       scoreTeam1,
       scoreTeam2,
       targetScore,
@@ -350,6 +350,7 @@ class CreateMatch extends React.Component<Props, State> {
     } = this.state.match;
 
     return {
+      groupId,
       player1Id: player1 ? player1.id : 0,
       player2Id: player2 ? player2.id : 0,
       player3Id: player3 ? player3.id : 0,

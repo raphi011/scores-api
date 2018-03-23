@@ -7,12 +7,15 @@ import Drawer from './Drawer';
 import AppBar from '../containers/AppBarContainer';
 import Snackbar from '../containers/SnackbarContainer';
 
-import type { Group } from '../types';
+import type { Player } from '../types';
 
 type Props = {
   title: string,
   children: React.Node,
-  groups: Array<Group>,
+  userPlayer: Player,
+  drawerOpen: boolean,
+  onCloseDrawer: () => void,
+  onToggleDrawer: () => void,
   classes: Object,
 };
 
@@ -23,38 +26,29 @@ const styles = theme => ({
   },
 });
 
-type State = {
-  open: boolean,
-};
-
-class Layout extends React.Component<Props, State> {
-  state = {
-    open: false,
-  };
-
-  onToggleDrawer = () => {
-    this.setState({ open: !this.state.open });
-  };
-
-  onCloseDrawer = () => {
-    this.setState({ open: false });
-  };
-
-  render() {
-    const { title, groups = [], children, classes } = this.props;
-    return (
-      <div className={classes.style}>
-        <Drawer
-          onRequestClose={this.onCloseDrawer}
-          groups={groups}
-          open={this.state.open}
-        />
-        <AppBar onOpenMenu={this.onToggleDrawer} title={title} />
-        {children}
-        <Snackbar />
-      </div>
-    );
-  }
-}
+const Layout = ({
+  title,
+  userPlayer,
+  children,
+  drawerOpen,
+  onCloseDrawer,
+  onToggleDrawer,
+  onToggleGroup,
+  groupOpen,
+  classes,
+}: Props) => (
+  <div className={classes.style}>
+    <Drawer
+      userPlayer={userPlayer}
+      onRequestClose={onCloseDrawer}
+      open={drawerOpen}
+      onToggleGroup={onToggleGroup}
+      groupOpen={groupOpen}
+    />
+    <AppBar onOpenMenu={onToggleDrawer} title={title} />
+    {children}
+    <Snackbar />
+  </div>
+);
 
 export default withStyles(styles)(Layout);

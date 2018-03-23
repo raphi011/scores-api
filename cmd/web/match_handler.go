@@ -13,6 +13,7 @@ import (
 )
 
 type createMatchDto struct {
+	GroupID     uint `json:"groupId"`
 	Player1ID   uint `json:"player1Id"`
 	Player2ID   uint `json:"player2Id"`
 	Player3ID   uint `json:"player3Id"`
@@ -29,6 +30,7 @@ type matchQueryDto struct {
 
 type matchHandler struct {
 	playerService scores.PlayerService
+	groupService  scores.GroupService
 	matchService  scores.MatchService
 	teamService   scores.TeamService
 	userService   scores.UserService
@@ -105,13 +107,14 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 		return
 	}
 
+	group, gErr1 := h.groupService.Group(newMatch.GroupID)
 	_, pErr1 := h.playerService.Player(newMatch.Player1ID)
 	_, pErr2 := h.playerService.Player(newMatch.Player2ID)
 	_, pErr3 := h.playerService.Player(newMatch.Player3ID)
 	_, pErr4 := h.playerService.Player(newMatch.Player4ID)
 	user, uErr := h.userService.ByEmail(userEmail)
 
-	if pErr1 != nil || pErr2 != nil || pErr3 != nil || pErr4 != nil || uErr != nil {
+	if gErr1 != nil || pErr1 != nil || pErr2 != nil || pErr3 != nil || pErr4 != nil || uErr != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
 		return
 	}
@@ -125,8 +128,8 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 	}
 
 	// TODO: additional score validation
-
 	match, err := h.matchService.Create(&scores.Match{
+		Group:       group,
 		Team1:       team1,
 		Team2:       team2,
 		ScoreTeam1:  newMatch.ScoreTeam1,

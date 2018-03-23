@@ -23,6 +23,7 @@ const (
 	matchesInsertSQL = `
 		INSERT INTO matches
 		(
+			group_id,
 			created_at,
 			team1_player1_id,
 			team1_player2_id,
@@ -41,13 +42,15 @@ const (
 			$4,
 			$5,
 			$6,
-			$7
+			$7,
+			$8
 		)
 	`
 )
 
 func (s *MatchService) Create(match *scores.Match) (*scores.Match, error) {
 	result, err := s.DB.Exec(matchesInsertSQL,
+		match.Group.ID,
 		match.Team1.Player1ID,
 		match.Team1.Player2ID,
 		match.Team2.Player1ID,
