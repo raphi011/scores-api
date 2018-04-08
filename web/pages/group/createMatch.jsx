@@ -8,19 +8,21 @@ import NextIcon from 'material-ui-icons/KeyboardArrowRight';
 import MobileStepper from 'material-ui/MobileStepper';
 import Router from 'next/router';
 
-import withAuth from '../containers/AuthContainer';
-import { validateMatch } from '../validation/match';
-import Layout from '../containers/LayoutContainer';
-import SelectPlayers from '../components/SelectPlayers';
-import SetScores from '../components/SetScores';
-import { allPlayersSelector, matchSelector } from '../redux/reducers/entities';
+import withAuth from '../../containers/AuthContainer';
+import { validateMatch } from '../../validation/match';
+import Layout from '../../containers/LayoutContainer';
+import SelectPlayers from '../../components/SelectPlayers';
+import SetScores from '../../components/SetScores';
+import {
+  groupPlayersSelector,
+  matchSelector,
+} from '../../redux/reducers/entities';
 import {
   createNewMatchAction,
-  loadPlayersAction,
   loadMatchAction,
-} from '../redux/actions/entities';
-import { setStatusAction } from '../redux/actions/status';
-import type { NewMatch, Match, Player } from '../types';
+} from '../../redux/actions/entities';
+import { setStatusAction } from '../../redux/actions/status';
+import type { NewMatch, Match, Player } from '../../types';
 
 const styles = theme => ({
   root: {
@@ -95,18 +97,17 @@ class CreateMatch extends React.Component<Props, State> {
   }
 
   static buildActions({ rematchId }) {
-    const actions = [loadPlayersAction()];
-
     if (rematchId) {
-      actions.push(loadMatchAction(rematchId));
+      return [loadMatchAction(rematchId)];
     }
 
-    return actions;
+    return [];
   }
 
   static mapStateToProps(state, ownProps: Props) {
-    const { rematchId } = ownProps;
-    const players = allPlayersSelector(state);
+    const { rematchId, groupId } = ownProps;
+
+    const players = groupPlayersSelector(state, groupId);
     const rematch = rematchId ? matchSelector(state, rematchId) : null;
 
     return {
@@ -116,7 +117,6 @@ class CreateMatch extends React.Component<Props, State> {
   }
 
   static mapDispatchToProps = {
-    loadPlayers: loadPlayersAction,
     createNewMatch: createNewMatchAction,
     setStatus: setStatusAction,
   };

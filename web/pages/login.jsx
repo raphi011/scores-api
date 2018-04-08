@@ -25,7 +25,7 @@ type Props = {
   fromServer: boolean,
   error: string,
   classes: Classes,
-  loginWithPassword: (string, string) => Promise<any>,
+  loginWithPassword: ({ email: string, password: string }) => Promise<any>,
   setStatus: string => void,
 };
 
@@ -97,7 +97,7 @@ class Login extends React.Component<Props, State> {
 
     try {
       await loginWithPassword(credentials);
-      const path = r ? r : '/';
+      const path = r || '/';
       await Router.push(path);
     } catch (e) {
       setStatus('Something went wrong there');

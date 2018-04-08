@@ -13,7 +13,6 @@ import StatisticList from '../components/StatisticList';
 import Layout from '../containers/LayoutContainer';
 import {
   loadPlayerAction,
-  loadPlayersAction,
   loadPlayerTeamStatisticAction,
   loadPlayerStatisticAction,
   loadPlayerMatchesAction,
@@ -65,13 +64,10 @@ class PlayerInfo extends React.Component<Props, State> {
 
     if (playerId) {
       action = multiApiAction([
-        loadPlayerAction(playerId),
         loadPlayerMatchesAction(playerId),
         loadPlayerStatisticAction(playerId),
         loadPlayerTeamStatisticAction(playerId),
       ]);
-    } else {
-      action = loadPlayersAction();
     }
 
     return [action];

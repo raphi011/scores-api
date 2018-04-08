@@ -7,14 +7,14 @@ import AddIcon from 'material-ui-icons/Add';
 import Toolbar from 'material-ui/Toolbar';
 import Link from 'next/link';
 
-import withAuth from '../containers/AuthContainer';
-import Layout from '../containers/LayoutContainer';
-import MatchList from '../containers/MatchListContainer';
-import { allMatchesSelector } from '../redux/reducers/entities';
-import { loadMatchesAction } from '../redux/actions/entities';
-import { setStatusAction } from '../redux/actions/status';
+import withAuth from '../../containers/AuthContainer';
+import Layout from '../../containers/LayoutContainer';
+import MatchList from '../../containers/MatchListContainer';
+import { matchesByGroupSelector } from '../../redux/reducers/entities';
+import { loadMatchesAction } from '../../redux/actions/entities';
+import { setStatusAction } from '../../redux/actions/status';
 
-import type { Match, User, Classes } from '../types';
+import type { Match, User, Classes } from '../../types';
 
 const styles = theme => ({
   button: {
@@ -27,9 +27,10 @@ const styles = theme => ({
 
 type Props = {
   classes: Classes,
+  groupId: number,
   user: User,
   matches: Array<Match>,
-  loadMatches: (?string) => Promise<{ empty: boolean }>,
+  loadMatches: (number, ?string) => Promise<{ empty: boolean }>,
 };
 
 type State = {
@@ -38,18 +39,24 @@ type State = {
 };
 
 class Index extends React.Component<Props, State> {
-  static buildActions() {
-    const actions = [loadMatchesAction()];
+  static getParameters(query) {
+    let { groupId } = query;
+
+    groupId = Number.parseInt(groupId, 10) || 0;
+
+    return { groupId };
+  }
+  static buildActions({ groupId }) {
+    const actions = [loadMatchesAction(groupId)];
 
     return actions;
   }
 
-  static mapStateToProps(state) {
-    const matches = allMatchesSelector(state);
+  static mapStateToProps(state, ownProps) {
+    const { groupId } = ownProps;
+    const matches = matchesByGroupSelector(state, groupId);
 
-    return {
-      matches,
-    };
+    return { matches };
   }
 
   static mapDispatchToProps = {
@@ -63,9 +70,9 @@ class Index extends React.Component<Props, State> {
   };
 
   onRefresh = async () => {
-    const { loadMatches } = this.props;
+    const { loadMatches, groupId } = this.props;
     try {
-      await loadMatches();
+      await loadMatches(groupId);
       this.setState({ loading: false, hasMore: true });
     } catch (e) {
       this.setState({ loading: false, hasMore: false });
@@ -73,7 +80,7 @@ class Index extends React.Component<Props, State> {
   };
 
   onLoadMore = async () => {
-    const { loadMatches, matches } = this.props;
+    const { loadMatches, groupId, matches } = this.props;
 
     this.setState({ loading: true });
 
@@ -87,7 +94,7 @@ class Index extends React.Component<Props, State> {
     };
 
     try {
-      const result = await loadMatches(after);
+      const result = await loadMatches(groupId, after);
       newState.hasMore = !result.empty;
     } catch (e) {
       newState.hasMore = false;
