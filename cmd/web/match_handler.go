@@ -37,7 +37,13 @@ type matchHandler struct {
 }
 
 func (h *matchHandler) index(c *gin.Context) {
-	var err error
+	groupID, err := strconv.Atoi(c.Param("groupID"))
+
+	if err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
 	after := time.Now()
 	count := uint(25)
 
@@ -50,7 +56,7 @@ func (h *matchHandler) index(c *gin.Context) {
 		}
 	}
 
-	matches, err := h.matchService.Matches(after, count)
+	matches, err := h.matchService.GroupMatches(uint(groupID), after, count)
 
 	if err != nil {
 		jsonn(c, http.StatusInternalServerError, nil, "Unknown error")

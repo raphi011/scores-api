@@ -34,10 +34,16 @@ export type DeleteEntityAction = {
 
 export const initialEntitiesState = {
   group: { values: {}, all: [] },
-  player: { values: {}, all: [] },
+  player: { values: {}, all: [], byGroup: {} },
   team: { values: {} },
-  match: { values: {}, all: [], byPlayer: {} },
-  statistic: { values: {}, all: [], byPlayer: {}, byPlayerTeam: {} },
+  match: { values: {}, all: [], byPlayer: {}, byGroup: {} },
+  statistic: {
+    values: {},
+    all: [],
+    byPlayer: {},
+    byPlayerTeam: {},
+    byGroup: {},
+  },
 };
 
 function deleteEntities(state, action: DeleteEntityAction) {
@@ -158,6 +164,15 @@ export const allPlayersSelector = (state: Store) =>
     ? denorm('player', entityMapSelector(state), state.entities.player.all)
     : [];
 
+export const groupPlayersSelector = (state: Store, groupId: number) =>
+  (state.entities.player.byGroup[groupId] || []).length
+    ? denorm(
+        'player',
+        entityMapSelector(state),
+        state.entities.player.byGroup[groupId],
+      )
+    : [];
+
 export const matchSelector = (state: Store, id: number) =>
   denorm('match', entityMapSelector(state), id);
 
@@ -172,6 +187,15 @@ export const allMatchesSelector = createSelector(
 
 export const playerSelector = (state: Store, playerId: number) =>
   denorm('player', entityMapSelector(state), playerId);
+
+export const matchesByGroupSelector = (state: Store, groupId: number) =>
+  (state.entities.match.byGroup[groupId] || []).length
+    ? denorm(
+        'match',
+        entityMapSelector(state),
+        state.entities.match.byGroup[groupId],
+      )
+    : [];
 
 export const matchesByPlayerSelector = (state: Store, playerId: number) =>
   (state.entities.match.byPlayer[playerId] || []).length

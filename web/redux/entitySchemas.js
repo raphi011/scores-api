@@ -2,7 +2,7 @@ import { normalize, denormalize, schema } from 'normalizr';
 
 import type { EntityName } from './../types';
 
-const group = new schema.Entity('group');
+const group = new schema.Entity('group', { players: playerList });
 
 const groupList = new schema.Array(group);
 

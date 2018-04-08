@@ -121,7 +121,10 @@ const GroupOptions = ({ group, open, onToggleOpen, nestedClassName }) => (
       <List component="div" disablePadding className={nestedClassName}>
         <Link
           prefetch
-          href={{ pathname: '/createMatch', query: { groupId: group.id } }}
+          href={{
+            pathname: '/group/createMatch',
+            query: { groupId: group.id },
+          }}
         >
           <ListItem button>
             <ListItemIcon>
@@ -130,7 +133,10 @@ const GroupOptions = ({ group, open, onToggleOpen, nestedClassName }) => (
             <ListItemText primary="New Match" />
           </ListItem>
         </Link>
-        <Link prefetch href={{ pathname: '/', query: { groupId: group.id } }}>
+        <Link
+          prefetch
+          href={{ pathname: '/group', query: { groupId: group.id } }}
+        >
           <ListItem button>
             <ListItemIcon>
               <FitnessCenterIcon />
@@ -140,7 +146,7 @@ const GroupOptions = ({ group, open, onToggleOpen, nestedClassName }) => (
         </Link>
         <Link
           prefetch
-          href={{ pathname: '/statistic', query: { groupId: group.id } }}
+          href={{ pathname: '/group/statistic', query: { groupId: group.id } }}
         >
           <ListItem button>
             <ListItemIcon>

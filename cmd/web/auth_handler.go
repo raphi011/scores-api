@@ -59,6 +59,7 @@ func randToken() string {
 type authHandler struct {
 	userService   *sqlite.UserService
 	playerService *sqlite.PlayerService
+	groupService  *sqlite.GroupService
 	conf          *oauth2.Config
 }
 

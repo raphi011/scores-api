@@ -8,7 +8,7 @@ import TeamName from './TeamName';
 
 import type { Match, Team } from '../types';
 
-const itemStyles = theme => ({
+const itemStyles = () => ({
   listContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -59,8 +59,8 @@ const MatchListItem = ({
 }: Props) => {
   const result = WinnerAndLoser(match);
 
-  const winnerScore = result.winnerScore.toString().padStart(2, '0');
-  const loserScore = result.loserScore.toString().padStart(2, '0');
+  const winnerScore = result.winnerScore.toString(); /*.padStart(2, '0');*/
+  const loserScore = result.loserScore.toString(); /*.padStart(2, '0'); */
 
   const score = `${winnerScore} - ${loserScore}`;
 

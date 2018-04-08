@@ -73,7 +73,22 @@ type GroupService struct {
 }
 
 func (s *GroupService) GroupsByPlayer(playerID uint) (scores.Groups, error) {
-	return scanGroups(s.DB, groupsByPlayerSelectSQL, playerID)
+	playerService := PlayerService{DB: s.DB}
+	groups, err := scanGroups(s.DB, groupsByPlayerSelectSQL, playerID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, g := range groups {
+		g.Players, err = playerService.ByGroup(g.ID)
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return groups, nil
 }
 
 func (s *GroupService) Groups() (scores.Groups, error) {

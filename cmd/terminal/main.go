@@ -20,7 +20,7 @@ func main() {
 	args := flag.Args()
 
 	if len(args) != 1 {
-		fmt.Println("Possible commands: createdb, seed")
+		fmt.Println("Possible commands: set-pw, seed, migrate")
 		os.Exit(1)
 	}
 

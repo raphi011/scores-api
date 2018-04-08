@@ -37,7 +37,9 @@ func (h *playerHandler) playerCreate(c *gin.Context) {
 }
 
 func (h *playerHandler) playerIndex(c *gin.Context) {
-	players, err := h.playerService.Players()
+	groupID, err := strconv.Atoi(c.Param("groupID"))
+
+	players, err := h.playerService.ByGroup(uint(groupID))
 
 	if err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")

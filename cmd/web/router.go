@@ -32,11 +32,13 @@ func initRouter(app app) *gin.Engine {
 	matchService := &sqlite.MatchService{DB: app.db}
 	playerService := &sqlite.PlayerService{DB: app.db}
 	statisticService := &sqlite.StatisticService{DB: app.db}
+	groupService := &sqlite.GroupService{DB: app.db}
 
 	authHandler := authHandler{playerService: playerService, userService: userService, conf: app.conf}
 	playerHandler := playerHandler{playerService: playerService}
 	matchHandler := matchHandler{matchService: matchService, userService: userService, playerService: playerService, teamService: teamService}
 	statisticHandler := statisticHandler{statisticService: statisticService}
+	groupHandler := groupHandler{playerService: playerService, groupService: groupService}
 
 	router.Use(sessions.Sessions("goquestsession", store))
 
@@ -48,17 +50,22 @@ func initRouter(app app) *gin.Engine {
 	auth.Use(authRequired())
 	{
 		auth.POST("/logout", authHandler.logout)
-		auth.GET("/matches", matchHandler.index)
-		auth.GET("/playerMatches/:playerID", matchHandler.byPlayer)
+
+		auth.GET("/groups", groupHandler.index)
+		auth.GET("/groups/:groupID/matches", matchHandler.index)
+		auth.POST("/groups/:groupID/matches", matchHandler.matchCreate)
+		auth.GET("/groups/:groupID/players", playerHandler.playerIndex)
+		auth.GET("/groups/:groupID/playerStatistics", statisticHandler.players)
+		auth.GET("/groups/:groupID/teamStatistics", statisticHandler.players)
+		auth.GET("/groups/:groupID", groupHandler.groupShow)
+
 		auth.GET("/matches/:matchID", matchHandler.matchShow)
-		auth.GET("/players", playerHandler.playerIndex)
-		auth.GET("/players/:playerID", playerHandler.playerShow)
-		auth.GET("/statistics", statisticHandler.players)
-		auth.GET("/statistics/:playerID", statisticHandler.player)
-		auth.GET("/playerTeamStatistics/:playerID", statisticHandler.playerTeams)
 		auth.DELETE("/matches/:matchID", matchHandler.matchDelete)
+
 		auth.POST("/players", playerHandler.playerCreate)
-		auth.POST("/matches", matchHandler.matchCreate)
+		auth.GET("/players/:playerID/playerStatistics", statisticHandler.player)
+		auth.GET("/players/:playerID/matches", matchHandler.byPlayer)
+		auth.GET("/players/:playerID/teamStatistics", statisticHandler.playerTeams)
 	}
 
 	return router

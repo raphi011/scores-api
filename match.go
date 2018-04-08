@@ -13,11 +13,13 @@ type Match struct {
 	TargetScore int    `json:"targetScore"`
 	CreatedBy   *User  `json:"createdBy"`
 	Group       *Group `json:"group"`
+	GroupID     uint   `json:"groupId"`
 }
 
 type Matches []Match
 
 type MatchService interface {
+	GroupMatches(groupID uint, after time.Time, count uint) (Matches, error)
 	Match(matchID uint) (*Match, error)
 	PlayerMatches(playerID uint, after time.Time, count uint) (Matches, error)
 	Matches(after time.Time, count uint) (Matches, error)

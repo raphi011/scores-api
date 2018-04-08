@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	"github.com/raphi011/scores"
@@ -88,7 +89,8 @@ const (
 		COALESCE(u4.profile_image_url, "") as team2_player2_image_url,
 		m.score_team1,
 		m.score_team2,
-		m.created_by_user_id
+		m.created_by_user_id,
+		m.group_id
 	FROM matches m
 	JOIN players p1 on m.team1_player1_id = p1.id
 	JOIN players p2 on m.team1_player2_id = p2.id
@@ -108,6 +110,10 @@ const (
 
 	matchesOrderBySQL = " ORDER BY m.created_at DESC"
 
+	matchesByGroupSelectSQL = matchesBaseSelectSQL +
+		"AND m.group_id = $1 AND m.created_at < $2" + matchesOrderBySQL +
+		" LIMIT $3"
+
 	matchesByPlayerSelectSQL = matchesBaseSelectSQL + ` 
  	AND (m.team1_player1_id = $1 OR 
 			 m.team1_player2_id = $1 OR 
@@ -119,6 +125,31 @@ const (
 
 	matchSelectSQL = matchesBaseSelectSQL + " and m.id = $1"
 )
+
+func scanMatches(db *sql.DB, query string, args ...interface{}) (scores.Matches, error) {
+	matches := scores.Matches{}
+	rows, err := db.Query(query, args...)
+
+	log.Printf("%v\n\n%v", query, args)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		match, err := scanMatch(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		matches = append(matches, *match)
+	}
+
+	return matches, nil
+}
 
 func scanMatch(scanner scan) (*scores.Match, error) {
 	m := &scores.Match{
@@ -151,6 +182,7 @@ func scanMatch(scanner scan) (*scores.Match, error) {
 		&m.ScoreTeam1,
 		&m.ScoreTeam2,
 		&m.CreatedBy.ID,
+		&m.GroupID,
 	)
 
 	if err != nil {
@@ -174,49 +206,13 @@ func (s *MatchService) Match(ID uint) (*scores.Match, error) {
 }
 
 func (s *MatchService) Matches(after time.Time, count uint) (scores.Matches, error) {
-	matches := scores.Matches{}
+	return scanMatches(s.DB, matchesSelectSQL, after, count)
+}
 
-	rows, err := s.DB.Query(matchesSelectSQL, after, count)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		match, err := scanMatch(rows)
-
-		if err != nil {
-			return nil, err
-		}
-
-		matches = append(matches, *match)
-	}
-
-	return matches, nil
+func (s *MatchService) GroupMatches(groupID uint, after time.Time, count uint) (scores.Matches, error) {
+	return scanMatches(s.DB, matchesByGroupSelectSQL, groupID, after, count)
 }
 
 func (s *MatchService) PlayerMatches(playerID uint, after time.Time, count uint) (scores.Matches, error) {
-	matches := scores.Matches{}
-
-	rows, err := s.DB.Query(matchesByPlayerSelectSQL, playerID, after, count)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		match, err := scanMatch(rows)
-
-		if err != nil {
-			return nil, err
-		}
-
-		matches = append(matches, *match)
-	}
-
-	return matches, nil
+	return scanMatches(s.DB, matchesByPlayerSelectSQL, playerID, after, count)
 }
