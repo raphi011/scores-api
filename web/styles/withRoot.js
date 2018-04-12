@@ -1,6 +1,6 @@
 import React from 'react';
 import { MuiThemeProvider } from 'material-ui/styles';
-import Reboot from 'material-ui/Reboot';
+import Reboot from 'material-ui/CssBaseline';
 import getPageContext from './getPageContext';
 
 function withRoot(Component) {

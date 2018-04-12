@@ -12,7 +12,6 @@ import StatisticList from '../components/StatisticList';
 
 import Layout from '../containers/LayoutContainer';
 import {
-  loadPlayerAction,
   loadPlayerTeamStatisticAction,
   loadPlayerStatisticAction,
   loadPlayerMatchesAction,
