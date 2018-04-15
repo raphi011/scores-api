@@ -41,6 +41,10 @@ class LayoutContainer extends React.Component<Props, State> {
     this.setState({ drawerOpen: !this.state.drawerOpen });
   };
 
+  onOpenDrawer = () => {
+    this.setState({ drawerOpen: true });
+  }
+
   onCloseDrawer = () => {
     this.setState({ drawerOpen: false });
   };
@@ -50,11 +54,11 @@ class LayoutContainer extends React.Component<Props, State> {
     return (
       <Layout
         userPlayer={userPlayer}
-        onRequestClose={this.onCloseDrawer}
+        onCloseDrawer={this.onCloseDrawer}
+        onOpenDrawer={this.onOpenDrawer}
         onToggleGroup={this.onToggleGroup}
         groupOpen={this.state.groupOpen}
         drawerOpen={this.state.drawerOpen}
-        onToggleDrawer={this.onToggleDrawer}
         title={title}
       >
         {children}

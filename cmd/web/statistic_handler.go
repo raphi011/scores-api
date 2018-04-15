@@ -33,9 +33,10 @@ func (h *statisticHandler) playerTeams(c *gin.Context) {
 }
 
 func (h *statisticHandler) players(c *gin.Context) {
+	groupID, err := strconv.Atoi(c.Param("groupID"))
 	filter := c.DefaultQuery("filter", "all")
 
-	statistics, err := h.statisticService.Players(filter)
+	statistics, err := h.statisticService.PlayersByGroup(uint(groupID), filter)
 
 	if err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")

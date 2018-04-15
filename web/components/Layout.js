@@ -15,7 +15,7 @@ type Props = {
   userPlayer: Player,
   drawerOpen: boolean,
   onCloseDrawer: () => void,
-  onToggleDrawer: () => void,
+  onOpenDrawer: () => void,
   classes: Object,
 };
 
@@ -32,7 +32,7 @@ const Layout = ({
   children,
   drawerOpen,
   onCloseDrawer,
-  onToggleDrawer,
+  onOpenDrawer,
   onToggleGroup,
   groupOpen,
   classes,
@@ -40,12 +40,13 @@ const Layout = ({
   <div className={classes.style}>
     <Drawer
       userPlayer={userPlayer}
-      onRequestClose={onCloseDrawer}
+      onClose={onCloseDrawer}
+      onOpen={onOpenDrawer}
       open={drawerOpen}
       onToggleGroup={onToggleGroup}
       groupOpen={groupOpen}
     />
-    <AppBar onOpenMenu={onToggleDrawer} title={title} />
+    <AppBar onOpenMenu={onOpenDrawer} title={title} />
     {children}
     <Snackbar />
   </div>

@@ -20,10 +20,14 @@ export type EntityMap = {
 export type ReceiveEntityAction = {
   payload: Array<Object>,
   entityName: EntityName,
-  listName?: string,
-  listKey?: number,
-  mode?: 'replace' | 'append',
   assignId?: boolean,
+  listOptions?: {
+    [EntityName]: {
+      name: string,
+      key?: number,
+      mode?: 'replace' | 'append',
+    },
+  }
 };
 
 export type DeleteEntityAction = {
@@ -71,43 +75,43 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityAction) {
   const {
     entityName,
     payload,
-    listName,
-    listKey,
-    mode,
     assignId = false,
+    listOptions = {},
   } = action;
 
-  const { result, entities } = norm(entityName, payload, assignId);
-
-  const newIds = result;
+  const { entities } = norm(entityName, payload, assignId);
 
   const newState = { ...state };
 
   // STEP 2: add entities to entity map(s)
-  Object.keys(entities).forEach(entityKey => {
+  Object.keys(entities).forEach((entityKey: EntityName) => {
     const statePart = { ...state[entityKey] };
+
+    const newIds = Object.keys(entities[entityKey]).map(n => Number.parseInt(n, 10));
 
     statePart.values = {
       ...entities[entityKey],
       ...state[entityKey].values,
     };
 
+    const options = listOptions[entityKey];
+
     // STEP 3: append or replace ids
-    if (listName && entityKey === entityName) {
+    if (options) {
       let list = [];
 
-      if (mode === 'append') {
-        const previousList = listKey
-          ? (state[entityKey][listName] || {})[listKey]
-          : state[entityKey][listName];
+      if (options.mode === 'append') {
+        const previousList = options.key
+          ? (state[entityKey][options.name] || {})[options.key]
+          : state[entityKey][options.name];
 
         if (previousList) list = previousList;
       }
 
       list = [...list, ...newIds];
 
-      statePart[listName] = listKey
-        ? { ...(state[entityKey][listName] || {}), [listKey]: list }
+      statePart[options.name] = options.key
+        ? { ...(state[entityKey][options.name] || {}), [options.key]: list }
         : list;
     }
 
@@ -221,6 +225,15 @@ export const statisticByPlayerTeamSelector = (state: Store, playerId: number) =>
         'statistic',
         entityMapSelector(state),
         state.entities.statistic.byPlayerTeam[playerId],
+      )
+    : [];
+
+export const statisticByGroupSelector = (state: Store, groupId: number) =>
+  (state.entities.statistic.byGroup[groupId] || []).length
+    ? denorm(
+        'statistic',
+        entityMapSelector(state),
+        state.entities.statistic.byGroup[groupId],
       )
     : [];
 

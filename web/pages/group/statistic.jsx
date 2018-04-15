@@ -13,8 +13,8 @@ import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import StatisticList from '../../components/StatisticList';
 import { userOrLoginRouteAction } from '../../redux/actions/auth';
-import { loadStatisticsAction } from '../../redux/actions/entities';
-import { allStatisticSelector } from '../../redux/reducers/entities';
+import { loadGroupStatisticsAction } from '../../redux/actions/entities';
+import { statisticByGroupSelector } from '../../redux/reducers/entities';
 import type { Statistic, StatisticFilter } from '../../types';
 
 const styles = () => ({
@@ -27,6 +27,7 @@ const styles = () => ({
 });
 
 type Props = {
+  groupId: number,
   filter: StatisticFilter,
   statistics: Array<Statistic>,
   classes: Object,
@@ -39,17 +40,18 @@ type State = {
 
 class Statistics extends React.Component<Props, State> {
   static getParameters(query) {
-    let { filter = 'month' } = query;
+    let { filter = 'month', groupId } = query;
 
+    groupId = Number.parseInt(groupId, 10) || 0;
     filter = filter.toLowerCase();
 
-    return { filter };
+    return { filter, groupId };
   }
 
   static buildActions(parameters) {
-    const { filter } = parameters;
+    const { filter, groupId } = parameters;
 
-    const actions = [loadStatisticsAction(filter), userOrLoginRouteAction()];
+    const actions = [loadGroupStatisticsAction(groupId, filter), userOrLoginRouteAction()];
 
     return actions;
   }
@@ -58,8 +60,9 @@ class Statistics extends React.Component<Props, State> {
     return lastProps.filter !== nextProps.filter;
   }
 
-  static mapStateToProps(state) {
-    const statistics = allStatisticSelector(state);
+  static mapStateToProps(state, { groupId }) {
+
+    const statistics = statisticByGroupSelector(state, groupId);
 
     return {
       statistics,
@@ -79,25 +82,20 @@ class Statistics extends React.Component<Props, State> {
     this.setState({ filterMenuOpen: false, anchorEl: null });
   };
 
-  onSetTodayFilter = () => {
-    this.onCloseFilterMenu();
-    Router.push('/statistic?filter=today');
-  };
+  onSetFilter = (filter: string) => {
+    const { groupId } = this.props;
 
-  onSetMonthFilter = () => {
     this.onCloseFilterMenu();
-    Router.push('/statistic?filter=month');
-  };
+    Router.push(`/group/statistic?groupId=${groupId}&filter=${filter}`);
+  }
 
-  onSetThisYearFilter = () => {
-    this.onCloseFilterMenu();
-    Router.push('/statistic?filter=thisyear');
-  };
+  onSetTodayFilter = () => this.onSetFilter('today');
 
-  onSetAllFilter = () => {
-    this.onCloseFilterMenu();
-    Router.push('/statistic?filter=all');
-  };
+  onSetMonthFilter = () => this.onSetFilter('month');
+
+  onSetThisYearFilter = () => this.onSetFilter('thisyear');
+
+  onSetAllFilter = () => this.onSetFilter('all');
 
   onRowClick = playerId => {
     Router.push(`/player?id=${playerId}`);

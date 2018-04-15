@@ -4,14 +4,7 @@ var V4 = []string{
 	userPasswordAuthentication,
 }
 
-var ResetV4 = []string{
-	"matches",
-	"teams",
-	"players",
-	"users",
-	"groups",
-	"groupPlayers",
-}
+var ResetV4 = ResetV3
 
 const (
 	userPasswordAuthentication = `

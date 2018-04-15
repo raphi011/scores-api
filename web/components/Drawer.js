@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
-import MaterialDrawer from 'material-ui/Drawer';
+import SwipeableDrawer from 'material-ui/SwipeableDrawer';
 import List, {
   ListItem,
   ListSubheader,
@@ -42,7 +42,8 @@ const styles = theme => ({
 
 type Props = {
   open: boolean,
-  onRequestClose: Event => void,
+  onOpenDrawer: Event => void,
+  onCloseDrawer: Event => void,
   userPlayer: Player,
   classes: Object,
 };
@@ -52,7 +53,8 @@ function Drawer({
   userPlayer,
   groupOpen,
   onToggleGroup,
-  onRequestClose,
+  onClose,
+  onOpen,
   classes,
 }: Props) {
   const { groups = [] } = userPlayer;
@@ -97,16 +99,16 @@ function Drawer({
   );
 
   return (
-    <MaterialDrawer open={open} onClose={onRequestClose}>
+    <SwipeableDrawer open={open} onOpen={onOpen} onClose={onClose}>
       <div
         tabIndex={0}
         role="button"
-        onClick={onRequestClose}
-        onKeyDown={onRequestClose}
+        // onClick={onClose}
+        // onKeyDown={onClose}
       >
         {sideList}
       </div>
-    </MaterialDrawer>
+    </SwipeableDrawer>
   );
 }
 

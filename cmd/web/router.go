@@ -36,9 +36,20 @@ func initRouter(app app) *gin.Engine {
 
 	authHandler := authHandler{playerService: playerService, userService: userService, conf: app.conf}
 	playerHandler := playerHandler{playerService: playerService}
-	matchHandler := matchHandler{matchService: matchService, userService: userService, playerService: playerService, teamService: teamService}
+	matchHandler := matchHandler{
+		matchService:  matchService,
+		userService:   userService,
+		playerService: playerService,
+		teamService:   teamService,
+		groupService:  groupService,
+	}
 	statisticHandler := statisticHandler{statisticService: statisticService}
-	groupHandler := groupHandler{playerService: playerService, groupService: groupService}
+	groupHandler := groupHandler{
+		playerService:    playerService,
+		groupService:     groupService,
+		statisticService: statisticService,
+		matchService:     matchService,
+	}
 
 	router.Use(sessions.Sessions("goquestsession", store))
 

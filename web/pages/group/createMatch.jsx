@@ -20,6 +20,7 @@ import {
 import {
   createNewMatchAction,
   loadMatchAction,
+  loadGroupAction,
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
 import type { NewMatch, Match, Player } from '../../types';
@@ -96,12 +97,14 @@ class CreateMatch extends React.Component<Props, State> {
     return { groupId, rematchId };
   }
 
-  static buildActions({ rematchId }) {
+  static buildActions({ rematchId, groupId }) {
+    const actions = [loadGroupAction(groupId)]
+
     if (rematchId) {
-      return [loadMatchAction(rematchId)];
+      actions.push(loadMatchAction(rematchId));
     }
 
-    return [];
+    return actions;
   }
 
   static mapStateToProps(state, ownProps: Props) {
@@ -131,6 +134,8 @@ class CreateMatch extends React.Component<Props, State> {
         ...this.state,
         ...state,
       };
+    } else {
+      this.state.match.groupId = props.groupId;
     }
   }
 

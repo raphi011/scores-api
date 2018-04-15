@@ -14,9 +14,13 @@ export const loadMatchesAction = (
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'match',
-    listName: 'byGroup',
-    listKey: groupId,
-    mode: after ? 'append' : 'replace',
+    listOptions: {
+      match: {
+        name: 'byGroup',
+        key: groupId,
+        mode: after ? 'append' : 'replace',
+      }
+    }
   },
 });
 
@@ -31,9 +35,13 @@ export const loadPlayerMatchesAction = (
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'match',
-    listName: 'byPlayer',
-    listKey: playerId,
-    mode: after ? 'append' : 'replace',
+    listOptions: {
+      match: {
+        mode: after ? 'append' : 'replace',
+        name: 'byPlayer',
+        key: playerId,
+      }
+    }
   },
 });
 
@@ -44,23 +52,14 @@ export const loadPlayerAction = (id: number): ApiAction => ({
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'player',
-    listName: 'all',
-    mode: 'replace',
+    listOptions: {
+      player: {
+        name: 'all',
+        mode: 'replace',
+      }
+    }
   },
 });
-
-// export const loadPlayersAction = (groupId: number): ApiAction => ({
-//   type: actionNames.API,
-//   method: 'GET',
-//   url: `groups/${groupId}/players`,
-//   success: actionNames.RECEIVE_ENTITIES,
-//   successParams: {
-//     entityName: 'player',
-//     listName: 'group',
-//     listKey: groupId,
-//     mode: 'replace',
-//   },
-// });
 
 export const loadPlayerTeamStatisticAction = (playerId: number): ApiAction => ({
   type: actionNames.API,
@@ -69,10 +68,14 @@ export const loadPlayerTeamStatisticAction = (playerId: number): ApiAction => ({
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'statistic',
-    listName: 'byPlayerTeam',
-    listKey: playerId,
-    mode: 'replace',
     assignId: true,
+    listOptions: {
+      statistic: {
+        mode: 'replace',
+        name: 'byPlayerTeam',
+        key: playerId,
+      },
+    },
   },
 });
 
@@ -83,10 +86,14 @@ export const loadPlayerStatisticAction = (playerId: number): ApiAction => ({
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'statistic',
-    listName: 'byPlayer',
-    listKey: playerId,
-    mode: 'replace',
     assignId: true,
+    listOptions: {
+      statistic: {
+        name: 'byPlayer',
+        key: playerId,
+        mode: 'replace',
+      },
+    },
   },
 });
 
@@ -94,10 +101,23 @@ export const loadGroupAction = (groupId: number): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
   url: `groups/${groupId}`,
+  success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'group',
-    listName: 'all',
-    listKey: groupId,
+    listOptions: {
+      group: {
+        name: 'all',
+        key: groupId,
+      },
+      player: {
+        name: 'byGroup',
+        key: groupId,
+      },
+      match: {
+        name: 'byGroup',
+        key: groupId,
+      }
+    }
   },
 });
 
@@ -112,10 +132,14 @@ export const loadGroupStatisticsAction = (
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'statistic',
-    listName: 'byGroup',
-    listKey: groupId,
-    mode: 'replace',
     assignId: true,
+    listOptions: {
+      statistic: {
+        name: 'byGroup',
+        key: groupId,
+        mode: 'replace',
+      },
+    }
   },
 });
 
@@ -132,7 +156,7 @@ export const loadMatchAction = (id: number): ApiAction => ({
 export const createNewMatchAction = (match: NewMatch): ApiAction => ({
   type: actionNames.API,
   method: 'POST',
-  url: `/groups/${match.groupId}/matches`,
+  url: `groups/${match.groupId}/matches`,
   body: JSON.stringify(match),
 });
 
@@ -143,7 +167,11 @@ export const deleteMatchAction = (match: Match): ApiAction => ({
   success: actionNames.DELETE_ENTITIES,
   successParams: {
     entityName: 'match',
-    listNames: ['all'],
+    listOptions: {
+      match: {
+        names: ['all'],
+      },
+    },
   },
   successStatus: 'Match deleted',
 });

@@ -1,19 +1,13 @@
 // @flow
 
-export type EntityName = 'player' | 'team' | 'match';
-
-export type Group = {
-  id: number,
-  name: string,
-  imageUrl: string,
-};
+export type EntityName = 'player' | 'team' | 'match' | 'group';
 
 export type Player = {
   id: number,
   name: string,
   userId: ?number,
   profileImageUrl: ?string,
-  groups: Group[],
+  // groups: Group[],
 };
 
 export type Team = {
@@ -76,9 +70,17 @@ export type PlayerStatistic = {
   player: Player,
 } & Statistic;
 
+export type Group = {
+  id: number,
+  name: string,
+  imageUrl: string,
+  players: Player[],
+  matches: Match[],
+};
+
 export type GenericStatistic = PlayerStatistic | TeamStatistic;
 
-export type EntityType = Player | Team | Match | GenericStatistic;
+export type EntityType = Group | Player | Team | Match | GenericStatistic;
 
 export type Action = {
   type: string,

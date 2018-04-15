@@ -10,10 +10,11 @@ function buildUrl(endpoint: string, params: Params = {}) {
   let paramUrl = '';
   const backendUrl = process.env.BACKEND_URL || '';
 
-  paramUrl = `?${Object.keys(params)
+  const paramList = Object.keys(params)
     .filter(key => params[key])
-    .map(key => `${key}=${params[key]}`)
-    .join('&')}`;
+    .map(key => `${key}=${params[key]}`);
+
+  paramUrl = paramList.length ? `?${paramList.join('&')}` : '';
 
   const url = `${backendUrl}/api/${endpoint}${paramUrl}`;
 

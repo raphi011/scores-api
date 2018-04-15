@@ -190,4 +190,4 @@ class Login extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(withAuth(Login));
+export default withAuth(withStyles(styles)(Login));

@@ -11,7 +11,7 @@ import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import MatchList from '../../containers/MatchListContainer';
 import { matchesByGroupSelector } from '../../redux/reducers/entities';
-import { loadMatchesAction } from '../../redux/actions/entities';
+import { loadGroupAction, loadMatchesAction } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
 
 import type { Match, User, Classes } from '../../types';
@@ -46,8 +46,9 @@ class Index extends React.Component<Props, State> {
 
     return { groupId };
   }
+
   static buildActions({ groupId }) {
-    const actions = [loadMatchesAction(groupId)];
+    const actions = [loadGroupAction(groupId)];
 
     return actions;
   }

@@ -24,8 +24,8 @@ const (
 	matchesInsertSQL = `
 		INSERT INTO matches
 		(
-			group_id,
 			created_at,
+			group_id,
 			team1_player1_id,
 			team1_player2_id,
 			team2_player1_id,
@@ -90,7 +90,7 @@ const (
 		m.score_team1,
 		m.score_team2,
 		m.created_by_user_id,
-		m.group_id
+		COALESCE(m.group_id, 0) as group_id
 	FROM matches m
 	JOIN players p1 on m.team1_player1_id = p1.id
 	JOIN players p2 on m.team1_player2_id = p2.id

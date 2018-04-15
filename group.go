@@ -2,10 +2,12 @@ package scores
 
 type Group struct {
 	Model
-	Players  Players `json:"players"`
-	Name     string  `json:"name"`
-	Role     string  `json:"role"`
-	ImageURL string  `json:"imageUrl"`
+	Players          Players          `json:"players"`
+	Matches          Matches          `json:"matches"`
+	PlayerStatistics PlayerStatistics `json:"playerStatistics"`
+	Name             string           `json:"name"`
+	Role             string           `json:"role"`
+	ImageURL         string           `json:"imageUrl"`
 }
 
 type Groups []Group

@@ -4,14 +4,7 @@ var V3 = []string{
 	matchIndexes,
 }
 
-var ResetV3 = []string{
-	"matches",
-	"teams",
-	"players",
-	"users",
-	"groups",
-	"groupPlayers",
-}
+var ResetV3 = ResetV2
 
 const (
 	matchIndexes = `

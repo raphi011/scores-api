@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"log"
 	"time"
 
 	"github.com/raphi011/scores"
@@ -39,6 +40,10 @@ const (
 	`
 	playersStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL + groupedPlayerStatisticSQL
 
+	groupPlayersStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL +
+		" and s.group_id = $2 " +
+		groupedPlayerStatisticSQL
+
 	playerStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL +
 		" and s.player_id = $2 " + groupedPlayerStatisticSQL
 )
@@ -62,6 +67,31 @@ func parseTimeFilter(filter string) time.Time {
 	}
 
 	return timeFilter
+}
+
+func scanPlayerStatistics(db *sql.DB, query string, args ...interface{}) (scores.PlayerStatistics, error) {
+	statistics := scores.PlayerStatistics{}
+	rows, err := db.Query(query, args...)
+
+	log.Printf("%v\n\n%v", query, args)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		statistic, err := scanPlayerStatistic(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		statistics = append(statistics, *statistic)
+	}
+
+	return statistics, nil
 }
 
 func scanPlayerStatistic(scanner scan) (*scores.PlayerStatistic, error) {
@@ -92,26 +122,24 @@ func scanPlayerStatistic(scanner scan) (*scores.PlayerStatistic, error) {
 }
 
 func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, error) {
-	statistics := scores.PlayerStatistics{}
-
 	timeFilter := parseTimeFilter(filter)
 
-	rows, err := s.DB.Query(playersStatisticSelectSQL, timeFilter)
+	statistics, err := scanPlayerStatistics(s.DB, playersStatisticSelectSQL, timeFilter)
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer rows.Close()
+	return statistics, nil
+}
 
-	for rows.Next() {
-		st, err := scanPlayerStatistic(rows)
+func (s *StatisticService) PlayersByGroup(groupID uint, filter string) (scores.PlayerStatistics, error) {
+	timeFilter := parseTimeFilter(filter)
 
-		if err != nil {
-			return nil, err
-		}
+	statistics, err := scanPlayerStatistics(s.DB, groupPlayersStatisticSelectSQL, timeFilter, groupID)
 
-		statistics = append(statistics, *st)
+	if err != nil {
+		return nil, err
 	}
 
 	return statistics, nil
@@ -155,26 +183,12 @@ const (
 )
 
 func (s *StatisticService) PlayerTeams(playerID uint, filter string) (scores.PlayerStatistics, error) {
-	statistics := scores.PlayerStatistics{}
-
 	timeFilter := parseTimeFilter(filter)
 
-	rows, err := s.DB.Query(playerTeamsStatisticSelectSQL, playerID, timeFilter)
+	statistics, err := scanPlayerStatistics(s.DB, playerTeamsStatisticSelectSQL, playerID, timeFilter)
 
 	if err != nil {
 		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		st, err := scanPlayerStatistic(rows)
-
-		if err != nil {
-			return nil, err
-		}
-
-		statistics = append(statistics, *st)
 	}
 
 	return statistics, nil

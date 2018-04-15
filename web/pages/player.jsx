@@ -59,17 +59,17 @@ class PlayerInfo extends React.Component<Props, State> {
   }
 
   static buildActions({ playerId }) {
-    let action;
+    let actions = [];
 
     if (playerId) {
-      action = multiApiAction([
+      actions = [multiApiAction([
         loadPlayerMatchesAction(playerId),
         loadPlayerStatisticAction(playerId),
         loadPlayerTeamStatisticAction(playerId),
-      ]);
+      ])];
     }
 
-    return [action];
+    return actions;
   }
 
   static mapStateToProps(state, ownProps) {
