@@ -13,14 +13,16 @@ import (
 )
 
 type Player struct {
-	FirstName string
-	LastName  string
-	ID        string
-	Birthday  string
+	FirstName    string
+	LastName     string
+	ID           string
+	Birthday     string
+	TotalPoints  string
+	CountryUnion string
 }
 
 func parsePlayerName(c *goquery.Selection) (string, string) {
-	fullName := c.Text()
+	fullName := strings.TrimSpace(c.Text())
 
 	parts := strings.Split(fullName, " ")
 
