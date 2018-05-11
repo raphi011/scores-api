@@ -3,13 +3,14 @@
 
 import React from 'react';
 import Router from 'next/router';
-import withRedux from 'next-redux-wrapper';
+import { connect } from 'react-redux'
 
-import initStore, { dispatchAction, dispatchActions } from '../redux/store';
+import { dispatchAction, dispatchActions } from '../redux/store';
 import { userSelector } from '../redux/reducers/auth';
-import type { User } from '../types';
 import withRoot from '../styles/withRoot';
 import { userOrLoginRouteAction } from '../redux/actions/auth';
+
+import type { User } from '../types';
 
 type Props = {
   isLoggedIn: boolean,
@@ -137,11 +138,10 @@ function withAuth(WrappedComponent) {
     }
   }
 
-  return withRedux(
-    initStore,
+  return withRoot(connect(
     WrappedComponent.mapStateToProps,
     WrappedComponent.mapDispatchToProps,
-  )(withRoot(Auth));
+  )(Auth));
 }
 
 export default withAuth;

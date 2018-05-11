@@ -8,7 +8,7 @@ type Params = { [string]: string };
 
 function buildUrl(endpoint: string, params: Params = {}) {
   let paramUrl = '';
-  const backendUrl = process.env.BACKEND_URL || '';
+  const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
 
   const paramList = Object.keys(params)
     .filter(key => params[key])
