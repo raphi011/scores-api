@@ -13,12 +13,12 @@ import (
 )
 
 type Player struct {
-	FirstName    string
-	LastName     string
-	ID           string
-	Birthday     string
-	TotalPoints  string
-	CountryUnion string
+	FirstName    string `json:"firstName"`
+	LastName     string `json:"lastName"`
+	ID           string `json:"id"`
+	Birthday     string `json:"birthday"`
+	TotalPoints  string `json:"totalPoints"`
+	CountryUnion string `json:"countryUnion"`
 }
 
 func parsePlayerName(c *goquery.Selection) (string, string) {

@@ -25,15 +25,12 @@ import type { Tournament } from '../types';
 // });
 
 type Props = {
-  //   match: Match,
-  //   onMatchClick: Match => void,
-  //   highlightPlayerId: number,
-  //   classes: Object,
   tournament: Tournament,
+  onClick: () => void,
 };
 
-const TournamentListItem = ({ tournament }: Props) => (
-  <ListItem button>
+const TournamentListItem = ({ tournament, onClick }: Props) => (
+  <ListItem button onClick={onClick}>
     <ListItemText
       primary={tournament.name}
       secondary={`${tournament.startDate} - ${tournament.league}`}

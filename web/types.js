@@ -78,6 +78,42 @@ export type Group = {
   matches: Match[],
 };
 
+export type Tournament = {
+  startDate: string,
+  endDate: string,
+  name: string,
+  league: string,
+  link: string,
+  entryLink: string,
+  id: string,
+};
+
+export type VolleynetPlayer = {
+  firstName: string,
+  lastName: string,
+  id: string,
+  birthday: string,
+  totalPoints: string,
+  countryUnion: string,
+};
+
+export type FullTournament = Tournament & {
+  players: Array<VolleynetPlayer>,
+  status: string,
+  location: string,
+  htmlNotes: string,
+  mode: string,
+  minTeams: string,
+  maxPoints: string,
+  endRegistration: string,
+  organiser: string,
+  phone: string,
+  email: string,
+  web: string,
+  currentPoints: string,
+  livescoringLink: string,
+};
+
 export type GenericStatistic = PlayerStatistic | TeamStatistic;
 
 export type EntityType = Group | Player | Team | Match | GenericStatistic;

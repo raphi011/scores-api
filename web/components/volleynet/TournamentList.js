@@ -17,15 +17,22 @@ const styles = () => ({
 type Props = {
   tournaments: Array<Tournament>,
   classes: Object,
+  onTournamentClick: () => void,
 };
 
 class TournamentList extends React.PureComponent<Props> {
   render() {
-    const { tournaments = [], classes } = this.props;
+    const { tournaments = [], onTournamentClick, classes } = this.props;
 
     return (
       <List className={classes.root}>
-        {tournaments.map(t => <TournamentListItem key={t.id} tournament={t} />)}
+        {tournaments.map(t => (
+          <TournamentListItem
+            key={t.id}
+            onClick={onTournamentClick}
+            tournament={t}
+          />
+        ))}
       </List>
     );
   }

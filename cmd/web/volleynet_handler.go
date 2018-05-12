@@ -28,6 +28,9 @@ type signupForm struct {
 func (h *volleynetHandler) tournament(c *gin.Context) {
 	tournamentID := c.Param("tournamentID")
 
+	/* testing */
+	tournamentID = "http://www.volleynet.at/beach/bewerbe/AMATEUR%20TOUR/phase/ABV%20Tour%20AMATEUR%201/sex/M/saison/2018/cup/22108"
+
 	client := volleynet.DefaultClient()
 	t, err := client.GetTournament(tournamentID)
 

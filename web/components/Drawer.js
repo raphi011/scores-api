@@ -12,6 +12,7 @@ import List, {
 import Collapse from 'material-ui/transitions/Collapse';
 import AddIcon from 'material-ui-icons/Add';
 import Avatar from 'material-ui/Avatar';
+import TournamentIcon from 'material-ui-icons/Star';
 import SettingsIcon from 'material-ui-icons/Settings';
 import StatisticsIcon from 'material-ui-icons/ShowChart';
 import FitnessCenterIcon from 'material-ui-icons/FitnessCenter';
@@ -42,8 +43,10 @@ const styles = theme => ({
 
 type Props = {
   open: boolean,
-  onOpenDrawer: Event => void,
-  onCloseDrawer: Event => void,
+  onOpen: Event => void,
+  onClose: Event => void,
+  groupOpen: { [number]: boolean },
+  onToggleGroup: () => void,
   userPlayer: Player,
   classes: Object,
 };
@@ -62,7 +65,6 @@ function Drawer({
   const groupList = groups.map(g => (
     <GroupOptions
       key={g.id}
-      open={false}
       onToggleOpen={onToggleGroup}
       open={groupOpen[g.id]}
       group={g}
@@ -83,7 +85,15 @@ function Drawer({
           </ListItem>
         </Link>
         <ListSubheader className={classes.header}>Navigation</ListSubheader>
-        <Link href="">
+        <Link href="/volleynet">
+          <ListItem button>
+            <ListItemIcon>
+              <TournamentIcon />
+            </ListItemIcon>
+            <ListItemText inset primary="Volleynet" />
+          </ListItem>
+        </Link>
+        <Link href="#">
           <ListItem button>
             <ListItemIcon>
               <SettingsIcon />

@@ -11,11 +11,12 @@ import type { Player } from '../types';
 
 type Props = {
   title: string,
-  children: React.Node,
+  children: React$Element<>,
   userPlayer: Player,
   drawerOpen: boolean,
   onCloseDrawer: () => void,
   onOpenDrawer: () => void,
+  onToggleGroup: () => void,
   classes: Object,
 };
 

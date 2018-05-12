@@ -24,19 +24,20 @@ type Tournament struct {
 
 type FullTournament struct {
 	Tournament
-	Players         []Player
-	Status          string
-	Location        string
-	HTMLNotes       string
-	Mode            string
-	MinTeams        string
-	MaxPoints       string
-	EndRegistration string
-	Organiser       string
-	Phone           string
-	Email           string
-	Web             string
-	CurrentPoints   string
+	Players         []Player `json:"players"`
+	Status          string   `json:"status"`
+	Location        string   `json:"location"`
+	HTMLNotes       string   `json:"htmlNotes"`
+	Mode            string   `json:"mode"`
+	MinTeams        string   `json:"minTeams"`
+	MaxPoints       string   `json:"maxPoints"`
+	EndRegistration string   `json:"endRegistration"`
+	Organiser       string   `json:"organiser"`
+	Phone           string   `json:"phone"`
+	Email           string   `json:"email"`
+	Web             string   `json:"web"`
+	CurrentPoints   string   `json:"currentPoints"`
+	LivescoringLink string   `json:"livescoringLink"`
 }
 
 func (c *Client) TournamentEntry(playerID, tournamentID string) error {
@@ -149,12 +150,15 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 
 	t := &FullTournament{}
 
+	name := doc.Find(".ajax>h2").Text()
+
 	htmlNotes, err := doc.Find(".extrainfo").Html()
 
 	if err != nil {
 		return nil, err
 	}
 
+	t.Name = name
 	t.HTMLNotes = htmlNotes
 
 	table := doc.Find("tbody")
