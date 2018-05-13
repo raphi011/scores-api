@@ -12,25 +12,24 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type Player struct {
-	FirstName    string `json:"firstName"`
-	LastName     string `json:"lastName"`
-	ID           string `json:"id"`
-	Birthday     string `json:"birthday"`
-	TotalPoints  string `json:"totalPoints"`
-	CountryUnion string `json:"countryUnion"`
+type SearchPlayer struct {
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Login     string `json:"login"`
+	ID        string `json:"id"`
+	Birthday  string `json:"birthday"`
 }
 
-func parsePlayerName(c *goquery.Selection) (string, string) {
+func parsePlayerName(c *goquery.Selection) (string, string, string) {
 	fullName := strings.TrimSpace(c.Text())
 
 	parts := strings.Split(fullName, " ")
 
 	if len(parts) != 2 {
-		return "", ""
+		return "", "", ""
 	}
 
-	return strings.Title(parts[0]), strings.Title(parts[1])
+	return strings.Title(parts[0]), strings.Title(parts[1]), strings.Join(parts, ".")
 }
 
 func parsePlayerID(s *goquery.Selection) (string, error) {
@@ -51,8 +50,8 @@ func parsePlayerID(s *goquery.Selection) (string, error) {
 	return id[1], nil
 }
 
-func parsePlayers(html io.Reader) ([]Player, error) {
-	players := []Player{}
+func parsePlayers(html io.Reader) ([]SearchPlayer, error) {
+	players := []SearchPlayer{}
 	doc, err := goquery.NewDocumentFromReader(html)
 	text, _ := doc.Html()
 	log.Print(text)
@@ -68,7 +67,7 @@ func parsePlayers(html io.Reader) ([]Player, error) {
 
 		r := rows.Eq(i)
 
-		player := Player{}
+		player := SearchPlayer{}
 
 		columns := r.Find("td")
 
@@ -81,7 +80,7 @@ func parsePlayers(html io.Reader) ([]Player, error) {
 
 			switch j {
 			case 1:
-				player.FirstName, player.LastName = parsePlayerName(c)
+				player.FirstName, player.LastName, player.Login = parsePlayerName(c)
 
 				player.ID, err = parsePlayerID(c.Find("a"))
 				if err == nil {
@@ -102,7 +101,7 @@ func parsePlayers(html io.Reader) ([]Player, error) {
 	return players, nil
 }
 
-func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]Player, error) {
+func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]SearchPlayer, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")

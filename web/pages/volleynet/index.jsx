@@ -4,16 +4,18 @@ import React from 'react';
 import Router from 'next/router';
 import fetch from 'isomorphic-unfetch';
 
+import Tabs, { Tab } from 'material-ui/Tabs';
 import { CircularProgress } from 'material-ui/Progress';
 
-import withAuth from '../containers/AuthContainer';
-import TournamentList from '../components/volleynet/TournamentList';
-import Layout from '../containers/LayoutContainer';
+import withAuth from '../../containers/AuthContainer';
+import TournamentList from '../../components/volleynet/TournamentList';
+import Layout from '../../containers/LayoutContainer';
 
-import type { Tournament } from '../types';
+import type { Tournament } from '../../types';
 
 type State = {
   loading: boolean,
+  tabOpen: number,
   tournaments: Array<Tournament>,
 };
 
@@ -21,6 +23,7 @@ class Volleynet extends React.Component<null, State> {
   state = {
     loading: false,
     tournaments: [],
+    tabOpen: 0,
   };
 
   componentDidMount() {
@@ -38,11 +41,15 @@ class Volleynet extends React.Component<null, State> {
   };
 
   onTournamentClick = (t: Tournament) => {
-    Router.push('/tournament');
+    Router.push({ pathname: '/volleynet/tournament', query: { id: t.id } });
+  };
+
+  onTabClick = (event, tabOpen) => {
+    this.setState({ tabOpen });
   };
 
   render() {
-    const { tournaments } = this.state;
+    const { tournaments, tabOpen } = this.state;
 
     const content = !tournaments.length ? (
       <CircularProgress />
@@ -53,7 +60,21 @@ class Volleynet extends React.Component<null, State> {
       />
     );
 
-    return <Layout title="Players">{content}</Layout>;
+    return (
+      <Layout title="Players">
+        <Tabs
+          onChange={this.onTabClick}
+          value={tabOpen}
+          textColor="primary"
+          fullWidth
+        >
+          <Tab label="Upcoming" />
+          <Tab label="Past" />
+          <Tab label="Played" />
+        </Tabs>
+        {tabOpen === 0 ? content : 'This is not done yet 💩'}
+      </Layout>
+    );
   }
 }
 

@@ -23,7 +23,7 @@ type Props = {
 const styles = theme => ({
   style: {
     backgroundColor: theme.palette.background.paper,
-    marginTop: '56px',
+    marginTop: '70px',
   },
 });
 

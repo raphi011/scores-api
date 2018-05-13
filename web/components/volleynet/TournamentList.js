@@ -6,7 +6,7 @@ import List from 'material-ui/List';
 
 import TournamentListItem from './TournamentListItem';
 
-import type { Tournament } from '../types';
+import type { Tournament } from '../../types';
 
 const styles = () => ({
   root: {

@@ -9,28 +9,15 @@ import {
 import RegisterIcon from 'material-ui-icons/Create';
 import IconButton from 'material-ui/IconButton';
 
-// import Typography from 'material-ui/Typography';
-
-import type { Tournament } from '../types';
-
-// const itemStyles = () => ({
-//   listContainer: {
-//     display: 'flex',
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     width: '100%',
-//   },
-//   team: { flex: '1 1 0' },
-//   points: { fontWeight: 'lighter', flex: '2 2 0' },
-// });
+import type { Tournament } from '../../types';
 
 type Props = {
   tournament: Tournament,
-  onClick: () => void,
+  onClick: Tournament => void,
 };
 
 const TournamentListItem = ({ tournament, onClick }: Props) => (
-  <ListItem button onClick={onClick}>
+  <ListItem button onClick={() => onClick(tournament)}>
     <ListItemText
       primary={tournament.name}
       secondary={`${tournament.startDate} - ${tournament.league}`}

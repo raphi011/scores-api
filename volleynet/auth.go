@@ -1,6 +1,7 @@
 package volleynet
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"strings"
@@ -20,10 +21,17 @@ func (c *Client) Login(username, password string) error {
 	if err != nil {
 		return err
 	}
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("unauthorized")
+	}
 
-	cookie := resp.Header.Get("Set-Cookie")
+	c.Cookie = resp.Header.Get("Set-Cookie")
 
-	c.Cookie = cookie[:strings.Index(cookie, ";")]
+	semicolonIndex := strings.Index(c.Cookie, ";")
+
+	if semicolonIndex > 0 {
+		c.Cookie = c.Cookie[:semicolonIndex]
+	}
 
 	return nil
 }

@@ -54,7 +54,7 @@ func initRouter(app app) *gin.Engine {
 
 	router.Use(sessions.Sessions("goquestsession", store))
 
-	router.GET("/volleynet/signup", volleynetHandler.signup)
+	router.POST("/volleynet/signup", volleynetHandler.signup)
 	router.GET("/volleynet/tournaments", volleynetHandler.allTournaments)
 	router.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.tournament)
 	router.GET("/volleynet/players/search", volleynetHandler.searchPlayers)

@@ -1,8 +1,11 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin/binding"
 
 	"github.com/gin-gonic/gin"
 
@@ -22,17 +25,40 @@ type signupForm struct {
 	Username     string `json:"username"`
 	Password     string `json:"password"`
 	PartnerID    string `json:"partnerId"`
+	PartnerName  string `json:"partnerName"`
 	TournamentID string `json:"tournamentId"`
+}
+
+func getTournamentLink(id string) (string, error) {
+	client := volleynet.DefaultClient()
+	games, err := client.UpcomingTournaments()
+
+	if err != nil {
+		return "", err
+	}
+
+	for _, t := range games {
+		if t.ID == id {
+			return client.ApiUrl + t.Link, nil
+		}
+	}
+
+	return "", errors.New("Not found")
 }
 
 func (h *volleynetHandler) tournament(c *gin.Context) {
 	tournamentID := c.Param("tournamentID")
 
-	/* testing */
-	tournamentID = "http://www.volleynet.at/beach/bewerbe/AMATEUR%20TOUR/phase/ABV%20Tour%20AMATEUR%201/sex/M/saison/2018/cup/22108"
+	link, err := getTournamentLink(tournamentID)
+
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+	}
+
+	log.Print(link)
 
 	client := volleynet.DefaultClient()
-	t, err := client.GetTournament(tournamentID)
+	t, err := client.GetTournament(link)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
@@ -43,7 +69,7 @@ func (h *volleynetHandler) tournament(c *gin.Context) {
 
 func (h *volleynetHandler) signup(c *gin.Context) {
 	su := signupForm{}
-	if err := c.BindJSON(su); err != nil {
+	if err := c.ShouldBindWith(&su, binding.JSON); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -65,7 +91,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 		return
 	}
 
-	err = client.TournamentEntry(su.PartnerID, su.TournamentID)
+	err = client.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
 
 	if err != nil {
 		log.Printf("entry to tournamentID %v with partnerID %v did not work", su.TournamentID, su.PartnerID)

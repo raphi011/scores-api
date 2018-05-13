@@ -78,14 +78,12 @@ export type Group = {
   matches: Match[],
 };
 
-export type Tournament = {
-  startDate: string,
-  endDate: string,
-  name: string,
-  league: string,
-  link: string,
-  entryLink: string,
+export type VolleynetSearchPlayer = {
+  firstName: string,
+  lastName: string,
   id: string,
+  login: string,
+  birthday: string,
 };
 
 export type VolleynetPlayer = {
@@ -95,14 +93,36 @@ export type VolleynetPlayer = {
   birthday: string,
   totalPoints: string,
   countryUnion: string,
+  license: string,
+  login: string,
+};
+
+export type VolleynetTeam = {
+  player1: VolleynetPlayer,
+  player2: VolleynetPlayer,
+  totalPoints: string,
+};
+
+export type Gender = 'M' | 'W';
+
+export type Tournament = {
+  gender: Gender,
+  startDate: string,
+  endDate: string,
+  name: string,
+  league: string,
+  link: string,
+  entryLink: string,
+  id: string,
 };
 
 export type FullTournament = Tournament & {
-  players: Array<VolleynetPlayer>,
+  teams: Array<VolleynetTeam>,
   status: string,
   location: string,
   htmlNotes: string,
   mode: string,
+  maxTeams: number,
   minTeams: string,
   maxPoints: string,
   endRegistration: string,

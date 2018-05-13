@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -22,35 +24,91 @@ type Tournament struct {
 	ID        string `json:"id"`
 }
 
-type FullTournament struct {
-	Tournament
-	Players         []Player `json:"players"`
-	Status          string   `json:"status"`
-	Location        string   `json:"location"`
-	HTMLNotes       string   `json:"htmlNotes"`
-	Mode            string   `json:"mode"`
-	MinTeams        string   `json:"minTeams"`
-	MaxPoints       string   `json:"maxPoints"`
-	EndRegistration string   `json:"endRegistration"`
-	Organiser       string   `json:"organiser"`
-	Phone           string   `json:"phone"`
-	Email           string   `json:"email"`
-	Web             string   `json:"web"`
-	CurrentPoints   string   `json:"currentPoints"`
-	LivescoringLink string   `json:"livescoringLink"`
+type Team struct {
+	TotalPoints string  `json:"totalPoints"`
+	Player1     *Player `json:"player1"`
+	Player2     *Player `json:"player2"`
+	SeedOrRank  string  `json:"seed"`
+	WonPoints   string  `json:"wonPoints"`
+	PrizeMoney  string  `json:"prizeMoney"`
 }
 
-func (c *Client) TournamentEntry(playerID, tournamentID string) error {
+type Player struct {
+	FirstName    string `json:"firstName"`
+	LastName     string `json:"lastName"`
+	ID           string `json:"id"`
+	Birthday     string `json:"birthday"`
+	TotalPoints  string `json:"totalPoints"`
+	CountryUnion string `json:"countryUnion"`
+	License      string `json:"license"`
+	Login        string `json:"login"`
+}
+
+type FullTournament struct {
+	Tournament
+	Teams           []Team `json:"teams"`
+	Status          string `json:"status"`
+	Location        string `json:"location"`
+	HTMLNotes       string `json:"htmlNotes"`
+	Mode            string `json:"mode"`
+	MaxTeams        int    `json:"maxTeams"`
+	MinTeams        string `json:"minTeams"`
+	MaxPoints       string `json:"maxPoints"`
+	EndRegistration string `json:"endRegistration"`
+	Organiser       string `json:"organiser"`
+	Phone           string `json:"phone"`
+	Email           string `json:"email"`
+	Web             string `json:"web"`
+	CurrentPoints   string `json:"currentPoints"`
+	LivescoringLink string `json:"livescoringLink"`
+}
+
+var registerUrl string = "https://beach.volleynet.at/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur="
+
+func (c *Client) GetUniqueWriteCode(tournamentID string) (string, error) {
+	req, err := http.NewRequest("GET", registerUrl+tournamentID, nil)
+	req.Header.Add("Cookie", c.Cookie)
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
+
+	if err != nil {
+		return "", nil
+	}
+
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+
+	if err != nil {
+		return "", nil
+	}
+
+	input := doc.Find("input[name='XX_unique_write_XXBeach/Profile/TurnierAnmeldung']")
+
+	val, exists := input.Attr("value")
+
+	if !exists {
+		return "", errors.New("writeCode not found")
+	}
+
+	return val, nil
+}
+
+func (c *Client) TournamentEntry(playerName, playerID, tournamentID string) error {
 	form := url.Values{}
 
+	code, err := c.GetUniqueWriteCode(tournamentID)
+
+	if err != nil {
+		return err
+	}
+
 	form.Add("action", "Beach/Profile/TurnierAnmeldung")
-	form.Add("XX_unique_write_XXBeach/Profile/TurnierAnmeldung", "0.93754300 1525810822")
-	form.Add("parent", "21617")
+	form.Add("XX_unique_write_XXBeach/Profile/TurnierAnmeldung", code)
+	form.Add("parent", "0")
 	form.Add("prev", "0")
 	form.Add("next", "0")
 	form.Add("cur", tournamentID)
-	// form.Add("name_b", playerName)
-	form.Add("bte_per_id_b", playerID) // 18068
+	form.Add("name_b", playerName)
+	form.Add("bte_per_id_b", playerID)
 	form.Add("submit", "Anmelden")
 
 	req, err := http.NewRequest("POST", c.PostUrl, bytes.NewBufferString(form.Encode()))
@@ -72,7 +130,13 @@ func (c *Client) TournamentEntry(playerID, tournamentID string) error {
 	return nil
 }
 
-func parseIDFromSteckbrief(s *goquery.Selection) string {
+func parseTournamentIDFromLink(link string) string {
+	dashIndex := strings.LastIndex(link, "/")
+
+	return link[dashIndex+1:]
+}
+
+func parsePlayerIDFromSteckbrief(s *goquery.Selection) string {
 	href := parseHref(s)
 
 	dashIndex := strings.Index(href, "-")
@@ -80,8 +144,8 @@ func parseIDFromSteckbrief(s *goquery.Selection) string {
 	return href[dashIndex+1:]
 }
 
-func parseFullTournamentPlayers(doc *goquery.Document) ([]Player, error) {
-	players := []Player{}
+func parseFullTournamentTeams(doc *goquery.Document) ([]Team, error) {
+	teams := []Team{}
 
 	tables := doc.Find("tbody")
 
@@ -90,59 +154,83 @@ func parseFullTournamentPlayers(doc *goquery.Document) ([]Player, error) {
 		rows := table.Find("tr")
 
 		if rows.First().Children().Eq(0).Text() == "Nr." {
-			player := Player{}
+			team := Team{}
+
 			for j := range rows.Nodes {
 				if j == 0 {
 					continue
 				}
+
+				player := &Player{}
+
 				row := rows.Eq(j)
 				columnsCount := len(row.Children().Nodes)
-				done := columnsCount == 5
 
 				columns := row.Find("td")
 
 				for k := range columns.Nodes {
 					column := columns.Eq(k)
 
-					if done {
+					if columnsCount == 5 {
 						switch k {
 						case 0:
-							// rank
+							team.SeedOrRank = trimmedText(column)
 						case 1:
-							player.ID = parseIDFromSteckbrief(column.Find("a"))
-							player.LastName, player.FirstName = parsePlayerName(column)
+							player.ID = parsePlayerIDFromSteckbrief(column.Find("a"))
+							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
 						case 2:
 							player.CountryUnion = trimmedText(column)
 						case 3:
-							// won points
+							team.WonPoints = trimmedText(column)
 						case 4:
-							// prize money
+							team.PrizeMoney = trimmedText(column)
 						}
-					} else {
+					} else if columnsCount == 4 {
 						switch k {
-						case 0: // seed
+						case 0:
+							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
 						case 1:
-							player.LastName, player.FirstName = parsePlayerName(column)
-						case 2: // license
+							player.License = trimmedText(column)
+						case 2:
+							player.CountryUnion = trimmedText(column)
+						case 3:
+							player.TotalPoints = trimmedText(column)
+						}
+					} else if columnsCount == 7 {
+						switch k {
+						case 0:
+							team.SeedOrRank = trimmedText(column)
+						case 1:
+							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
+						case 2:
+							player.License = trimmedText(column)
 						case 3:
 							player.CountryUnion = trimmedText(column)
 						case 4:
 							player.TotalPoints = trimmedText(column)
 						case 5:
-							// team total points
+							team.TotalPoints = trimmedText(column)
 						case 6:
 							// signout link
 						}
+					} else {
+						return nil, errors.New("unknown tournament player table structure")
 					}
 				}
-				players = append(players, player)
+				if team.Player1 == nil {
+					team.Player1 = player
+				} else {
+					team.Player2 = player
+					teams = append(teams, team)
+					team = Team{}
+				}
 
 			}
 			break
 		}
 	}
 
-	return players, nil
+	return teams, nil
 }
 
 func parseFullTournament(html io.Reader) (*FullTournament, error) {
@@ -150,7 +238,7 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 
 	t := &FullTournament{}
 
-	name := doc.Find(".ajax>h2").Text()
+	name := doc.Find("h2").Text()
 
 	htmlNotes, err := doc.Find(".extrainfo").Html()
 
@@ -180,6 +268,7 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 					t.Location = trimmedText(row.Eq(1))
 				case 3:
 					t.Mode = trimmedText(row.Eq(1))
+					t.MaxTeams = parseNumber(t.Mode)
 				case 4:
 					t.MinTeams = trimmedText(row.Eq(1))
 				case 5:
@@ -203,13 +292,26 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 		}
 	}
 
-	t.Players, err = parseFullTournamentPlayers(doc)
+	t.Teams, err = parseFullTournamentTeams(doc)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return t, nil
+}
+
+func parseNumber(text string) int {
+	re, err := regexp.Compile("\\d+")
+
+	nrstr := re.FindString(text)
+	nr, err := strconv.Atoi(nrstr)
+
+	if err != nil {
+		return -1
+	}
+
+	return nr
 }
 
 func (c *Client) GetTournament(link string) (*FullTournament, error) {
@@ -219,7 +321,15 @@ func (c *Client) GetTournament(link string) (*FullTournament, error) {
 		return nil, err
 	}
 
-	return parseFullTournament(resp.Body)
+	t, err := parseFullTournament(resp.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	t.ID = parseTournamentIDFromLink(link)
+
+	return t, nil
 }
 
 func (c *Client) UpcomingTournaments() ([]Tournament, error) {
@@ -236,6 +346,17 @@ func (c *Client) UpcomingTournaments() ([]Tournament, error) {
 
 func trimmedText(s *goquery.Selection) string {
 	return strings.TrimSpace(s.Text())
+}
+
+func trimmedTournamentName(s *goquery.Selection) string {
+	name := trimmedText(s)
+	index := strings.Index(name, "- ")
+
+	if index > 0 {
+		return name[index+2:]
+	}
+
+	return name
 }
 
 func parseHref(anchor *goquery.Selection) string {
@@ -306,7 +427,7 @@ func parseTournaments(html io.Reader) ([]Tournament, error) {
 				tournament.StartDate, tournament.EndDate = parseDates(c)
 			case 2:
 				tournament.Link = parseHref(c.Find("a"))
-				tournament.Name = trimmedText(c)
+				tournament.Name = trimmedTournamentName(c)
 			case 3:
 				tournament.League = trimmedText(c)
 			case 4:
