@@ -11,6 +11,6 @@ func DefaultClient() *Client {
 	return &Client{
 		PostUrl:     "https://beach.volleynet.at/Admin/formular",
 		ApiUrl:      "http://www.volleynet.at/api/",
-		AmateurPath: "beach/bewerbe/AMATEUR%20TOUR/phase/ABV%20Tour%20AMATEUR%201/sex/M/saison/2018",
+		AmateurPath: "beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
 	}
 }

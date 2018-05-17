@@ -45,10 +45,7 @@
     "test": "jest"
   },
   "lint-staged": {
-    "*.js": [
-      "npm run pretty",
-      "git add"
-    ]
+    "*.js": ["npm run pretty", "git add"]
   },
   "author": "",
   "license": "ISC"

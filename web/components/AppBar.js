@@ -59,7 +59,7 @@ function ButtonAppBar({
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar>
         <Toolbar>
           <IconButton
             color="inherit"

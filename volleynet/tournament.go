@@ -3,16 +3,23 @@ package volleynet
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+type GroupedTournaments struct {
+	Upcoming []Tournament `json:"upcoming"`
+	Past     []Tournament `json:"past"`
+	Played   []Tournament `json:"played"`
+}
 
 type Tournament struct {
 	StartDate string `json:"startDate"`
@@ -28,7 +35,7 @@ type Team struct {
 	TotalPoints string  `json:"totalPoints"`
 	Player1     *Player `json:"player1"`
 	Player2     *Player `json:"player2"`
-	SeedOrRank  string  `json:"seed"`
+	SeedOrRank  string  `json:"seedOrRank"`
 	WonPoints   string  `json:"wonPoints"`
 	PrizeMoney  string  `json:"prizeMoney"`
 }
@@ -188,6 +195,7 @@ func parseFullTournamentTeams(doc *goquery.Document) ([]Team, error) {
 					} else if columnsCount == 4 {
 						switch k {
 						case 0:
+							player.ID = parsePlayerIDFromSteckbrief(column.Find("a"))
 							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
 						case 1:
 							player.License = trimmedText(column)
@@ -240,14 +248,15 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 
 	name := doc.Find("h2").Text()
 
-	htmlNotes, err := doc.Find(".extrainfo").Html()
+	htmlNotes := doc.Find(".extrainfo")
 
-	if err != nil {
-		return nil, err
+	if htmlNotes.Find("iframe").Length() > 0 {
+		t.HTMLNotes = "Cannot display these notes yet."
+	} else {
+		t.HTMLNotes, _ = htmlNotes.Html()
 	}
 
 	t.Name = name
-	t.HTMLNotes = htmlNotes
 
 	table := doc.Find("tbody")
 
@@ -301,10 +310,10 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 	return t, nil
 }
 
-func parseNumber(text string) int {
-	re, err := regexp.Compile("\\d+")
+var numberRegex = regexp.MustCompile("\\d+")
 
-	nrstr := re.FindString(text)
+func parseNumber(text string) int {
+	nrstr := numberRegex.FindString(text)
 	nr, err := strconv.Atoi(nrstr)
 
 	if err != nil {
@@ -332,8 +341,41 @@ func (c *Client) GetTournament(link string) (*FullTournament, error) {
 	return t, nil
 }
 
-func (c *Client) UpcomingTournaments() ([]Tournament, error) {
-	resp, err := http.Get(c.ApiUrl + c.AmateurPath)
+func (c *Client) GroupedTournaments(gender, league, year string) (*GroupedTournaments, error) {
+	tournaments, err := c.AllTournaments(gender, league, year)
+
+	if err != nil {
+		return nil, err
+	}
+
+	grouped := &GroupedTournaments{
+		Past:     []Tournament{},
+		Upcoming: []Tournament{},
+		Played:   []Tournament{},
+	}
+
+	for _, t := range tournaments {
+		if date, _ := time.Parse("02.01.2006", t.StartDate); date.Before(time.Now()) {
+			grouped.Past = append(grouped.Past, t)
+		} else {
+			grouped.Upcoming = append(grouped.Upcoming, t)
+		}
+	}
+
+	return grouped, nil
+}
+
+func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {
+	url, err := url.Parse(c.ApiUrl)
+
+	if err != nil {
+		return nil, err
+	}
+
+	url.Path += fmt.Sprintf(c.AmateurPath, league, league, gender, year)
+
+	encodedUrl := url.String()
+	resp, err := http.Get(encodedUrl)
 
 	if err != nil {
 		return nil, err
@@ -377,28 +419,8 @@ func parseDates(s *goquery.Selection) (string, string) {
 	return strings.TrimSpace(dates[0]), strings.TrimSpace(dates[1])
 }
 
-func parseEntryLink(href string) (string, error) {
-
-	index := strings.LastIndex(href, "/")
-
-	if index >= 0 {
-		idPart := href[index+1:]
-		ids := strings.Split(idPart, "-")
-
-		if len(ids) != 3 {
-			return "", errors.New("Malformed entry link")
-		}
-
-		return ids[1], nil
-	}
-
-	return "", errors.New("Malformed entry link")
-}
-
 func parseTournaments(html io.Reader) ([]Tournament, error) {
 	doc, err := goquery.NewDocumentFromReader(html)
-	text, _ := doc.Html()
-	log.Print(text)
 
 	if err != nil {
 		return nil, err
@@ -428,16 +450,11 @@ func parseTournaments(html io.Reader) ([]Tournament, error) {
 			case 2:
 				tournament.Link = parseHref(c.Find("a"))
 				tournament.Name = trimmedTournamentName(c)
+				tournament.ID = parseTournamentIDFromLink(tournament.Link)
 			case 3:
 				tournament.League = trimmedText(c)
 			case 4:
 				tournament.EntryLink = parseHref(c.Find("a"))
-				tournament.ID, err = parseEntryLink(tournament.EntryLink)
-
-				if err != nil {
-					log.Printf("Error parsing ID, err: %v\n", err)
-					break
-				}
 			}
 		}
 

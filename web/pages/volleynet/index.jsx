@@ -5,10 +5,10 @@ import Router from 'next/router';
 import fetch from 'isomorphic-unfetch';
 
 import Tabs, { Tab } from 'material-ui/Tabs';
-import { CircularProgress } from 'material-ui/Progress';
 
 import withAuth from '../../containers/AuthContainer';
 import TournamentList from '../../components/volleynet/TournamentList';
+import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
 
 import type { Tournament } from '../../types';
@@ -16,13 +16,17 @@ import type { Tournament } from '../../types';
 type State = {
   loading: boolean,
   tabOpen: number,
-  tournaments: Array<Tournament>,
+  tournaments: {
+    upcoming: Array<Tournament>,
+    past: Array<Tournament>,
+    played: Array<Tournament>,
+  },
 };
 
 class Volleynet extends React.Component<null, State> {
   state = {
     loading: false,
-    tournaments: [],
+    tournaments: null,
     tabOpen: 0,
   };
 
@@ -51,14 +55,29 @@ class Volleynet extends React.Component<null, State> {
   render() {
     const { tournaments, tabOpen } = this.state;
 
-    const content = !tournaments.length ? (
-      <CircularProgress />
-    ) : (
-      <TournamentList
-        tournaments={tournaments}
-        onTournamentClick={this.onTournamentClick}
-      />
-    );
+    let content = <CenteredLoading />;
+    let ts = [];
+
+    if (tournaments) {
+      switch (tabOpen) {
+        case 0:
+          ts = tournaments.upcoming;
+          break;
+        case 1:
+          ts = tournaments.past;
+          break;
+        case 2:
+          ts = tournaments.played;
+          break;
+        default: // this shouldn't happen
+      }
+      content = (
+        <TournamentList
+          tournaments={ts}
+          onTournamentClick={this.onTournamentClick}
+        />
+      );
+    }
 
     return (
       <Layout title="Players">
@@ -72,7 +91,7 @@ class Volleynet extends React.Component<null, State> {
           <Tab label="Past" />
           <Tab label="Played" />
         </Tabs>
-        {tabOpen === 0 ? content : 'This is not done yet 💩'}
+        {content}
       </Layout>
     );
   }

@@ -1,13 +1,18 @@
 package volleynet
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 func Test_upcoming_games(t *testing.T) {
 	c := DefaultClient()
-	_, err := c.UpcomingTournaments()
+	tournaments, err := c.AllTournaments("M", "AMATEUR TOUR", "2018")
 
 	if err != nil {
 		t.Error(err)
+	} else if len(tournaments) <= 0 {
+		t.Error(errors.New("tournaments didn't return anything"))
 	}
 }
 

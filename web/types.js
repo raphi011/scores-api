@@ -101,6 +101,9 @@ export type VolleynetTeam = {
   player1: VolleynetPlayer,
   player2: VolleynetPlayer,
   totalPoints: string,
+  seedOrRank: string,
+  wonPoints: string,
+  prizeMoney: string,
 };
 
 export type Gender = 'M' | 'W';

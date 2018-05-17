@@ -52,7 +52,7 @@ class Tournament extends React.Component<Props, State> {
     return (
       <Layout title="New Match">
         <Link prefetch href="/volleynet">
-          <Button href="#flat-buttons">Back</Button>
+          <Button color="primary">Back</Button>
         </Link>
         <TournamentView tournament={tournament} />
       </Layout>

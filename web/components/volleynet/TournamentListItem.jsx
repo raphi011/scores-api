@@ -6,8 +6,7 @@ import {
   ListItemText,
   ListItemSecondaryAction,
 } from 'material-ui/List';
-import RegisterIcon from 'material-ui-icons/Create';
-import IconButton from 'material-ui/IconButton';
+import GotoIcon from 'material-ui-icons/ArrowForward';
 
 import type { Tournament } from '../../types';
 
@@ -23,9 +22,7 @@ const TournamentListItem = ({ tournament, onClick }: Props) => (
       secondary={`${tournament.startDate} - ${tournament.league}`}
     />
     <ListItemSecondaryAction>
-      <IconButton aria-label="Register">
-        <RegisterIcon />
-      </IconButton>
+      <GotoIcon />
     </ListItemSecondaryAction>
   </ListItem>
 );

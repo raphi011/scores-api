@@ -2,22 +2,19 @@
 
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
-import SwipeableDrawer from 'material-ui/SwipeableDrawer';
+import MDrawer from 'material-ui/Drawer';
 import List, {
   ListItem,
   ListSubheader,
   ListItemIcon,
   ListItemText,
 } from 'material-ui/List';
-import Collapse from 'material-ui/transitions/Collapse';
-import AddIcon from 'material-ui-icons/Add';
+import GroupIcon from 'material-ui-icons/Group';
 import Avatar from 'material-ui/Avatar';
 import TournamentIcon from 'material-ui-icons/Star';
 import SettingsIcon from 'material-ui-icons/Settings';
-import StatisticsIcon from 'material-ui-icons/ShowChart';
-import FitnessCenterIcon from 'material-ui-icons/FitnessCenter';
-import ExpandLessIcon from 'material-ui-icons/ExpandLess';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import HomeIcon from 'material-ui-icons/Home';
+import LadderIcon from 'material-ui-icons/LooksOne';
 import Link from 'next/link';
 
 import type { Player } from '../types';
@@ -45,31 +42,26 @@ type Props = {
   open: boolean,
   onOpen: Event => void,
   onClose: Event => void,
-  groupOpen: { [number]: boolean },
-  onToggleGroup: () => void,
   userPlayer: Player,
   classes: Object,
 };
 
-function Drawer({
-  open,
-  userPlayer,
-  groupOpen,
-  onToggleGroup,
-  onClose,
-  onOpen,
-  classes,
-}: Props) {
+function Drawer({ open, userPlayer, onClose, onOpen, classes }: Props) {
   const { groups = [] } = userPlayer;
 
   const groupList = groups.map(g => (
-    <GroupOptions
+    <Link
+      prefetch
       key={g.id}
-      onToggleOpen={onToggleGroup}
-      open={groupOpen[g.id]}
-      group={g}
-      nestedClassName={classes.nested}
-    />
+      href={{ pathname: '/group/statistic', query: { groupId: g.id } }}
+    >
+      <ListItem button>
+        <ListItemIcon>
+          <GroupIcon />
+        </ListItemIcon>
+        <ListItemText primary={g.name} />
+      </ListItem>
+    </Link>
   ));
 
   const sideList = (
@@ -85,31 +77,49 @@ function Drawer({
           </ListItem>
         </Link>
         <ListSubheader className={classes.header}>Navigation</ListSubheader>
+        <Link href="/home">
+          <ListItem button>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText inset primary="Home" />
+          </ListItem>
+        </Link>
+        <ListItem button>
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          <ListItemText inset primary="Settings" />
+        </ListItem>
+        <ListSubheader className={classes.header}>Volleynet</ListSubheader>
         <Link href="/volleynet">
           <ListItem button>
             <ListItemIcon>
               <TournamentIcon />
             </ListItemIcon>
-            <ListItemText inset primary="Volleynet" />
+            <ListItemText inset primary="Tournaments" />
           </ListItem>
         </Link>
-        <Link href="#">
+        <Link href="/volleynet/ranking">
           <ListItem button>
             <ListItemIcon>
-              <SettingsIcon />
+              <LadderIcon />
             </ListItemIcon>
-            <ListItemText inset primary="Admin" />
+            <ListItemText inset primary="Rankings" />
           </ListItem>
         </Link>
         <ListSubheader className={classes.header}>My groups</ListSubheader>
         {groupList}
         <ListSubheader className={classes.header}>Other groups</ListSubheader>
+        <ListItem button>
+          <ListItemText primary="-" />
+        </ListItem>
       </List>
     </div>
   );
 
   return (
-    <SwipeableDrawer open={open} onOpen={onOpen} onClose={onClose}>
+    <MDrawer open={open} onClose={onClose}>
       <div
         tabIndex={0}
         role="button"
@@ -118,58 +128,8 @@ function Drawer({
       >
         {sideList}
       </div>
-    </SwipeableDrawer>
+    </MDrawer>
   );
 }
-
-const GroupOptions = ({ group, open, onToggleOpen, nestedClassName }) => (
-  <React.Fragment>
-    <ListItem button onClick={() => onToggleOpen(group.id)}>
-      <Avatar src={group.imageUrl} />
-      <ListItemText primary={group.name} />
-      {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-    </ListItem>
-    <Collapse in={open} timeout="auto" unmountOnExit>
-      <List component="div" disablePadding className={nestedClassName}>
-        <Link
-          prefetch
-          href={{
-            pathname: '/group/createMatch',
-            query: { groupId: group.id },
-          }}
-        >
-          <ListItem button>
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary="New Match" />
-          </ListItem>
-        </Link>
-        <Link
-          prefetch
-          href={{ pathname: '/group', query: { groupId: group.id } }}
-        >
-          <ListItem button>
-            <ListItemIcon>
-              <FitnessCenterIcon />
-            </ListItemIcon>
-            <ListItemText primary="Matches" />
-          </ListItem>
-        </Link>
-        <Link
-          prefetch
-          href={{ pathname: '/group/statistic', query: { groupId: group.id } }}
-        >
-          <ListItem button>
-            <ListItemIcon>
-              <StatisticsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Statistics" />
-          </ListItem>
-        </Link>
-      </List>
-    </Collapse>
-  </React.Fragment>
-);
 
 export default withStyles(styles)(Drawer);

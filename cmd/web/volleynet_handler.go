@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin/binding"
 
@@ -15,8 +17,16 @@ import (
 type volleynetHandler struct{}
 
 func (h *volleynetHandler) allTournaments(c *gin.Context) {
+	gender := c.DefaultQuery("gender", "M")
+	league := c.DefaultQuery("league", "AMATEUR TOUR")
+	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
+
 	client := volleynet.DefaultClient()
-	games, _ := client.UpcomingTournaments()
+	games, err := client.GroupedTournaments(gender, league, season)
+
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+	}
 
 	c.JSON(http.StatusOK, games)
 }
@@ -30,8 +40,9 @@ type signupForm struct {
 }
 
 func getTournamentLink(id string) (string, error) {
+
 	client := volleynet.DefaultClient()
-	games, err := client.UpcomingTournaments()
+	games, err := client.AllTournaments("M", "AMATEUR TOUR", "2018")
 
 	if err != nil {
 		return "", err

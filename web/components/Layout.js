@@ -16,13 +16,12 @@ type Props = {
   drawerOpen: boolean,
   onCloseDrawer: () => void,
   onOpenDrawer: () => void,
-  onToggleGroup: () => void,
   classes: Object,
 };
 
 const styles = theme => ({
   style: {
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.default,
     marginTop: '70px',
   },
 });
@@ -34,8 +33,6 @@ const Layout = ({
   drawerOpen,
   onCloseDrawer,
   onOpenDrawer,
-  onToggleGroup,
-  groupOpen,
   classes,
 }: Props) => (
   <div className={classes.style}>
@@ -44,8 +41,6 @@ const Layout = ({
       onClose={onCloseDrawer}
       onOpen={onOpenDrawer}
       open={drawerOpen}
-      onToggleGroup={onToggleGroup}
-      groupOpen={groupOpen}
     />
     <AppBar onOpenMenu={onOpenDrawer} title={title} />
     {children}

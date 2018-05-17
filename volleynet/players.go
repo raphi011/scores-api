@@ -20,16 +20,16 @@ type SearchPlayer struct {
 	Birthday  string `json:"birthday"`
 }
 
+var lastNameRegex = regexp.MustCompile("\\p{Lu}+\\b")
+var firstNameRegex = regexp.MustCompile("\\p{Lu}\\p{Ll}+\\b")
+
 func parsePlayerName(c *goquery.Selection) (string, string, string) {
-	fullName := strings.TrimSpace(c.Text())
+	playerName := c.Text()
 
-	parts := strings.Split(fullName, " ")
+	lastName := strings.Join(lastNameRegex.FindAllString(playerName, -1), " ")
+	firstName := strings.Join(firstNameRegex.FindAllString(playerName, -1), " ")
 
-	if len(parts) != 2 {
-		return "", "", ""
-	}
-
-	return strings.Title(parts[0]), strings.Title(parts[1]), strings.Join(parts, ".")
+	return strings.Title(firstName), strings.Title(lastName), strings.Join([]string{firstName, lastName}, ".")
 }
 
 func parsePlayerID(s *goquery.Selection) (string, error) {

@@ -3,6 +3,7 @@
 import React from 'react';
 // import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
+import Router from 'next/router';
 
 import { withStyles } from 'material-ui/styles';
 import Typography from 'material-ui/Typography';
@@ -74,7 +75,11 @@ class Signup extends React.Component<Props, State> {
     });
 
     if (response.status !== 200) {
-      // set message
+      // TODO: set message
+      await Router.push({
+        pathname: '/volleynet/tourname',
+        query: { id: tournamentId },
+      });
     }
   };
 
