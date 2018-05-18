@@ -40,7 +40,7 @@ function withAuth(WrappedComponent) {
 
         user = result.response.user;
         loginRoute = result.response.loginRoute;
-        url = req.originalUrl;
+        url = req.url;
         isLoggedIn = !!user;
       } else {
         const authState = userSelector(store.getState());
@@ -59,7 +59,7 @@ function withAuth(WrappedComponent) {
       };
 
       if (!isLoggedIn) {
-        if (!url || !url.includes('/login')) {
+        if (!url.includes('/login')) {
           // redirect to '/login'
           const redir = url ? `?r=${encodeURIComponent(url)}` : '';
 
