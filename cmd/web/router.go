@@ -9,10 +9,11 @@ import (
 	"github.com/raphi011/scores/sqlite"
 
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
 
-var store = sessions.NewCookieStore([]byte("ultrasecret"))
+var store = cookie.NewStore([]byte("ultrasecret"))
 
 func initRouter(app app) *gin.Engine {
 	var router *gin.Engine

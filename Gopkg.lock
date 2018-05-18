@@ -20,37 +20,13 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/boj/redistore"
-  packages = ["."]
-  revision = "fc113767cd6b051980f260d6dbe84b2740c46ab0"
-  version = "v1.2"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/bradfitz/gomemcache"
-  packages = ["memcache"]
-  revision = "1952afaa557dc08e8e0d89eafab110fb501c1a2b"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/bradleypeabody/gorilla-sessions-memcache"
-  packages = ["."]
-  revision = "75ee37df8664a47cd5d9eb84d41e1f2b08086893"
-
-[[projects]]
-  name = "github.com/garyburd/redigo"
-  packages = [
-    "internal",
-    "redis"
-  ]
-  revision = "a69d19351219b6dd56f274f96d85a7014a2ec34e"
-  version = "v1.6.0"
-
-[[projects]]
   branch = "master"
   name = "github.com/gin-contrib/sessions"
-  packages = ["."]
-  revision = "fda3be6efa2da56e31a1a72bffd65279191e8009"
+  packages = [
+    ".",
+    "cookie"
+  ]
+  revision = "15760a03818fe16125cd735433b57a7398335b13"
 
 [[projects]]
   branch = "master"
@@ -91,12 +67,6 @@
   packages = ["."]
   revision = "ca9ada44574153444b00d3fd9c8559e4cc95f896"
   version = "v1.1"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/kidstuff/mongostore"
-  packages = ["."]
-  revision = "256d65ac5b0e35e7c5ebb3f175c0bed1e5c2b253"
 
 [[projects]]
   name = "github.com/mattn/go-isatty"
@@ -175,18 +145,6 @@
   version = "v8.18.2"
 
 [[projects]]
-  branch = "v2"
-  name = "gopkg.in/mgo.v2"
-  packages = [
-    ".",
-    "bson",
-    "internal/json",
-    "internal/sasl",
-    "internal/scram"
-  ]
-  revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
-
-[[projects]]
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
@@ -195,6 +153,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b4dbd108a8fa7023d62475fedcbc9531dee98ac2514f879305a6577028dd7162"
+  inputs-digest = "b186600f7620c93842c45e1341afb5fadada7ef7c8d7c6bd5ada00b56f766ba9"
   solver-name = "gps-cdcl"
   solver-version = 1
