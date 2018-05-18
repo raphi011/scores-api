@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Router from 'next/router';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 
 import { dispatchAction, dispatchActions } from '../redux/store';
 import { userSelector } from '../redux/reducers/auth';
@@ -59,7 +59,7 @@ function withAuth(WrappedComponent) {
       };
 
       if (!isLoggedIn) {
-        if (!url.includes('/login')) {
+        if (!url || !url.includes('/login')) {
           // redirect to '/login'
           const redir = url ? `?r=${encodeURIComponent(url)}` : '';
 
@@ -138,10 +138,12 @@ function withAuth(WrappedComponent) {
     }
   }
 
-  return withRoot(connect(
-    WrappedComponent.mapStateToProps,
-    WrappedComponent.mapDispatchToProps,
-  )(Auth));
+  return withRoot(
+    connect(
+      WrappedComponent.mapStateToProps,
+      WrappedComponent.mapDispatchToProps,
+    )(Auth),
+  );
 }
 
 export default withAuth;
