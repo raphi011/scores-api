@@ -2,7 +2,6 @@ package sqlite
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	"github.com/raphi011/scores"
@@ -72,8 +71,6 @@ func parseTimeFilter(filter string) time.Time {
 func scanPlayerStatistics(db *sql.DB, query string, args ...interface{}) (scores.PlayerStatistics, error) {
 	statistics := scores.PlayerStatistics{}
 	rows, err := db.Query(query, args...)
-
-	log.Printf("%v\n\n%v", query, args)
 
 	if err != nil {
 		return nil, err

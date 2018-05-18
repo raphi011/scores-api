@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react';
-import Avatar from 'material-ui/Avatar';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Badge from 'material-ui/Badge';
+import Avatar from '@material-ui/core/Avatar';
+import { withStyles } from '@material-ui/core/styles';
+import List, { ListItem, ListItemText } from '@material-ui/core/List';
+import Badge from '@material-ui/core/Badge';
 
 import type { Player } from '../types';
 

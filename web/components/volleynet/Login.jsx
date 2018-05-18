@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react';
-import TextField from 'material-ui/TextField';
-import { withStyles } from 'material-ui/styles';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
 
-import Button from 'material-ui/Button';
-import DoneIcon from 'material-ui-icons/Done';
+import Button from '@material-ui/core/Button';
+import DoneIcon from '@material-ui/icons/Done';
 
 const styles = () => ({
   container: {

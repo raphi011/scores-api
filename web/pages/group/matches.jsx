@@ -1,17 +1,20 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import AddIcon from 'material-ui-icons/Add';
-import Toolbar from 'material-ui/Toolbar';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import Toolbar from '@material-ui/core/Toolbar';
 import Link from 'next/link';
 
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import MatchList from '../../containers/MatchListContainer';
 import { matchesByGroupSelector } from '../../redux/reducers/entities';
-import { loadGroupAction, loadMatchesAction } from '../../redux/actions/entities';
+import {
+  loadGroupAction,
+  loadMatchesAction,
+} from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
 
 import type { Match, User, Classes } from '../../types';

@@ -1,12 +1,16 @@
 // @flow
 
 import React from 'react';
-import TextField from 'material-ui/TextField';
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import DoneIcon from 'material-ui-icons/Done';
-import { FormLabel, FormControl, FormControlLabel } from 'material-ui/Form';
+import TextField from '@material-ui/core/TextField';
+import Radio, { RadioGroup } from '@material-ui/core/Radio';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import DoneIcon from '@material-ui/icons/Done';
+import {
+  FormLabel,
+  FormControl,
+  FormControlLabel,
+} from '@material-ui/core/Form';
 import type { Player } from '../types';
 
 const styles = theme => ({

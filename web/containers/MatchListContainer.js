@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import Waypoint from 'react-waypoint';
-import { CircularProgress } from 'material-ui/Progress';
+import { CircularProgress } from '@material-ui/core/Progress';
 
 import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';

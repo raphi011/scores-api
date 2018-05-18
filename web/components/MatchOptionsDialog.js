@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react';
-import DeleteIcon from 'material-ui-icons/Delete';
-import CopyIcon from 'material-ui-icons/ContentCopy';
-import Divider from 'material-ui/Divider';
-import Dialog, { DialogTitle } from 'material-ui/Dialog';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem, ListItemText, ListItemAvatar } from 'material-ui/List';
-import Avatar from 'material-ui/Avatar';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CopyIcon from '@material-ui/icons/ContentCopy';
+import Divider from '@material-ui/core/Divider';
+import Dialog, { DialogTitle } from '@material-ui/core/Dialog';
+import { withStyles } from '@material-ui/core/styles';
+import List, { ListItem, ListItemText } from '@material-ui/core/List';
+import Avatar from '@material-ui/core/Avatar';
 import Link from 'next/link';
 
 import type { Match } from '../types';
@@ -41,7 +41,9 @@ class MatchOptionsDialog extends React.Component<Props> {
   render() {
     const { classes, onClose, match, onShowPlayer, open } = this.props;
 
-    const rematchLink = match ? `/createMatch?rematchId=${match.id}` : '';
+    const rematchLink = match
+      ? `/group/createMatch?groupId=${match.groupId}&rematchId=${match.id}`
+      : '';
     const playerInfos = match
       ? [
           {

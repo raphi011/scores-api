@@ -3,17 +3,17 @@
 import React from 'react';
 import Link from 'next/link';
 
-import Tabs, { Tab } from 'material-ui/Tabs';
-import { withStyles } from 'material-ui/styles';
-import Card from 'material-ui/Card';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import PhoneIcon from 'material-ui-icons/Phone';
-import PeopleIcon from 'material-ui-icons/People';
-import LinkIcon from 'material-ui-icons/Link';
-import CalendarIcon from 'material-ui-icons/DateRange';
-import EmailIcon from 'material-ui-icons/Email';
-import LocationIcon from 'material-ui-icons/GpsFixed';
+import Tabs, { Tab } from '@material-ui/core/Tabs';
+import { withStyles } from '@material-ui/core/styles';
+import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import PhoneIcon from '@material-ui/icons/Phone';
+import PeopleIcon from '@material-ui/icons/People';
+import LinkIcon from '@material-ui/icons/Link';
+import CalendarIcon from '@material-ui/icons/DateRange';
+import EmailIcon from '@material-ui/icons/Email';
+import LocationIcon from '@material-ui/icons/GpsFixed';
 
 import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';

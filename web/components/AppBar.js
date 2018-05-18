@@ -1,16 +1,14 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import MenuIcon from 'material-ui-icons/Menu';
-import Tooltip from 'material-ui/Tooltip';
-import Avatar from 'material-ui/Avatar';
-import type { User, Classes } from '../types';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import type { Classes } from '../types';
 
 const styles = () => ({
   row: {
@@ -33,7 +31,6 @@ type Props = {
   onOpenMenu: () => void,
   title: string,
   isLoggedIn: boolean,
-  user: User,
   onLogout: () => void,
   classes: Classes,
 };
@@ -42,19 +39,13 @@ function ButtonAppBar({
   onOpenMenu,
   title,
   isLoggedIn,
-  user,
   onLogout,
   classes,
 }: Props) {
   const button = isLoggedIn ? (
-    <Tooltip title={user.email} placement="bottom">
-      <div className={classes.row}>
-        <Avatar src={user.profileImageUrl} />
-        <Button color="inherit" onClick={onLogout}>
-          Logout
-        </Button>
-      </div>
-    </Tooltip>
+    <Button color="inherit" onClick={onLogout}>
+      Logout
+    </Button>
   ) : null;
 
   return (

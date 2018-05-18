@@ -4,7 +4,7 @@ import React from 'react';
 import Router from 'next/router';
 import fetch from 'isomorphic-unfetch';
 
-import Tabs, { Tab } from 'material-ui/Tabs';
+import Tabs, { Tab } from '@material-ui/core/Tabs';
 
 import withAuth from '../../containers/AuthContainer';
 import TournamentList from '../../components/volleynet/TournamentList';

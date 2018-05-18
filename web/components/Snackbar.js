@@ -1,10 +1,10 @@
-// @flow 
+// @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import Snackbar from 'material-ui/Snackbar';
-import IconButton from 'material-ui/IconButton';
-import CloseIcon from 'material-ui-icons/Close';
+import { withStyles } from '@material-ui/core/styles';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
   close: {
@@ -26,7 +26,7 @@ type Props = {
   status: string,
   open: boolean,
   classes: Object,
-}
+};
 
 const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
   <Snackbar
@@ -37,9 +37,6 @@ const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
     open={open}
     autoHideDuration={6000}
     onClose={handleRequestClose(onClose)}
-    SnackbarContentProps={{
-      'aria-describedby': 'message-id',
-    }}
     message={<span id="message-id">{status}</span>}
     action={[
       <IconButton

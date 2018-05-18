@@ -1,16 +1,16 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
 import Router from 'next/router';
-import { CircularProgress } from 'material-ui/Progress';
-import Red from 'material-ui/colors/red';
-import WarningIcon from 'material-ui-icons/Warning';
-import { FormGroup } from 'material-ui/Form';
+import { CircularProgress } from '@material-ui/core/Progress';
+import Red from '@material-ui/core/colors/red';
+import WarningIcon from '@material-ui/icons/Warning';
+import { FormGroup } from '@material-ui/core/Form';
 
 import withAuth from '../containers/AuthContainer';
 import { loginWithPasswordAction } from '../redux/actions/auth';

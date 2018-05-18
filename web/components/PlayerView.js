@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
-import Tooltip from 'material-ui/Tooltip';
-import Avatar from 'material-ui/Avatar';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
+import Avatar from '@material-ui/core/Avatar';
 import type { PlayerStatistic, Player } from '../types';
 
 const styles = () => ({

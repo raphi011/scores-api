@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
+import { withStyles } from '@material-ui/core/styles';
+import { CircularProgress } from '@material-ui/core/Progress';
 
 const styles = () => ({
   container: {

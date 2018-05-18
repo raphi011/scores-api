@@ -7,8 +7,8 @@
     "express": "latest",
     "isomorphic-unfetch": "latest",
     "jss": "latest",
-    "material-ui": "next",
-    "material-ui-icons": "latest",
+    "@material-ui/core": "latest",
+    "@material-ui/icons": "latest",
     "next": "latest",
     "next-redux-wrapper": "latest",
     "normalizr": "latest",
@@ -45,7 +45,10 @@
     "test": "jest"
   },
   "lint-staged": {
-    "*.js": ["npm run pretty", "git add"]
+    "*.js": [
+      "npm run pretty",
+      "git add"
+    ]
   },
   "author": "",
   "license": "ISC"

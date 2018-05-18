@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import List from 'material-ui/List';
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
 
 import TeamListItem from './TeamListItem';
 

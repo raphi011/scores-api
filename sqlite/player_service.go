@@ -3,7 +3,6 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
-	"log"
 
 	"github.com/raphi011/scores"
 )
@@ -79,7 +78,6 @@ func scanPlayers(db *sql.DB, query string, args ...interface{}) (scores.Players,
 }
 
 func (s *PlayerService) ByGroup(groupID uint) (scores.Players, error) {
-	log.Print(playersByGroupSQL)
 	return scanPlayers(s.DB, playersByGroupSQL, groupID)
 }
 
@@ -103,7 +101,6 @@ func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
 	groups, err := groupService.GroupsByPlayer(p.ID)
 
 	if err != nil {
-		log.Print(err)
 		return nil, err
 	}
 

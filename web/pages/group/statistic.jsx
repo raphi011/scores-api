@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import DateRangeIcon from 'material-ui-icons/DateRange';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
-import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
-import Menu, { MenuItem } from 'material-ui/Menu';
+import { withStyles } from '@material-ui/core/styles';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+import Menu, { MenuItem } from '@material-ui/core/Menu';
 import Router from 'next/router';
 
 import withAuth from '../../containers/AuthContainer';
@@ -51,7 +51,10 @@ class Statistics extends React.Component<Props, State> {
   static buildActions(parameters) {
     const { filter, groupId } = parameters;
 
-    const actions = [loadGroupStatisticsAction(groupId, filter), userOrLoginRouteAction()];
+    const actions = [
+      loadGroupStatisticsAction(groupId, filter),
+      userOrLoginRouteAction(),
+    ];
 
     return actions;
   }
@@ -61,7 +64,6 @@ class Statistics extends React.Component<Props, State> {
   }
 
   static mapStateToProps(state, { groupId }) {
-
     const statistics = statisticByGroupSelector(state, groupId);
 
     return {
@@ -87,7 +89,7 @@ class Statistics extends React.Component<Props, State> {
 
     this.onCloseFilterMenu();
     Router.push(`/group/statistic?groupId=${groupId}&filter=${filter}`);
-  }
+  };
 
   onSetTodayFilter = () => this.onSetFilter('today');
 

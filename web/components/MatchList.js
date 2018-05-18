@@ -1,9 +1,9 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import List, { ListItem } from 'material-ui/List';
-import Chip from 'material-ui/Chip';
+import { withStyles } from '@material-ui/core/styles';
+import List, { ListItem } from '@material-ui/core/List';
+import Chip from '@material-ui/core/Chip';
 
 import MatchListItem from './MatchListItem';
 import { formatDate } from '../utils/dateFormat';

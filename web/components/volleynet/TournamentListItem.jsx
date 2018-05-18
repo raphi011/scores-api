@@ -1,12 +1,12 @@
 // @flow
 import React from 'react';
-// import { withStyles } from 'material-ui/styles';
+// import { withStyles } from '@material-ui/core/styles';
 import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-} from 'material-ui/List';
-import GotoIcon from 'material-ui-icons/ArrowForward';
+} from '@material-ui/core/List';
+import GotoIcon from '@material-ui/icons/ArrowForward';
 
 import type { Tournament } from '../../types';
 

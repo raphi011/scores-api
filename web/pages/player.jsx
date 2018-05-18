@@ -1,9 +1,8 @@
 // @flow
 
 import React from 'react';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import Typography from 'material-ui/Typography';
-import { CircularProgress } from 'material-ui/Progress';
+import Tabs, { Tab } from '@material-ui/core/Tabs';
+import { CircularProgress } from '@material-ui/core/Progress';
 import Router from 'next/router';
 
 import MatchList from '../containers/MatchListContainer';
@@ -17,6 +16,7 @@ import {
   loadPlayerMatchesAction,
 } from '../redux/actions/entities';
 import { multiApiAction } from '../redux/actions/api';
+import { userSelector } from '../redux/reducers/auth';
 import PlayerView from '../components/PlayerView';
 import {
   playerSelector,
@@ -58,22 +58,25 @@ class PlayerInfo extends React.Component<Props, State> {
     return lastProps.playerId !== nextProps.playerId;
   }
 
-  static buildActions({ playerId }) {
-    let actions = [];
+  static buildActions({ playerId, user }) {
+    const loadPlayerId = playerId || user.playerId;
 
-    if (playerId) {
-      actions = [multiApiAction([
-        loadPlayerMatchesAction(playerId),
-        loadPlayerStatisticAction(playerId),
-        loadPlayerTeamStatisticAction(playerId),
-      ])];
-    }
-
-    return actions;
+    return [
+      multiApiAction([
+        loadPlayerMatchesAction(loadPlayerId),
+        loadPlayerStatisticAction(loadPlayerId),
+        loadPlayerTeamStatisticAction(loadPlayerId),
+      ]),
+    ];
   }
 
   static mapStateToProps(state, ownProps) {
-    const { playerId } = ownProps;
+    const { user } = userSelector(state);
+
+    let { playerId } = ownProps;
+
+    playerId = playerId || user.playerId;
+
     const player = playerSelector(state, playerId);
     const statistic = statisticByPlayerSelector(state, playerId);
     const matches = matchesByPlayerSelector(state, playerId);
@@ -84,6 +87,7 @@ class PlayerInfo extends React.Component<Props, State> {
       statistic,
       matches,
       teamStatistic,
+      user,
     };
   }
 
@@ -98,7 +102,8 @@ class PlayerInfo extends React.Component<Props, State> {
   };
 
   onLoadMore = async () => {
-    const { playerId, loadMatches, matches } = this.props;
+    const { loadMatches, matches } = this.props;
+    const playerId = this.playerId();
 
     this.setState({ loading: true });
 
@@ -129,19 +134,17 @@ class PlayerInfo extends React.Component<Props, State> {
     this.setState({ tabOpen: index });
   };
 
+  playerId = () => {
+    const { playerId, user } = this.props;
+
+    return playerId || user.playerId;
+  }
+
   render() {
-    const { player, matches, statistic, teamStatistic, playerId } = this.props;
+    const { player, matches, statistic, teamStatistic } = this.props;
     const { loading, hasMore } = this.state;
 
-    if (!playerId) {
-      return (
-        <Layout title="Players">
-          <Typography align="center" variant="display4">
-            Players: todo!
-          </Typography>
-        </Layout>
-      );
-    }
+    const playerId = this.playerId();
 
     const loadingPlayer = !(player && statistic);
 

@@ -1,11 +1,11 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import BackIcon from 'material-ui-icons/KeyboardArrowLeft';
-import NextIcon from 'material-ui-icons/KeyboardArrowRight';
-import MobileStepper from 'material-ui/MobileStepper';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
+import NextIcon from '@material-ui/icons/KeyboardArrowRight';
+import MobileStepper from '@material-ui/core/MobileStepper';
 import Router from 'next/router';
 
 import withAuth from '../../containers/AuthContainer';
@@ -98,7 +98,7 @@ class CreateMatch extends React.Component<Props, State> {
   }
 
   static buildActions({ rematchId, groupId }) {
-    const actions = [loadGroupAction(groupId)]
+    const actions = [loadGroupAction(groupId)];
 
     if (rematchId) {
       actions.push(loadMatchAction(rematchId));

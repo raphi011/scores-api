@@ -2,10 +2,10 @@
 
 import React from 'react';
 import fetch from 'isomorphic-unfetch';
-import TextField from 'material-ui/TextField';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import SearchIcon from 'material-ui-icons/Search';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import SearchIcon from '@material-ui/icons/Search';
 
 import PlayerList from '../../components/volleynet/PlayerList';
 import type { Gender, VolleynetSearchPlayer } from '../../types';

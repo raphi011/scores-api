@@ -1,20 +1,20 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import MDrawer from 'material-ui/Drawer';
+import { withStyles } from '@material-ui/core/styles';
+import MDrawer from '@material-ui/core/Drawer';
 import List, {
   ListItem,
   ListSubheader,
   ListItemIcon,
   ListItemText,
-} from 'material-ui/List';
-import GroupIcon from 'material-ui-icons/Group';
-import Avatar from 'material-ui/Avatar';
-import TournamentIcon from 'material-ui-icons/Star';
-import SettingsIcon from 'material-ui-icons/Settings';
-import HomeIcon from 'material-ui-icons/Home';
-import LadderIcon from 'material-ui-icons/LooksOne';
+} from '@material-ui/core/List';
+import GroupIcon from '@material-ui/icons/Group';
+import Avatar from '@material-ui/core/Avatar';
+import TournamentIcon from '@material-ui/icons/Star';
+import SettingsIcon from '@material-ui/icons/Settings';
+import HomeIcon from '@material-ui/icons/Home';
+import LadderIcon from '@material-ui/icons/LooksOne';
 import Link from 'next/link';
 
 import type { Player } from '../types';

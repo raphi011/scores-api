@@ -5,8 +5,8 @@ import React from 'react';
 import fetch from 'isomorphic-unfetch';
 import Router from 'next/router';
 
-import { withStyles } from 'material-ui/styles';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';

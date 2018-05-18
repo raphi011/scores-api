@@ -2,7 +2,6 @@ package sqlite
 
 import (
 	"database/sql"
-	"log"
 	"time"
 
 	"github.com/raphi011/scores"
@@ -129,8 +128,6 @@ const (
 func scanMatches(db *sql.DB, query string, args ...interface{}) (scores.Matches, error) {
 	matches := scores.Matches{}
 	rows, err := db.Query(query, args...)
-
-	log.Printf("%v\n\n%v", query, args)
 
 	if err != nil {
 		return nil, err

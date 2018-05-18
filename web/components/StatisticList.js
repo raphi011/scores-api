@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Table, {
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-} from 'material-ui/Table';
+} from '@material-ui/core/Table';
 import type { PlayerStatistic } from '../types';
 
 import StatisticListRow from './StatisticListRow';
