@@ -1,5 +1,7 @@
 FROM node:carbon
 
+ARG backend_url
+ENV BACKEND_URL $backend_url
 
 WORKDIR /frontend
 COPY package*.json ./
