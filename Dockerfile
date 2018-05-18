@@ -1,7 +1,9 @@
 FROM arm32v7/golang:latest
 
 ARG app_env
+ARG backend_url
 ENV APP_ENV $app_env
+ENV BACKEND_URL $backend_url
 
 WORKDIR /go/src/github.com/raphi011/scores
 
