@@ -6,11 +6,10 @@ import Radio, { RadioGroup } from '@material-ui/core/Radio';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import DoneIcon from '@material-ui/icons/Done';
-import {
-  FormLabel,
-  FormControl,
-  FormControlLabel,
-} from '@material-ui/core/Form';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 import type { Player } from '../types';
 
 const styles = theme => ({

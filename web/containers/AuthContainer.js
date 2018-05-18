@@ -40,7 +40,7 @@ function withAuth(WrappedComponent) {
 
         user = result.response.user;
         loginRoute = result.response.loginRoute;
-        url = req.url;
+        url = req.originalUrl;
         isLoggedIn = !!user;
       } else {
         const authState = userSelector(store.getState());

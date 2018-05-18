@@ -7,10 +7,10 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Router from 'next/router';
-import { CircularProgress } from '@material-ui/core/Progress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Red from '@material-ui/core/colors/red';
 import WarningIcon from '@material-ui/icons/Warning';
-import { FormGroup } from '@material-ui/core/Form';
+import FormGroup from '@material-ui/core/FormGroup';
 
 import withAuth from '../containers/AuthContainer';
 import { loginWithPasswordAction } from '../redux/actions/auth';
