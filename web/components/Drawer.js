@@ -3,12 +3,11 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MDrawer from '@material-ui/core/Drawer';
-import List, {
-  ListItem,
-  ListSubheader,
-  ListItemIcon,
-  ListItemText,
-} from '@material-ui/core/List';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import GroupIcon from '@material-ui/icons/Group';
 import Avatar from '@material-ui/core/Avatar';
 import TournamentIcon from '@material-ui/icons/Star';

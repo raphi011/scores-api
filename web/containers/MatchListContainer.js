@@ -4,15 +4,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Router from 'next/router';
 import Waypoint from 'react-waypoint';
-import { CircularProgress } from '@material-ui/core/Progress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';
 import { deleteMatchAction } from '../redux/actions/entities';
 
 import type { Match } from '../types';
-
-const Fragment = React.Fragment;
 
 type Props = {
   matches: Array<Match>,
@@ -70,7 +68,7 @@ class MatchListContainer extends React.PureComponent<Props, State> {
     const { selectedMatch, dialogOpen } = this.state;
 
     return (
-      <Fragment>
+      <>
         <MatchList
           matches={matches}
           onMatchClick={this.onOpenDialog}
@@ -90,7 +88,7 @@ class MatchListContainer extends React.PureComponent<Props, State> {
           onDelete={this.onDeleteMatch}
           onShowPlayer={this.onShowPlayer}
         />
-      </Fragment>
+      </>
     );
   }
 }

@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 
-import { ListItem, ListItemText } from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import type { VolleynetTeam } from '../../types';
 

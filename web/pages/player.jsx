@@ -1,8 +1,9 @@
 // @flow
 
 import React from 'react';
-import Tabs, { Tab } from '@material-ui/core/Tabs';
-import { CircularProgress } from '@material-ui/core/Progress';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Router from 'next/router';
 
 import MatchList from '../containers/MatchListContainer';
@@ -138,7 +139,7 @@ class PlayerInfo extends React.Component<Props, State> {
     const { playerId, user } = this.props;
 
     return playerId || user.playerId;
-  }
+  };
 
   render() {
     const { player, matches, statistic, teamStatistic } = this.props;

@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Table, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@material-ui/core/Table';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import type { PlayerStatistic } from '../types';
 
 import StatisticListRow from './StatisticListRow';
@@ -21,8 +20,8 @@ const styles = theme => ({
 type Props = {
   statistics: Array<PlayerStatistic>,
   onPlayerClick: number => void,
-  classes: Object
-}
+  classes: Object,
+};
 
 function StatisticList({ statistics, onPlayerClick, classes }: Props) {
   return (
@@ -31,13 +30,20 @@ function StatisticList({ statistics, onPlayerClick, classes }: Props) {
         <TableRow>
           <TableCell className={classes.denseCell}>#</TableCell>
           <TableCell className={classes.denseCell}>Player</TableCell>
-          <TableCell className={classes.denseCell} numeric>Won</TableCell>
+          <TableCell className={classes.denseCell} numeric>
+            Won
+          </TableCell>
           <TableCell className={classes.denseCell}>Games</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {statistics.map((s, i) => (
-          <StatisticListRow key={s.playerId} onPlayerClick={onPlayerClick} statistic={s} rank={i+1} />
+          <StatisticListRow
+            key={s.playerId}
+            onPlayerClick={onPlayerClick}
+            statistic={s}
+            rank={i + 1}
+          />
         ))}
       </TableBody>
     </Table>

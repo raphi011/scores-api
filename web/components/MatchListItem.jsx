@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import { ListItem, ListItemText } from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 
 import TeamName from './TeamName';

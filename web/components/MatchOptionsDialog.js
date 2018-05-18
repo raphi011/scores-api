@@ -1,12 +1,16 @@
 // @flow
 
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/ContentCopy';
 import Divider from '@material-ui/core/Divider';
-import Dialog, { DialogTitle } from '@material-ui/core/Dialog';
-import { withStyles } from '@material-ui/core/styles';
-import List, { ListItem, ListItemText } from '@material-ui/core/List';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Link from 'next/link';
 
