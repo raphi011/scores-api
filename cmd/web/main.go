@@ -26,6 +26,11 @@ func main() {
 	flag.Parse()
 
 	production := os.Getenv("APP_ENV") == "production"
+	host := os.Getenv("BACKEND_URL")
+
+	if host == "" {
+		host = "http://localhost:3000"
+	}
 
 	db, err := sqlite.Open(*dbPath)
 
@@ -36,7 +41,7 @@ func main() {
 
 	defer db.Close()
 
-	googleOAuth, err := googleOAuthConfig(*gSecret, production)
+	googleOAuth, err := googleOAuthConfig(*gSecret, host)
 
 	if err != nil {
 		log.Printf("Could not read google secret: %v, continuing without google oauth\n", err)
@@ -57,20 +62,15 @@ type credentials struct {
 	CientSecret string `json:"client_secret"`
 }
 
-func googleOAuthConfig(configPath string, production bool) (*oauth2.Config, error) {
+func googleOAuthConfig(configPath, host string) (*oauth2.Config, error) {
 	var credentials credentials
-	var redirectURL string
 	file, err := ioutil.ReadFile(configPath)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if production {
-		redirectURL = "https://scores.raphi011.com/api/auth"
-	} else {
-		redirectURL = "http://localhost:3000/api/auth"
-	}
+	redirectURL := host + "/api/auth"
 
 	json.Unmarshal(file, &credentials)
 	config := &oauth2.Config{

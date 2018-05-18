@@ -12,10 +12,11 @@ import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
 import Login from '../../components/volleynet/Login';
+import { BACKEND_URL } from '../../utils/env';
 
 import type { FullTournament, VolleynetPlayer } from '../../types';
 
-const styles = theme => ({});
+const styles = () => ({});
 
 type Props = {
   id: string,
@@ -42,7 +43,7 @@ class Signup extends React.Component<Props, State> {
     const { id } = this.props;
 
     const response = await fetch(
-      `http://localhost:3000/api/volleynet/tournaments/${id}`,
+      `${BACKEND_URL}/api/volleynet/tournaments/${id}`,
     );
 
     const tournament = await response.json();
@@ -69,7 +70,7 @@ class Signup extends React.Component<Props, State> {
       partnerName,
     };
 
-    const response = await fetch('http://localhost:3000/api/volleynet/signup', {
+    const response = await fetch(`${BACKEND_URL}/api/volleynet/signup`, {
       body: JSON.stringify(body),
       method: 'POST',
     });

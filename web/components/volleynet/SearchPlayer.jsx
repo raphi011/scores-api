@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
+import { BACKEND_URL } from '../../utils/env';
 
 import PlayerList from '../../components/volleynet/PlayerList';
 import type { Gender, VolleynetSearchPlayer } from '../../types';
@@ -18,7 +19,6 @@ const styles = () => ({
 
 function buildUrl(endpoint: string, params: Params = {}) {
   let paramUrl = '';
-  const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
 
   const paramList = Object.keys(params)
     .filter(key => params[key])
@@ -26,7 +26,7 @@ function buildUrl(endpoint: string, params: Params = {}) {
 
   paramUrl = paramList.length ? `?${paramList.join('&')}` : '';
 
-  const url = `${backendUrl}/api/${endpoint}${paramUrl}`;
+  const url = `${BACKEND_URL}/api/${endpoint}${paramUrl}`;
 
   return encodeURI(url);
 }

@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import TournamentView from '../../components/volleynet/TournamentView';
+import { BACKEND_URL } from '../../utils/env';
 
 import type { FullTournament } from '../../types';
 
@@ -38,7 +39,7 @@ class Tournament extends React.Component<Props, State> {
     const { id } = this.props;
 
     const response = await fetch(
-      `http://localhost:3000/api/volleynet/tournaments/${id}`,
+      `${BACKEND_URL}/api/volleynet/tournaments/${id}`,
     );
 
     const tournament = await response.json();
