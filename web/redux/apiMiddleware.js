@@ -3,29 +3,7 @@
 import fetch from 'isomorphic-unfetch';
 import * as actionNames from './actionNames';
 import type { Action, ApiAction, ApiActions } from '../types';
-import { BACKEND_URL } from '../utils/env';
-
-type Params = { [string]: string };
-
-function buildUrl(endpoint: string, params: Params = {}) {
-  let paramUrl = '';
-
-  const paramList = Object.keys(params)
-    .filter(key => params[key])
-    .map(key => `${key}=${params[key]}`);
-
-  paramUrl = paramList.length ? `?${paramList.join('&')}` : '';
-
-  const url = `${BACKEND_URL}/api/${endpoint}${paramUrl}`;
-
-  return encodeURI(url);
-}
-
-function isJson(response): boolean {
-  const contentType = response.headers.get('content-type');
-
-  return contentType && contentType.indexOf('application/json') !== -1;
-}
+import { buildUrl, isJson } from '../api';
 
 export function serverAction(action, req, res) {
   return {

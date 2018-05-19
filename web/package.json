@@ -24,7 +24,8 @@
   "devDependencies": {
     "babel-eslint": "latest",
     "babel-jest": "latest",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-plugin-transform-define": "latest",
+    "babel-plugin-transform-flow-strip-types": "latest",
     "eslint": "latest",
     "eslint-config-airbnb": "latest",
     "eslint-config-prettier": "latest",

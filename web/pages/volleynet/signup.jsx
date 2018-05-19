@@ -12,7 +12,7 @@ import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
 import Login from '../../components/volleynet/Login';
-import { BACKEND_URL } from '../../utils/env';
+import { buildUrl } from '../../api';
 
 import type { FullTournament, VolleynetPlayer } from '../../types';
 
@@ -42,9 +42,7 @@ class Signup extends React.Component<Props, State> {
   async componentDidMount() {
     const { id } = this.props;
 
-    const response = await fetch(
-      `${BACKEND_URL}/api/volleynet/tournaments/${id}`,
-    );
+    const response = await fetch(buildUrl(`volleynet/tournaments/${id}`));
 
     const tournament = await response.json();
 
@@ -70,7 +68,7 @@ class Signup extends React.Component<Props, State> {
       partnerName,
     };
 
-    const response = await fetch(`${BACKEND_URL}/api/volleynet/signup`, {
+    const response = await fetch(buildUrl('volleynet/signup'), {
       body: JSON.stringify(body),
       method: 'POST',
     });

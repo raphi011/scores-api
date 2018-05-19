@@ -11,7 +11,7 @@ import withAuth from '../../containers/AuthContainer';
 import TournamentList from '../../components/volleynet/TournamentList';
 import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
-import { BACKEND_URL } from '../../utils/env';
+import { buildUrl } from '../../api';
 
 import type { Tournament } from '../../types';
 
@@ -37,7 +37,7 @@ class Volleynet extends React.Component<null, State> {
   }
 
   loadTournaments = async () => {
-    const response = await fetch(BACKEND_URL + '/api/volleynet/tournaments');
+    const response = await fetch(buildUrl('volleynet/tournaments'));
 
     const tournaments = await response.json();
 
