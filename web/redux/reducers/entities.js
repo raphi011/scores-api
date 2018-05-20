@@ -27,7 +27,7 @@ export type ReceiveEntityAction = {
       key?: number,
       mode?: 'replace' | 'append',
     },
-  }
+  },
 };
 
 export type DeleteEntityAction = {
@@ -41,6 +41,7 @@ export const initialEntitiesState = {
   player: { values: {}, all: [], byGroup: {} },
   team: { values: {} },
   match: { values: {}, all: [], byPlayer: {}, byGroup: {} },
+  tournament: { values: {}, all: [], byLeague: {} },
   statistic: {
     values: {},
     all: [],
@@ -72,12 +73,7 @@ function deleteEntities(state, action: DeleteEntityAction) {
 
 function receiveEntities(state: EntityStore, action: ReceiveEntityAction) {
   // STEP 1: normalize entites
-  const {
-    entityName,
-    payload,
-    assignId = false,
-    listOptions = {},
-  } = action;
+  const { entityName, payload, assignId = false, listOptions = {} } = action;
 
   const { entities } = norm(entityName, payload, assignId);
 
@@ -87,11 +83,13 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityAction) {
   Object.keys(entities).forEach((entityKey: EntityName) => {
     const statePart = { ...state[entityKey] };
 
-    const newIds = Object.keys(entities[entityKey]).map(n => Number.parseInt(n, 10));
+    const newIds = Object.keys(entities[entityKey]).map(n =>
+      Number.parseInt(n, 10),
+    );
 
     statePart.values = {
-      ...entities[entityKey],
       ...state[entityKey].values,
+      ...entities[entityKey],
     };
 
     const options = listOptions[entityKey];
@@ -147,6 +145,7 @@ const playerMap = state => state.entities.player.values;
 const teamMap = state => state.entities.team.values;
 const matchMap = state => state.entities.match.values;
 const statisticMap = state => state.entities.statistic.values;
+const tournamentMap = state => state.entities.tournament.values;
 
 export const entityMapSelector = createSelector(
   groupMap,
@@ -154,12 +153,14 @@ export const entityMapSelector = createSelector(
   teamMap,
   matchMap,
   statisticMap,
-  (group, player, team, match, statistic) => ({
+  tournamentMap,
+  (group, player, team, match, statistic, tournament) => ({
     group,
     player,
     team,
     match,
     statistic,
+    tournament,
   }),
 );
 
@@ -245,3 +246,15 @@ export const statisticByPlayerSelector = (state: Store, playerId: number) =>
         state.entities.statistic.byPlayer[playerId][0],
       )
     : null;
+
+export const tournamentsByLeagueSelector = (state: Store, league: string) =>
+  (state.entities.tournament.byLeague[league] || []).length
+    ? denorm(
+        'tournament',
+        entityMapSelector(state),
+        state.entities.tournament.byLeague[league],
+      )
+    : null;
+
+export const tournamentSelector = (state: Store, tournamentId: string) =>
+  denorm('tournament', entityMapSelector(state), tournamentId);

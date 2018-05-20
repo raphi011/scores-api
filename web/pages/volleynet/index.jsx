@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Router from 'next/router';
-import fetch from 'isomorphic-unfetch';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -11,37 +10,36 @@ import withAuth from '../../containers/AuthContainer';
 import TournamentList from '../../components/volleynet/TournamentList';
 import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
-import { buildUrl } from '../../api';
+import { loadTournamentsAction } from '../../redux/actions/entities';
+import { tournamentsByLeagueSelector } from '../../redux/reducers/entities';
 
 import type { Tournament } from '../../types';
 
-type State = {
-  loading: boolean,
-  tabOpen: number,
-  tournaments: {
-    upcoming: Array<Tournament>,
-    past: Array<Tournament>,
-    played: Array<Tournament>,
-  },
+const leagues = {
+  Amateur: 'AMATEUR TOUR',
 };
 
-class Volleynet extends React.Component<null, State> {
-  state = {
-    loading: false,
-    tournaments: null,
-    tabOpen: 0,
-  };
+type State = {
+  tabOpen: number,
+};
 
-  componentDidMount() {
-    this.loadTournaments();
+type Props = {
+  tournaments: Array<Tournament>,
+};
+
+class Volleynet extends React.Component<Props, State> {
+  static buildActions() {
+    return [loadTournamentsAction({ league: leagues.Amateur })];
   }
 
-  loadTournaments = async () => {
-    const response = await fetch(buildUrl('volleynet/tournaments'));
+  static mapStateToProps(state) {
+    const tournaments = tournamentsByLeagueSelector(state, leagues.Amateur);
 
-    const tournaments = await response.json();
+    return { tournaments };
+  }
 
-    this.setState({ tournaments });
+  state = {
+    tabOpen: 0,
   };
 
   onTournamentClick = (t: Tournament) => {
@@ -52,8 +50,27 @@ class Volleynet extends React.Component<null, State> {
     this.setState({ tabOpen });
   };
 
+  orderTournaments = () => {
+    let { tournaments } = this.props;
+
+    if (!tournaments) {
+      return null;
+    }
+
+    tournaments = tournaments.sort(
+      (a, b) => new Date(a.startDate) - new Date(b.startDate),
+    );
+
+    return {
+      upcoming: tournaments.filter(t => new Date(t.startDate) >= Date.now()),
+      past: tournaments.filter(t => new Date(t.startDate) < Date.now()),
+      played: [],
+    };
+  };
+
   render() {
-    const { tournaments, tabOpen } = this.state;
+    const { tabOpen } = this.state;
+    const tournaments = this.orderTournaments();
 
     let content = <CenteredLoading />;
     let ts = [];
@@ -80,13 +97,8 @@ class Volleynet extends React.Component<null, State> {
     }
 
     return (
-      <Layout title="Players">
-        <Tabs
-          onChange={this.onTabClick}
-          value={tabOpen}
-          textColor="primary"
-          fullWidth
-        >
+      <Layout title="Volleynet">
+        <Tabs onChange={this.onTabClick} value={tabOpen} fullWidth>
           <Tab label="Upcoming" />
           <Tab label="Past" />
           <Tab label="Played" />

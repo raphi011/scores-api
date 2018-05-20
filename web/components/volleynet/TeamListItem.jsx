@@ -21,7 +21,7 @@ const TeamListItem = ({ team }: Props) => (
           ${team.player2.firstName} ${team.player2.lastName}`}
         </span>
       }
-      secondary={`${team.totalPoints} points`}
+      secondary={`${team.totalPoints || team.wonPoints} points`}
     />
   </ListItem>
 );

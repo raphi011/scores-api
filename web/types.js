@@ -1,6 +1,6 @@
 // @flow
 
-export type EntityName = 'player' | 'team' | 'match' | 'group';
+export type EntityName = 'player' | 'team' | 'match' | 'group' | 'tournament';
 
 export type Player = {
   id: number,

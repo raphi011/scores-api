@@ -73,7 +73,7 @@ class TournamentView extends React.Component<Props, State> {
       },
       {
         icon: <PeopleIcon className={classes.infoElement} />,
-        info: `${tournament.teams.length} / ${tournament.maxTeams}`,
+        info: `${(tournament.teams || []).length} / ${tournament.maxTeams}`,
       },
       {
         icon: <CalendarIcon className={classes.infoElement} />,
@@ -89,14 +89,20 @@ class TournamentView extends React.Component<Props, State> {
       },
       {
         icon: <LinkIcon className={classes.infoElement} />,
-        info: <a href={tournament.web}>{tournament.web}</a>,
+        info: (
+          <a href={`//${tournament.web}`} target="_blank">
+            {tournament.web}
+          </a>
+        ),
       },
     ];
 
     return (
       <div>
         <Card className={classes.headerContainer}>
-          <Typography variant="title">{tournament.name}</Typography>
+          <a href={`//${tournament.link}`} target="_blank">
+            <Typography variant="title">{tournament.name}</Typography>
+          </a>
           <div className={classes.infoContainer}>
             {infos.map((info, i) => (
               <Typography key={i} variant="subheading">

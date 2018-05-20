@@ -19,8 +19,8 @@ export const loadMatchesAction = (
         name: 'byGroup',
         key: groupId,
         mode: after ? 'append' : 'replace',
-      }
-    }
+      },
+    },
   },
 });
 
@@ -40,8 +40,8 @@ export const loadPlayerMatchesAction = (
         mode: after ? 'append' : 'replace',
         name: 'byPlayer',
         key: playerId,
-      }
-    }
+      },
+    },
   },
 });
 
@@ -56,8 +56,8 @@ export const loadPlayerAction = (id: number): ApiAction => ({
       player: {
         name: 'all',
         mode: 'replace',
-      }
-    }
+      },
+    },
   },
 });
 
@@ -116,8 +116,8 @@ export const loadGroupAction = (groupId: number): ApiAction => ({
       match: {
         name: 'byGroup',
         key: groupId,
-      }
-    }
+      },
+    },
   },
 });
 
@@ -139,7 +139,7 @@ export const loadGroupStatisticsAction = (
         key: groupId,
         mode: 'replace',
       },
-    }
+    },
   },
 });
 
@@ -174,4 +174,36 @@ export const deleteMatchAction = (match: Match): ApiAction => ({
     },
   },
   successStatus: 'Match deleted',
+});
+
+export const loadTournamentAction = (tournamentId: string): ApiAction => ({
+  type: actionNames.API,
+  method: 'GET',
+  url: `volleynet/tournaments/${tournamentId}`,
+  success: actionNames.RECEIVE_ENTITIES,
+  successParams: {
+    entityName: 'tournament',
+  },
+});
+
+export const loadTournamentsAction = (filters: {
+  gender: string,
+  league: string,
+  season: string,
+}): ApiAction => ({
+  type: actionNames.API,
+  method: 'GET',
+  url: 'volleynet/tournaments',
+  params: filters,
+  success: actionNames.RECEIVE_ENTITIES,
+  successParams: {
+    entityName: 'tournament',
+    listOptions: {
+      tournament: {
+        name: 'byLeague',
+        key: filters.league,
+        mode: 'replace',
+      },
+    },
+  },
 });

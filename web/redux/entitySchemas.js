@@ -6,6 +6,10 @@ const player = new schema.Entity('player');
 
 const playerList = new schema.Array(player);
 
+const tournament = new schema.Entity('tournament');
+
+const tournamentList = new schema.Array(tournament);
+
 const user = new schema.Entity('user', { player });
 
 const userList = new schema.Array(user);
@@ -32,7 +36,7 @@ const statistic = new schema.Entity('statistic');
 
 const statisticList = new schema.Array(statistic);
 
-const group = new schema.Entity('group', { 
+const group = new schema.Entity('group', {
   players: playerList,
   matches: matchList,
 });
@@ -52,6 +56,8 @@ const entitySchemaMap = {
   matchList,
   statistic,
   statisticList,
+  tournament,
+  tournamentList,
 };
 
 function getSchemaMap(entityName: string, isList: boolean) {

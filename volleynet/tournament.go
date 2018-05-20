@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/raphi011/scores"
 )
 
 type GroupedTournaments struct {
@@ -22,13 +24,13 @@ type GroupedTournaments struct {
 }
 
 type Tournament struct {
-	StartDate string `json:"startDate"`
-	EndDate   string `json:"endDate"`
-	Name      string `json:"name"`
-	League    string `json:"league"`
-	Link      string `json:"link"`
-	EntryLink string `json:"entryLink"`
-	ID        string `json:"id"`
+	StartDate time.Time `json:"startDate"`
+	EndDate   time.Time `json:"endDate"`
+	Name      string    `json:"name"`
+	League    string    `json:"league"`
+	Link      string    `json:"link"`
+	EntryLink string    `json:"entryLink"`
+	ID        string    `json:"id"`
 }
 
 type Team struct {
@@ -151,10 +153,10 @@ func parsePlayerIDFromSteckbrief(s *goquery.Selection) string {
 	return href[dashIndex+1:]
 }
 
-func parseFullTournamentTeams(doc *goquery.Document) ([]Team, error) {
+func parseFullTournamentTeams(body *goquery.Document) ([]Team, error) {
 	teams := []Team{}
 
-	tables := doc.Find("tbody")
+	tables := body.Find("tbody")
 
 	for i := range tables.Nodes {
 		table := tables.Eq(i)
@@ -221,6 +223,14 @@ func parseFullTournamentTeams(doc *goquery.Document) ([]Team, error) {
 						case 6:
 							// signout link
 						}
+					} else if columnsCount == 2 {
+						switch k {
+						case 0:
+							player.ID = parsePlayerIDFromSteckbrief(column.Find("a"))
+							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
+						case 1:
+							player.License = trimmedText(column)
+						}
 					} else {
 						return nil, errors.New("unknown tournament player table structure")
 					}
@@ -242,7 +252,9 @@ func parseFullTournamentTeams(doc *goquery.Document) ([]Team, error) {
 }
 
 func parseFullTournament(html io.Reader) (*FullTournament, error) {
-	doc, err := goquery.NewDocumentFromReader(html)
+	doc, err := GetDocument(html)
+	htmlString, _ := doc.Html()
+	log.Print(htmlString)
 
 	t := &FullTournament{}
 
@@ -272,7 +284,8 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 				case 0:
 					t.League = trimmedText(row.Eq(1))
 				case 1:
-					t.StartDate = trimmedText(row.Eq(1))
+					dateString := row.Eq(1).Text()
+					t.StartDate, err = parseDate(dateString)
 				case 2:
 					t.Location = trimmedText(row.Eq(1))
 				case 3:
@@ -323,7 +336,38 @@ func parseNumber(text string) int {
 	return nr
 }
 
-func (c *Client) GetTournament(link string) (*FullTournament, error) {
+func (c *Client) getTournament(id string) (*Tournament, error) {
+	games, err := c.AllTournaments("M", "AMATEUR TOUR", "2018")
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, t := range games {
+		if t.ID == id {
+			return &t, nil
+		}
+	}
+
+	return nil, scores.ErrorNotFound
+}
+
+func (c *Client) getTournamentLink(t *Tournament) string {
+	return c.DefaultUrl + t.Link
+}
+
+func (c *Client) getApiTournamentLink(t *Tournament) string {
+	return c.ApiUrl + t.Link
+}
+
+func (c *Client) GetTournament(id string) (*FullTournament, error) {
+	tournament, err := c.getTournament(id)
+
+	if err != nil {
+		return nil, err
+	}
+	link := c.getApiTournamentLink(tournament)
+
 	resp, err := http.Get(link)
 
 	if err != nil {
@@ -337,32 +381,9 @@ func (c *Client) GetTournament(link string) (*FullTournament, error) {
 	}
 
 	t.ID = parseTournamentIDFromLink(link)
+	t.Link = c.getTournamentLink(tournament)
 
 	return t, nil
-}
-
-func (c *Client) GroupedTournaments(gender, league, year string) (*GroupedTournaments, error) {
-	tournaments, err := c.AllTournaments(gender, league, year)
-
-	if err != nil {
-		return nil, err
-	}
-
-	grouped := &GroupedTournaments{
-		Past:     []Tournament{},
-		Upcoming: []Tournament{},
-		Played:   []Tournament{},
-	}
-
-	for _, t := range tournaments {
-		if date, _ := time.Parse("02.01.2006", t.StartDate); date.Before(time.Now()) {
-			grouped.Past = append(grouped.Past, t)
-		} else {
-			grouped.Upcoming = append(grouped.Upcoming, t)
-		}
-	}
-
-	return grouped, nil
 }
 
 func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {
@@ -374,8 +395,8 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 
 	url.Path += fmt.Sprintf(c.AmateurPath, league, league, gender, year)
 
-	encodedUrl := url.String()
-	resp, err := http.Get(encodedUrl)
+	encodedURL := url.String()
+	resp, err := http.Get(encodedURL)
 
 	if err != nil {
 		return nil, err
@@ -407,16 +428,32 @@ func parseHref(anchor *goquery.Selection) string {
 	return href
 }
 
-func parseDates(s *goquery.Selection) (string, string) {
+func parseDate(dateString string) (time.Time, error) {
+	date, err := time.Parse("02.01.2006", strings.TrimSpace(dateString))
+	if err != nil {
+		return time.Time{}, fmt.Errorf("unable to parse date '%s'", dateString)
+	}
+
+	return date, nil
+}
+
+func parseStartEndDates(s *goquery.Selection) (time.Time, time.Time, error) {
 	a := trimmedText(s)
 
 	dates := strings.Split(a, "-")
 
 	if len(dates) != 2 {
-		return "", ""
+		return time.Time{}, time.Time{}, errors.New("unknown start/enddate format")
 	}
 
-	return strings.TrimSpace(dates[0]), strings.TrimSpace(dates[1])
+	startDate, err := parseDate(dates[0])
+	endDate, err1 := parseDate(dates[1])
+
+	if err1 != nil {
+		err = err1
+	}
+
+	return startDate, endDate, err
 }
 
 func parseTournaments(html io.Reader) ([]Tournament, error) {
@@ -446,7 +483,7 @@ func parseTournaments(html io.Reader) ([]Tournament, error) {
 
 			switch j {
 			case 1:
-				tournament.StartDate, tournament.EndDate = parseDates(c)
+				tournament.StartDate, tournament.EndDate, err = parseStartEndDates(c)
 			case 2:
 				tournament.Link = parseHref(c.Find("a"))
 				tournament.Name = trimmedTournamentName(c)

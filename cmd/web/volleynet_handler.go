@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"log"
 	"net/http"
 	"strconv"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -22,13 +22,13 @@ func (h *volleynetHandler) allTournaments(c *gin.Context) {
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
 
 	client := volleynet.DefaultClient()
-	games, err := client.GroupedTournaments(gender, league, season)
+	games, err := client.AllTournaments(gender, league, season)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 	}
 
-	c.JSON(http.StatusOK, games)
+	jsonn(c, http.StatusOK, games, "")
 }
 
 type signupForm struct {
@@ -39,43 +39,24 @@ type signupForm struct {
 	TournamentID string `json:"tournamentId"`
 }
 
-func getTournamentLink(id string) (string, error) {
-
-	client := volleynet.DefaultClient()
-	games, err := client.AllTournaments("M", "AMATEUR TOUR", "2018")
-
-	if err != nil {
-		return "", err
-	}
-
-	for _, t := range games {
-		if t.ID == id {
-			return client.ApiUrl + t.Link, nil
-		}
-	}
-
-	return "", errors.New("Not found")
-}
-
 func (h *volleynetHandler) tournament(c *gin.Context) {
 	tournamentID := c.Param("tournamentID")
 
-	link, err := getTournamentLink(tournamentID)
-
-	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+	if tournamentID == "" {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
-
-	log.Print(link)
 
 	client := volleynet.DefaultClient()
-	t, err := client.GetTournament(link)
+	t, err := client.GetTournament(tournamentID)
 
-	if err != nil {
+	if err == scores.ErrorNotFound {
+		c.AbortWithError(http.StatusNotFound, err)
+	} else if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
+	} else {
+		jsonn(c, http.StatusOK, t, "")
 	}
-
-	c.JSON(http.StatusOK, t)
 }
 
 func (h *volleynetHandler) signup(c *gin.Context) {
@@ -125,5 +106,5 @@ func (h *volleynetHandler) searchPlayers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, players)
+	jsonn(c, http.StatusOK, players, "")
 }
