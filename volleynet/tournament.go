@@ -23,16 +23,6 @@ type GroupedTournaments struct {
 	Played   []Tournament `json:"played"`
 }
 
-type Tournament struct {
-	StartDate time.Time `json:"startDate"`
-	EndDate   time.Time `json:"endDate"`
-	Name      string    `json:"name"`
-	League    string    `json:"league"`
-	Link      string    `json:"link"`
-	EntryLink string    `json:"entryLink"`
-	ID        string    `json:"id"`
-}
-
 type Team struct {
 	TotalPoints string  `json:"totalPoints"`
 	Player1     *Player `json:"player1"`
@@ -53,10 +43,21 @@ type Player struct {
 	Login        string `json:"login"`
 }
 
+type Tournament struct {
+	StartDate        time.Time `json:"startDate"`
+	EndDate          time.Time `json:"endDate"`
+	Name             string    `json:"name"`
+	League           string    `json:"league"`
+	Link             string    `json:"link"`
+	EntryLink        string    `json:"entryLink"`
+	ID               string    `json:"id"`
+	Status           string    `json:"status"` // done, upcoming, canceled
+	RegistrationOpen bool      `json:"registrationOpen"`
+}
+
 type FullTournament struct {
 	Tournament
 	Teams           []Team `json:"teams"`
-	Status          string `json:"status"`
 	Location        string `json:"location"`
 	HTMLNotes       string `json:"htmlNotes"`
 	Mode            string `json:"mode"`
