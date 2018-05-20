@@ -1,0 +1,77 @@
+#!/bin/bash
+
+PROG=both
+CHECKOUT=master
+PLATFORM=release
+URL=https://scores.raphi011.com
+PORT_FRONTEND=3000
+PORT_BACKEND=8080
+
+for i in "$@"
+do
+case $i in
+    -c=*|--checkout=*)
+    CHECKOUT="${i#*=}"
+    shift
+    ;;
+    -b|--beta)
+    PLATFORM=beta
+    PORT_FRONTEND=3001
+    PORT_BACKEND=8081
+    URL=https://beta.raphi011.com
+    shift
+    ;;
+    *)
+    # unknown option
+    ;;
+esac
+done
+
+if [[ -n $1 ]]; then
+    PROG=$1
+fi
+
+
+echo "Deploying ${PROG} on ${PLATFORM} at version ${CHECKOUT}"
+
+cd /home/raphi/go/src/github.com/raphi011/scores
+git checkout ${CHECKOUT}
+git pull
+
+
+case "$PROG" in 
+	"frontend")
+		echo "Building frontend"
+		./build-frontend.sh ${PLATFORM} ${URL}
+		;;
+	"backend")
+		echo "Building backend"
+		./build-backend.sh ${PLATFORM} ${URL}
+		;;
+	"both")
+		echo "Building frontend"
+		./build-frontend.sh ${PLATFORM} ${URL} &
+		echo "Building backend"
+		./build-backend.sh ${PLATFORM} ${URL} &
+		;;
+	*)
+		echo "Invalid prog: ${PROG}"
+		exit 1
+		;;
+esac
+
+wait
+
+case "$PROG" in 
+	"frontend")
+		sudo docker run -it -d --name scores-frontend-${PLATFORM} -p 127.0.0.1:${PORT_FRONTEND}:3000 raphi011/scores-frontend-${PLATFORM};;
+	"backend")
+		sudo docker run -it -d --name scores-backend-${PLATFORM} -v /home/raphi/scores-data:/srv/scores -p 127.0.0.1:${PORT_BACKEND}:8080 raphi011/scores-backend-${PLATFORM};;
+	*)
+		sudo docker run -it -d --name scores-frontend-${PLATFORM} -p 127.0.0.1:${PORT_FRONTEND}:3000 raphi011/scores-frontend-${PLATFORM}
+		sudo docker run -it -d --name scores-backend-${PLATFORM} -v /home/raphi/scores-data:/srv/scores -p 127.0.0.1:${PORT_BACKEND}:8080 raphi011/scores-backend-${PLATFORM}
+
+		;;
+esac
+
+echo "Done"
