@@ -42,17 +42,17 @@ git pull
 case "$PROG" in 
 	"frontend")
 		echo "Building frontend"
-		./build-frontend.sh ${PLATFORM} ${URL}
+		./scripts/build-frontend.sh ${PLATFORM} ${URL}
 		;;
 	"backend")
 		echo "Building backend"
-		./build-backend.sh ${PLATFORM} ${URL}
+		./scripts/build-backend.sh ${PLATFORM} ${URL}
 		;;
 	"both")
 		echo "Building frontend"
-		./build-frontend.sh ${PLATFORM} ${URL} &
+		./scripts/build-frontend.sh ${PLATFORM} ${URL} &
 		echo "Building backend"
-		./build-backend.sh ${PLATFORM} ${URL} &
+		./scripts/build-backend.sh ${PLATFORM} ${URL} &
 		;;
 	*)
 		echo "Invalid prog: ${PROG}"
