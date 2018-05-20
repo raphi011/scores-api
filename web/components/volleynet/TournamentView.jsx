@@ -15,6 +15,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import EmailIcon from '@material-ui/icons/Email';
 import LocationIcon from '@material-ui/icons/GpsFixed';
+import { tournamentDateString } from '../../utils/tournament';
 
 import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';
@@ -77,7 +78,7 @@ class TournamentView extends React.Component<Props, State> {
       },
       {
         icon: <CalendarIcon className={classes.infoElement} />,
-        info: tournament.startDate,
+        info: tournamentDateString(tournament),
       },
       {
         icon: <PhoneIcon className={classes.infoElement} />,
