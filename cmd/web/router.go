@@ -34,6 +34,7 @@ func initRouter(app app) *gin.Engine {
 	playerService := &sqlite.PlayerService{DB: app.db}
 	statisticService := &sqlite.StatisticService{DB: app.db}
 	groupService := &sqlite.GroupService{DB: app.db}
+	volleynetService := &sqlite.VolleynetService{DB: app.db}
 
 	authHandler := authHandler{playerService: playerService, userService: userService, conf: app.conf}
 	playerHandler := playerHandler{playerService: playerService}
@@ -51,9 +52,13 @@ func initRouter(app app) *gin.Engine {
 		statisticService: statisticService,
 		matchService:     matchService,
 	}
-	volleynetHandler := volleynetHandler{}
+	volleynetHandler := volleynetHandler{
+		volleynetService: volleynetService,
+	}
 
 	router.Use(sessions.Sessions("goquestsession", store))
+
+	router.GET("/volleynet/scrape/tournaments", volleynetHandler.scrapeTournaments)
 
 	router.POST("/volleynet/signup", volleynetHandler.signup)
 	router.GET("/volleynet/tournaments", volleynetHandler.allTournaments)

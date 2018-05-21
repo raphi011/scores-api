@@ -18,7 +18,8 @@ const (
 		CREATE TABLE "volleynetTournaments" (
 			"id" integer PRIMARY KEY,
 			"created_at" datetime NOT NULL,
-			"updated_at" datetime,
+			"updated_at" datetime NOT NULL,
+			"gender" varchar(1) NOT NULL,
 			"start" datetime NOT NULL,
 			"end" datetime NOT NULL,
 			"name" varchar(255) NOT NULL,
@@ -28,6 +29,7 @@ const (
 			"status" varchar(255) NOT NULL,
 			"registration_open" integer NOT NULL,
 			"location" varchar(255) NOT NULL,
+			"live_scoring_link" varchar(255) NOT NULL,
 			"html_notes" varchar NOT NULL,
 			"mode" varchar(64) NOT NULL,
 			"max_points" integer NOT NULL,
@@ -38,6 +40,7 @@ const (
 			"email" varchar(128) NOT NULL,
 			"web" varchar(128) NOT NULL,
 			"current_points" integer NOT NULL,
+			"season" integer NOT NULL,
 			"loc_lat" double NOT NULL,
 			"loc_lon" double NOT NULL
 		)

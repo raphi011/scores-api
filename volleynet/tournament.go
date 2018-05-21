@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -44,33 +43,39 @@ type Player struct {
 }
 
 type Tournament struct {
-	StartDate        time.Time `json:"startDate"`
-	EndDate          time.Time `json:"endDate"`
+	Start            time.Time `json:"start"`
+	End              time.Time `json:"end"`
 	Name             string    `json:"name"`
+	Season           int       `json:"season"`
 	League           string    `json:"league"`
 	Link             string    `json:"link"`
 	EntryLink        string    `json:"entryLink"`
 	ID               string    `json:"id"`
 	Status           string    `json:"status"` // done, upcoming, canceled
 	RegistrationOpen bool      `json:"registrationOpen"`
+	Gender           string    `json:"gender"`
 }
 
 type FullTournament struct {
 	Tournament
-	Teams           []Team `json:"teams"`
-	Location        string `json:"location"`
-	HTMLNotes       string `json:"htmlNotes"`
-	Mode            string `json:"mode"`
-	MaxTeams        int    `json:"maxTeams"`
-	MinTeams        string `json:"minTeams"`
-	MaxPoints       string `json:"maxPoints"`
-	EndRegistration string `json:"endRegistration"`
-	Organiser       string `json:"organiser"`
-	Phone           string `json:"phone"`
-	Email           string `json:"email"`
-	Web             string `json:"web"`
-	CurrentPoints   string `json:"currentPoints"`
-	LivescoringLink string `json:"livescoringLink"`
+	CreatedAt       time.Time `json:"createdAt"`
+	UpdatedAt       time.Time `json:""`
+	Teams           []Team    `json:"teams"`
+	Location        string    `json:"location"`
+	HTMLNotes       string    `json:"htmlNotes"`
+	Mode            string    `json:"mode"`
+	MaxTeams        int       `json:"maxTeams"`
+	MinTeams        string    `json:"minTeams"`
+	MaxPoints       string    `json:"maxPoints"`
+	EndRegistration string    `json:"endRegistration"`
+	Organiser       string    `json:"organiser"`
+	Phone           string    `json:"phone"`
+	Email           string    `json:"email"`
+	Web             string    `json:"web"`
+	CurrentPoints   string    `json:"currentPoints"`
+	LivescoringLink string    `json:"livescoringLink"`
+	Latitude        float32   `json:"latitude"`
+	Longitude       float32   `json:"longitude"`
 }
 
 var registerUrl string = "https://beach.volleynet.at/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur="
@@ -254,8 +259,6 @@ func parseFullTournamentTeams(body *goquery.Document) ([]Team, error) {
 
 func parseFullTournament(html io.Reader) (*FullTournament, error) {
 	doc, err := GetDocument(html)
-	htmlString, _ := doc.Html()
-	log.Print(htmlString)
 
 	t := &FullTournament{}
 
@@ -286,7 +289,7 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 					t.League = trimmedText(row.Eq(1))
 				case 1:
 					dateString := row.Eq(1).Text()
-					t.StartDate, err = parseDate(dateString)
+					t.Start, err = parseDate(dateString)
 				case 2:
 					t.Location = trimmedText(row.Eq(1))
 				case 3:
@@ -353,22 +356,15 @@ func (c *Client) getTournament(id string) (*Tournament, error) {
 	return nil, scores.ErrorNotFound
 }
 
-func (c *Client) getTournamentLink(t *Tournament) string {
+func (c *Client) GetTournamentLink(t *Tournament) string {
 	return c.DefaultUrl + t.Link
 }
 
-func (c *Client) getApiTournamentLink(t *Tournament) string {
+func (c *Client) GetApiTournamentLink(t *Tournament) string {
 	return c.ApiUrl + t.Link
 }
 
-func (c *Client) GetTournament(id string) (*FullTournament, error) {
-	tournament, err := c.getTournament(id)
-
-	if err != nil {
-		return nil, err
-	}
-	link := c.getApiTournamentLink(tournament)
-
+func (c *Client) GetTournament(id, link string) (*FullTournament, error) {
 	resp, err := http.Get(link)
 
 	if err != nil {
@@ -381,8 +377,8 @@ func (c *Client) GetTournament(id string) (*FullTournament, error) {
 		return nil, err
 	}
 
-	t.ID = parseTournamentIDFromLink(link)
-	t.Link = c.getTournamentLink(tournament)
+	t.ID = id
+	t.Link = c.GetTournamentLink(&t.Tournament)
 
 	return t, nil
 }
@@ -484,7 +480,7 @@ func parseTournaments(html io.Reader) ([]Tournament, error) {
 
 			switch j {
 			case 1:
-				tournament.StartDate, tournament.EndDate, err = parseStartEndDates(c)
+				tournament.Start, tournament.End, err = parseStartEndDates(c)
 			case 2:
 				tournament.Link = parseHref(c.Find("a"))
 				tournament.Name = trimmedTournamentName(c)

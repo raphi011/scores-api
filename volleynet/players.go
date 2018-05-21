@@ -3,7 +3,6 @@ package volleynet
 import (
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -53,8 +52,6 @@ func parsePlayerID(s *goquery.Selection) (string, error) {
 func parsePlayers(html io.Reader) ([]SearchPlayer, error) {
 	players := []SearchPlayer{}
 	doc, err := goquery.NewDocumentFromReader(html)
-	text, _ := doc.Html()
-	log.Print(text)
 
 	if err != nil {
 		return nil, err
