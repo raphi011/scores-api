@@ -108,18 +108,16 @@ export type VolleynetTeam = {
 
 export type Gender = 'M' | 'W';
 
-export type Tournament = {
+export type FullTournament = {
+  id: string,
   gender: Gender,
-  startDate: string,
-  endDate: string,
+  registrationOpen: boolean,
+  start: string,
+  end: string,
   name: string,
   league: string,
   link: string,
   entryLink: string,
-  id: string,
-};
-
-export type FullTournament = Tournament & {
   teams: Array<VolleynetTeam>,
   status: string,
   location: string,
@@ -135,6 +133,8 @@ export type FullTournament = Tournament & {
   web: string,
   currentPoints: string,
   livescoringLink: string,
+  latitude: number,
+  longitude: number,
 };
 
 export type GenericStatistic = PlayerStatistic | TeamStatistic;

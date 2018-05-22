@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/raphi011/scores/volleynet"
 )
@@ -73,7 +74,9 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 }
 
 func (s *VolleynetService) Tournament(tournamentID string) (*volleynet.FullTournament, error) {
-	return nil, nil
+	row := s.DB.QueryRow(tournamentSelectSQL, tournamentID)
+
+	return scanTournament(row)
 }
 
 func (s *VolleynetService) AllTournaments() ([]volleynet.FullTournament, error) {
@@ -119,6 +122,8 @@ const (
 	tournamentsFilterSelectSQL = tournamentsBaseSelectSQL + `
 	 WHERE t.gender = $1 AND t.league = $2 AND t.season = $3
 	`
+
+	tournamentSelectSQL = tournamentsBaseSelectSQL + " WHERE t.id = $1"
 
 	tournamentsInsertSQL = `
 		INSERT INTO volleynetTournaments
@@ -181,6 +186,37 @@ const (
 			$24,
 			$25
 		)
+	`
+
+	tournamentsUpdateSQL = `
+		UPDATE volleynetTournaments
+			SET updated_at = CURRENT_TIMESTAMP,
+			SET gender = $1,
+			SET start = $2,
+			SET end = $3,
+			SET name = $4,
+			SET league = $5,
+			SET link = $6,
+			SET entry_link = $7,
+			SET status = $8,
+			SET registration_open = $9,
+			SET location = $10,
+			SET html_notes = $11,
+			SET mode = $12,
+			SET max_points = $13,
+			SET min_teams = $14,
+			SET end_registration = $15,
+			SET organiser = $16,
+			SET phone = $17,
+			SET email = $18,
+			SET web = $19,
+			SET current_points = $20,
+			SET live_scoring_link = $21,
+			SET loc_lat = $22,
+			SET loc_lon = $23,
+			SET season = $24
+		WHERE id = $25
+	
 	`
 )
 
@@ -260,6 +296,44 @@ func (s *VolleynetService) NewTournament(t *volleynet.FullTournament) error {
 	return err
 }
 
-func (s *VolleynetService) UpdateTournament(tournament *volleynet.FullTournament) error {
+func (s *VolleynetService) UpdateTournament(t *volleynet.FullTournament) error {
+	result, err := s.DB.Exec(
+		tournamentsUpdateSQL,
+		t.Gender,
+		t.Start,
+		t.End,
+		t.Name,
+		t.League,
+		t.Link,
+		t.EntryLink,
+		t.Status,
+		t.RegistrationOpen,
+		t.Location,
+		t.HTMLNotes,
+		t.Mode,
+		t.MaxPoints,
+		t.MinTeams,
+		t.EndRegistration,
+		t.Organiser,
+		t.Phone,
+		t.Email,
+		t.Web,
+		t.CurrentPoints,
+		t.LivescoringLink,
+		t.Longitude,
+		t.Latitude,
+		t.Season,
+		t.ID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+
+	if rowsAffected != 1 {
+		return errors.New("Tournament not found")
+	}
+
 	return nil
 }

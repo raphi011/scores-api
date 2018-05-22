@@ -59,7 +59,7 @@ type Tournament struct {
 type FullTournament struct {
 	Tournament
 	CreatedAt       time.Time `json:"createdAt"`
-	UpdatedAt       time.Time `json:""`
+	UpdatedAt       time.Time `json:"updatedAt"`
 	Teams           []Team    `json:"teams"`
 	Location        string    `json:"location"`
 	HTMLNotes       string    `json:"htmlNotes"`

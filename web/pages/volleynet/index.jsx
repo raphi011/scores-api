@@ -58,12 +58,12 @@ class Volleynet extends React.Component<Props, State> {
     }
 
     tournaments = tournaments.sort(
-      (a, b) => new Date(a.startDate) - new Date(b.startDate),
+      (a, b) => new Date(a.start) - new Date(b.end),
     );
 
     return {
-      upcoming: tournaments.filter(t => new Date(t.startDate) >= Date.now()),
-      past: tournaments.filter(t => new Date(t.startDate) < Date.now()),
+      upcoming: tournaments.filter(t => new Date(t.start) >= Date.now()),
+      past: tournaments.filter(t => new Date(t.start) < Date.now()),
       played: [],
     };
   };

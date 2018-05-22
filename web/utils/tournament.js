@@ -3,11 +3,9 @@ import { formatDate } from './dateFormat';
 import type { Tournament } from '../types';
 
 export function tournamentDateString(tournament: Tournament) {
-  if (tournament.startDate === tournament.endDate) {
-    return formatDate(tournament.startDate);
+  if (tournament.start === tournament.end) {
+    return formatDate(tournament.start);
   }
 
-  return `${formatDate(tournament.startDate)} - ${formatDate(
-    tournament.endDate,
-  )}`;
+  return `${formatDate(tournament.start)} - ${formatDate(tournament.end)}`;
 }
