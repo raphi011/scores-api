@@ -15,12 +15,12 @@ type UserService struct {
 }
 
 const userInsertSQL = `
-	INSERT INTO users (created_at, email, profile_image_url)
-	VALUES (CURRENT_TIMESTAMP, $1, $2)
+	INSERT INTO users (created_at, email, profile_image_url, volleynet_user, role)
+	VALUES (CURRENT_TIMESTAMP, $1, $2, $3, $4)
 `
 
 func (s *UserService) Create(user *scores.User) (*scores.User, error) {
-	result, err := s.DB.Exec(userInsertSQL, user.Email, user.ProfileImageURL)
+	result, err := s.DB.Exec(userInsertSQL, user.Email, user.ProfileImageURL, user.VolleynetUser, user.Role)
 
 	if err != nil {
 		return nil, err
@@ -66,8 +66,8 @@ func (s *UserService) UpdatePasswordAuthentication(
 
 const userUpdateSQL = `
 	UPDATE users
-	SET profile_image_url = $1, email = $2
-	WHERE id = $3
+	SET profile_image_url = $1, email = $2, volleynet_user = $3, role = $4
+	WHERE id = $5
 `
 
 func (s *UserService) Update(user *scores.User) error {
@@ -75,7 +75,12 @@ func (s *UserService) Update(user *scores.User) error {
 		return errors.New("User must exist")
 	}
 
-	result, err := s.DB.Exec(userUpdateSQL, user.ProfileImageURL, user.Email, user.ID)
+	result, err := s.DB.Exec(userUpdateSQL,
+		user.ProfileImageURL,
+		user.Email,
+		user.VolleynetUser,
+		user.Role,
+		user.ID)
 
 	if err != nil {
 		return err
@@ -101,6 +106,8 @@ func scanUser(scanner scan) (*scores.User, error) {
 		&u.PasswordInfo.Salt,
 		&u.PasswordInfo.Hash,
 		&u.PasswordInfo.Iterations,
+		&u.VolleynetUser,
+		&u.Role,
 	)
 
 	if err != nil {
@@ -120,7 +127,9 @@ const (
 			u.created_at,
 			u.salt,
 			u.hash,
-			COALESCE(u.iterations, 0) as iterations
+			COALESCE(u.iterations, 0) as iterations,
+			u.volleynet_user,
+			u.role
 		FROM users u
 		LEFT JOIN players p on u.id = p.user_id
 		WHERE u.deleted_at is null

@@ -226,11 +226,11 @@ func (s *VolleynetService) GetTournaments(gender, league string, season int) ([]
 
 type TournamentSyncInformation struct {
 	New        bool
-	ID         string
+	ID         int
 	Tournament volleynet.Tournament
 }
 
-func (s *VolleynetService) containsTournament(tournaments []volleynet.FullTournament, tournamentID string) bool {
+func (s *VolleynetService) containsTournament(tournaments []volleynet.FullTournament, tournamentID int) bool {
 	for _, t := range tournaments {
 		if t.ID == tournamentID {
 			return true

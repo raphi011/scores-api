@@ -6,17 +6,25 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
-type SearchPlayer struct {
+type PlayerInfo struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Login     string `json:"login"`
-	ID        string `json:"id"`
+	ID        int    `json:"id"`
 	Birthday  string `json:"birthday"`
+}
+
+type Player struct {
+	PlayerInfo
+	TotalPoints  string `json:"totalPoints"`
+	CountryUnion string `json:"countryUnion"`
+	License      string `json:"license"`
 }
 
 var lastNameRegex = regexp.MustCompile("\\p{Lu}+\\b")
@@ -31,26 +39,26 @@ func parsePlayerName(c *goquery.Selection) (string, string, string) {
 	return strings.Title(firstName), strings.Title(lastName), strings.Join([]string{firstName, lastName}, ".")
 }
 
-func parsePlayerID(s *goquery.Selection) (string, error) {
+func parsePlayerID(s *goquery.Selection) (int, error) {
 	href := parseHref(s)
 
 	if href == "" {
-		return "", errors.New("ID not found")
+		return -1, errors.New("ID not found")
 	}
 
 	re, err := regexp.Compile("\\(([0-9]*),")
 
 	if err != nil {
-		return "", err
+		return -1, err
 	}
 
 	id := re.FindStringSubmatch(href)
 
-	return id[1], nil
+	return strconv.Atoi(id[1])
 }
 
-func parsePlayers(html io.Reader) ([]SearchPlayer, error) {
-	players := []SearchPlayer{}
+func parsePlayers(html io.Reader) ([]PlayerInfo, error) {
+	players := []PlayerInfo{}
 	doc, err := goquery.NewDocumentFromReader(html)
 
 	if err != nil {
@@ -64,7 +72,7 @@ func parsePlayers(html io.Reader) ([]SearchPlayer, error) {
 
 		r := rows.Eq(i)
 
-		player := SearchPlayer{}
+		player := PlayerInfo{}
 
 		columns := r.Find("td")
 
@@ -98,7 +106,7 @@ func parsePlayers(html io.Reader) ([]SearchPlayer, error) {
 	return players, nil
 }
 
-func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]SearchPlayer, error) {
+func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]PlayerInfo, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")

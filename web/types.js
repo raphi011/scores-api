@@ -1,13 +1,18 @@
 // @flow
 
-export type EntityName = 'player' | 'team' | 'match' | 'group' | 'tournament';
+export type EntityName =
+  | 'player'
+  | 'team'
+  | 'match'
+  | 'group'
+  | 'tournament'
+  | 'volleynetplayer';
 
 export type Player = {
   id: number,
   name: string,
   userId: ?number,
   profileImageUrl: ?string,
-  // groups: Group[],
 };
 
 export type Team = {
@@ -81,7 +86,7 @@ export type Group = {
 export type VolleynetSearchPlayer = {
   firstName: string,
   lastName: string,
-  id: string,
+  id: number,
   login: string,
   birthday: string,
 };
@@ -89,7 +94,7 @@ export type VolleynetSearchPlayer = {
 export type VolleynetPlayer = {
   firstName: string,
   lastName: string,
-  id: string,
+  id: number,
   birthday: string,
   totalPoints: string,
   countryUnion: string,
@@ -109,7 +114,7 @@ export type VolleynetTeam = {
 export type Gender = 'M' | 'W';
 
 export type FullTournament = {
-  id: string,
+  id: number,
   gender: Gender,
   registrationOpen: boolean,
   start: string,

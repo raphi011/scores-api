@@ -1,14 +1,17 @@
 // @flow
 
 import React from 'react';
-import fetch from 'isomorphic-unfetch';
+import { connect } from 'react-redux';
+import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 
 import PlayerList from '../../components/volleynet/PlayerList';
-import { buildUrl } from '../../api';
+import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
+import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
+
 import type { Gender, VolleynetSearchPlayer } from '../../types';
 
 const styles = () => ({
@@ -20,13 +23,18 @@ const styles = () => ({
 type Props = {
   gender: Gender,
   onSelectPlayer: VolleynetSearchPlayer,
+  searchVolleynetPlayers: ({
+    fname: string,
+    lname: string,
+    bday: string,
+  }) => void,
+  foundPlayers: Array<VolleynetSearchPlayer>,
 };
 
 type State = {
   firstName: string,
   lastName: string,
   birthday: string,
-  foundPlayers: Array<VolleynetSearchPlayer>,
 };
 
 class SearchPlayer extends React.Component<Props, State> {
@@ -34,7 +42,6 @@ class SearchPlayer extends React.Component<Props, State> {
     firstName: '',
     lastName: '',
     birthday: '',
-    foundPlayers: [],
   };
 
   onChangeFirstname = event => {
@@ -56,22 +63,20 @@ class SearchPlayer extends React.Component<Props, State> {
 
   onSearch = async () => {
     const { firstName: fname, lastName: lname, birthday: bday } = this.state;
+    const { searchVolleynetPlayers } = this.props;
 
-    const response = await fetch(
-      buildUrl('volleynet/players/search', { fname, lname, bday }),
-    );
-
-    const foundPlayers = await response.json();
-
-    this.setState({ foundPlayers });
+    searchVolleynetPlayers({ fname, lname, bday });
   };
 
   render() {
-    const { gender, onSelectPlayer, classes } = this.props;
-    const { firstName, lastName, birthday, foundPlayers } = this.state;
+    const { onSelectPlayer, foundPlayers, classes } = this.props;
+    const { firstName, lastName, birthday } = this.state;
 
     return (
       <div className={classes.container}>
+        <Typography variant="title" style={{ margin: '20px 0' }}>
+          Search for your partner
+        </Typography>
         <TextField
           label="Firstname"
           type="search"
@@ -112,4 +117,16 @@ class SearchPlayer extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(SearchPlayer);
+const mapDispatchToProps = {
+  searchVolleynetPlayers: searchVolleynetPlayersAction,
+};
+
+function mapStateToProps(state) {
+  const foundPlayers = searchVolleynetplayerSelector(state);
+
+  return { foundPlayers };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withStyles(styles)(SearchPlayer),
+);

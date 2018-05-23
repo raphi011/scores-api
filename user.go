@@ -4,6 +4,8 @@ type User struct {
 	Model
 	Email           string       `json:"email"`
 	ProfileImageURL string       `json:"profileImageUrl"`
+	VolleynetUser   string       `json:"volleynetUser"`
+	Role            string       `json:"role"`
 	PlayerID        uint         `json:"playerId"`
 	Player          *Player      `json:"player"`
 	PasswordInfo    PasswordInfo `json:"-"`

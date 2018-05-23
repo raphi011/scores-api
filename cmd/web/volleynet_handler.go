@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,7 @@ import (
 
 type volleynetHandler struct {
 	volleynetService *sqlite.VolleynetService
+	userService      *sqlite.UserService
 }
 
 func (h *volleynetHandler) allTournaments(c *gin.Context) {
@@ -44,9 +46,10 @@ func (h *volleynetHandler) allTournaments(c *gin.Context) {
 type signupForm struct {
 	Username     string `json:"username"`
 	Password     string `json:"password"`
-	PartnerID    string `json:"partnerId"`
+	PartnerID    int    `json:"partnerId"`
 	PartnerName  string `json:"partnerName"`
-	TournamentID string `json:"tournamentId"`
+	TournamentID int    `json:"tournamentId"`
+	RememberMe   bool   `json:"rememberMe"`
 }
 
 func (h *volleynetHandler) tournament(c *gin.Context) {
@@ -77,8 +80,8 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 
 	if su.Username == "" ||
 		su.Password == "" ||
-		su.PartnerID == "" ||
-		su.TournamentID == "" {
+		su.PartnerID <= 0 ||
+		su.TournamentID <= 0 {
 
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
@@ -90,6 +93,22 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 	if err != nil {
 		c.AbortWithError(http.StatusUnauthorized, err)
 		return
+	}
+
+	if su.RememberMe {
+		session := sessions.Default(c)
+		userID := session.Get("user-id")
+		user, err := h.userService.ByEmail(userID.(string))
+
+		if err != nil {
+			// this shouldn't happen
+		}
+
+		if user.VolleynetUser != su.Username {
+			user.VolleynetUser = su.Username
+			// todo: check for error
+			_ = h.userService.Update(user)
+		}
 	}
 
 	err = client.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)

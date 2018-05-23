@@ -176,6 +176,27 @@ export const deleteMatchAction = (match: Match): ApiAction => ({
   successStatus: 'Match deleted',
 });
 
+export const searchVolleynetPlayersAction = (filters: {
+  fname: string,
+  lname: string,
+  bday: string,
+}): ApiAction => ({
+  type: actionNames.API,
+  method: 'GET',
+  url: 'volleynet/players/search',
+  params: filters,
+  success: actionNames.RECEIVE_ENTITIES,
+  successParams: {
+    entityName: 'volleynetplayer',
+    listOptions: {
+      volleynetplayer: {
+        mode: 'replace',
+        name: 'search',
+      },
+    },
+  },
+});
+
 export const loadTournamentAction = (tournamentId: string): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
@@ -206,4 +227,19 @@ export const loadTournamentsAction = (filters: {
       },
     },
   },
+});
+
+export const tournamentSignupAction = (form: {
+  username: string,
+  password: string,
+  partnerId: number,
+  tournamentId: number,
+  partnerName: string,
+  rememberMe: boolean,
+}): ApiAction => ({
+  type: actionNames.API,
+  method: 'POST',
+  url: 'volleynet/signup',
+  body: JSON.stringify(form),
+  successStatus: 'Successfully signed up',
 });

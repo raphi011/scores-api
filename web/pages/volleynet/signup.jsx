@@ -1,8 +1,6 @@
 // @flow
 
 import React from 'react';
-// import Link from 'next/link';
-import fetch from 'isomorphic-unfetch';
 import Router from 'next/router';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -12,18 +10,23 @@ import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
 import Login from '../../components/volleynet/Login';
-import { buildUrl } from '../../api';
+import {
+  loadTournamentAction,
+  tournamentSignupAction,
+} from '../../redux/actions/entities';
+import { tournamentSelector } from '../../redux/reducers/entities';
 
 import type { FullTournament, VolleynetPlayer } from '../../types';
 
 const styles = () => ({});
 
 type Props = {
-  id: string,
+  tournamentId: number,
+  tournament: ?FullTournament,
+  signup: () => void,
 };
 
 type State = {
-  tournament: ?FullTournament,
   partner: ?VolleynetPlayer,
 };
 
@@ -31,30 +34,35 @@ class Signup extends React.Component<Props, State> {
   static getParameters(query) {
     const { id } = query;
 
-    return { id };
+    const tournamentId = Number.parseInt(id, 10);
+
+    return { tournamentId };
   }
 
   state = {
-    tournament: null,
     partner: null,
   };
 
-  async componentDidMount() {
-    const { id } = this.props;
-
-    const response = await fetch(buildUrl(`volleynet/tournaments/${id}`));
-
-    const tournament = await response.json();
-
-    this.setState({ tournament });
+  static buildActions({ tournamentId }) {
+    return [loadTournamentAction(tournamentId)];
   }
+
+  static mapStateToProps(state, { tournamentId }) {
+    const tournament = tournamentSelector(state, tournamentId);
+
+    return { tournament };
+  }
+
+  static mapDispatchToProps = {
+    signup: tournamentSignupAction,
+  };
 
   onSelectPlayer = partner => {
     this.setState({ partner });
   };
 
-  onSignup = async (username, password) => {
-    const { id: tournamentId } = this.props;
+  onSignup = async (username, password, rememberMe) => {
+    const { tournamentId, signup } = this.props;
     const { partner } = this.state;
 
     const partnerId = partner && partner.id;
@@ -66,24 +74,15 @@ class Signup extends React.Component<Props, State> {
       partnerId,
       tournamentId,
       partnerName,
+      rememberMe,
     };
 
-    const response = await fetch(buildUrl('volleynet/signup'), {
-      body: JSON.stringify(body),
-      method: 'POST',
-    });
-
-    if (response.status !== 200) {
-      // TODO: set message
-      await Router.push({
-        pathname: '/volleynet/tourname',
-        query: { id: tournamentId },
-      });
-    }
+    signup(body);
   };
 
   render() {
-    const { tournament, partner } = this.state;
+    const { partner } = this.state;
+    const { tournament } = this.props;
 
     if (!tournament) {
       return null;

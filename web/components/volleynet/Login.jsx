@@ -3,6 +3,8 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import Button from '@material-ui/core/Button';
 import DoneIcon from '@material-ui/icons/Done';
@@ -14,12 +16,13 @@ const styles = () => ({
 });
 
 type Props = {
-  onLogin: (string, string) => void,
+  onLogin: (string, string, boolean) => void,
 };
 
 type State = {
   username: string,
   password: string,
+  rememberMe: boolean,
   usernameValidation: string,
 };
 
@@ -27,6 +30,7 @@ class Login extends React.Component<Props, State> {
   state = {
     username: '',
     password: '',
+    rememberMe: true,
     usernameValidation: '',
   };
 
@@ -51,23 +55,29 @@ class Login extends React.Component<Props, State> {
 
   onLogin = () => {
     const { onLogin } = this.props;
-    const { username, password } = this.state;
+    const { username, password, rememberMe } = this.state;
 
     if (username && this.loginRegex.test(username) && password) {
-      onLogin(username, password);
+      onLogin(username, password, rememberMe);
     }
+  };
+
+  onChangeRememberMe = event => {
+    const rememberMe = event.target.checked;
+
+    this.setState({ rememberMe });
   };
 
   render() {
     const { classes } = this.props;
-    const { username, password, usernameValidation } = this.state;
+    const { username, password, rememberMe, usernameValidation } = this.state;
 
     return (
       <div className={classes.container}>
         <TextField
           label={usernameValidation || 'Username'}
           error={!!usernameValidation}
-          helperText="max.MUSTER"
+          helperText="Max.MUSTER"
           margin="normal"
           fullWidth
           onChange={this.onChangeUsername}
@@ -81,6 +91,13 @@ class Login extends React.Component<Props, State> {
           onChange={this.onChangePassword}
           value={password}
         />
+        <FormControlLabel
+          control={
+            <Switch checked={rememberMe} onChange={this.onChangeRememberMe} />
+          }
+          label="Remember me"
+        />
+
         <Button
           color="primary"
           type="submit"

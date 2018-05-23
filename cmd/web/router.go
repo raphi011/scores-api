@@ -54,16 +54,10 @@ func initRouter(app app) *gin.Engine {
 	}
 	volleynetHandler := volleynetHandler{
 		volleynetService: volleynetService,
+		userService:      userService,
 	}
 
 	router.Use(sessions.Sessions("goquestsession", store))
-
-	router.GET("/volleynet/scrape/tournaments", volleynetHandler.scrapeTournaments)
-
-	router.POST("/volleynet/signup", volleynetHandler.signup)
-	router.GET("/volleynet/tournaments", volleynetHandler.allTournaments)
-	router.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.tournament)
-	router.GET("/volleynet/players/search", volleynetHandler.searchPlayers)
 
 	router.GET("/userOrLoginRoute", authHandler.loginRouteOrUser)
 	router.GET("/auth", authHandler.googleAuthenticate)
@@ -81,6 +75,13 @@ func initRouter(app app) *gin.Engine {
 		auth.GET("/groups/:groupID/playerStatistics", statisticHandler.players)
 		auth.GET("/groups/:groupID/teamStatistics", statisticHandler.players)
 		auth.GET("/groups/:groupID", groupHandler.groupShow)
+
+		auth.GET("/volleynet/scrape/tournaments", volleynetHandler.scrapeTournaments)
+
+		auth.POST("/volleynet/signup", volleynetHandler.signup)
+		auth.GET("/volleynet/tournaments", volleynetHandler.allTournaments)
+		auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.tournament)
+		auth.GET("/volleynet/players/search", volleynetHandler.searchPlayers)
 
 		auth.GET("/matches/:matchID", matchHandler.matchShow)
 		auth.DELETE("/matches/:matchID", matchHandler.matchDelete)

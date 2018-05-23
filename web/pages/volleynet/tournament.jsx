@@ -18,7 +18,7 @@ import type { FullTournament } from '../../types';
 const styles = () => ({});
 
 type Props = {
-  id: string,
+  tournamentId: number,
   tournament: ?FullTournament,
 };
 
@@ -26,15 +26,17 @@ class Tournament extends React.Component<Props> {
   static getParameters(query) {
     const { id } = query;
 
-    return { id };
+    const tournamentId = Number.parseInt(id, 10);
+
+    return { tournamentId };
   }
 
-  static buildActions({ id }) {
-    return [loadTournamentAction(id)];
+  static buildActions({ tournamentId }) {
+    return [loadTournamentAction(tournamentId)];
   }
 
-  static mapStateToProps(state, { id }) {
-    const tournament = tournamentSelector(state, id);
+  static mapStateToProps(state, { tournamentId }) {
+    const tournament = tournamentSelector(state, tournamentId);
 
     return { tournament };
   }

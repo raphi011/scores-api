@@ -43,6 +43,10 @@ const group = new schema.Entity('group', {
 
 const groupList = new schema.Array(group);
 
+const volleynetplayer = new schema.Entity('volleynetplayer');
+
+const volleynetplayerList = new schema.Array(volleynetplayer);
+
 const entitySchemaMap = {
   group,
   groupList,
@@ -58,6 +62,8 @@ const entitySchemaMap = {
   statisticList,
   tournament,
   tournamentList,
+  volleynetplayer,
+  volleynetplayerList,
 };
 
 function getSchemaMap(entityName: string, isList: boolean) {
