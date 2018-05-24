@@ -29,7 +29,7 @@ type Props = {
 
 class Volleynet extends React.Component<Props, State> {
   static buildActions() {
-    return [loadTournamentsAction({ league: leagues.Amateur })];
+    return [loadTournamentsAction({ gender: 'M', league: leagues.Amateur })];
   }
 
   static mapStateToProps(state) {
@@ -58,7 +58,7 @@ class Volleynet extends React.Component<Props, State> {
     }
 
     tournaments = tournaments.sort(
-      (a, b) => new Date(a.start) - new Date(b.end),
+      (a, b) => new Date(a.start) - new Date(b.start),
     );
 
     return {

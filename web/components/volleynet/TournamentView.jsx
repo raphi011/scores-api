@@ -15,12 +15,12 @@ import LinkIcon from '@material-ui/icons/Link';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import EmailIcon from '@material-ui/icons/Email';
 import LocationIcon from '@material-ui/icons/GpsFixed';
-import { tournamentDateString } from '../../utils/tournament';
+import { tournamentDateString, isSignedup } from '../../utils/tournament';
 
 import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';
 
-import type { FullTournament } from '../../types';
+import type { Tournament, User } from '../../types';
 
 const styles = theme => ({
   headerContainer: {
@@ -43,7 +43,8 @@ const styles = theme => ({
 });
 
 type Props = {
-  tournament: FullTournament,
+  tournament: Tournament,
+  user: User,
 };
 
 type State = {
@@ -60,7 +61,7 @@ class TournamentView extends React.Component<Props, State> {
   };
 
   render() {
-    const { tournament, classes } = this.props;
+    const { user, tournament, classes } = this.props;
     const { tabOpen } = this.state;
     if (!tournament) {
       return <CenteredLoading />;
@@ -98,6 +99,8 @@ class TournamentView extends React.Component<Props, State> {
       },
     ];
 
+    const signedup = isSignedup(tournament, user.volleynetUserId);
+
     return (
       <div>
         <Card className={classes.headerContainer}>
@@ -120,7 +123,7 @@ class TournamentView extends React.Component<Props, State> {
             }}
           >
             <Button variant="raised" color="primary">
-              Signup
+              {signedup ? 'You are signed up' : 'Signup'}
             </Button>
           </Link>
         </Card>

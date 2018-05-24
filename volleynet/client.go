@@ -11,6 +11,7 @@ type Client struct {
 	DefaultUrl  string
 	ApiUrl      string
 	AmateurPath string
+	LadderPath  string
 	Cookie      string
 }
 
@@ -20,6 +21,7 @@ func DefaultClient() *Client {
 		ApiUrl:      "http://www.volleynet.at/api/",
 		DefaultUrl:  "www.volleynet.at",
 		AmateurPath: "beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
+		LadderPath:  "beach/bewerbe/Rangliste/phase/%s",
 	}
 }
 

@@ -50,6 +50,8 @@ export type User = {
   email: string,
   profileImageUrl: ?string,
   playerId: number,
+  volleynetUserId: number,
+  volleynetLogin: string,
 };
 
 export type Statistic = {
@@ -113,7 +115,7 @@ export type VolleynetTeam = {
 
 export type Gender = 'M' | 'W';
 
-export type FullTournament = {
+export type Tournament = {
   id: number,
   gender: Gender,
   registrationOpen: boolean,

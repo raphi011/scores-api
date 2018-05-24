@@ -22,13 +22,16 @@ type GroupedTournaments struct {
 	Played   []Tournament `json:"played"`
 }
 
-type Team struct {
-	TotalPoints string  `json:"totalPoints"`
-	Player1     *Player `json:"player1"`
-	Player2     *Player `json:"player2"`
-	SeedOrRank  string  `json:"seedOrRank"`
-	WonPoints   string  `json:"wonPoints"`
-	PrizeMoney  string  `json:"prizeMoney"`
+type TournamentTeam struct {
+	TournamentID int     `json:"tournamentId"`
+	TotalPoints  string  `json:"totalPoints"`
+	Player1      *Player `json:"player1"`
+	Player2      *Player `json:"player2"`
+	Seed         string  `json:"seed"`
+	Rank         string  `json:"rank"`
+	WonPoints    string  `json:"wonPoints"`
+	PrizeMoney   string  `json:"prizeMoney"`
+	Deregistered bool    `json:"deregistered"`
 }
 
 type Tournament struct {
@@ -47,24 +50,24 @@ type Tournament struct {
 
 type FullTournament struct {
 	Tournament
-	CreatedAt       time.Time `json:"createdAt"`
-	UpdatedAt       time.Time `json:"updatedAt"`
-	Teams           []Team    `json:"teams"`
-	Location        string    `json:"location"`
-	HTMLNotes       string    `json:"htmlNotes"`
-	Mode            string    `json:"mode"`
-	MaxTeams        int       `json:"maxTeams"`
-	MinTeams        string    `json:"minTeams"`
-	MaxPoints       string    `json:"maxPoints"`
-	EndRegistration string    `json:"endRegistration"`
-	Organiser       string    `json:"organiser"`
-	Phone           string    `json:"phone"`
-	Email           string    `json:"email"`
-	Web             string    `json:"web"`
-	CurrentPoints   string    `json:"currentPoints"`
-	LivescoringLink string    `json:"livescoringLink"`
-	Latitude        float32   `json:"latitude"`
-	Longitude       float32   `json:"longitude"`
+	CreatedAt       time.Time        `json:"createdAt"`
+	UpdatedAt       time.Time        `json:"updatedAt"`
+	Teams           []TournamentTeam `json:"teams"`
+	Location        string           `json:"location"`
+	HTMLNotes       string           `json:"htmlNotes"`
+	Mode            string           `json:"mode"`
+	MaxTeams        int              `json:"maxTeams"`
+	MinTeams        string           `json:"minTeams"`
+	MaxPoints       string           `json:"maxPoints"`
+	EndRegistration string           `json:"endRegistration"`
+	Organiser       string           `json:"organiser"`
+	Phone           string           `json:"phone"`
+	Email           string           `json:"email"`
+	Web             string           `json:"web"`
+	CurrentPoints   string           `json:"currentPoints"`
+	LivescoringLink string           `json:"livescoringLink"`
+	Latitude        float32          `json:"latitude"`
+	Longitude       float32          `json:"longitude"`
 }
 
 var registerUrl string = "https://beach.volleynet.at/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur="
@@ -150,8 +153,8 @@ func parsePlayerIDFromSteckbrief(s *goquery.Selection) (int, error) {
 	return strconv.Atoi(href[dashIndex+1:])
 }
 
-func parseFullTournamentTeams(body *goquery.Document) ([]Team, error) {
-	teams := []Team{}
+func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) {
+	teams := []TournamentTeam{}
 
 	tables := body.Find("tbody")
 
@@ -160,7 +163,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]Team, error) {
 		rows := table.Find("tr")
 
 		if rows.First().Children().Eq(0).Text() == "Nr." {
-			team := Team{}
+			team := TournamentTeam{}
 
 			for j := range rows.Nodes {
 				if j == 0 {
@@ -181,7 +184,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]Team, error) {
 					if columnsCount == 5 {
 						switch k {
 						case 0:
-							team.SeedOrRank = trimmedText(column)
+							team.Rank = trimmedText(column)
 						case 1:
 							player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
 							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
@@ -207,7 +210,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]Team, error) {
 					} else if columnsCount == 7 {
 						switch k {
 						case 0:
-							team.SeedOrRank = trimmedText(column)
+							team.Seed = trimmedText(column)
 						case 1:
 							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
 						case 2:
@@ -242,7 +245,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]Team, error) {
 				} else {
 					team.Player2 = player
 					teams = append(teams, team)
-					team = Team{}
+					team = TournamentTeam{}
 				}
 
 			}
@@ -377,6 +380,82 @@ func (c *Client) GetTournament(id int, link string) (*FullTournament, error) {
 	t.Link = c.GetTournamentLink(&t.Tournament)
 
 	return t, nil
+}
+
+func (c *Client) Ladder(gender string) ([]Player, error) {
+	url, err := url.Parse(c.ApiUrl)
+
+	// gender: Herren, Damen
+	url.Path += fmt.Sprintf(c.LadderPath, gender)
+
+	encodedURL := url.String()
+	resp, err := http.Get(encodedURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	return parseLadder(resp.Body)
+}
+
+func parseLadder(html io.Reader) ([]Player, error) {
+	doc, err := goquery.NewDocumentFromReader(html)
+
+	if err != nil {
+		return nil, err
+	}
+
+	players := []Player{}
+
+	rows := doc.Find("tbody>tr")
+	genderTitle := doc.Find("h2").Text()
+	var gender string
+
+	if genderTitle == "Herren" {
+		gender = "M"
+	} else {
+		gender = "F"
+	}
+
+	for i := range rows.Nodes {
+		r := rows.Eq(i)
+
+		columns := r.Find("td")
+
+		if len(columns.Nodes) != 7 {
+			continue
+		}
+
+		p := Player{}
+		p.Gender = gender
+
+		for j := range columns.Nodes {
+			c := columns.Eq(j)
+
+			switch j {
+			case 1:
+				p.Rank = trimmedText(c)
+			case 2:
+				p.FirstName, p.LastName, p.Login = parsePlayerName(c)
+				p.ID, err = parsePlayerIDFromSteckbrief(c.Find("a"))
+			case 3:
+				break
+			case 4:
+				p.CountryUnion = c.Text()
+			case 5:
+				p.Club = c.Text()
+			case 6:
+				p.TotalPoints = c.Text()
+			}
+		}
+
+		players = append(players, p)
+
+	}
+
+	return players, nil
 }
 
 func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {

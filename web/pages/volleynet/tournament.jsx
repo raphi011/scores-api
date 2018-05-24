@@ -12,17 +12,18 @@ import TournamentView from '../../components/volleynet/TournamentView';
 
 import { loadTournamentAction } from '../../redux/actions/entities';
 import { tournamentSelector } from '../../redux/reducers/entities';
+import { userSelector } from '../../redux/reducers/auth';
 
-import type { FullTournament } from '../../types';
+import type { Tournament, User } from '../../types';
 
 const styles = () => ({});
 
 type Props = {
-  tournamentId: number,
-  tournament: ?FullTournament,
+  tournament: ?Tournament,
+  user: User,
 };
 
-class Tournament extends React.Component<Props> {
+class ShowTournament extends React.Component<Props> {
   static getParameters(query) {
     const { id } = query;
 
@@ -37,22 +38,23 @@ class Tournament extends React.Component<Props> {
 
   static mapStateToProps(state, { tournamentId }) {
     const tournament = tournamentSelector(state, tournamentId);
+    const user = userSelector(state);
 
-    return { tournament };
+    return { tournament, user };
   }
 
   render() {
-    const { tournament } = this.props;
+    const { tournament, user } = this.props;
 
     return (
       <Layout title="Tournament">
         <Link prefetch href="/volleynet">
           <Button color="primary">Back</Button>
         </Link>
-        <TournamentView tournament={tournament} />
+        <TournamentView tournament={tournament} user={user} />
       </Layout>
     );
   }
 }
 
-export default withAuth(withStyles(styles)(Tournament));
+export default withAuth(withStyles(styles)(ShowTournament));

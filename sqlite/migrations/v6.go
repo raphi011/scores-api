@@ -12,7 +12,8 @@ var ResetV6 = ResetV5 // TODO
 const (
 	alterUserTable = `
 		ALTER TABLE "users" ADD COLUMN "role" varchar(32) NOT NULL DEFAULT "user";
-		ALTER TABLE "users" ADD COLUMN "volleynet_user" varchar(64) NOT NULL DEFAULT "";
+		ALTER TABLE "users" ADD COLUMN "volleynet_login" varchar(64) NOT NULL DEFAULT "";
+		ALTER TABLE "users" ADD COLUMN "volleynet_user_id" integer NOT NULL DEFAULT 0;
 	`
 	volleynetTournaments = `
 		CREATE TABLE "volleynetTournaments" (
@@ -56,12 +57,13 @@ const (
 			"points" integer NOT NULL,
 			"country_union" varchar(255) NOT NULL,
 			"birthday" date NOT NULL,
-			"license" varchar(32) NOT NULL
+			"license" varchar(32) NOT NULL,
+			"gender" varchar(1) NOT NULL
 		)
 	`
 
 	volleynetTournamentTeam = `
-		CREATE TABLE "volleynetTournamentPlayers" (
+		CREATE TABLE "volleynetTournamentTeams" (
 			"volleynet_tournament_id" integer NOT NULL,
 			"volleynet_player_1_id" integer NOT NULL,
 			"volleynet_player_2_id" integer NOT NULL,

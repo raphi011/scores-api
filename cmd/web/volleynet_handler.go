@@ -40,6 +40,10 @@ func (h *volleynetHandler) allTournaments(c *gin.Context) {
 		c.AbortWithError(http.StatusBadRequest, err)
 	}
 
+	for _, t := range tournaments {
+		t.Teams, _ = h.volleynetService.TournamentTeams(t.ID)
+	}
+
 	jsonn(c, http.StatusOK, tournaments, "")
 }
 
@@ -104,8 +108,8 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 			// this shouldn't happen
 		}
 
-		if user.VolleynetUser != su.Username {
-			user.VolleynetUser = su.Username
+		if user.VolleynetLogin != su.Username {
+			user.VolleynetLogin = su.Username
 			// todo: check for error
 			_ = h.userService.Update(user)
 		}
@@ -135,6 +139,20 @@ func (h *volleynetHandler) searchPlayers(c *gin.Context) {
 	}
 
 	jsonn(c, http.StatusOK, players, "")
+}
+
+func (h *volleynetHandler) scrapeLadder(c *gin.Context) {
+	// gender := c.DefaultQuery("gender", "M")
+
+	client := volleynet.DefaultClient()
+	ranks, err := client.Ladder("Herren")
+
+	if err != nil {
+		// return early
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	jsonn(c, http.StatusOK, ranks, "")
 }
 
 func (h *volleynetHandler) scrapeTournaments(c *gin.Context) {

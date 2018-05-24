@@ -16,13 +16,13 @@ import {
 } from '../../redux/actions/entities';
 import { tournamentSelector } from '../../redux/reducers/entities';
 
-import type { FullTournament, VolleynetPlayer } from '../../types';
+import type { Tournament, VolleynetPlayer } from '../../types';
 
 const styles = () => ({});
 
 type Props = {
   tournamentId: number,
-  tournament: ?FullTournament,
+  tournament: ?Tournament,
   signup: () => void,
 };
 
