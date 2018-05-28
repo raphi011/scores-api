@@ -23,8 +23,8 @@ type PlayerInfo struct {
 type Player struct {
 	PlayerInfo
 	Gender       string `json:"gender"`
-	TotalPoints  string `json:"totalPoints"`
-	Rank         string `json:"rank"`
+	TotalPoints  int    `json:"totalPoints"`
+	Rank         int    `json:"rank"`
 	Club         string `json:"club"`
 	CountryUnion string `json:"countryUnion"`
 	License      string `json:"license"`

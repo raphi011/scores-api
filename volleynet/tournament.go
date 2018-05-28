@@ -205,7 +205,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 						case 2:
 							player.CountryUnion = trimmedText(column)
 						case 3:
-							player.TotalPoints = trimmedText(column)
+							player.TotalPoints = parseNumber(column.Text())
 						}
 					} else if columnsCount == 7 {
 						switch k {
@@ -218,7 +218,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 						case 3:
 							player.CountryUnion = trimmedText(column)
 						case 4:
-							player.TotalPoints = trimmedText(column)
+							player.TotalPoints = parseNumber(column.Text())
 						case 5:
 							team.TotalPoints = trimmedText(column)
 						case 6:
@@ -436,18 +436,18 @@ func parseLadder(html io.Reader) ([]Player, error) {
 
 			switch j {
 			case 1:
-				p.Rank = trimmedText(c)
+				p.Rank = parseNumber(c.Text())
 			case 2:
 				p.FirstName, p.LastName, p.Login = parsePlayerName(c)
 				p.ID, err = parsePlayerIDFromSteckbrief(c.Find("a"))
 			case 3:
 				break
 			case 4:
-				p.CountryUnion = c.Text()
+				p.CountryUnion = trimmedText(c)
 			case 5:
-				p.Club = c.Text()
+				p.Club = trimmedText(c)
 			case 6:
-				p.TotalPoints = c.Text()
+				p.TotalPoints = parseNumber(c.Text())
 			}
 		}
 
