@@ -2,6 +2,7 @@ package volleynet
 
 import (
 	"errors"
+	"os"
 	"testing"
 )
 
@@ -16,11 +17,44 @@ func Test_upcoming_games(t *testing.T) {
 	}
 }
 
-// func Test_full_tournament(t *testing.T) {
-// 	c := DefaultClient()
-// 	_, err := c.GetTournament("http://www.volleynet.at/api//beach/bewerbe/AMATEUR%20TOUR/phase/ABV%20Tour%20AMATEUR%201/sex/M/saison/2018/cup/22127")
+func Test_done_tournament(t *testing.T) {
+	response, _ := os.Open("testdata/done.html")
 
-// 	if err != nil {
-// 		t.Error(err)
-// 	}
-// }
+	tournament, err := parseFullTournament(response)
+
+	if err != nil {
+		t.Errorf("parseFullTournament() err: %s", err)
+	}
+
+	if tournament.Status != "done" {
+		t.Errorf("parseFullTournament(), want .Status = 'done', got %s", tournament.Status)
+	}
+}
+
+func Test_upcoming_tournament(t *testing.T) {
+	response, _ := os.Open("testdata/upcoming.html")
+
+	tournament, err := parseFullTournament(response)
+
+	if err != nil {
+		t.Errorf("parseFullTournament() err: %s", err)
+	}
+
+	if tournament.Status != "upcoming" {
+		t.Errorf("parseFullTournament(), want .Status = 'upcoming', got %s", tournament.Status)
+	}
+}
+
+func Test_tournament_list(t *testing.T) {
+	response, _ := os.Open("testdata/tournament-list.html")
+
+	tournaments, err := parseTournaments(response)
+
+	if err != nil {
+		t.Errorf("parseTournaments() err: %s", err)
+	}
+
+	if len(tournaments) != 54 {
+		t.Errorf("parseTournaments(), want len(tournaments) = 54, got %v", len(tournaments))
+	}
+}
