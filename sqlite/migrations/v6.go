@@ -54,11 +54,14 @@ const (
 			"updated_at" datetime,
 			"first_name" varchar(255) NOT NULL,
 			"last_name" varchar(255) NOT NULL,
-			"points" integer NOT NULL,
+			"total_points" integer NOT NULL,
+			"rank" integer NOT NULL,
 			"country_union" varchar(255) NOT NULL,
+			"club" varchar(255) NOT NULL,
 			"birthday" date NOT NULL,
 			"license" varchar(32) NOT NULL,
-			"gender" varchar(1) NOT NULL
+			"gender" varchar(1) NOT NULL,
+			"login" varchar(255) NOT NULL
 		)
 	`
 

@@ -36,6 +36,7 @@ func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]volleynet
 
 func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 	t := &volleynet.FullTournament{}
+	t.Teams = []volleynet.TournamentTeam{}
 
 	err := scanner.Scan(
 		&t.ID,
@@ -73,7 +74,7 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 	return t, nil
 }
 
-func (s *VolleynetService) Tournament(tournamentID string) (*volleynet.FullTournament, error) {
+func (s *VolleynetService) Tournament(tournamentID int) (*volleynet.FullTournament, error) {
 	row := s.DB.QueryRow(tournamentSelectSQL, tournamentID)
 
 	return scanTournament(row)
@@ -223,10 +224,26 @@ func (s *VolleynetService) GetTournaments(gender, league string, season int) ([]
 	return scanTournaments(s.DB, tournamentsFilterSelectSQL, gender, league, season)
 }
 
+type PlayerSyncInformation struct {
+	New    bool
+	ID     int
+	Player *volleynet.Player
+}
+
 type TournamentSyncInformation struct {
 	New        bool
 	ID         int
 	Tournament volleynet.Tournament
+}
+
+func (s *VolleynetService) containsPlayer(players []volleynet.Player, playerID int) bool {
+	for _, p := range players {
+		if p.ID == playerID {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (s *VolleynetService) containsTournament(tournaments []volleynet.FullTournament, tournamentID int) bool {
@@ -239,7 +256,28 @@ func (s *VolleynetService) containsTournament(tournaments []volleynet.FullTourna
 	return false
 }
 
-func (s *VolleynetService) SyncInformation(tournaments []volleynet.Tournament) ([]TournamentSyncInformation, error) {
+func (s *VolleynetService) SyncPlayers(gender string, players []volleynet.Player) error {
+	persistedPlayers, err := s.AllPlayers(gender)
+
+	if err != nil {
+		return err
+	}
+
+	for _, p := range players {
+		new := !s.containsPlayer(persistedPlayers, p.ID)
+
+		if new {
+			s.NewPlayer(&p)
+		} else {
+			s.UpdatePlayer(&p)
+		}
+	}
+
+	return nil
+
+}
+
+func (s *VolleynetService) SyncTournamentInformation(tournaments ...volleynet.Tournament) ([]TournamentSyncInformation, error) {
 	persistedTournaments, err := s.AllTournaments()
 
 	if err != nil {
@@ -348,7 +386,7 @@ const (
 			t.volleynet_player_1_id,
 			p1.first_name,
 			p1.last_name,
-			p1.points,
+			p1.total_points,
 			p1.country_union,
 			p1.birthday,
 			p1.license,
@@ -356,11 +394,11 @@ const (
 			t.volleynet_player_2_id,
 			p2.first_name,
 			p2.last_name,
-			p2.points,
+			p2.total_points,
 			p2.country_union,
 			p2.birthday,
 			p2.license,
-			p2.gender
+			p2.gender,
 			t.rank,
 			t.seed,
 			t.total_points,
@@ -370,7 +408,7 @@ const (
 		FROM volleynetTournamentTeams t
 		JOIN volleynetPlayers p1 on p1.id = t.volleynet_player_1_id
 		JOIN volleynetPlayers p2 on p2.id = t.volleynet_player_2_id
-		WHERE t.id = $1	
+		WHERE t.volleynet_tournament_id = $1	
 	`
 	volleynetTeamsInsertSQL = `
 		INSERT INTO volleynetTournamentTeams
@@ -491,4 +529,173 @@ func scanTournamentTeam(scanner scan) (*volleynet.TournamentTeam, error) {
 
 func (s *VolleynetService) TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error) {
 	return scanTournamentTeams(s.DB, volleynetTeamsSelectSQL, tournamentID)
+}
+
+const (
+	volleynetBasePlayersSelectSQL = `
+		SELECT
+			p.id,
+			p.first_name,
+			p.last_name,
+			p.login,
+			p.birthday,
+			p.gender,
+			p.total_points,
+			p.rank,
+			p.club,
+			p.country_union,
+			p.license
+		FROM volleynetPlayers p
+	`
+
+	volleynetPlayerSelectSQL  = volleynetBasePlayersSelectSQL + " WHERE p.id = $1"
+	volleynetPlayersSelectSQL = volleynetBasePlayersSelectSQL + " WHERE p.gender = $1"
+
+	volleynetPlayersUpdateSQL = `
+		UPDATE volleynetPlayers
+			SET updated_at = CURRENT_TIMESTAMP,
+			SET first_name = $1,
+			SET last_name = $2,
+			SET login = $3,
+			SET birthday = $4,
+			SET gender = $5,
+			SET total_points = $6,
+			SET rank = $7,
+			SET club = $8,
+			SET country_union = $9,
+			SET license = $10
+		WHERE ID = $11
+	`
+
+	volleynetPlayersInsertSQL = `
+		INSERT INTO volleynetPlayers
+		(
+			id,
+			created_at,
+			updated_at,
+			first_name,
+			last_name,
+			login,
+			birthday,
+			gender,
+			total_points,
+			rank,
+			club,
+			country_union,
+			license
+		)
+		VALUES
+		(
+			$1,
+			CURRENT_TIMESTAMP,
+			CURRENT_TIMESTAMP,
+			$2,
+			$3,
+			$4,
+			$5,
+			$6,
+			$7,
+			$8,
+			$9,
+			$10,
+			$11
+		)
+	`
+)
+
+func scanVolleynetPlayers(db *sql.DB, query string, args ...interface{}) ([]volleynet.Player, error) {
+	players := []volleynet.Player{}
+	rows, err := db.Query(query, args...)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		player, err := scanVolleynetPlayer(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		players = append(players, *player)
+	}
+
+	return players, nil
+}
+
+func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
+	p := &volleynet.Player{}
+
+	err := scanner.Scan(
+		&p.ID,
+		&p.FirstName,
+		&p.LastName,
+		&p.Login,
+		&p.Birthday,
+		&p.Gender,
+		&p.TotalPoints,
+		&p.Rank,
+		&p.Club,
+		&p.CountryUnion,
+		&p.License,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func (s *VolleynetService) AllPlayers(gender string) ([]volleynet.Player, error) {
+	return scanVolleynetPlayers(s.DB, volleynetPlayersSelectSQL, gender)
+}
+
+func (s *VolleynetService) NewPlayer(p *volleynet.Player) error {
+	_, err := s.DB.Exec(volleynetPlayersInsertSQL,
+		p.ID,
+		p.FirstName,
+		p.LastName,
+		p.Login,
+		p.Birthday,
+		p.Gender,
+		p.TotalPoints,
+		p.Rank,
+		p.Club,
+		p.CountryUnion,
+		p.License,
+	)
+
+	return err
+}
+
+func (s *VolleynetService) UpdatePlayer(p *volleynet.Player) error {
+	result, err := s.DB.Exec(
+		volleynetPlayersUpdateSQL,
+		p.FirstName,
+		p.LastName,
+		p.Login,
+		p.Birthday,
+		p.Gender,
+		p.TotalPoints,
+		p.Rank,
+		p.Club,
+		p.CountryUnion,
+		p.License,
+		p.ID)
+
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, _ := result.RowsAffected()
+
+	if rowsAffected != 1 {
+		return errors.New("Player not found")
+	}
+
+	return nil
 }

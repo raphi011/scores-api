@@ -24,13 +24,13 @@ type GroupedTournaments struct {
 
 type TournamentTeam struct {
 	TournamentID int     `json:"tournamentId"`
-	TotalPoints  string  `json:"totalPoints"`
+	TotalPoints  int     `json:"totalPoints"`
 	Player1      *Player `json:"player1"`
 	Player2      *Player `json:"player2"`
-	Seed         string  `json:"seed"`
-	Rank         string  `json:"rank"`
-	WonPoints    string  `json:"wonPoints"`
-	PrizeMoney   string  `json:"prizeMoney"`
+	Seed         int     `json:"seed"`
+	Rank         int     `json:"rank"`
+	WonPoints    int     `json:"wonPoints"`
+	PrizeMoney   int     `json:"prizeMoney"`
 	Deregistered bool    `json:"deregistered"`
 }
 
@@ -57,8 +57,8 @@ type FullTournament struct {
 	HTMLNotes       string           `json:"htmlNotes"`
 	Mode            string           `json:"mode"`
 	MaxTeams        int              `json:"maxTeams"`
-	MinTeams        string           `json:"minTeams"`
-	MaxPoints       string           `json:"maxPoints"`
+	MinTeams        int              `json:"minTeams"`
+	MaxPoints       int              `json:"maxPoints"`
 	EndRegistration string           `json:"endRegistration"`
 	Organiser       string           `json:"organiser"`
 	Phone           string           `json:"phone"`
@@ -184,16 +184,16 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 					if columnsCount == 5 {
 						switch k {
 						case 0:
-							team.Rank = trimmedText(column)
+							team.Rank = parseNumber(column.Text())
 						case 1:
 							player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
 							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
 						case 2:
 							player.CountryUnion = trimmedText(column)
 						case 3:
-							team.WonPoints = trimmedText(column)
+							team.WonPoints = parseNumber(column.Text())
 						case 4:
-							team.PrizeMoney = trimmedText(column)
+							team.PrizeMoney = parseNumber(column.Text())
 						}
 					} else if columnsCount == 4 {
 						switch k {
@@ -210,8 +210,9 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 					} else if columnsCount == 7 {
 						switch k {
 						case 0:
-							team.Seed = trimmedText(column)
+							team.Seed = parseNumber(column.Text())
 						case 1:
+							player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
 							player.LastName, player.FirstName, player.Login = parsePlayerName(column)
 						case 2:
 							player.License = trimmedText(column)
@@ -220,7 +221,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 						case 4:
 							player.TotalPoints = parseNumber(column.Text())
 						case 5:
-							team.TotalPoints = trimmedText(column)
+							team.TotalPoints = parseNumber(column.Text())
 						case 6:
 							// signout link
 						}
@@ -282,22 +283,26 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 		if rows.First().Children().Eq(0).Text() == "Kategorie" {
 			for j := range rows.Nodes {
 				row := rows.Eq(j).Children()
+				value := row.Eq(1)
 
 				switch j {
 				case 0:
-					t.League = trimmedText(row.Eq(1))
+					t.League = trimmedText(value)
 				case 1:
-					dateString := row.Eq(1).Text()
-					t.Start, err = parseDate(dateString)
+					t.Start, t.End, err = parseStartEndDates(value)
+
+					if err != nil {
+						return nil, err
+					}
 				case 2:
 					t.Location = trimmedText(row.Eq(1))
 				case 3:
 					t.Mode = trimmedText(row.Eq(1))
 					t.MaxTeams = parseNumber(t.Mode)
 				case 4:
-					t.MinTeams = trimmedText(row.Eq(1))
+					t.MinTeams = parseNumber(value.Text())
 				case 5:
-					t.MaxPoints = trimmedText(row.Eq(1))
+					t.MaxPoints = parseNumber(value.Text())
 				case 6:
 					t.EndRegistration = trimmedText(row.Eq(1))
 				case 7:
@@ -323,7 +328,29 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 		return nil, err
 	}
 
+	if len(t.Teams) > 0 {
+		t.Status = getTournamentStatusFromTeam(t.Teams[0])
+	} else {
+		t.Status = getTournamentStatusFromStartDate(t.Start)
+	}
+
 	return t, nil
+}
+
+func getTournamentStatusFromTeam(t TournamentTeam) string {
+	if t.Rank > 0 {
+		return "done"
+	} else {
+		return "upcoming"
+	}
+}
+
+func getTournamentStatusFromStartDate(start time.Time) string {
+	if time.Now().After(start) {
+		return "done"
+	} else {
+		return "upcoming"
+	}
 }
 
 var numberRegex = regexp.MustCompile("\\d+")
@@ -386,7 +413,7 @@ func (c *Client) Ladder(gender string) ([]Player, error) {
 	url, err := url.Parse(c.ApiUrl)
 
 	// gender: Herren, Damen
-	url.Path += fmt.Sprintf(c.LadderPath, gender)
+	url.Path += fmt.Sprintf(c.LadderPath, genderLong(gender))
 
 	encodedURL := url.String()
 	resp, err := http.Get(encodedURL)
@@ -514,18 +541,30 @@ func parseStartEndDates(s *goquery.Selection) (time.Time, time.Time, error) {
 
 	dates := strings.Split(a, "-")
 
-	if len(dates) != 2 {
+	dateCount := len(dates)
+
+	if dateCount == 1 {
+		startDate, err := parseDate(dates[0])
+
+		if err != nil {
+			return time.Time{}, time.Time{}, err
+		}
+
+		return startDate, startDate, nil
+	} else if dateCount == 2 {
+		startDate, err := parseDate(dates[0])
+		if err != nil {
+			return time.Time{}, time.Time{}, err
+		}
+		endDate, err := parseDate(dates[1])
+		if err != nil {
+			return time.Time{}, time.Time{}, err
+		}
+
+		return startDate, endDate, nil
+	} else {
 		return time.Time{}, time.Time{}, errors.New("unknown start/enddate format")
 	}
-
-	startDate, err := parseDate(dates[0])
-	endDate, err1 := parseDate(dates[1])
-
-	if err1 != nil {
-		err = err1
-	}
-
-	return startDate, endDate, err
 }
 
 func parseTournaments(html io.Reader) ([]Tournament, error) {

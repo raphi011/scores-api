@@ -15,13 +15,13 @@ const TeamListItem = ({ team }: Props) => (
     <ListItemText
       primary={
         <span>
-          {`${team.seedOrRank}. ${team.player1.firstName} ${
+          {`${team.rank || team.seed}. ${team.player1.firstName} ${
             team.player1.lastName
           } / 
           ${team.player2.firstName} ${team.player2.lastName}`}
         </span>
       }
-      secondary={`${team.totalPoints || team.wonPoints} points`}
+      secondary={`${team.wonPoints || team.totalPoints} points`}
     />
   </ListItem>
 );

@@ -105,12 +105,15 @@ export type VolleynetPlayer = {
 };
 
 export type VolleynetTeam = {
+  tournamentId: number,
   player1: VolleynetPlayer,
   player2: VolleynetPlayer,
   totalPoints: string,
-  seedOrRank: string,
+  seed: number,
+  rank: number,
   wonPoints: string,
   prizeMoney: string,
+  deregistered: boolean,
 };
 
 export type Gender = 'M' | 'W';

@@ -19,15 +19,19 @@ type Props = {
   classes: Object,
 };
 
+const sortByRankOrSeed = (a, b) => (a.rank || a.seed) - (b.rank || b.seed);
+
 class TeamList extends React.PureComponent<Props> {
   render() {
     const { teams = [], classes } = this.props;
 
     return (
       <List className={classes.root}>
-        {teams.map(t => (
-          <TeamListItem key={t.player1.id + t.player2.id} team={t} />
-        ))}
+        {teams
+          .sort(sortByRankOrSeed)
+          .map(t => (
+            <TeamListItem key={t.player1.id + t.player2.id} team={t} />
+          ))}
       </List>
     );
   }

@@ -15,7 +15,7 @@ export function isSignedup(tournament: Tournament, userId: string): boolean {
     return false;
   }
 
-  return tournament.some(
+  return tournament.teams.some(
     t => t.player1.login === userId || t.player2.id === userId,
   );
 }

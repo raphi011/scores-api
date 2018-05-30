@@ -57,9 +57,9 @@ type signupForm struct {
 }
 
 func (h *volleynetHandler) tournament(c *gin.Context) {
-	tournamentID := c.Param("tournamentID")
+	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
 
-	if tournamentID == "" {
+	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -71,6 +71,13 @@ func (h *volleynetHandler) tournament(c *gin.Context) {
 	} else if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 	} else {
+		tournament.Teams, err = h.volleynetService.TournamentTeams(tournament.ID)
+
+		if err != nil {
+			c.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+
 		jsonn(c, http.StatusOK, tournament, "")
 	}
 }
@@ -142,18 +149,43 @@ func (h *volleynetHandler) searchPlayers(c *gin.Context) {
 }
 
 func (h *volleynetHandler) scrapeLadder(c *gin.Context) {
-	// gender := c.DefaultQuery("gender", "M")
+	gender := c.DefaultQuery("gender", "M")
 
 	client := volleynet.DefaultClient()
-	ranks, err := client.Ladder("Herren")
+	ranks, err := client.Ladder(gender)
 
 	if err != nil {
-		// return early
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	jsonn(c, http.StatusOK, ranks, "")
+	err = h.volleynetService.SyncPlayers(gender, ranks)
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	c.Status(http.StatusOK)
 }
+
+// func (h *volleynetHandler) scrapeTournament(c *gin.Context) {
+// 	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
+
+// 	if err != nil {
+// 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+// 		return
+// 	}
+
+// 	t, err := h.volleynetService.Tournament(tournamentID)
+// 	if err != nil {
+// 		// return early
+// 		c.AbortWithError(http.StatusInternalServerError, err)
+// 	}
+
+// 	client := volleynet.DefaultClient()
+// 	link := client.GetApiTournamentLink(&t.Tournament)
+// 	fullTournament, err := client.GetTournament(t.ID, link)
+
+// }
 
 func (h *volleynetHandler) scrapeTournaments(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
@@ -178,7 +210,7 @@ func (h *volleynetHandler) scrapeTournaments(c *gin.Context) {
 	}
 
 	// find out which have to be updated
-	syncInformation, err := h.volleynetService.SyncInformation(tournaments)
+	syncInformation, err := h.volleynetService.SyncTournamentInformation(tournaments...)
 
 	// update one after another
 	for _, t := range syncInformation {
@@ -194,9 +226,13 @@ func (h *volleynetHandler) scrapeTournaments(c *gin.Context) {
 		}
 
 		if t.New {
+			log.Printf("adding new tournament id: %v, name: %v",
+				fullTournament.ID,
+				fullTournament.Name)
+
 			err = h.volleynetService.NewTournament(fullTournament)
 		} else {
-			err = h.volleynetService.UpdateTournament(fullTournament)
+			// err = h.volleynetService.UpdateTournament(fullTournament)
 		}
 
 		if err != nil {

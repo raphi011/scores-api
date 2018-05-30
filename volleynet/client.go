@@ -15,6 +15,14 @@ type Client struct {
 	Cookie      string
 }
 
+func genderLong(gender string) string {
+	if gender == "M" {
+		return "Herren"
+	} else {
+		return "Damen"
+	}
+}
+
 func DefaultClient() *Client {
 	return &Client{
 		PostUrl:     "https://beach.volleynet.at/Admin/formular",
