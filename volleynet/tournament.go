@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -353,19 +352,6 @@ func getTournamentStatusFromStartDate(start time.Time) string {
 	}
 }
 
-var numberRegex = regexp.MustCompile("\\d+")
-
-func parseNumber(text string) int {
-	nrstr := numberRegex.FindString(text)
-	nr, err := strconv.Atoi(nrstr)
-
-	if err != nil {
-		return -1
-	}
-
-	return nr
-}
-
 func (c *Client) getTournament(id int) (*Tournament, error) {
 	games, err := c.AllTournaments("M", "AMATEUR TOUR", "2018")
 
@@ -506,10 +492,6 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 	return parseTournaments(resp.Body)
 }
 
-func trimmedText(s *goquery.Selection) string {
-	return strings.TrimSpace(s.Text())
-}
-
 func trimmedTournamentName(s *goquery.Selection) string {
 	name := trimmedText(s)
 	index := strings.Index(name, "- ")
@@ -519,21 +501,6 @@ func trimmedTournamentName(s *goquery.Selection) string {
 	}
 
 	return name
-}
-
-func parseHref(anchor *goquery.Selection) string {
-	href, _ := anchor.Attr("href")
-
-	return href
-}
-
-func parseDate(dateString string) (time.Time, error) {
-	date, err := time.Parse("02.01.2006", strings.TrimSpace(dateString))
-	if err != nil {
-		return time.Time{}, fmt.Errorf("unable to parse date '%s'", dateString)
-	}
-
-	return date, nil
 }
 
 func parseStartEndDates(s *goquery.Selection) (time.Time, time.Time, error) {
