@@ -167,26 +167,6 @@ func (h *volleynetHandler) scrapeLadder(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-// func (h *volleynetHandler) scrapeTournament(c *gin.Context) {
-// 	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
-
-// 	if err != nil {
-// 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
-// 		return
-// 	}
-
-// 	t, err := h.volleynetService.Tournament(tournamentID)
-// 	if err != nil {
-// 		// return early
-// 		c.AbortWithError(http.StatusInternalServerError, err)
-// 	}
-
-// 	client := volleynet.DefaultClient()
-// 	link := client.GetApiTournamentLink(&t.Tournament)
-// 	fullTournament, err := client.GetTournament(t.ID, link)
-
-// }
-
 func (h *volleynetHandler) scrapeTournaments(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 	league := c.DefaultQuery("league", "AMATEUR TOUR")

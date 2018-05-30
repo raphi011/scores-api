@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"net/http"
 	"strconv"
 
 	"github.com/raphi011/scores"
@@ -63,52 +62,37 @@ func initRouter(app app) *gin.Engine {
 	router.GET("/auth", authHandler.googleAuthenticate)
 	router.POST("/pwAuth", authHandler.passwordAuthenticate)
 
+	localhost := router.Group("/")
+	localhost.Use(localhostAuth())
+	localhost.GET("/volleynet/scrape/tournaments", volleynetHandler.scrapeTournaments)
+	localhost.GET("/volleynet/scrape/ladder", volleynetHandler.scrapeLadder)
+
 	auth := router.Group("/")
 	auth.Use(authRequired())
-	{
-		auth.POST("/logout", authHandler.logout)
+	auth.POST("/logout", authHandler.logout)
 
-		auth.GET("/groups", groupHandler.index)
-		auth.GET("/groups/:groupID/matches", matchHandler.index)
-		auth.POST("/groups/:groupID/matches", matchHandler.matchCreate)
-		auth.GET("/groups/:groupID/players", playerHandler.playerIndex)
-		auth.GET("/groups/:groupID/playerStatistics", statisticHandler.players)
-		auth.GET("/groups/:groupID/teamStatistics", statisticHandler.players)
-		auth.GET("/groups/:groupID", groupHandler.groupShow)
+	auth.GET("/groups", groupHandler.index)
+	auth.GET("/groups/:groupID/matches", matchHandler.index)
+	auth.POST("/groups/:groupID/matches", matchHandler.matchCreate)
+	auth.GET("/groups/:groupID/players", playerHandler.playerIndex)
+	auth.GET("/groups/:groupID/playerStatistics", statisticHandler.players)
+	auth.GET("/groups/:groupID/teamStatistics", statisticHandler.players)
+	auth.GET("/groups/:groupID", groupHandler.groupShow)
 
-		auth.GET("/volleynet/scrape/tournaments", volleynetHandler.scrapeTournaments)
-		auth.GET("/volleynet/scrape/ladder", volleynetHandler.scrapeLadder)
+	auth.POST("/volleynet/signup", volleynetHandler.signup)
+	auth.GET("/volleynet/tournaments", volleynetHandler.allTournaments)
+	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.tournament)
+	auth.GET("/volleynet/players/search", volleynetHandler.searchPlayers)
 
-		auth.POST("/volleynet/signup", volleynetHandler.signup)
-		auth.GET("/volleynet/tournaments", volleynetHandler.allTournaments)
-		auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.tournament)
-		auth.GET("/volleynet/players/search", volleynetHandler.searchPlayers)
+	auth.GET("/matches/:matchID", matchHandler.matchShow)
+	auth.DELETE("/matches/:matchID", matchHandler.matchDelete)
 
-		auth.GET("/matches/:matchID", matchHandler.matchShow)
-		auth.DELETE("/matches/:matchID", matchHandler.matchDelete)
-
-		auth.POST("/players", playerHandler.playerCreate)
-		auth.GET("/players/:playerID/playerStatistics", statisticHandler.player)
-		auth.GET("/players/:playerID/matches", matchHandler.byPlayer)
-		auth.GET("/players/:playerID/teamStatistics", statisticHandler.playerTeams)
-	}
+	auth.POST("/players", playerHandler.playerCreate)
+	auth.GET("/players/:playerID/playerStatistics", statisticHandler.player)
+	auth.GET("/players/:playerID/matches", matchHandler.byPlayer)
+	auth.GET("/players/:playerID/teamStatistics", statisticHandler.playerTeams)
 
 	return router
-}
-
-func authRequired() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		userID := session.Get("user-id")
-
-		if userID == nil {
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-
-		c.Set("userID", userID)
-		c.Next()
-	}
 }
 
 func jsonn(c *gin.Context, code int, data interface{}, message string) {
