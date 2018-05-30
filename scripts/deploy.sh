@@ -6,6 +6,7 @@ PLATFORM=release
 URL=https://scores.raphi011.com
 PORT_FRONTEND=3000
 PORT_BACKEND=8080
+DATA_DIRECTORY=/home/raphi/scores-data
 
 for i in "$@"
 do
@@ -19,6 +20,7 @@ case $i in
     PORT_FRONTEND=3001
     PORT_BACKEND=8081
     URL=https://beta.raphi011.com
+	DATA_DIRECTORY=/home/raphi/scores-data-beta
     shift
     ;;
     *)
@@ -66,10 +68,10 @@ case "$PROG" in
 	"frontend")
 		sudo docker run -it -d --name scores-frontend-${PLATFORM} -p 127.0.0.1:${PORT_FRONTEND}:3000 raphi011/scores-frontend-${PLATFORM};;
 	"backend")
-		sudo docker run -it -d --name scores-backend-${PLATFORM} -v /home/raphi/scores-data:/srv/scores -p 127.0.0.1:${PORT_BACKEND}:8080 raphi011/scores-backend-${PLATFORM};;
+		sudo docker run -it -d --name scores-backend-${PLATFORM} -v ${DATA_DIRECTORY}:/srv/scores -p 127.0.0.1:${PORT_BACKEND}:8080 raphi011/scores-backend-${PLATFORM};;
 	*)
 		sudo docker run -it -d --name scores-frontend-${PLATFORM} -p 127.0.0.1:${PORT_FRONTEND}:3000 raphi011/scores-frontend-${PLATFORM}
-		sudo docker run -it -d --name scores-backend-${PLATFORM} -v /home/raphi/scores-data:/srv/scores -p 127.0.0.1:${PORT_BACKEND}:8080 raphi011/scores-backend-${PLATFORM}
+		sudo docker run -it -d --name scores-backend-${PLATFORM} -v ${DATA_DIRECTORY}:/srv/scores -p 127.0.0.1:${PORT_BACKEND}:8080 raphi011/scores-backend-${PLATFORM}
 
 		;;
 esac
