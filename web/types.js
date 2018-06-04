@@ -93,15 +93,20 @@ export type VolleynetSearchPlayer = {
   birthday: string,
 };
 
+export type Gender = 'M' | 'W';
+
 export type VolleynetPlayer = {
+  id: number,
   firstName: string,
   lastName: string,
-  id: number,
+  login: string,
   birthday: string,
+  gender: Gender,
   totalPoints: string,
+  rank: string,
+  club: string,
   countryUnion: string,
   license: string,
-  login: string,
 };
 
 export type VolleynetTeam = {
@@ -115,8 +120,6 @@ export type VolleynetTeam = {
   prizeMoney: string,
   deregistered: boolean,
 };
-
-export type Gender = 'M' | 'W';
 
 export type Tournament = {
   id: number,

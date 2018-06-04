@@ -13,10 +13,10 @@ import (
 )
 
 type PlayerInfo struct {
+	ID        int    `json:"id"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Login     string `json:"login"`
-	ID        int    `json:"id"`
 	Birthday  string `json:"birthday"`
 }
 

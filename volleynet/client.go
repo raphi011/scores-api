@@ -18,9 +18,11 @@ type Client struct {
 func genderLong(gender string) string {
 	if gender == "M" {
 		return "Herren"
-	} else {
+	} else if gender == "D" {
 		return "Damen"
 	}
+
+	return ""
 }
 
 func DefaultClient() *Client {

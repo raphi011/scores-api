@@ -33,6 +33,12 @@ type TournamentTeam struct {
 	Deregistered bool    `json:"deregistered"`
 }
 
+const (
+	StatusUpcoming = "upcoming"
+	StatusDone     = "done"
+	StatusCanceled = "canceled"
+)
+
 type Tournament struct {
 	Start            time.Time `json:"start"`
 	End              time.Time `json:"end"`
@@ -152,7 +158,7 @@ func parsePlayerIDFromSteckbrief(s *goquery.Selection) (int, error) {
 	return strconv.Atoi(href[dashIndex+1:])
 }
 
-func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) {
+func parseFullTournamentTeams(body *goquery.Document, tournamentID int, gender string) ([]TournamentTeam, error) {
 	teams := []TournamentTeam{}
 
 	tables := body.Find("tbody")
@@ -163,6 +169,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 
 		if rows.First().Children().Eq(0).Text() == "Nr." {
 			team := TournamentTeam{}
+			team.TournamentID = tournamentID
 
 			for j := range rows.Nodes {
 				if j == 0 {
@@ -170,6 +177,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 				}
 
 				player := &Player{}
+				player.Gender = gender
 
 				row := rows.Eq(j)
 				columnsCount := len(row.Children().Nodes)
@@ -246,6 +254,7 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 					team.Player2 = player
 					teams = append(teams, team)
 					team = TournamentTeam{}
+					team.TournamentID = tournamentID
 				}
 
 			}
@@ -256,10 +265,12 @@ func parseFullTournamentTeams(body *goquery.Document) ([]TournamentTeam, error) 
 	return teams, nil
 }
 
-func parseFullTournament(html io.Reader) (*FullTournament, error) {
+func parseFullTournament(html io.Reader, tournamentID int, gender string) (*FullTournament, error) {
 	doc, err := GetDocument(html)
 
 	t := &FullTournament{}
+	t.ID = tournamentID
+	t.Gender = gender
 
 	name := doc.Find("h2").Text()
 
@@ -321,7 +332,7 @@ func parseFullTournament(html io.Reader) (*FullTournament, error) {
 		}
 	}
 
-	t.Teams, err = parseFullTournamentTeams(doc)
+	t.Teams, err = parseFullTournamentTeams(doc, tournamentID, gender)
 
 	if err != nil {
 		return nil, err
@@ -376,20 +387,21 @@ func (c *Client) GetApiTournamentLink(t *Tournament) string {
 	return c.ApiUrl + t.Link
 }
 
-func (c *Client) GetTournament(id int, link string) (*FullTournament, error) {
+func (c *Client) GetTournament(id int, link, gender, league string, season int) (*FullTournament, error) {
 	resp, err := http.Get(link)
 
 	if err != nil {
 		return nil, err
 	}
 
-	t, err := parseFullTournament(resp.Body)
+	t, err := parseFullTournament(resp.Body, id, gender)
+	t.League = league
+	t.Season = season
 
 	if err != nil {
 		return nil, err
 	}
 
-	t.ID = id
 	t.Link = c.GetTournamentLink(&t.Tournament)
 
 	return t, nil
@@ -573,7 +585,11 @@ func parseTournaments(html io.Reader) ([]Tournament, error) {
 			case 3:
 				tournament.League = trimmedText(c)
 			case 4:
-				tournament.EntryLink = parseHref(c.Find("a"))
+				if trimmedText(c) == "Abgesagt" {
+					tournament.Status = StatusCanceled
+				} else {
+					tournament.EntryLink = parseHref(c.Find("a"))
+				}
 			}
 		}
 

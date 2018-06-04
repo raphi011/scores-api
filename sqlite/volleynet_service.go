@@ -65,6 +65,7 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 		&t.LivescoringLink,
 		&t.Latitude,
 		&t.Longitude,
+		&t.Season,
 	)
 
 	if err != nil {
@@ -116,7 +117,8 @@ const (
 		t.current_points,
 		t.live_scoring_link,
 		t.loc_lat,
-		t.loc_lon
+		t.loc_lon,
+		t.season
 	FROM volleynetTournaments t
 	`
 
@@ -190,32 +192,32 @@ const (
 	`
 
 	tournamentsUpdateSQL = `
-		UPDATE volleynetTournaments
-			SET updated_at = CURRENT_TIMESTAMP,
-			SET gender = $1,
-			SET start = $2,
-			SET end = $3,
-			SET name = $4,
-			SET league = $5,
-			SET link = $6,
-			SET entry_link = $7,
-			SET status = $8,
-			SET registration_open = $9,
-			SET location = $10,
-			SET html_notes = $11,
-			SET mode = $12,
-			SET max_points = $13,
-			SET min_teams = $14,
-			SET end_registration = $15,
-			SET organiser = $16,
-			SET phone = $17,
-			SET email = $18,
-			SET web = $19,
-			SET current_points = $20,
-			SET live_scoring_link = $21,
-			SET loc_lat = $22,
-			SET loc_lon = $23,
-			SET season = $24
+		UPDATE volleynetTournaments SET
+			updated_at = CURRENT_TIMESTAMP,
+			gender = $1,
+			start = $2,
+			end = $3,
+			name = $4,
+			league = $5,
+			link = $6,
+			entry_link = $7,
+			status = $8,
+			registration_open = $9,
+			location = $10,
+			html_notes = $11,
+			mode = $12,
+			max_points = $13,
+			min_teams = $14,
+			end_registration = $15,
+			organiser = $16,
+			phone = $17,
+			email = $18,
+			web = $19,
+			current_points = $20,
+			live_scoring_link = $21,
+			loc_lat = $22,
+			loc_lon = $23,
+			season = $24
 		WHERE id = $25
 	`
 )
@@ -253,11 +255,44 @@ func (s *VolleynetService) NewTournament(t *volleynet.FullTournament) error {
 		t.Season,
 	)
 
+	return err
+}
+
+func (s *VolleynetService) UpdateTournamentTeam(t *volleynet.TournamentTeam) error {
+	result, err := s.DB.Exec(
+		volleynetTeamsUpdateSQL,
+		t.Rank,
+		t.Seed,
+		t.TotalPoints,
+		t.WonPoints,
+		t.PrizeMoney,
+		t.Deregistered,
+		t.TournamentID,
+		t.Player1.ID,
+		t.Player2.ID,
+	)
+
 	if err != nil {
 		return err
 	}
 
-	return s.AddTeams(t.Teams, t.ID)
+	rowsAffected, _ := result.RowsAffected()
+
+	if rowsAffected != 1 {
+		return errors.New("Team not found")
+	}
+
+	return nil
+}
+
+func (s *VolleynetService) UpdateTournamentTeams(teams []volleynet.TournamentTeam) error {
+	for _, t := range teams {
+		if err := s.UpdateTournamentTeam(&t); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func (s *VolleynetService) UpdateTournament(t *volleynet.FullTournament) error {
@@ -333,6 +368,18 @@ const (
 		JOIN volleynetPlayers p2 on p2.id = t.volleynet_player_2_id
 		WHERE t.volleynet_tournament_id = $1	
 	`
+
+	volleynetTeamsUpdateSQL = `
+		UPDATE volleynetTournamentTeams SET
+			rank = $1,
+			seed = $2,
+			total_points = $3,
+			won_points = $4,
+			prize_money = $5,
+			deregistered = $6
+		WHERE volleynet_tournament_id = $7 AND volleynet_player_1_id = $8 AND volleynet_player_2_id = $9
+	`
+
 	volleynetTeamsInsertSQL = `
 		INSERT INTO volleynetTournamentTeams
 		(
@@ -361,9 +408,9 @@ const (
 	`
 )
 
-func (s *VolleynetService) AddTeam(t *volleynet.TournamentTeam, tournamentID int) error {
+func (s *VolleynetService) NewTeam(t *volleynet.TournamentTeam) error {
 	_, err := s.DB.Exec(volleynetTeamsInsertSQL,
-		tournamentID,
+		t.TournamentID,
 		t.Player1.ID,
 		t.Player2.ID,
 		t.Rank,
@@ -377,9 +424,9 @@ func (s *VolleynetService) AddTeam(t *volleynet.TournamentTeam, tournamentID int
 	return err
 }
 
-func (s *VolleynetService) AddTeams(teams []volleynet.TournamentTeam, tournamentID int) error {
+func (s *VolleynetService) NewTeams(teams []volleynet.TournamentTeam) error {
 	for _, t := range teams {
-		err := s.AddTeam(&t, tournamentID)
+		err := s.NewTeam(&t)
 
 		if err != nil {
 			return err
@@ -467,7 +514,8 @@ const (
 			p.rank,
 			p.club,
 			p.country_union,
-			p.license
+			p.license,
+			p.total_points
 		FROM volleynetPlayers p
 	`
 
@@ -475,19 +523,20 @@ const (
 	volleynetPlayersSelectSQL = volleynetBasePlayersSelectSQL + " WHERE p.gender = $1"
 
 	volleynetPlayersUpdateSQL = `
-		UPDATE volleynetPlayers
-			SET updated_at = CURRENT_TIMESTAMP,
-			SET first_name = $1,
-			SET last_name = $2,
-			SET login = $3,
-			SET birthday = $4,
-			SET gender = $5,
-			SET total_points = $6,
-			SET rank = $7,
-			SET club = $8,
-			SET country_union = $9,
-			SET license = $10
-		WHERE ID = $11
+		UPDATE volleynetPlayers SET
+			updated_at = CURRENT_TIMESTAMP,
+			first_name = $1,
+			last_name = $2,
+			login = $3,
+			birthday = $4,
+			gender = $5,
+			total_points = $6,
+			rank = $7,
+			club = $8,
+			country_union = $9,
+			license = $10,
+			total_points = $11
+		WHERE id = $12
 	`
 
 	volleynetPlayersInsertSQL = `
@@ -505,7 +554,8 @@ const (
 			rank,
 			club,
 			country_union,
-			license
+			license,
+			total_points
 		)
 		VALUES
 		(
@@ -521,7 +571,8 @@ const (
 			$8,
 			$9,
 			$10,
-			$11
+			$11,
+			$12
 		)
 	`
 )
@@ -564,6 +615,7 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 		&p.Club,
 		&p.CountryUnion,
 		&p.License,
+		&p.TotalPoints,
 	)
 
 	if err != nil {
@@ -590,6 +642,7 @@ func (s *VolleynetService) NewPlayer(p *volleynet.Player) error {
 		p.Club,
 		p.CountryUnion,
 		p.License,
+		p.TotalPoints,
 	)
 
 	return err
@@ -608,6 +661,7 @@ func (s *VolleynetService) UpdatePlayer(p *volleynet.Player) error {
 		p.Club,
 		p.CountryUnion,
 		p.License,
+		p.TotalPoints,
 		p.ID)
 
 	if err != nil {
