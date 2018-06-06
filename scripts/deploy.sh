@@ -6,7 +6,7 @@ PLATFORM=release
 URL=https://scores.raphi011.com
 PORT_FRONTEND=3000
 PORT_BACKEND=8080
-DATA_DIRECTORY=/home/raphi/scores-data
+DATA_DIRECTORY=~/scores-data
 
 for i in "$@"
 do
@@ -15,12 +15,15 @@ case $i in
     CHECKOUT="${i#*=}"
     shift
     ;;
+    -d|--data-dir)
+	DATA_DIRECTORY="${i#*=}"
+	shift
+	;;
     -b|--beta)
     PLATFORM=beta
     PORT_FRONTEND=3001
     PORT_BACKEND=8081
     URL=https://beta.raphi011.com
-	DATA_DIRECTORY=/home/raphi/scores-data-beta
     shift
     ;;
     *)
@@ -36,7 +39,6 @@ fi
 
 echo "Deploying ${PROG} on ${PLATFORM} at version ${CHECKOUT}"
 
-cd /home/raphi/go/src/github.com/raphi011/scores
 git checkout ${CHECKOUT}
 git pull
 

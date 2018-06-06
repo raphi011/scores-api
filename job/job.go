@@ -105,6 +105,8 @@ func StartJobs(quit chan int, jobs ...*Job) error {
 			}
 		case <-quit:
 			log.Printf("user cancelation: waiting for remaining jobs...")
+
+			// TODO: cancel sleeping jobs
 			cancel = true
 		}
 	}
