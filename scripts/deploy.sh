@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROG=both
+PROG=all
 CHECKOUT=master
 PLATFORM=release
 URL=https://scores.raphi011.com
