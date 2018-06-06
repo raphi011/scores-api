@@ -60,7 +60,6 @@ case "$PROG" in
 		./scripts/build-backend.sh ${PLATFORM} ${URL} &
 		echo "Building scraper"
 		./scripts/build-scrape.sh ${PLATFORM}
-		;;
 	*)
 		echo "Invalid prog: ${PROG}"
 		exit 1
