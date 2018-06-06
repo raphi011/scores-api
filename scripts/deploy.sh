@@ -78,8 +78,7 @@ case "$PROG" in
 	*)
 		sudo docker run -it -d --name scores-frontend-${PLATFORM} -p 127.0.0.1:${PORT_FRONTEND}:3000 raphi011/scores-frontend-${PLATFORM}
 		sudo docker run -it -d --name scores-backend-${PLATFORM} -v ${DATA_DIRECTORY}:/srv/scores -p 127.0.0.1:${PORT_BACKEND}:8080 raphi011/scores-backend-${PLATFORM}
-		sudo docker run -it -d --name scores-scrape-${PLATFORM} --net=host raphi011/scores-scrape-${PLATFORM} -url http://localhost:${PORT_BACKEND};;
-
+		sudo docker run -it -d --name scores-scrape-${PLATFORM} --net=host raphi011/scores-scrape-${PLATFORM} -url http://localhost:${PORT_BACKEND}
 		;;
 esac
 
