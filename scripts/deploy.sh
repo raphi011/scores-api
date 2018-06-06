@@ -15,7 +15,7 @@ case $i in
     CHECKOUT="${i#*=}"
     shift
     ;;
-    -d|--data-dir)
+    -d=*|--data-dir=*)
 	DATA_DIRECTORY="${i#*=}"
 	shift
 	;;
