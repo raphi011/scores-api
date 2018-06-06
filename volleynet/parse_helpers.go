@@ -12,6 +12,15 @@ import (
 
 var numberRegex = regexp.MustCompile("\\d+")
 
+func parseFloat(text string) float32 {
+	val, err := strconv.ParseFloat(text, 32)
+	if err != nil {
+		return 0
+	}
+
+	return float32(val)
+}
+
 func parseNumber(text string) int {
 	nrstr := numberRegex.FindString(text)
 	nr, err := strconv.Atoi(nrstr)

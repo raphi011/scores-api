@@ -56,6 +56,7 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 		&t.Mode,
 		&t.MaxPoints,
 		&t.MinTeams,
+		&t.MaxTeams,
 		&t.EndRegistration,
 		&t.Organiser,
 		&t.Phone,
@@ -109,6 +110,7 @@ const (
 		t.mode,
 		t.max_points,
 		t.min_teams,
+		t.max_teams,
 		t.end_registration,
 		t.organiser,
 		t.phone,
@@ -148,6 +150,7 @@ const (
 			mode,
 			max_points,
 			min_teams,
+			max_teams,
 			end_registration,
 			organiser,
 			phone,
@@ -187,7 +190,8 @@ const (
 			$22,
 			$23,
 			$24,
-			$25
+			$25,
+			$26
 		)
 	`
 
@@ -208,17 +212,18 @@ const (
 			mode = $12,
 			max_points = $13,
 			min_teams = $14,
-			end_registration = $15,
-			organiser = $16,
-			phone = $17,
-			email = $18,
-			web = $19,
-			current_points = $20,
-			live_scoring_link = $21,
-			loc_lat = $22,
-			loc_lon = $23,
-			season = $24
-		WHERE id = $25
+			max_teams = $15,	
+			end_registration = $16,
+			organiser = $17,
+			phone = $18,
+			email = $19,
+			web = $20,
+			current_points = $21,
+			live_scoring_link = $22,
+			loc_lat = $23,
+			loc_lon = $24,
+			season = $25
+		WHERE id = $26
 	`
 )
 
@@ -243,6 +248,7 @@ func (s *VolleynetService) NewTournament(t *volleynet.FullTournament) error {
 		t.Mode,
 		t.MaxPoints,
 		t.MinTeams,
+		t.MaxTeams,
 		t.EndRegistration,
 		t.Organiser,
 		t.Phone,
@@ -312,6 +318,7 @@ func (s *VolleynetService) UpdateTournament(t *volleynet.FullTournament) error {
 		t.Mode,
 		t.MaxPoints,
 		t.MinTeams,
+		t.MaxTeams,
 		t.EndRegistration,
 		t.Organiser,
 		t.Phone,

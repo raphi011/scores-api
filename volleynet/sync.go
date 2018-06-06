@@ -143,7 +143,7 @@ func SyncTournaments(persisted []FullTournament, current ...Tournament) []Tourna
 		ts = append(ts, TournamentSyncInformation{
 			OldTournament: oldTournament,
 			NewTournament: newTournament,
-			IsNew:         syncType == SyncTournamentNew,
+			IsNew:         oldTournament == nil,
 			SyncType:      syncType,
 		})
 	}
@@ -196,7 +196,7 @@ func SyncTournamentTeams(tournamentSyncType string, persisted, current []Tournam
 		ts = append(ts, TournamentTeamSyncInformation{
 			OldTeam:  oldTeam,
 			NewTeam:  newTeam,
-			IsNew:    syncType == SyncTeamNew,
+			IsNew:    oldTeam == nil,
 			SyncType: syncType,
 		})
 	}

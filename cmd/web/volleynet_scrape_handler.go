@@ -105,7 +105,13 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 
 	for _, t := range syncInformation {
 		link := client.GetApiTournamentLink(t.NewTournament)
-		fullTournament, err := client.GetTournament(t.NewTournament.ID, link, gender, league, seasonNumber)
+		fullTournament, err := client.GetTournament(
+			t.NewTournament.ID,
+			seasonNumber,
+			link,
+			gender,
+			league,
+			t.NewTournament.Status)
 
 		if err != nil {
 			c.AbortWithError(http.StatusServiceUnavailable, err)
@@ -201,7 +207,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 
 	}
 
-	result.ScrapeDuration = time.Since(start)
+	result.ScrapeDuration = time.Since(start) / time.Millisecond
 	result.Success = true
 
 	jsonn(c, http.StatusOK, result, "")
