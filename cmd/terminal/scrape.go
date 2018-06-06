@@ -29,12 +29,23 @@ func scrape() {
 
 	log.Printf("scraping via url %s", *url)
 
-	tournamentsJob := &job.Job{Name: "Tournaments", Do: tournaments, Interval: 5 * time.Minute}
-	playersJob := &job.Job{Name: "Players", Do: players, MaxFailures: 3, Interval: 5 * time.Minute}
+	playersJob := &job.Job{
+		Name:        "Players",
+		Do:          players,
+		MaxFailures: 3,
+		Interval:    5 * time.Minute,
+	}
+	tournamentsJob := &job.Job{
+		Name:        "Tournaments",
+		Do:          tournaments,
+		MaxFailures: 3,
+		Interval:    5 * time.Minute,
+		Delay:       1 * time.Minute,
+	}
 
 	job.StartJobs(quit,
-		tournamentsJob,
 		playersJob,
+		tournamentsJob,
 	)
 }
 

@@ -19,11 +19,12 @@ type Job struct {
 	Name        string        // name of the job, useful in logs
 	MaxFailures int           // max # of consecutive failures, retries endlessly if 0
 	Do          func() error  // when started the job calls the do function
+	Delay       time.Duration // delays first job start
 	Interval    time.Duration // attempts to call the job every interval, if the job takes longer than the interval it will be restarted immediately after finishing
 }
 
 func formatDuration(d time.Duration) string {
-	return fmt.Sprintf("%dm %ds", int(d.Minutes()), int(d.Seconds()))
+	return fmt.Sprintf("%dm %ds", int(d.Minutes()), int(d.Seconds())%60)
 }
 
 func do(job *Job, output chan *Job) {
@@ -62,6 +63,10 @@ func StartJobs(quit chan int, jobs ...*Job) error {
 		if job.Do == nil {
 			log.Printf("WARNING: job '%v' has no 'Do' function, skipping...", job)
 			continue
+		}
+
+		if job.Delay > 0 {
+			job.sleep = job.Delay
 		}
 
 		go do(job, output)
