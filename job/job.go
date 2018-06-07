@@ -15,9 +15,11 @@ type Job struct {
 	lastDuration time.Duration
 	lastErr      error
 	errors       []error
+	runs         uint
 
+	MaxRuns     uint          // limit the # of runs, no limit if 0
 	Name        string        // name of the job, useful in logs
-	MaxFailures int           // max # of consecutive failures, retries endlessly if 0
+	MaxFailures uint          // max # of consecutive failures, retries endlessly if 0
 	Do          func() error  // when started the job calls the do function
 	Delay       time.Duration // delays first job start
 	Interval    time.Duration // attempts to call the job every interval, if the job takes longer than the interval it will be restarted immediately after finishing
@@ -40,6 +42,8 @@ func do(job *Job, output chan *Job) {
 	job.end = time.Now()
 	job.lastDuration = job.end.Sub(job.start)
 	log.Printf("job '%v' ended after %s", job.Name, formatDuration(job.lastDuration))
+
+	job.runs++
 
 	if job.lastErr != nil {
 		job.errors = append(job.errors, job.lastErr)
@@ -93,8 +97,8 @@ func StartJobs(quit chan int, jobs ...*Job) error {
 				log.Printf("WARNING: job '%v' ran longer than the interval duration", job.Name)
 			}
 
-			if !cancel {
-				if job.MaxFailures <= 0 || len(job.errors) < job.MaxFailures {
+			if !cancel && (job.MaxRuns == 0 || job.runs < job.MaxRuns) {
+				if job.MaxFailures <= 0 || len(job.errors) < int(job.MaxFailures) {
 					job.sleep = job.Interval - job.lastDuration
 
 					go do(job, output)

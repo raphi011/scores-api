@@ -14,6 +14,7 @@ import (
 )
 
 var url = flag.String("url", "http://localhost:8080", "url of scores backend e.g.: http(s)://hostname:port")
+var scrapeOnce = flag.Bool("once", false, "run each job only once")
 
 func scrape() {
 	sigs := make(chan os.Signal, 1)
@@ -29,11 +30,18 @@ func scrape() {
 
 	log.Printf("scraping via url %s", *url)
 
+	maxRuns := 0
+
+	if *scrapeOnce {
+		maxRuns = 1
+	}
+
 	playersJob := &job.Job{
 		Name:        "Players",
 		Do:          players,
 		MaxFailures: 3,
 		Interval:    5 * time.Minute,
+		MaxRuns:     maxRuns,
 	}
 	tournamentsJob := &job.Job{
 		Name:        "Tournaments",
@@ -41,6 +49,7 @@ func scrape() {
 		MaxFailures: 3,
 		Interval:    5 * time.Minute,
 		Delay:       1 * time.Minute,
+		MaxRuns:     maxRuns,
 	}
 
 	job.StartJobs(quit,
