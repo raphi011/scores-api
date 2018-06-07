@@ -30,7 +30,7 @@ func scrape() {
 
 	log.Printf("scraping via url %s", *url)
 
-	maxRuns := 0
+	maxRuns := uint(0)
 
 	if *scrapeOnce {
 		maxRuns = 1
