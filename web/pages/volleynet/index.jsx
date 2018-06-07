@@ -62,8 +62,9 @@ class Volleynet extends React.Component<Props, State> {
     );
 
     return {
-      upcoming: tournaments.filter(t => new Date(t.start) >= Date.now()),
-      past: tournaments.filter(t => new Date(t.start) < Date.now()),
+      upcoming: tournaments.filter(t => t.status === 'upcoming'),
+      past: tournaments.filter(t => t.status === 'done'),
+      canceled: tournaments.filter(t => t.status === 'canceled'),
       played: [],
     };
   };
@@ -84,6 +85,9 @@ class Volleynet extends React.Component<Props, State> {
           ts = tournaments.past;
           break;
         case 2:
+          ts = tournaments.canceled;
+          break;
+        case 3:
           ts = tournaments.played;
           break;
         default: // this shouldn't happen
@@ -101,6 +105,7 @@ class Volleynet extends React.Component<Props, State> {
         <Tabs onChange={this.onTabClick} value={tabOpen} fullWidth>
           <Tab label="Upcoming" />
           <Tab label="Past" />
+          <Tab label="Canceled" />
           <Tab label="Played" />
         </Tabs>
         {content}
