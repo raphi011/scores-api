@@ -82,13 +82,6 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
 	result := ScrapeTournamentResult{}
 
-	seasonNumber, err := strconv.Atoi(season)
-
-	if err != nil {
-		c.Status(http.StatusBadRequest)
-		return
-	}
-
 	client := volleynet.DefaultClient()
 
 	start := time.Now()
@@ -104,14 +97,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	syncInformation := volleynet.SyncTournaments(persisted, current...)
 
 	for _, t := range syncInformation {
-		link := client.GetApiTournamentLink(t.NewTournament)
-		fullTournament, err := client.GetTournament(
-			t.NewTournament.ID,
-			seasonNumber,
-			link,
-			gender,
-			league,
-			t.NewTournament.Status)
+		fullTournament, err := client.ComplementTournament(*t.NewTournament)
 
 		if err != nil {
 			c.AbortWithError(http.StatusServiceUnavailable, err)
@@ -166,7 +152,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 
 		for _, team := range syncTournamentTeams {
 			if team.IsNew {
-				persistedPlayers, err = h.AddPlayersIfNew(persistedPlayers, team.NewTeam.Player1, team.NewTeam.Player2)
+				persistedPlayers, err = h.addPlayersIfNew(persistedPlayers, team.NewTeam.Player1, team.NewTeam.Player2)
 
 				if err == nil {
 					result.NewTeams++
@@ -213,7 +199,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	jsonn(c, http.StatusOK, result, "")
 }
 
-func (h *volleynetScrapeHandler) AddPlayersIfNew(persistedPlayers []volleynet.Player, players ...*volleynet.Player) (
+func (h *volleynetScrapeHandler) addPlayersIfNew(persistedPlayers []volleynet.Player, players ...*volleynet.Player) (
 	[]volleynet.Player, error) {
 
 	for _, p := range players {
