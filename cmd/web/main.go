@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -35,8 +36,7 @@ func main() {
 	db, err := sqlite.Open(*dbPath)
 
 	if err != nil {
-		log.Printf("Could not open DB: %v\n", err)
-		os.Exit(1)
+		panic(fmt.Sprintf("Could not open DB: %v\n", err))
 	}
 
 	defer db.Close()
