@@ -16,6 +16,7 @@ type Job struct {
 	lastErr      error
 	errors       []error
 	runs         uint
+	canceled     bool
 
 	MaxRuns     uint          // limit the # of runs, no limit if 0
 	Name        string        // name of the job, useful in logs
@@ -29,26 +30,41 @@ func formatDuration(d time.Duration) string {
 	return fmt.Sprintf("%dm %ds", int(d.Minutes()), int(d.Seconds())%60)
 }
 
-func do(job *Job, output chan *Job) {
-	if job.sleep > 0 {
+func sleep(sleep time.Duration, wake chan int) {
+	time.Sleep(sleep)
+	wake <- 1
+}
 
+func do(job *Job, output chan *Job, quit chan int) {
+	wake := make(chan int)
+
+	if job.sleep > 0 {
 		log.Printf("job '%v' going to sleep for: %s", job.Name, formatDuration(job.sleep))
-		time.Sleep(job.sleep)
+		go sleep(job.sleep, wake)
+
+		select {
+		case <-wake:
+			log.Printf("job '%v' running", job.Name)
+		case <-quit:
+			job.canceled = true
+			log.Printf("job '%v' canceled", job.Name)
+		}
 	}
 
-	job.start = time.Now()
-	log.Printf("job '%v' running", job.Name)
-	job.lastErr = job.Do()
-	job.end = time.Now()
-	job.lastDuration = job.end.Sub(job.start)
-	log.Printf("job '%v' ended after %s", job.Name, formatDuration(job.lastDuration))
+	if !job.canceled {
+		job.start = time.Now()
+		job.lastErr = job.Do()
+		job.end = time.Now()
+		job.lastDuration = job.end.Sub(job.start)
+		log.Printf("job '%v' ended after %s", job.Name, formatDuration(job.lastDuration))
 
-	job.runs++
+		job.runs++
 
-	if job.lastErr != nil {
-		job.errors = append(job.errors, job.lastErr)
-	} else {
-		job.errors = nil
+		if job.lastErr != nil {
+			job.errors = append(job.errors, job.lastErr)
+		} else {
+			job.errors = nil
+		}
 	}
 
 	output <- job
@@ -57,7 +73,8 @@ func do(job *Job, output chan *Job) {
 // StartJobs starts one more jobs in a fixed interval
 // If something is written to quit it waits for all jobs to finish and than returns
 func StartJobs(quit chan int, jobs ...*Job) error {
-	var jobsRunning uint32
+	quitJob := make(chan int, len(jobs))
+	var jobsRunning int
 
 	output := make(chan *Job)
 	jobsStarted := 0
@@ -73,9 +90,9 @@ func StartJobs(quit chan int, jobs ...*Job) error {
 			job.sleep = job.Delay
 		}
 
-		go do(job, output)
 		jobsRunning++
 		jobsStarted++
+		go do(job, output, quitJob)
 	}
 
 	if jobsStarted == 0 {
@@ -101,17 +118,20 @@ func StartJobs(quit chan int, jobs ...*Job) error {
 				if job.MaxFailures <= 0 || len(job.errors) < int(job.MaxFailures) {
 					job.sleep = job.Interval - job.lastDuration
 
-					go do(job, output)
 					jobsRunning++
+					go do(job, output, quitJob)
 				} else {
 					log.Printf("WARNING: job '%v' failed max. amount of times (%v), stopping...", job.Name, len(job.errors))
 				}
 			}
 		case <-quit:
-			log.Printf("user cancelation: waiting for remaining jobs...")
-
-			// TODO: cancel sleeping jobs
 			cancel = true
+
+			log.Printf("user cancelation: waiting for %d remaining jobs...", jobsRunning)
+
+			for i := 0; i < jobsRunning; i++ {
+				quitJob <- 1
+			}
 		}
 	}
 

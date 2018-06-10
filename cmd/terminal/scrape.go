@@ -19,7 +19,7 @@ var scrapeOnce = flag.Bool("once", false, "run each job only once")
 func scrape() {
 	sigs := make(chan os.Signal, 1)
 
-	signal.Notify(sigs, syscall.SIGINT)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
 	quit := make(chan int)
 
@@ -36,25 +36,26 @@ func scrape() {
 		maxRuns = 1
 	}
 
-	playersJob := &job.Job{
-		Name:        "Players",
-		Do:          players,
-		MaxFailures: 3,
-		Interval:    5 * time.Minute,
-		MaxRuns:     maxRuns,
-	}
-	tournamentsJob := &job.Job{
-		Name:        "Tournaments",
-		Do:          tournaments,
-		MaxFailures: 3,
-		Interval:    5 * time.Minute,
-		Delay:       1 * time.Minute,
-		MaxRuns:     maxRuns,
+	jobs := []*job.Job{
+		&job.Job{
+			Name:        "Players",
+			Do:          players,
+			MaxFailures: 3,
+			Interval:    5 * time.Minute,
+			MaxRuns:     maxRuns,
+		},
+		&job.Job{
+			Name:        "Tournaments",
+			Do:          tournaments,
+			MaxFailures: 3,
+			Interval:    5 * time.Minute,
+			Delay:       1 * time.Minute,
+			MaxRuns:     maxRuns,
+		},
 	}
 
 	job.StartJobs(quit,
-		playersJob,
-		tournamentsJob,
+		jobs...,
 	)
 }
 
