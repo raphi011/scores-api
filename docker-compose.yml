@@ -7,11 +7,20 @@ services:
       - '3000:3000'
     
   backend:
-    build: .
+    build: 
+      context: .
+      dockerfile: ./cmd/web/Dockerfile
+      
     ports:
       - '8080:8080'
     volumes:
       - './data:/srv/scores'
     
-    
-
+  scrape:
+    depends_on:
+      - 'backend'
+    build: 
+      context: .
+      dockerfile: ./cmd/terminal/Dockerfile
+    volumes:
+      - './data:/srv/scores'

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -64,7 +64,7 @@ func players() error {
 	if err != nil {
 		return err
 	} else if resp.StatusCode != http.StatusOK {
-		return errors.New("scraping failed")
+		return fmt.Errorf("scraping failed with code: %d", resp.StatusCode)
 	}
 
 	return nil
@@ -76,7 +76,7 @@ func tournaments() error {
 	if err != nil {
 		return err
 	} else if resp.StatusCode != http.StatusOK {
-		return errors.New("scraping failed")
+		return fmt.Errorf("scraping failed with code: %d", resp.StatusCode)
 	}
 
 	return nil

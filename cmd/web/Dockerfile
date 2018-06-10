@@ -1,4 +1,4 @@
-FROM arm32v7/golang:latest
+FROM golang:latest
 
 ARG app_env
 ARG backend_url
@@ -20,6 +20,7 @@ COPY . .
 WORKDIR /go/src/github.com/raphi011/scores/cmd/web
 RUN go install
 
-CMD ["/go/bin/web", "-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
+ENTRYPOINT [ "/go/bin/web" ]
+CMD ["-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
 
 EXPOSE 8080

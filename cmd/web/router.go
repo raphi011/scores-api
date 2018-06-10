@@ -67,7 +67,7 @@ func initRouter(app app) *gin.Engine {
 	router.POST("/pwAuth", authHandler.passwordAuthenticate)
 
 	localhost := router.Group("/")
-	localhost.Use(localhostAuth())
+	localhost.Use(localAuth())
 	localhost.GET("/volleynet/scrape/tournaments", volleynetScrapeHandler.scrapeTournaments)
 	localhost.GET("/volleynet/scrape/ladder", volleynetScrapeHandler.scrapeLadder)
 
