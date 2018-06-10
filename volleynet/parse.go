@@ -451,7 +451,7 @@ func parseStartEndDates(s *goquery.Selection) (time.Time, time.Time, error) {
 	}
 }
 
-func (c *Client) parseTournaments(html io.Reader) ([]Tournament, error) {
+func (c *Client) parseTournaments(html io.Reader, gender string) ([]Tournament, error) {
 	doc, err := goquery.NewDocumentFromReader(html)
 
 	if err != nil {
@@ -465,7 +465,7 @@ func (c *Client) parseTournaments(html io.Reader) ([]Tournament, error) {
 	for i := range rows.Nodes {
 		r := rows.Eq(i)
 
-		tournament := Tournament{}
+		tournament := Tournament{Gender: gender}
 
 		columns := r.Find("td")
 

@@ -101,7 +101,7 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 
 	defer resp.Body.Close()
 
-	return c.parseTournaments(resp.Body)
+	return c.parseTournaments(resp.Body, gender)
 }
 
 func (c *Client) Ladder(gender string) ([]Player, error) {
