@@ -1,0 +1,14 @@
+version: '3.6'
+
+services:
+  nginx:
+    image: 'nginx:latest'
+    ports:
+      - '80:80'
+    volumes:
+      - './nginx-config:/etc/nginx/conf.d:ro'
+
+  frontend:
+    command: run dev
+    volumes:
+      - './web:/web'

@@ -1,8 +1,11 @@
 node_modules
+data
+
 .next
 .DS_Store
 .vscode
 client_secret.json
+*.db
+
 debug
 vendor
-*.db

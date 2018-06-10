@@ -5,6 +5,15 @@ import * as actionNames from './actionNames';
 import type { Action, ApiAction, ApiActions } from '../types';
 import { buildUrl, isJson } from '../api';
 
+function getHost(req): string {
+  if (req) {
+    // docker hostname for backend
+    return 'http://backend:8080';
+  }
+
+  return `${window.location.origin}/api`;
+}
+
 export function serverAction(action, req, res) {
   return {
     ...action,
@@ -38,7 +47,7 @@ async function doAction(
     headers = { ...headers, cookie: req.headers.cookie };
   }
 
-  const endpoint = buildUrl(url, params);
+  const endpoint = buildUrl(getHost(req), url, params);
 
   try {
     const response = await fetch(endpoint, {

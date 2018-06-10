@@ -1,0 +1,17 @@
+version: '3.6'
+
+services:
+  frontend:
+    build: ./web
+    ports:  
+      - '3000:3000'
+    
+  backend:
+    build: .
+    ports:
+      - '8080:8080'
+    volumes:
+      - './data:/srv/scores'
+    
+    
+

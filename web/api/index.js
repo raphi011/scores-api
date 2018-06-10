@@ -1,6 +1,8 @@
+// @flow
+
 type Params = { [string]: string };
 
-export function buildUrl(endpoint: string, params: Params = {}) {
+export function buildUrl(host: string, endpoint: string, params: Params = {}) {
   let paramUrl = '';
 
   const paramList = Object.keys(params)
@@ -9,15 +11,17 @@ export function buildUrl(endpoint: string, params: Params = {}) {
 
   paramUrl = paramList.length ? `?${paramList.join('&')}` : '';
 
-  const url = `${process.env.BACKEND_URL}/api/${endpoint}${paramUrl}`;
+  const url = `${host}/${endpoint}${paramUrl}`;
 
   return encodeURI(url);
 }
 
-export function isJson(response): boolean {
+export function isJson(response: {
+  headers: { get: string => string },
+}): boolean {
   const contentType = response.headers.get('content-type');
 
-  return contentType && contentType.indexOf('application/json') !== -1;
+  return !!contentType && contentType.indexOf('application/json') !== -1;
 }
 
 export const { BACKEND_URL } = process.env;

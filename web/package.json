@@ -1,6 +1,6 @@
 {
   "name": "scores",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "dependencies": {
@@ -40,15 +40,18 @@
     "jest": "latest"
   },
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next",
     "build": "next build",
-    "pretty": "prettier --write \"**/*.js\"",
     "start": "next start",
+    "pretty": "prettier --write \"**/*.js\"",
     "test": "NODE_ENV=test jest"
   },
   "lint-staged": {
-    "*.js": ["npm run pretty", "git add"]
+    "*.{js,jsx}": [
+      "npm run pretty",
+      "git add"
+    ]
   },
-  "author": "",
+  "author": "Rapheal Grubre",
   "license": "ISC"
 }
