@@ -527,7 +527,7 @@ const (
 	`
 
 	volleynetPlayerSelectSQL  = volleynetBasePlayersSelectSQL + " WHERE p.id = $1"
-	volleynetPlayersSelectSQL = volleynetBasePlayersSelectSQL + " WHERE p.gender = $1"
+	volleynetPlayersSelectSQL = volleynetBasePlayersSelectSQL
 
 	volleynetPlayersUpdateSQL = `
 		UPDATE volleynetPlayers SET
@@ -632,8 +632,8 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 	return p, nil
 }
 
-func (s *VolleynetService) AllPlayers(gender string) ([]volleynet.Player, error) {
-	return scanVolleynetPlayers(s.DB, volleynetPlayersSelectSQL, gender)
+func (s *VolleynetService) AllPlayers() ([]volleynet.Player, error) {
+	return scanVolleynetPlayers(s.DB, volleynetPlayersSelectSQL)
 }
 
 func (s *VolleynetService) NewPlayer(p *volleynet.Player) error {

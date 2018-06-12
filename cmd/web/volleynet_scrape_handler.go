@@ -28,7 +28,7 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 		return
 	}
 
-	persisted, err := h.volleynetService.AllPlayers(gender)
+	persisted, err := h.volleynetService.AllPlayers()
 
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
@@ -140,7 +140,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 			return
 		}
 
-		persistedPlayers, err := h.volleynetService.AllPlayers(fullTournament.Gender)
+		persistedPlayers, err := h.volleynetService.AllPlayers()
 
 		if err != nil {
 			log.Print(err)
