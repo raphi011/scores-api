@@ -12,12 +12,11 @@ import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
 import { loadTournamentsAction } from '../../redux/actions/entities';
 import { tournamentsByLeagueSelector } from '../../redux/reducers/entities';
+import LeagueSelect from '../../components/LeagueSelect';
 
 import type { Tournament } from '../../types';
 
-const leagues = {
-  Amateur: 'AMATEUR TOUR',
-};
+const leagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TEAM'];
 
 type State = {
   tabOpen: number,
@@ -25,15 +24,39 @@ type State = {
 
 type Props = {
   tournaments: Array<Tournament>,
+  loadTournaments: () => void,
+  league: string,
 };
 
+const thisYear = new Date().getFullYear().toString();
+
 class Volleynet extends React.Component<Props, State> {
-  static buildActions() {
-    return [loadTournamentsAction({ gender: 'M', league: leagues.Amateur })];
+  static buildActions({ league }: Props) {
+    return [
+      loadTournamentsAction({
+        gender: 'M',
+        league,
+        season: thisYear,
+      }),
+    ];
   }
 
-  static mapStateToProps(state) {
-    const tournaments = tournamentsByLeagueSelector(state, leagues.Amateur);
+  static mapDispatchToProps = {
+    loadTournaments: loadTournamentsAction,
+  };
+
+  static getParameters(query) {
+    let { league = 'AMATEUR TOUR' } = query;
+
+    if (!leagues.includes(league)) {
+      league = leagues[0];
+    }
+
+    return { league };
+  }
+
+  static mapStateToProps(state, { league }: Props) {
+    const tournaments = tournamentsByLeagueSelector(state, league);
 
     return { tournaments };
   }
@@ -42,8 +65,24 @@ class Volleynet extends React.Component<Props, State> {
     tabOpen: 0,
   };
 
+  componentDidUpdate(prevProps) {
+    const { loadTournaments, league } = this.props;
+
+    if (league !== prevProps.league) {
+      loadTournaments({ gender: 'M', league, season: thisYear });
+    }
+  }
+
   onTournamentClick = (t: Tournament) => {
     Router.push({ pathname: '/volleynet/tournament', query: { id: t.id } });
+  };
+
+  onLeagueChange = event => {
+    const league = event.target.value;
+    Router.push({
+      pathname: '/volleynet',
+      query: { league },
+    });
   };
 
   onTabClick = (event, tabOpen) => {
@@ -71,6 +110,8 @@ class Volleynet extends React.Component<Props, State> {
 
   render() {
     const { tabOpen } = this.state;
+    const { league } = this.props;
+
     const tournaments = this.orderTournaments();
 
     let content = <CenteredLoading />;
@@ -102,6 +143,7 @@ class Volleynet extends React.Component<Props, State> {
 
     return (
       <Layout title="Volleynet">
+        <LeagueSelect selected={league} onChange={this.onLeagueChange} />
         <Tabs onChange={this.onTabClick} value={tabOpen} fullWidth>
           <Tab label="Upcoming" />
           <Tab label="Past" />

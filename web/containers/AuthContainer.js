@@ -2,6 +2,8 @@
 /* eslint-disable prefer-destructuring */
 
 import React from 'react';
+import type { Element, ComponentType } from 'react';
+
 import Router from 'next/router';
 import { connect } from 'react-redux';
 
@@ -14,11 +16,44 @@ import type { User } from '../types';
 
 type Props = {
   isLoggedIn: boolean,
+  fromServer: boolean,
   user: User,
+  dispatch: any,
 };
 
-function withAuth(WrappedComponent) {
+type WrappedProps = {};
+
+function withAuth<C: ComponentType<WrappedProps>>(
+  WrappedComponent: C,
+): Element<C> {
   class Auth extends React.Component<Props> {
+    async componentDidMount() {
+      const { fromServer, dispatch } = this.props;
+
+      if (!WrappedComponent.buildActions || fromServer) {
+        return;
+      }
+
+      const actions = WrappedComponent.buildActions(this.props);
+      await dispatchActions(dispatch, actions, false);
+    }
+
+    async componentWillUpdate(nextProps) {
+      if (
+        !WrappedComponent.shouldComponentUpdate ||
+        !WrappedComponent.buildActions ||
+        !WrappedComponent.shouldComponentUpdate(this.props, nextProps)
+      ) {
+        return;
+      }
+
+      const { dispatch } = nextProps;
+
+      const actions = WrappedComponent.buildActions(nextProps);
+
+      await dispatchActions(dispatch, actions, false);
+    }
+
     static async getInitialProps(ctx) {
       const { isServer, store, res, req, query } = ctx;
 
@@ -104,33 +139,6 @@ function withAuth(WrappedComponent) {
       }
 
       return props;
-    }
-
-    async componentDidMount() {
-      const { fromServer, dispatch } = this.props;
-
-      if (!WrappedComponent.buildActions || fromServer) {
-        return;
-      }
-
-      const actions = WrappedComponent.buildActions(this.props);
-      await dispatchActions(dispatch, actions, false);
-    }
-
-    async componentWillUpdate(nextProps) {
-      if (
-        !WrappedComponent.shouldComponentUpdate ||
-        !WrappedComponent.buildActions ||
-        !WrappedComponent.shouldComponentUpdate(this.props, nextProps)
-      ) {
-        return;
-      }
-
-      const { dispatch } = nextProps;
-
-      const actions = WrappedComponent.buildActions(nextProps);
-
-      await dispatchActions(dispatch, actions, false);
     }
 
     render() {

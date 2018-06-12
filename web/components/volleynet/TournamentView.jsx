@@ -122,7 +122,7 @@ class TournamentView extends React.Component<Props, State> {
               query: { id: tournament.id },
             }}
           >
-            <Button variant="raised" color="primary">
+            <Button variant="raised" color="primary" fullWidth>
               {signedup ? 'You are signed up' : 'Signup'}
             </Button>
           </Link>
