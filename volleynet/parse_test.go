@@ -7,6 +7,8 @@ import (
 )
 
 func Test_upcoming_games(t *testing.T) {
+	t.Skip()
+
 	c := DefaultClient()
 	tournaments, err := c.AllTournaments("M", "AMATEUR TOUR", "2018")
 
@@ -20,29 +22,21 @@ func Test_upcoming_games(t *testing.T) {
 func Test_done_tournament(t *testing.T) {
 	response, _ := os.Open("testdata/done.html")
 
-	_, err := parseFullTournament(response, 0, "M", "upcoming")
+	_, err := parseFullTournament(response, Tournament{Gender: "M", Status: "upcoming"})
 
 	if err != nil {
 		t.Errorf("parseFullTournament() err: %s", err)
 	}
-
-	// if tournament.Status != "done" {
-	// 	t.Errorf("parseFullTournament(), want .Status = 'done', got %s", tournament.Status)
-	// }
 }
 
 func Test_upcoming_tournament(t *testing.T) {
 	response, _ := os.Open("testdata/upcoming.html")
 
-	_, err := parseFullTournament(response, 0, "M", "upcoming")
+	_, err := parseFullTournament(response, Tournament{Gender: "M", Status: "upcoming"})
 
 	if err != nil {
 		t.Errorf("parseFullTournament() err: %s", err)
 	}
-
-	// if tournament.Status != "upcoming" {
-	// 	t.Errorf("parseFullTournament(), want .Status = 'upcoming', got %s", tournament.Status)
-	// }
 }
 
 func Test_tournament_list(t *testing.T) {

@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/raphi011/scores"
 )
 
 type PlayerInfo struct {
@@ -30,12 +29,6 @@ type Player struct {
 	Club         string `json:"club"`
 	CountryUnion string `json:"countryUnion"`
 	License      string `json:"license"`
-}
-
-type GroupedTournaments struct {
-	Upcoming []Tournament `json:"upcoming"`
-	Past     []Tournament `json:"past"`
-	Played   []Tournament `json:"played"`
 }
 
 type TournamentTeam struct {
@@ -61,8 +54,8 @@ type Tournament struct {
 	End              time.Time `json:"end"`
 	Name             string    `json:"name"`
 	Season           int       `json:"season"`
-	ApiLink          string    `json:"-"`
 	League           string    `json:"league"`
+	SubLeague        string    `json:"subLeague"`
 	Link             string    `json:"link"`
 	EntryLink        string    `json:"entryLink"`
 	ID               int       `json:"id"`
@@ -120,14 +113,6 @@ func (c *Client) GetUniqueWriteCode(tournamentID int) (string, error) {
 	}
 
 	return val, nil
-}
-
-func parseTournamentIDFromLink(link string) (int, error) {
-	dashIndex := strings.LastIndex(link, "/")
-
-	id := link[dashIndex+1:]
-
-	return strconv.Atoi(id)
 }
 
 func parsePlayerIDFromSteckbrief(s *goquery.Selection) (int, error) {
@@ -272,9 +257,6 @@ func parseFullTournament(
 		t.HTMLNotes, _ = htmlNotes.Html()
 	}
 
-	name := doc.Find("h2")
-	t.Name = trimmedTournamentName(name)
-
 	table := doc.Find("tbody")
 
 	for i := range table.Nodes {
@@ -287,35 +269,27 @@ func parseFullTournament(
 				value := row.Eq(1)
 
 				switch j {
-				case 0:
-					t.League = trimmedText(value)
-				case 1:
-					t.Start, t.End, err = parseStartEndDates(value)
-
-					if err != nil {
-						return nil, err
-					}
 				case 2:
-					t.Location = trimmedText(row.Eq(1))
+					t.Location = trimmedText(value)
 				case 3:
-					t.Mode = trimmedText(row.Eq(1))
+					t.Mode = trimmedText(value)
 					t.MaxTeams = parseNumber(t.Mode)
 				case 4:
 					t.MinTeams = parseNumber(value.Text())
 				case 5:
 					t.MaxPoints = parseNumber(value.Text())
 				case 6:
-					t.EndRegistration = trimmedText(row.Eq(1))
+					t.EndRegistration = trimmedText(value)
 				case 7:
-					t.Organiser = trimmedText(row.Eq(1))
+					t.Organiser = trimmedText(value)
 				case 8:
-					t.Phone = trimmedText(row.Eq(1))
+					t.Phone = trimmedText(value)
 				case 9:
-					t.Email = trimmedText(row.Eq(1))
+					t.Email = trimmedText(value)
 				case 10:
-					t.Web = trimmedText(row.Eq(1))
+					t.Web = trimmedText(value)
 				case 11:
-					t.CurrentPoints = trimmedText(row.Eq(1))
+					t.CurrentPoints = trimmedText(value)
 				}
 			}
 
@@ -335,22 +309,6 @@ func parseFullTournament(
 	return t, nil
 }
 
-func (c *Client) getTournament(id int) (*Tournament, error) {
-	games, err := c.AllTournaments("M", "AMATEUR TOUR", "2018")
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, t := range games {
-		if t.ID == id {
-			return &t, nil
-		}
-	}
-
-	return nil, scores.ErrorNotFound
-}
-
 func parseLadder(html io.Reader) ([]Player, error) {
 	doc, err := goquery.NewDocumentFromReader(html)
 
@@ -367,7 +325,7 @@ func parseLadder(html io.Reader) ([]Player, error) {
 	if genderTitle == "Herren" {
 		gender = "M"
 	} else {
-		gender = "F"
+		gender = "W"
 	}
 
 	for i := range rows.Nodes {
@@ -451,7 +409,39 @@ func parseStartEndDates(s *goquery.Selection) (time.Time, time.Time, error) {
 	}
 }
 
-func (c *Client) parseTournaments(html io.Reader, gender string) ([]Tournament, error) {
+func readUrlPart(url, start string) string {
+	startIndex := strings.Index(url, start)
+
+	if startIndex == -1 {
+		return ""
+	}
+
+	url = url[startIndex+len(start):]
+
+	endIndex := strings.Index(url, "/")
+
+	if endIndex == -1 {
+		return url
+	}
+
+	return url[:endIndex]
+}
+
+func extractTournamentLinkData(link string) Tournament {
+	id, _ := strconv.Atoi(readUrlPart(link, "cup/"))
+	season, _ := strconv.Atoi(readUrlPart(link, "saison/"))
+
+	return Tournament{
+		Gender:    readUrlPart(link, "sex/"),
+		League:    readUrlPart(link, "bewerbe/"),
+		SubLeague: readUrlPart(link, "phase/"),
+		ID:        id,
+		Season:    season,
+		Link:      link,
+	}
+}
+
+func parseTournaments(html io.Reader) ([]Tournament, error) {
 	doc, err := goquery.NewDocumentFromReader(html)
 
 	if err != nil {
@@ -465,53 +455,35 @@ func (c *Client) parseTournaments(html io.Reader, gender string) ([]Tournament, 
 	for i := range rows.Nodes {
 		r := rows.Eq(i)
 
-		tournament := Tournament{Gender: gender}
-
 		columns := r.Find("td")
 
 		if len(columns.Nodes) != 5 {
 			continue
 		}
 
-		for j := range columns.Nodes {
-			column := columns.Eq(j)
+		column := columns.Eq(2)
 
-			switch j {
-			case 1:
-				tournament.Start, tournament.End, err = parseStartEndDates(column)
-			case 2:
+		tournament := extractTournamentLinkData(parseHref(column.Find("a")))
+		tournament.Name = trimmedTournamentName(column)
 
-				tournament.Link = parseHref(column.Find("a"))
-				tournament.ApiLink = c.GetApiTournamentLink(&tournament)
-				tournament.Name = trimmedTournamentName(column)
-				tournament.ID, err = parseTournamentIDFromLink(tournament.Link)
+		column = columns.Eq(1)
+		tournament.Start, tournament.End, err = parseStartEndDates(column)
 
-				if err != nil {
-					return nil, err
-				}
-			case 3:
-				tournament.League = trimmedText(column)
-			case 4:
-				content := trimmedText(column)
-				if content == "Abgesagt" {
-					tournament.Status = StatusCanceled
-					tournament.RegistrationOpen = false
-				} else if entryLink := column.Find("a"); entryLink.Length() == 1 {
-					tournament.Status = StatusUpcoming
-					tournament.EntryLink = parseHref(entryLink)
-					tournament.RegistrationOpen = true
-				} else {
-					tournament.Status = StatusDone
-					tournament.RegistrationOpen = false
-				}
-			}
-		}
-
-		if err == nil {
-			tournaments = append(tournaments, tournament)
+		column = columns.Eq(4)
+		content := trimmedText(column)
+		if content == "Abgesagt" {
+			tournament.Status = StatusCanceled
+			tournament.RegistrationOpen = false
+		} else if entryLink := column.Find("a"); entryLink.Length() == 1 {
+			tournament.Status = StatusUpcoming
+			tournament.EntryLink = parseHref(entryLink)
+			tournament.RegistrationOpen = true
 		} else {
-			err = nil
+			tournament.Status = StatusDone
+			tournament.RegistrationOpen = false
 		}
+
+		tournaments = append(tournaments, tournament)
 	}
 
 	return tournaments, nil

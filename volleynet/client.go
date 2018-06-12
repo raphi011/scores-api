@@ -25,7 +25,7 @@ type Client struct {
 func genderLong(gender string) string {
 	if gender == "M" {
 		return "Herren"
-	} else if gender == "D" {
+	} else if gender == "W" {
 		return "Damen"
 	}
 
@@ -46,8 +46,8 @@ func (c *Client) GetTournamentLink(t *Tournament) string {
 	return c.DefaultUrl + t.Link
 }
 
-func (c *Client) GetApiTournamentLink(t *Tournament) string {
-	return c.ApiUrl + t.Link
+func (c *Client) GetApiTournamentLink(link string) string {
+	return c.ApiUrl + link
 }
 
 func GetDocument(html io.Reader) (*goquery.Document, error) {
@@ -101,7 +101,7 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 
 	defer resp.Body.Close()
 
-	return c.parseTournaments(resp.Body, gender)
+	return parseTournaments(resp.Body)
 }
 
 func (c *Client) Ladder(gender string) ([]Player, error) {
@@ -124,7 +124,7 @@ func (c *Client) Ladder(gender string) ([]Player, error) {
 
 func (c *Client) ComplementTournament(tournament Tournament) (
 	*FullTournament, error) {
-	resp, err := http.Get(tournament.ApiLink)
+	resp, err := http.Get(c.GetApiTournamentLink(tournament.Link))
 
 	if err != nil {
 		return nil, err
