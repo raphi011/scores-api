@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang
 
 WORKDIR /go/src/github.com/raphi011/scores
 

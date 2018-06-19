@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang
 
 ARG app_env
 ARG backend_url
