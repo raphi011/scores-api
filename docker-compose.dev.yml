@@ -12,3 +12,7 @@ services:
     command: run dev
     volumes:
       - './web:/web'
+
+  backend:
+    volumes:
+      - './data:/srv/scores'

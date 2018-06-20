@@ -7,6 +7,7 @@ services:
       - '3000:3000'
     
   backend:
+    user: scores
     build: 
       context: .
       dockerfile: ./cmd/web/Dockerfile
@@ -14,7 +15,7 @@ services:
     ports:
       - '8080:8080'
     volumes:
-      - './data:/srv/scores'
+      - '~/data:/srv/scores'
     
   scrape:
     depends_on:
@@ -22,5 +23,3 @@ services:
     build: 
       context: .
       dockerfile: ./cmd/terminal/Dockerfile
-    volumes:
-      - './data:/srv/scores'
