@@ -11,6 +11,9 @@ services:
     build: 
       context: .
       dockerfile: ./cmd/web/Dockerfile
+    environment:
+      - BACKEND_URL=https://scores.raphi011.com
+      - APP_ENV=production
       
     ports:
       - '8080:8080'
