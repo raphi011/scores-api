@@ -1,7 +1,6 @@
 package volleynet
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"github.com/PuerkitoBio/goquery"
 )

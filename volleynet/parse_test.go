@@ -1,7 +1,7 @@
 package volleynet
 
 import (
-	"errors"
+	"github.com/pkg/errors"
 	"os"
 	"testing"
 )

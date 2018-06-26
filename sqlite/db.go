@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores/migrate"
 	"github.com/raphi011/scores/sqlite/migrations"
@@ -14,11 +15,10 @@ type scan interface {
 }
 
 func Open(filename string) (*sql.DB, error) {
-
 	db, err := sql.Open("sqlite3", filename)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "open sqlite db: %s failed", filename)
 	}
 
 	return db, nil

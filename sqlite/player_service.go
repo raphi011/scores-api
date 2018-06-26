@@ -2,7 +2,8 @@ package sqlite
 
 import (
 	"database/sql"
-	"errors"
+
+	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores"
 )
@@ -42,7 +43,7 @@ func scanPlayer(scanner scan) (*scores.Player, error) {
 	err := scanner.Scan(&p.ID, &p.Name, &userID, &profileImageURL, &p.CreatedAt)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "scanning player failed")
 	}
 
 	if profileImageURL.Valid {
@@ -60,7 +61,7 @@ func scanPlayers(db *sql.DB, query string, args ...interface{}) (scores.Players,
 	rows, err := db.Query(query, args...)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "players query failed")
 	}
 
 	defer rows.Close()
@@ -113,7 +114,7 @@ func (s *PlayerService) Create(player *scores.Player) (*scores.Player, error) {
 	result, err := s.DB.Exec("INSERT INTO players (created_at, name) VALUES (CURRENT_TIMESTAMP, $1)", player.Name)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "creating player failed")
 	}
 
 	ID, _ := result.LastInsertId()
@@ -127,7 +128,7 @@ func (s *PlayerService) Delete(ID uint) error {
 	result, err := s.DB.Exec("UPDATE players SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1", ID)
 
 	if err != nil {
-		return err
+		return errors.Wrap(err, "deleting player failed")
 	}
 
 	if affected, _ := result.RowsAffected(); affected == 0 {

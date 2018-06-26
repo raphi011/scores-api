@@ -2,7 +2,7 @@ package volleynet
 
 import (
 	"bytes"
-	"errors"
+	"github.com/pkg/errors"
 	"fmt"
 	"io"
 	"net/http"

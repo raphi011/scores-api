@@ -2,7 +2,7 @@ package migrate
 
 import (
 	"database/sql"
-	"errors"
+	"github.com/pkg/errors"
 	"log"
 	"strings"
 )

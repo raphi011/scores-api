@@ -2,7 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
-	"errors"
+	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores"
 )
