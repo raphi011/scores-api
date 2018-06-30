@@ -13,7 +13,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 
-	"github.com/raphi011/scores/sqlite"
+	"github.com/raphi011/scores/db/sqlite"
 )
 
 type app struct {

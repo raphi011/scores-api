@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores/sqlite"
+	"github.com/raphi011/scores/db/sqlite"
 	"github.com/raphi011/scores/volleynet"
 )
 

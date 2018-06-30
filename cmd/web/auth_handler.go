@@ -12,7 +12,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/sqlite"
+	"github.com/raphi011/scores/db/sqlite"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

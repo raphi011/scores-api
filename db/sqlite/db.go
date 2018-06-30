@@ -6,8 +6,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 
+	"github.com/raphi011/scores/db/sqlite/migrations"
 	"github.com/raphi011/scores/migrate"
-	"github.com/raphi011/scores/sqlite/migrations"
 )
 
 type scan interface {
