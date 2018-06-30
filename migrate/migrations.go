@@ -2,9 +2,11 @@ package migrate
 
 import (
 	"database/sql"
-	"github.com/pkg/errors"
-	"log"
 	"strings"
+
+	"github.com/pkg/errors"
+
+	log "github.com/sirupsen/logrus"
 )
 
 const (

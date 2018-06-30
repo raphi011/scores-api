@@ -2,8 +2,9 @@ package job
 
 import (
 	"fmt"
-	"log"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type scrapeFunction func() error

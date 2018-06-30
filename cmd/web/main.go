@@ -6,8 +6,9 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
