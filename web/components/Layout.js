@@ -5,7 +5,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Drawer from './Drawer';
 import AppBar from '../containers/AppBarContainer';
-import Snackbar from '../containers/SnackbarContainer';
 
 import type { Player } from '../types';
 
@@ -44,7 +43,6 @@ const Layout = ({
     />
     <AppBar onOpenMenu={onOpenDrawer} title={title} />
     {children}
-    <Snackbar />
   </div>
 );
 

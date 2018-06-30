@@ -6,7 +6,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import withRedux from 'next-redux-wrapper'
 import initStore from '../redux/store'
 import JssProvider from 'react-jss/lib/JssProvider';
+
 import getPageContext from '../getPageContext';
+import Snackbar from '../containers/SnackbarContainer';
 
 class MyApp extends App {
   constructor(props) {
@@ -44,7 +46,10 @@ class MyApp extends App {
             {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server side. */}
             <Provider store={store}>
+              <>
                 <Component pageContext={this.pageContext} {...pageProps} />
+                <Snackbar />
+              </>
             </Provider>
           </MuiThemeProvider>
         </JssProvider>
