@@ -2,13 +2,14 @@ package volleynet
 
 import (
 	"bytes"
-	"github.com/pkg/errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/pkg/errors"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -42,6 +43,23 @@ func DefaultClient() *Client {
 	}
 }
 
+var registerUrl string = "https://beach.volleynet.at/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur="
+
+func (c *Client) LoadUniqueWriteCode(tournamentID int) (string, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s%d", registerUrl, tournamentID), nil)
+	req.Header.Add("Cookie", c.Cookie)
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
+
+	if err != nil {
+		return "", errors.Wrap(err, "loading unique writecode failed")
+	}
+
+	code, err := parseUniqueWriteCode(resp.Body)
+
+	return code, errors.Wrap(err, "parsing unique writecode failed")
+}
+
 func (c *Client) GetTournamentLink(t *Tournament) string {
 	return c.DefaultUrl + t.Link
 }
@@ -50,8 +68,10 @@ func (c *Client) GetApiTournamentLink(link string) string {
 	return c.ApiUrl + link
 }
 
-func GetDocument(html io.Reader) (*goquery.Document, error) {
-	return goquery.NewDocumentFromReader(html)
+func ParseHtml(html io.Reader) (*goquery.Document, error) {
+	doc, err := goquery.NewDocumentFromReader(html)
+
+	return doc, errors.Wrap(err, "invalid html")
 }
 
 func (c *Client) Login(username, password string) error {
@@ -127,13 +147,13 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 	resp, err := http.Get(c.GetApiTournamentLink(tournament.Link))
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "loading tournament failed")
 	}
 
 	t, err := parseFullTournament(resp.Body, tournament)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "parsing tournament failed")
 	}
 
 	return t, nil
@@ -142,10 +162,10 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) error {
 	form := url.Values{}
 
-	code, err := c.GetUniqueWriteCode(tournamentID)
+	code, err := c.LoadUniqueWriteCode(tournamentID)
 
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "loading unique writecode failed for tournamentID: %d", tournamentID)
 	}
 
 	form.Add("action", "Beach/Profile/TurnierAnmeldung")
@@ -160,7 +180,7 @@ func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) 
 
 	req, err := http.NewRequest("POST", c.PostUrl, bytes.NewBufferString(form.Encode()))
 	if err != nil {
-		return err
+		return errors.Wrap(err, "creating tournamententry request failed")
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Cookie", c.Cookie)
@@ -169,9 +189,11 @@ func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) 
 	resp, err := httpClient.Do(req)
 
 	if err != nil {
-		return err
+		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
 	} else if resp.StatusCode != http.StatusOK {
-		return errors.New("entry did not work")
+		return fmt.Errorf("tournamententry request for tournamentID: %d failed with code %d",
+			tournamentID,
+			resp.StatusCode)
 	}
 
 	return nil

@@ -1,9 +1,7 @@
 package volleynet
 
 import (
-	"fmt"
 	"io"
-	"net/http"
 	"regexp"
 	"strconv"
 	"strings"
@@ -87,22 +85,11 @@ type FullTournament struct {
 	Longitude       float32          `json:"longitude"`
 }
 
-var registerUrl string = "https://beach.volleynet.at/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur="
-
-func (c *Client) GetUniqueWriteCode(tournamentID int) (string, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s%d", registerUrl, tournamentID), nil)
-	req.Header.Add("Cookie", c.Cookie)
-	httpClient := &http.Client{}
-	resp, err := httpClient.Do(req)
+func parseUniqueWriteCode(html io.Reader) (string, error) {
+	doc, err := ParseHtml(html)
 
 	if err != nil {
-		return "", nil
-	}
-
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
-
-	if err != nil {
-		return "", nil
+		return "", errors.Wrap(err, "parseUniqueWriteCode failed")
 	}
 
 	input := doc.Find("input[name='XX_unique_write_XXBeach/Profile/TurnierAnmeldung']")
@@ -110,7 +97,7 @@ func (c *Client) GetUniqueWriteCode(tournamentID int) (string, error) {
 	val, exists := input.Attr("value")
 
 	if !exists {
-		return "", errors.New("writeCode not found")
+		return "", errors.New("parseUniqueWriteCode failed, code not found")
 	}
 
 	return val, nil
@@ -121,7 +108,9 @@ func parsePlayerIDFromSteckbrief(s *goquery.Selection) (int, error) {
 
 	dashIndex := strings.Index(href, "-")
 
-	return strconv.Atoi(href[dashIndex+1:])
+	id, err := strconv.Atoi(href[dashIndex+1:])
+
+	return id, errors.Wrap(err, "could not parse playerid from steckbrief link")
 }
 
 func parseFullTournamentTeams(body *goquery.Document, tournamentID int, gender string) ([]TournamentTeam, error) {
@@ -145,7 +134,7 @@ func parseFullTournamentTeams(body *goquery.Document, tournamentID int, gender s
 				player, err := parsePlayerRow(rows.Eq(j), &team)
 
 				if err != nil {
-					return nil, err
+					return nil, errors.Wrap(err, "error parsing player")
 				}
 
 				player.Gender = gender
@@ -246,7 +235,11 @@ func parseFullTournament(
 	html io.Reader,
 	tournament Tournament) (*FullTournament, error) {
 
-	doc, err := GetDocument(html)
+	doc, err := ParseHtml(html)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "parseFullTournament failed")
+	}
 
 	t := &FullTournament{Tournament: tournament}
 
@@ -304,21 +297,20 @@ func parseFullTournament(
 		tournament.Gender)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error parsing tournament teams")
 	}
 
 	return t, nil
 }
 
 func parseLadder(html io.Reader) ([]Player, error) {
-	doc, err := goquery.NewDocumentFromReader(html)
+	doc, err := ParseHtml(html)
 
 	if err != nil {
 		return nil, err
 	}
 
 	players := []Player{}
-
 	rows := doc.Find("tbody>tr")
 	genderTitle := doc.Find("h2").Text()
 	var gender string
@@ -443,7 +435,8 @@ func extractTournamentLinkData(link string) Tournament {
 }
 
 func parseTournaments(html io.Reader) ([]Tournament, error) {
-	doc, err := goquery.NewDocumentFromReader(html)
+
+	doc, err := ParseHtml(html)
 
 	if err != nil {
 		return nil, err
@@ -510,7 +503,7 @@ func parsePlayerID(s *goquery.Selection) (int, error) {
 
 func parsePlayers(html io.Reader) ([]PlayerInfo, error) {
 	players := []PlayerInfo{}
-	doc, err := goquery.NewDocumentFromReader(html)
+	doc, err := ParseHtml(html)
 
 	if err != nil {
 		return nil, err
