@@ -147,13 +147,13 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 	resp, err := http.Get(c.GetApiTournamentLink(tournament.Link))
 
 	if err != nil {
-		return nil, errors.Wrap(err, "loading tournament failed")
+		return nil, errors.Wrapf(err, "loading tournament %d failed", tournament.ID)
 	}
 
 	t, err := parseFullTournament(resp.Body, tournament)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "parsing tournament failed")
+		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
 	}
 
 	return t, nil
