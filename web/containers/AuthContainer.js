@@ -9,7 +9,6 @@ import { connect } from 'react-redux';
 
 import { dispatchAction, dispatchActions } from '../redux/store';
 import { userSelector } from '../redux/reducers/auth';
-import withRoot from '../styles/withRoot';
 import { userOrLoginRouteAction } from '../redux/actions/auth';
 
 import type { User } from '../types';
@@ -146,12 +145,10 @@ function withAuth<C: ComponentType<WrappedProps>>(
     }
   }
 
-  return withRoot(
-    connect(
+  return connect(
       WrappedComponent.mapStateToProps,
       WrappedComponent.mapDispatchToProps,
-    )(Auth),
-  );
+    )(Auth);
 }
 
 export default withAuth;
