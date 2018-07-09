@@ -11,6 +11,8 @@ var dbPath = flag.String("db", "scores.db", "Path to sqlite db")
 
 var scanner = bufio.NewScanner(os.Stdin)
 
+var version = "undefined"
+
 func main() {
 	flag.Parse()
 

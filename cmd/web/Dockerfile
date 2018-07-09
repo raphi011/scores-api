@@ -18,7 +18,7 @@ RUN go get "github.com/PuerkitoBio/goquery"
 COPY . .
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/web
-RUN go install
+RUN go install -ldflags="-X main.version=$(git describe --always --long --dirty)"
 
 ENTRYPOINT [ "/go/bin/web" ]
 CMD ["-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]

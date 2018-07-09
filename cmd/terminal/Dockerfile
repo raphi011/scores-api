@@ -9,7 +9,7 @@ RUN go get "github.com/PuerkitoBio/goquery"
 COPY . .
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/terminal
-RUN go install
+RUN go install -ldflags="-X main.version=$(git describe --always --long --dirty)"
 
 ENTRYPOINT ["/go/bin/terminal"]
 CMD ["-url", "http://backend:8080", "scrape"]

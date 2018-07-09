@@ -22,6 +22,8 @@ type app struct {
 	production bool
 }
 
+var version = "undefined"
+
 func main() {
 	dbPath := flag.String("db", "./scores.db", "Path to sqlite db")
 	gSecret := flag.String("goauth", "./client_secret.json", "Path to google oauth secret")
