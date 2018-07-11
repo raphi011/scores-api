@@ -1,6 +1,6 @@
 package volleynet
 
-func GetPlayer(players []Player, playerID int) *Player {
+func FindPlayer(players []Player, playerID int) *Player {
 	for i, _ := range players {
 		p := &players[i]
 		if p.ID == playerID {
@@ -11,7 +11,7 @@ func GetPlayer(players []Player, playerID int) *Player {
 	return nil
 }
 
-func GetTournament(tournaments []FullTournament, tournamentID int) *FullTournament {
+func FindTournament(tournaments []FullTournament, tournamentID int) *FullTournament {
 	for i, _ := range tournaments {
 		t := &tournaments[i]
 
@@ -23,7 +23,7 @@ func GetTournament(tournaments []FullTournament, tournamentID int) *FullTourname
 	return nil
 }
 
-func GetTeam(teams []TournamentTeam, tournamentID, player1ID, player2ID int) *TournamentTeam {
+func FindTeam(teams []TournamentTeam, tournamentID, player1ID, player2ID int) *TournamentTeam {
 	for i, _ := range teams {
 		t := &teams[i]
 		if t.TournamentID == tournamentID && t.Player1.ID == player1ID && t.Player2.ID == player2ID {

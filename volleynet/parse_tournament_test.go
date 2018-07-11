@@ -1,9 +1,10 @@
 package volleynet
 
 import (
-	"github.com/pkg/errors"
 	"os"
 	"testing"
+
+	"github.com/pkg/errors"
 )
 
 func Test_upcoming_games(t *testing.T) {
@@ -36,19 +37,5 @@ func Test_upcoming_tournament(t *testing.T) {
 
 	if err != nil {
 		t.Errorf("parseFullTournament() err: %s", err)
-	}
-}
-
-func Test_tournament_list(t *testing.T) {
-	response, _ := os.Open("testdata/tournament-list.html")
-
-	tournaments, err := parseTournaments(response)
-
-	if err != nil {
-		t.Errorf("parseTournaments() err: %s", err)
-	}
-
-	if len(tournaments) != 54 {
-		t.Errorf("parseTournaments(), want len(tournaments) = 54, got %v", len(tournaments))
 	}
 }

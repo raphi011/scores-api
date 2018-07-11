@@ -3,87 +3,86 @@ package volleynet
 import (
 	"bytes"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
 
 	"github.com/pkg/errors"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 type Client struct {
-	PostUrl     string
-	DefaultUrl  string
-	ApiUrl      string
-	AmateurPath string
-	LadderPath  string
-	Cookie      string
-}
-
-func genderLong(gender string) string {
-	if gender == "M" {
-		return "Herren"
-	} else if gender == "W" {
-		return "Damen"
-	}
-
-	return ""
+	PostURL string
+	GetURL  string
+	Cookie  string
 }
 
 func DefaultClient() *Client {
 	return &Client{
-		PostUrl:     "https://beach.volleynet.at/Admin/formular",
-		ApiUrl:      "http://www.volleynet.at/api/",
-		DefaultUrl:  "www.volleynet.at",
-		AmateurPath: "beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
-		LadderPath:  "beach/bewerbe/Rangliste/phase/%s",
+		PostURL: "https://beach.volleynet.at/Admin",
+		GetURL:  "http://www.volleynet.at/beach",
 	}
 }
 
-var registerUrl string = "https://beach.volleynet.at/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur="
+func (c *Client) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
+	escapedArgs := make([]interface{}, len(routeArgs))
 
-func (c *Client) LoadUniqueWriteCode(tournamentID int) (string, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s%d", registerUrl, tournamentID), nil)
-	req.Header.Add("Cookie", c.Cookie)
-	httpClient := &http.Client{}
-	resp, err := httpClient.Do(req)
+	for i, val := range routeArgs {
+		str, ok := val.(string)
 
-	if err != nil {
-		return "", errors.Wrap(err, "loading unique writecode failed")
+		if ok {
+			escapedArgs[i] = url.PathEscape(str)
+		} else if stringer, ok := val.(fmt.Stringer); ok {
+			escapedArgs[i] = stringer.String()
+		} else {
+			escapedArgs[i] = ""
+		}
 	}
 
-	code, err := parseUniqueWriteCode(resp.Body)
+	path := fmt.Sprintf(relativePath, escapedArgs...)
+	link, err := url.Parse(c.GetURL + path)
+	log.Print(link.String())
 
-	return code, errors.Wrap(err, "parsing unique writecode failed")
+	if err != nil {
+		panic("cannot parse client GetUrl")
+	}
+
+	return link
+}
+
+func (c *Client) buildPostURL(relativePath string) *url.URL {
+	link, err := url.Parse(c.PostURL + relativePath)
+
+	if err != nil {
+		panic("cannot parse client GetUrl")
+	}
+
+	return link
 }
 
 func (c *Client) GetTournamentLink(t *Tournament) string {
-	return c.DefaultUrl + t.Link
-}
+	url := c.buildGetURL("/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%s",
+		t.League,
+		t.Phase,
+		t.Gender,
+		t.Season,
+		t.ID,
+	)
 
-func (c *Client) GetApiTournamentLink(link string) string {
-	return c.ApiUrl + link
-}
-
-func ParseHtml(html io.Reader) (*goquery.Document, error) {
-	doc, err := goquery.NewDocumentFromReader(html)
-
-	return doc, errors.Wrap(err, "invalid html")
+	return url.String()
 }
 
 func (c *Client) Login(username, password string) error {
 	form := url.Values{}
 	form.Add("login_name", username)
 	form.Add("login_pass", password)
-
 	form.Add("action", "Beach/Profile/ProfileLogin")
 	form.Add("submit", "OK")
 	form.Add("mode", "X")
 
-	resp, err := http.PostForm(c.PostUrl, form)
+	url := c.buildPostURL("/formular")
+	resp, err := http.PostForm(url.String(), form)
 
 	if err != nil {
 		return err
@@ -104,16 +103,15 @@ func (c *Client) Login(username, password string) error {
 }
 
 func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {
-	url, err := url.Parse(c.ApiUrl)
+	url := c.buildGetURL(
+		"/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
+		league,
+		league,
+		gender,
+		year,
+	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	url.Path += fmt.Sprintf(c.AmateurPath, league, league, gender, year)
-
-	encodedURL := url.String()
-	resp, err := http.Get(encodedURL)
+	resp, err := http.Get(url.String())
 
 	if err != nil {
 		return nil, err
@@ -121,17 +119,16 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 
 	defer resp.Body.Close()
 
-	return parseTournaments(resp.Body)
+	return parseTournamentList(resp.Body)
 }
 
 func (c *Client) Ladder(gender string) ([]Player, error) {
-	url, err := url.Parse(c.ApiUrl)
+	url := c.buildGetURL(
+		"/beach/bewerbe/Rangliste/phase/%s",
+		genderLong(gender),
+	)
 
-	// gender: Herren, Damen
-	url.Path += fmt.Sprintf(c.LadderPath, genderLong(gender))
-
-	encodedURL := url.String()
-	resp, err := http.Get(encodedURL)
+	resp, err := http.Get(url.String())
 
 	if err != nil {
 		return nil, err
@@ -142,9 +139,21 @@ func (c *Client) Ladder(gender string) ([]Player, error) {
 	return parseLadder(resp.Body)
 }
 
+func genderLong(gender string) string {
+	if gender == "M" {
+		return "Herren"
+	} else if gender == "W" {
+		return "Damen"
+	}
+
+	return ""
+}
+
 func (c *Client) ComplementTournament(tournament Tournament) (
 	*FullTournament, error) {
-	resp, err := http.Get(c.GetApiTournamentLink(tournament.Link))
+	url := c.GetTournamentLink(&tournament)
+
+	resp, err := http.Get(url)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "loading tournament %d failed", tournament.ID)
@@ -159,10 +168,35 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 	return t, nil
 }
 
+func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
+	url := c.buildGetURL(
+		"/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur=%d",
+		tournamentID,
+	)
+
+	req, err := http.NewRequest(
+		"GET",
+		url.String(),
+		nil)
+
+	req.Header.Add("Cookie", c.Cookie)
+
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
+
+	if err != nil {
+		return "", errors.Wrap(err, "loading unique writecode failed")
+	}
+
+	code, err := parseUniqueWriteCode(resp.Body)
+
+	return code, errors.Wrap(err, "parsing unique writecode failed")
+}
+
 func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) error {
 	form := url.Values{}
 
-	code, err := c.LoadUniqueWriteCode(tournamentID)
+	code, err := c.loadUniqueWriteCode(tournamentID)
 
 	if err != nil {
 		return errors.Wrapf(err, "loading unique writecode failed for tournamentID: %d", tournamentID)
@@ -178,11 +212,13 @@ func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) 
 	form.Add("bte_per_id_b", strconv.Itoa(playerID))
 	form.Add("submit", "Anmelden")
 
-	req, err := http.NewRequest("POST", c.PostUrl, bytes.NewBufferString(form.Encode()))
+	url := c.buildPostURL("/formular")
+
+	req, err := http.NewRequest("POST", url.String(), bytes.NewBufferString(form.Encode()))
 	if err != nil {
 		return errors.Wrap(err, "creating tournamententry request failed")
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Content-Type", "application/x-www-form-=rlencoded")
 	req.Header.Add("Cookie", c.Cookie)
 
 	httpClient := &http.Client{}
@@ -217,7 +253,9 @@ func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]PlayerIn
 	form.Add("doit", "1")
 	form.Add("text", "0")
 
-	response, err := http.PostForm(c.PostUrl, form)
+	url := c.buildPostURL("/formular")
+
+	response, err := http.PostForm(url.String(), form)
 
 	if err != nil {
 		return nil, err

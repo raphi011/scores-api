@@ -81,7 +81,7 @@ func SyncPlayers(persisted []Player, current ...Player) []PlayerSyncInformation 
 	ps := []PlayerSyncInformation{}
 	for i, _ := range current {
 		newPlayer := &current[i]
-		oldPlayer := GetPlayer(persisted, newPlayer.ID)
+		oldPlayer := FindPlayer(persisted, newPlayer.ID)
 
 		ps = append(ps, PlayerSyncInformation{
 			NewPlayer: newPlayer,
@@ -132,7 +132,7 @@ func SyncTournaments(persisted []FullTournament, current ...Tournament) []Tourna
 	ts := []TournamentSyncInformation{}
 	for i, _ := range current {
 		newTournament := &current[i]
-		oldTournament := GetTournament(persisted, newTournament.ID)
+		oldTournament := FindTournament(persisted, newTournament.ID)
 
 		syncType := tournamentSyncType(oldTournament, newTournament)
 
@@ -186,7 +186,7 @@ func SyncTournamentTeams(tournamentSyncType string, persisted, current []Tournam
 	ts := []TournamentTeamSyncInformation{}
 	for i, _ := range current {
 		newTeam := &current[i]
-		oldTeam := GetTeam(persisted, newTeam.TournamentID, newTeam.Player1.ID, newTeam.Player2.ID)
+		oldTeam := FindTeam(persisted, newTeam.TournamentID, newTeam.Player1.ID, newTeam.Player2.ID)
 		syncType := tournamentTeamSyncType(tournamentSyncType, oldTeam, newTeam)
 
 		if syncType == SyncTeamNoUpdate {

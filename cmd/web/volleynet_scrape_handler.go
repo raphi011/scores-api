@@ -204,7 +204,7 @@ func (h *volleynetScrapeHandler) addPlayersIfNew(persistedPlayers []volleynet.Pl
 	[]volleynet.Player, error) {
 
 	for _, p := range players {
-		player := volleynet.GetPlayer(persistedPlayers, p.ID)
+		player := volleynet.FindPlayer(persistedPlayers, p.ID)
 
 		if player == nil {
 			log.Printf("adding missing player id: %v, name: %v",
