@@ -6,11 +6,14 @@ import (
 
 func Test_searchPlayers(t *testing.T) {
 	c := DefaultClient()
-	_, err := c.SearchPlayers("Lukas", "Wimmer", "")
+	players, err := c.SearchPlayers("Lukas", "Wimmer", "")
 
 	if err != nil {
 		t.Error(err)
-		return
+	}
+
+	if len(players) <= 0 {
+		t.Errorf("searchPlayers(), want len(players) > 0, got %v", len(players))
 	}
 }
 
