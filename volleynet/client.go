@@ -3,7 +3,6 @@ package volleynet
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -21,11 +20,11 @@ type Client struct {
 func DefaultClient() *Client {
 	return &Client{
 		PostURL: "https://beach.volleynet.at/Admin",
-		GetURL:  "http://www.volleynet.at/beach",
+		GetURL:  "http://www.volleynet.at",
 	}
 }
 
-func (c *Client) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *Client) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	escapedArgs := make([]interface{}, len(routeArgs))
 
 	for i, val := range routeArgs {
@@ -41,8 +40,7 @@ func (c *Client) buildGetURL(relativePath string, routeArgs ...interface{}) *url
 	}
 
 	path := fmt.Sprintf(relativePath, escapedArgs...)
-	link, err := url.Parse(c.GetURL + path)
-	log.Print(link.String())
+	link, err := url.Parse(c.GetURL + "/api/beach" + path)
 
 	if err != nil {
 		panic("cannot parse client GetUrl")
@@ -62,9 +60,9 @@ func (c *Client) buildPostURL(relativePath string) *url.URL {
 }
 
 func (c *Client) GetTournamentLink(t *Tournament) string {
-	url := c.buildGetURL("/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%s",
+	url := c.buildGetAPIURL("/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%s",
 		t.League,
-		t.Phase,
+		t.League,
 		t.Gender,
 		t.Season,
 		t.ID,
@@ -103,7 +101,7 @@ func (c *Client) Login(username, password string) error {
 }
 
 func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {
-	url := c.buildGetURL(
+	url := c.buildGetAPIURL(
 		"/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
 		league,
 		league,
@@ -123,7 +121,7 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 }
 
 func (c *Client) Ladder(gender string) ([]Player, error) {
-	url := c.buildGetURL(
+	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
 		genderLong(gender),
 	)
@@ -169,7 +167,7 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 }
 
 func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
-	url := c.buildGetURL(
+	url := c.buildGetAPIURL(
 		"/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur=%d",
 		tournamentID,
 	)
