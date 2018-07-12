@@ -9,10 +9,9 @@ ENV BACKEND_URL $backend_url
 WORKDIR /go/src/github.com/raphi011/scores
 
 RUN go get -u github.com/golang/dep/...
-COPY Gopkg* ./
-RUN dep ensure
 
 COPY . .
+RUN dep ensure
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/web
 
