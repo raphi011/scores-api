@@ -3,7 +3,7 @@ FROM golang
 WORKDIR /go/src/github.com/raphi011/scores
 
 RUN go get -u github.com/golang/dep/...
-COPY Gopkg* .
+COPY Gopkg* ./
 RUN dep ensure
 
 COPY . .
