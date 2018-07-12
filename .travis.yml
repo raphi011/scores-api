@@ -7,3 +7,9 @@ matrix:
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
+    
+deploy:
+  provider: script
+  script: docker-compose push
+
+    
