@@ -20,7 +20,7 @@ matrix:
     
 deploy:
   provider: script
-  script: docker-compose build && docker-compose push
+  script: docker login --username "$DOCKER_USERNAME" --password "$DOCKER_PASSWORD" && docker-compose build && docker-compose push
   on:
     branch: development
 
