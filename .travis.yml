@@ -19,7 +19,7 @@ matrix:
     
 deploy:
   provider: script
-  script: docker-compose push
+  script: docker-compose build && docker-compose push
   on:
     branch: development
 
