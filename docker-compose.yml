@@ -2,12 +2,13 @@ version: '3.6'
 
 services:
   frontend:
+    image: raphi011/scores-frontend
     build: ./web
     ports:  
       - '3000:3000'
     
   backend:
-    user: scores
+    image: raphi011/scores-backend
     build: 
       context: .
       dockerfile: ./cmd/web/Dockerfile
@@ -21,6 +22,7 @@ services:
       - '~/data:/srv/scores'
     
   scrape:
+    image: raphi011/scores-scrape
     depends_on:
       - 'backend'
     build: 

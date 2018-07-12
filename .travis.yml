@@ -11,5 +11,7 @@ matrix:
 deploy:
   provider: script
   script: docker-compose push
+  on:
+    branch: development
 
     
