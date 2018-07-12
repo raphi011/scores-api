@@ -11,7 +11,7 @@ matrix:
   include:
     - language: go
       go: "1.10"
-      install: curl https://raw.githubusercontent.com/golang/dep/master/install.sh && dep ensure
+      install: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh && dep ensure
 
     - language: node_js
       node_js: node
