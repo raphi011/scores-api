@@ -11,25 +11,25 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
-matrix:
+jobs:
   include:
-    - language: go
+    - stage: test
+      language: go
       go: "1.10"
       install: 
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
         - dep ensure
 
-    - language: node_js
+      language: node_js
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
-    
-deploy:
-  provider: script
-  script: 
-    - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-    - docker-compose build && docker-compose push
-  on:
-    branch: development
 
+    - stage: deploy
+      provider: script
+      script: 
+        - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+        - docker-compose build && docker-compose push
+      on:
+        branch: development
     
