@@ -12,7 +12,9 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
 
 jobs:
+
   include:
+
     - stage: test
       language: go
       go: "1.10"
@@ -20,7 +22,7 @@ jobs:
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
         - dep ensure
 
-      language: node_js
+    - language: node_js
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
