@@ -2,19 +2,10 @@ git:
   depth: 1
   submodules: false
 
-env:
-  - DOCKER_COMPOSE_VERSION=1.21.2
 
-before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
 
 jobs:
-
   include:
-
     - stage: test
       language: go
       go: "1.10"
@@ -28,10 +19,16 @@ jobs:
       script: npm --prefix ./web test
 
     - stage: deploy
+      if: branch IN (master, development)
+      before_install:
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
       provider: script
+      env:
+        - DOCKER_COMPOSE_VERSION=1.21.2
       script: 
         - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
         - docker-compose build && docker-compose push
-      on:
-        branch: development
     
