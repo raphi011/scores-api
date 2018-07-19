@@ -8,11 +8,11 @@ import { EntityName, EntityType } from '../../types';
 import { Store } from '../store';
 
 export interface EntityStore {
-  [key: EntityName]: { values: { [key: number]: EntityType } };
+  [key: string]: { values: { [key: number]: EntityType } };
 }
 
 export interface EntityMap {
-  [key: EntityName]: { [key: number]: EntityType };
+  [key: string]: { [key: number]: EntityType };
 }
 
 export interface ReceiveEntityAction {
@@ -20,7 +20,7 @@ export interface ReceiveEntityAction {
   entityName: EntityName;
   assignId?: boolean;
   listOptions?: {
-    [key: EntityName]: {
+    [key: string]: {
       name: string;
       key?: number;
       mode?: 'replace' | 'append';
@@ -28,11 +28,11 @@ export interface ReceiveEntityAction {
   };
 }
 
-export type DeleteEntityAction = {
+export interface DeleteEntityAction {
   payload: Object;
   entityName: EntityName;
   listNames: string[];
-};
+}
 
 export const initialEntitiesState = {
   group: { values: {}, all: [] },

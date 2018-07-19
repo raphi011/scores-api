@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -15,14 +15,15 @@ import {
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
 
-const styles = theme => ({
-  button: {
-    margin: theme.spacing.unit,
-    position: 'fixed',
-    right: '24px',
-    bottom: '24px',
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    button: {
+      margin: theme.spacing.unit,
+      position: 'fixed',
+      right: '24px',
+      bottom: '24px',
+    },
+  });
 
 class Home extends React.Component {
   static getParameters(query) {

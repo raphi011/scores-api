@@ -1,4 +1,6 @@
-type Params = { [key: string]: string };
+interface Params {
+  [key: string]: string;
+}
 
 export function buildUrl(host: string, endpoint: string, params: Params = {}) {
   let paramUrl = '';

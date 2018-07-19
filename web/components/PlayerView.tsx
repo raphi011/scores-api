@@ -1,11 +1,11 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
 import { PlayerStatistic, Player, Classes } from '../types';
 
-const styles = () => ({
+const styles = createStyles({
   profileHead: {
     display: 'flex',
     flexDirection: 'column',
@@ -21,11 +21,11 @@ const styles = () => ({
   },
 });
 
-type Props = {
+interface Props {
   statistic: PlayerStatistic;
   player: Player;
   classes: Classes;
-};
+}
 
 function PlayerView({ player, statistic, classes }: Props) {
   const avatar = statistic.player.profileImageUrl ? (

@@ -14,10 +14,10 @@ interface Props {
   userPlayer: Player;
 }
 
-type State = {
+interface State {
   drawerOpen: boolean;
   groupOpen: { [key: number]: boolean };
-};
+}
 
 class LayoutContainer extends React.Component<Props, State> {
   state = {

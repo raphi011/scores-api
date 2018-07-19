@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/ContentCopy';
@@ -14,7 +14,7 @@ import Link from 'next/link';
 
 import { Match, Classes } from '../types';
 
-const styles = () => ({
+const styles = createStyles({
   root: {
     width: 250,
   },

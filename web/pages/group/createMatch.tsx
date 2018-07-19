@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
 import NextIcon from '@material-ui/icons/KeyboardArrowRight';
@@ -23,31 +23,32 @@ import {
 import { setStatusAction } from '../../redux/actions/status';
 import { NewMatch, Match, Player, Classes } from '../../types';
 
-const styles = theme => ({
-  root: {
-    width: '90%',
-  },
-  submitButton: {
-    marginRight: theme.spacing.unit,
-    width: '100%',
-  },
-  stepContainer: {
-    padding: '0 20px',
-  },
-  actionsContainer: {
-    marginTop: theme.spacing.unit,
-  },
-  resetContainer: {
-    marginTop: 0,
-    padding: theme.spacing.unit * 3,
-  },
-  transition: {
-    paddingBottom: 4,
-  },
-  button: {
-    margin: theme.spacing.unit,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      width: '90%',
+    },
+    submitButton: {
+      marginRight: theme.spacing.unit,
+      width: '100%',
+    },
+    stepContainer: {
+      padding: '0 20px',
+    },
+    actionsContainer: {
+      marginTop: theme.spacing.unit,
+    },
+    resetContainer: {
+      marginTop: 0,
+      padding: theme.spacing.unit * 3,
+    },
+    transition: {
+      paddingBottom: 4,
+    },
+    button: {
+      margin: theme.spacing.unit,
+    },
+  });
 
 function calcWinnerScore(loserScore: number, targetScore: number): number {
   const winnerScore =
@@ -56,7 +57,7 @@ function calcWinnerScore(loserScore: number, targetScore: number): number {
   return winnerScore;
 }
 
-type Props = {
+interface Props {
   rematch?: Match;
   players: Player[];
   createNewMatch: (NewMatch) => Promise<any>;
@@ -65,9 +66,9 @@ type Props = {
   groupId: number;
   rematchId: number;
   classes: Classes;
-};
+}
 
-type State = {
+interface State {
   activeStep: number;
   teamsComplete: boolean;
   match: {
@@ -83,7 +84,7 @@ type State = {
   errors: {
     valid: boolean;
   };
-};
+}
 
 class CreateMatch extends React.Component<Props, State> {
   static getParameters(query) {

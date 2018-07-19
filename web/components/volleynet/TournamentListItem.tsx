@@ -5,10 +5,10 @@ import { tournamentDateString } from '../../utils/tournament';
 
 import { Tournament } from '../../types';
 
-type Props = {
+interface Props {
   tournament: Tournament;
   onClick: (Tournament) => void;
-};
+}
 
 const TournamentListItem = ({ tournament, onClick }: Props) => (
   <ListItem button onClick={() => onClick(tournament)}>

@@ -1,13 +1,13 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import Button from '@material-ui/core/Button';
 import DoneIcon from '@material-ui/icons/Done';
 
-const styles = () => ({
+const styles = createStyles({
   container: {
     padding: '0 10px',
   },

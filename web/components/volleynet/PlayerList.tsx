@@ -1,12 +1,12 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
 import PlayerListItem from './PlayerListItem';
 
 import { VolleynetPlayer, Classes } from '../../types';
 
-const styles = () => ({
+const styles = createStyles({
   root: {
     width: '100%',
   },

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import Drawer from './Drawer';
 import AppBar from '../containers/AppBarContainer';
@@ -16,12 +16,13 @@ interface Props {
   classes: Classes;
 }
 
-const styles = theme => ({
-  style: {
-    backgroundColor: theme.palette.background.default,
-    marginTop: '70px',
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    style: {
+      backgroundColor: theme.palette.background.default,
+      marginTop: '70px',
+    },
+  });
 
 const Layout = ({
   title,

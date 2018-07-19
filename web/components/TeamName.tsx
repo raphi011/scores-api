@@ -1,15 +1,16 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { Team, Classes } from '../types';
 
-const styles = theme => ({
-  normal: { padding: '2px 4px' },
-  highlighted: {
-    backgroundColor: theme.palette.primary.light,
-    padding: '2px 4px',
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    normal: { padding: '2px 4px' },
+    highlighted: {
+      backgroundColor: theme.palette.primary.light,
+      padding: '2px 4px',
+    },
+  });
 
 interface Props {
   team: Team;

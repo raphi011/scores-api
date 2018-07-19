@@ -8,10 +8,10 @@ export const initialAuthState = {
   loginRoute: null,
 };
 
-export type AuthStore = {
+export interface AuthStore {
   user?: User;
   loginRoute?: string;
-};
+}
 
 function loggedOut(state: AuthStore, action): AuthStore {
   // todo

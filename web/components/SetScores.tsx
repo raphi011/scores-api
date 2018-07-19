@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import TextField from '@material-ui/core/TextField';
 import Radio from '@material-ui/core/Radio';
@@ -12,30 +12,31 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import { Classes, Player } from '../types';
 
-const styles = theme => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  button: {
-    margin: theme.spacing.unit,
-    position: 'fixed',
-    right: '24px',
-    bottom: '24px',
-  },
-  formControl: {
-    marginBottom: '20px',
-  },
-  root: {
-    display: 'flex',
-  },
-  group: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    container: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    button: {
+      margin: theme.spacing.unit,
+      position: 'fixed',
+      right: '24px',
+      bottom: '24px',
+    },
+    formControl: {
+      marginBottom: '20px',
+    },
+    root: {
+      display: 'flex',
+    },
+    group: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
+  });
 
-type Props = {
+interface Props {
   onChangeTargetScore: (Event, number) => void;
   onChangeScore: (
     teamNr: number,
@@ -55,7 +56,7 @@ type Props = {
   onCreateMatch: (Event) => void;
   errors: { [key: string]: string };
   classes: Classes;
-};
+}
 
 class SetScores extends React.PureComponent<Props> {
   onChangeScoreTeam1 = e => {

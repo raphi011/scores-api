@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
@@ -17,7 +17,7 @@ import { loadGroupStatisticsAction } from '../../redux/actions/entities';
 import { statisticByGroupSelector } from '../../redux/reducers/entities';
 import { Statistic, StatisticFilter, Classes } from '../../types';
 
-const styles = () => ({
+const styles = createStyles({
   title: {
     flex: '0 0 auto',
   },
@@ -26,17 +26,17 @@ const styles = () => ({
   },
 });
 
-type Props = {
-  groupId: number,
-  filter: StatisticFilter,
-  statistics: Array<Statistic>,
-  classes: Classes,
-};
+interface Props {
+  groupId: number;
+  filter: StatisticFilter;
+  statistics: Statistic[];
+  classes: Classes;
+}
 
-type State = {
-  filterMenuOpen: boolean,
-  anchorEl: ?HTMLElement,
-};
+interface State {
+  filterMenuOpen: boolean;
+  anchorEl?: HTMLElement;
+}
 
 class Statistics extends React.Component<Props, State> {
   static getParameters(query) {

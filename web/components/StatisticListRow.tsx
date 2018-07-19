@@ -1,15 +1,16 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
 import { PlayerStatistic, Classes } from '../types';
 
-const styles = theme => ({
-  denseCell: {
-    paddingRight: theme.spacing.unit * 1.5,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    denseCell: {
+      paddingRight: theme.spacing.unit * 1.5,
+    },
+  });
 
 interface Props {
   onPlayerClick: (number) => void;

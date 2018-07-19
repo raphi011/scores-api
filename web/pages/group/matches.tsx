@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,14 +17,15 @@ import { setStatusAction } from '../../redux/actions/status';
 
 import { Match, User, Classes } from '../../types';
 
-const styles = theme => ({
-  button: {
-    margin: theme.spacing.unit,
-    position: 'fixed',
-    right: '24px',
-    bottom: '24px',
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    button: {
+      margin: theme.spacing.unit,
+      position: 'fixed',
+      right: '24px',
+      bottom: '24px',
+    },
+  });
 
 interface Props {
   groupId: number;
@@ -34,10 +35,10 @@ interface Props {
   classes: Classes;
 }
 
-type State = {
+interface State {
   loading: boolean;
   hasMore: boolean;
-};
+}
 
 class Index extends React.Component<Props, State> {
   static getParameters(query) {

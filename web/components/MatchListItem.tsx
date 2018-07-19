@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
@@ -8,7 +8,7 @@ import TeamName from './TeamName';
 
 import { Match, Team, Classes } from '../types';
 
-const itemStyles = () => ({
+const itemStyles = createStyles({
   listContainer: {
     display: 'flex',
     flexDirection: 'row',

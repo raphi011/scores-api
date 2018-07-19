@@ -1,6 +1,6 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -8,12 +8,13 @@ import Badge from '@material-ui/core/Badge';
 
 import { Player, Classes } from '../types';
 
-const styles = theme => ({
-  root: {
-    width: '100%',
-    background: theme.palette.background.paper,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      width: '100%',
+      background: theme.palette.background.paper,
+    },
+  });
 
 const playerItemStyles = theme => ({
   default: {
@@ -27,8 +28,8 @@ const playerItemStyles = theme => ({
   },
 });
 
-type Props = {
-  players: Array<Player>;
+interface Props {
+  players: Player[];
   onUnsetPlayer: (number) => void;
   onSetPlayer: (number, Player, boolean) => void;
   player1: Player;
@@ -36,7 +37,7 @@ type Props = {
   player3: Player;
   player4: Player;
   classes: Classes;
-};
+}
 
 class SelectPlayers extends React.Component<Props> {
   onSelectPlayer = (selected: Player) => {
@@ -102,11 +103,11 @@ class SelectPlayers extends React.Component<Props> {
   }
 }
 
-type PlayerListProps = {
+interface PlayerListProps {
   onClick: (Event) => void;
   player: Player;
   playerNr: number;
-};
+}
 
 function PlayerListItem({ player, onClick, playerNr }: PlayerListProps) {
   let color;

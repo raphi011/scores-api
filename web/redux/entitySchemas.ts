@@ -1,6 +1,6 @@
 import { normalize, denormalize, schema } from 'normalizr';
 
-import type { EntityName } from './../types';
+import { EntityName } from './../types';
 
 const player = new schema.Entity('player');
 

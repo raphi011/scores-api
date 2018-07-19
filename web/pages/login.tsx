@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -23,7 +23,9 @@ interface Props {
   fromServer: boolean;
   error: string;
   classes: Classes;
-  loginWithPassword: ({ email: string, password: string }) => Promise<any>;
+  loginWithPassword: (
+    credentials: { email: string; password: string },
+  ) => Promise<any>;
   setStatus: (string) => void;
 }
 
@@ -33,19 +35,20 @@ interface State {
   loggingIn: boolean;
 }
 
-const styles = theme => ({
-  wrapper: {
-    margin: theme.spacing.unit,
-    position: 'relative',
-  },
-  buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    wrapper: {
+      margin: theme.spacing.unit,
+      position: 'relative',
+    },
+    buttonProgress: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      marginTop: -12,
+      marginLeft: -12,
+    },
+  });
 
 class Login extends React.Component<Props, State> {
   static getParameters(query) {

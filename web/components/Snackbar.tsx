@@ -1,16 +1,17 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { Classes } from 'types';
 
-const styles = theme => ({
-  close: {
-    width: theme.spacing.unit * 4,
-    height: theme.spacing.unit * 4,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    close: {
+      width: theme.spacing.unit * 4,
+      height: theme.spacing.unit * 4,
+    },
+  });
 
 const handleRequestClose = onClose => (event, reason) => {
   if (reason === 'clickaway') {

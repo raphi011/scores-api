@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import withAuth from '../../containers/AuthContainer';
@@ -14,7 +14,7 @@ import { userSelector } from '../../redux/reducers/auth';
 
 import { Tournament, User } from '../../types';
 
-const styles = () => ({});
+const styles = createStyles({});
 
 interface Props {
   tournament?: Tournament;

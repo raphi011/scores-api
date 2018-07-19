@@ -35,11 +35,11 @@ interface Props {
   loadMatches: (playerId: number, after?: string) => Promise<any>;
 }
 
-type State = {
+interface State {
   tabOpen: number;
   loading: boolean;
   hasMore: boolean;
-};
+}
 
 class PlayerInfo extends React.Component<Props, State> {
   static getParameters(query) {

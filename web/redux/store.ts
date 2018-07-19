@@ -4,15 +4,15 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import reducer, { initialState } from './reducers';
 import apiMiddleware, { serverAction } from './apiMiddleware';
 
-import type { AuthStore } from './reducers/auth';
-import type { EntitiesStore } from './reducers/entities';
-import type { StatusStore } from './reducers/status';
+import { AuthStore } from './reducers/auth';
+import { EntityStore } from './reducers/entities';
+import { StatusStore } from './reducers/status';
 
-export type Store = {
-  auth: AuthStore,
-  entities: EntitiesStore,
-  status: StatusStore,
-};
+export interface Store {
+  auth: AuthStore;
+  entities: EntityStore;
+  status: StatusStore;
+}
 
 export async function dispatchAction(dispatch, action, isServer, req, res) {
   const result = await dispatch(
@@ -25,8 +25,8 @@ export async function dispatchActions(
   dispatch,
   actions = [],
   isServer,
-  req,
-  res,
+  req?: object,
+  res?: object,
 ) {
   for (let i = 0; i < actions.length; i += 1) {
     const action = isServer ? serverAction(actions[i], req, res) : actions[i];

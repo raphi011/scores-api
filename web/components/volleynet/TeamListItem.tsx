@@ -5,9 +5,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { VolleynetTeam } from '../../types';
 
-type Props = {
+interface Props {
   team: VolleynetTeam;
-};
+}
 
 const TeamListItem = ({ team }: Props) => (
   <ListItem button>

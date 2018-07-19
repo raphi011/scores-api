@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Card from '@material-ui/core/Card';
@@ -20,35 +20,36 @@ import CenteredLoading from '../../components/CenteredLoading';
 
 import { Tournament, User, Classes } from '../../types';
 
-const styles = theme => ({
-  headerContainer: {
-    margin: theme.spacing.unit,
-    padding: theme.spacing.unit * 2,
-  },
-  infoContainer: {
-    margin: '20px 0',
-  },
-  tabContent: {
-    background: theme.palette.background.paper,
-  },
-  descriptionContainer: {
-    padding: theme.spacing.unit * 2,
-  },
-  infoElement: {
-    verticalAlign: 'middle',
-    fontSize: '1rem',
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    headerContainer: {
+      margin: theme.spacing.unit,
+      padding: theme.spacing.unit * 2,
+    },
+    infoContainer: {
+      margin: '20px 0',
+    },
+    tabContent: {
+      background: theme.palette.background.paper,
+    },
+    descriptionContainer: {
+      padding: theme.spacing.unit * 2,
+    },
+    infoElement: {
+      verticalAlign: 'middle',
+      fontSize: '1rem',
+    },
+  });
 
-type Props = {
+interface Props {
   tournament: Tournament;
   user: User;
   classes: Classes;
-};
+}
 
-type State = {
+interface State {
   tabOpen: number;
-};
+}
 
 class TournamentView extends React.Component<Props, State> {
   state = {

@@ -1,9 +1,9 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Classes } from 'types';
 
-const styles = () => ({
+const styles = createStyles({
   container: {
     height: '500px',
     display: 'flex',

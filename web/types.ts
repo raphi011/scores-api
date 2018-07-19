@@ -4,6 +4,7 @@ export type EntityName =
   | 'match'
   | 'group'
   | 'tournament'
+  | 'statistic'
   | 'volleynetplayer';
 
 export interface Player {

@@ -5,10 +5,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { VolleynetPlayer } from '../../types';
 
-type Props = {
+interface Props {
   player: VolleynetPlayer;
   onClick: (VolleynetPlayer) => void;
-};
+}
 
 const PlayerListItem = ({ player, onClick }: Props) => (
   <ListItem button onClick={() => onClick(player)}>

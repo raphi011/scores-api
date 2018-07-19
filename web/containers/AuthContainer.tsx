@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 
 import React from 'react';
-import { Element, ReactNode } from 'react';
+import { ComponentType } from 'react';
 
 import Router from 'next/router';
 import { connect } from 'react-redux';
@@ -12,42 +12,42 @@ import { userOrLoginRouteAction } from '../redux/actions/auth';
 
 import { User } from '../types';
 
-type Props = {
-  isLoggedIn: boolean,
-  fromServer: boolean,
-  user: User,
-  dispatch: any,
-};
+interface Props {
+  isLoggedIn: boolean;
+  fromServer: boolean;
+  user: User;
+  dispatch: any;
+}
 
-type WrappedProps = {};
+interface InjectedProps {
+  buildActions: () => void;
+}
 
-function withAuth<C: ComponentType<WrappedProps>>(
-  WrappedComponent: C,
-): Element<C> {
+const withAuth = <P extends InjectedProps>(Component: ComponentType<P>) => {
   class Auth extends React.Component<Props> {
     async componentDidMount() {
       const { fromServer, dispatch } = this.props;
 
-      if (!WrappedComponent.buildActions || fromServer) {
+      if (!Component.buildActions || fromServer) {
         return;
       }
 
-      const actions = WrappedComponent.buildActions(this.props);
+      const actions = Component.buildActions(this.props);
       await dispatchActions(dispatch, actions, false);
     }
 
     async componentWillUpdate(nextProps) {
       if (
-        !WrappedComponent.shouldComponentUpdate ||
-        !WrappedComponent.buildActions ||
-        !WrappedComponent.shouldComponentUpdate(this.props, nextProps)
+        !Component.shouldComponentUpdate ||
+        !Component.buildActions ||
+        !Component.shouldComponentUpdate(this.props, nextProps)
       ) {
         return;
       }
 
       const { dispatch } = nextProps;
 
-      const actions = WrappedComponent.buildActions(nextProps);
+      const actions = Component.buildActions(nextProps);
 
       await dispatchActions(dispatch, actions, false);
     }
@@ -119,8 +119,8 @@ function withAuth<C: ComponentType<WrappedProps>>(
       }
 
       // All good, return props!
-      if (WrappedComponent.getParameters) {
-        const parameters = await WrappedComponent.getParameters(query);
+      if (Component.getParameters) {
+        const parameters = await Component.getParameters(query);
 
         props = {
           ...props,
@@ -130,8 +130,8 @@ function withAuth<C: ComponentType<WrappedProps>>(
 
       // Execute these only on the server side to avoid waiting for
       // api calls before rendering the page
-      if (isServer && WrappedComponent.buildActions) {
-        const actions = WrappedComponent.buildActions(props);
+      if (isServer && Component.buildActions) {
+        const actions = Component.buildActions(props);
 
         await dispatchActions(dispatch, actions, isServer, req, res);
       }
@@ -140,14 +140,14 @@ function withAuth<C: ComponentType<WrappedProps>>(
     }
 
     render() {
-      return <WrappedComponent {...this.props} />;
+      return <Component {...this.props} />;
     }
   }
 
   return connect(
-      WrappedComponent.mapStateToProps,
-      WrappedComponent.mapDispatchToProps,
-    )(Auth);
-}
+    Component.mapStateToProps,
+    Component.mapDispatchToProps,
+  )(Auth);
+};
 
 export default withAuth;

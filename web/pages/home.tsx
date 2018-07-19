@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -10,20 +10,21 @@ import { userSelector } from '../redux/reducers/auth';
 import { playerSelector } from '../redux/reducers/entities';
 import { Player, Classes } from '../types';
 
-const styles = theme => ({
-  container: {
-    margin: theme.spacing.unit,
-  },
-  paper: {
-    margin: '10px 0',
-    padding: theme.spacing.unit * 2,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    container: {
+      margin: theme.spacing.unit,
+    },
+    paper: {
+      margin: '10px 0',
+      padding: theme.spacing.unit * 2,
+    },
+  });
 
-type Props = {
+interface Props {
   player: Player;
   classes: Classes;
-};
+}
 
 class Home extends React.Component<Props> {
   static getParameters(query) {

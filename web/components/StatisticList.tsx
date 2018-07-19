@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -9,11 +9,12 @@ import { PlayerStatistic, Classes } from '../types';
 
 import StatisticListRow from './StatisticListRow';
 
-const styles = theme => ({
-  denseCell: {
-    paddingRight: theme.spacing.unit * 1.5,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    denseCell: {
+      paddingRight: theme.spacing.unit * 1.5,
+    },
+  });
 
 interface Props {
   statistics: PlayerStatistic[];

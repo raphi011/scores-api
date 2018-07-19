@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Chip from '@material-ui/core/Chip';
@@ -9,7 +9,7 @@ import { formatDate } from '../utils/dateFormat';
 
 import { Match, Classes } from '../types';
 
-const styles = () => ({
+const styles = createStyles({
   root: {
     width: '100%',
   },
@@ -30,9 +30,9 @@ function isSameDay(date1: Date, date2: Date): boolean {
   );
 }
 
-type DayHeaderProps = {
+interface DayHeaderProps {
   date: Date;
-};
+}
 
 const DayHeader = ({ date }: DayHeaderProps) => (
   <ListItem dense style={{ justifyContent: 'center' }}>

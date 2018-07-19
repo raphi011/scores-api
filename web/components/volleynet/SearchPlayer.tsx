@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -12,27 +12,27 @@ import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
 
 import { Gender, VolleynetSearchPlayer, Classes } from '../../types';
 
-const styles = () => ({
+const styles = createStyles({
   container: {
     padding: '0 10px',
   },
 });
 
-type Props = {
+interface Props {
   gender: Gender;
   onSelectPlayer: VolleynetSearchPlayer;
   searchVolleynetPlayers: (
     params: { fname: string; lname: string; bday: string },
   ) => void;
-  foundPlayers: Array<VolleynetSearchPlayer>;
+  foundPlayers: VolleynetSearchPlayer[];
   classes: Classes;
-};
+}
 
-type State = {
+interface State {
   firstName: string;
   lastName: string;
   birthday: string;
-};
+}
 
 class SearchPlayer extends React.Component<Props, State> {
   state = {

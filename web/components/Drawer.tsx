@@ -1,5 +1,5 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import MDrawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -16,24 +16,25 @@ import Link from 'next/link';
 
 import { Player, Classes } from '../types';
 
-const styles = theme => ({
-  list: {
-    width: 250,
-    background: theme.palette.background.paper,
-  },
-  listFull: {
-    width: 'auto',
-  },
-  header: {
-    marginTop: '25px',
-    marginBottom: '5px',
-    lineHeight: 'inherit',
-    textTransform: 'uppercase',
-  },
-  nested: {
-    paddingLeft: theme.spacing.unit * 4,
-  },
-});
+const styles = (theme: Theme) =>
+  createStyles({
+    list: {
+      width: 250,
+      background: theme.palette.background.paper,
+    },
+    listFull: {
+      width: 'auto',
+    },
+    header: {
+      marginTop: '25px',
+      marginBottom: '5px',
+      lineHeight: 'inherit',
+      textTransform: 'uppercase',
+    },
+    nested: {
+      paddingLeft: theme.spacing.unit * 4,
+    },
+  });
 
 interface Props {
   open: boolean;

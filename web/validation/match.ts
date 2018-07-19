@@ -1,5 +1,12 @@
 import { NewMatch } from '../types';
 
+export interface MatchValidation {
+  scoreTeam1: string;
+  scoreTeam2: string;
+  all: string;
+  valid: boolean;
+}
+
 /* eslint-disable import/prefer-default-export */
 export function validateMatch({
   player1Id,
@@ -9,8 +16,13 @@ export function validateMatch({
   scoreTeam1,
   scoreTeam2,
   targetScore,
-}: NewMatch) {
-  const errors = {};
+}: NewMatch): MatchValidation {
+  const errors: MatchValidation = {
+    scoreTeam1: '',
+    scoreTeam2: '',
+    all: '',
+    valid: true,
+  };
 
   let higherScore = scoreTeam1;
   let lowerScore = scoreTeam2;

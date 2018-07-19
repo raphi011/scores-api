@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import withAuth from '../../containers/AuthContainer';
@@ -15,7 +15,7 @@ import { tournamentSelector } from '../../redux/reducers/entities';
 
 import { Tournament, VolleynetPlayer } from '../../types';
 
-const styles = () => ({});
+const styles = createStyles({});
 
 interface Props {
   tournamentId: number;
