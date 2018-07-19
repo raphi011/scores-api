@@ -1,7 +1,6 @@
 /* eslint-disable prefer-destructuring */
 
 import React from 'react';
-import { ComponentType } from 'react';
 
 import Router from 'next/router';
 import { connect } from 'react-redux';
@@ -19,11 +18,7 @@ interface Props {
   dispatch: any;
 }
 
-interface InjectedProps {
-  buildActions: () => void;
-}
-
-const withAuth = <P extends InjectedProps>(Component: ComponentType<P>) => {
+const withAuth = Component => {
   class Auth extends React.Component<Props> {
     async componentDidMount() {
       const { fromServer, dispatch } = this.props;

@@ -116,9 +116,7 @@ async function doAction(
   return Promise.reject();
 }
 
-const apiMiddleware = ({ dispatch }: (Action) => Promise<any>) => (
-  next: Action => Promise<any>,
-) => async (action: Action) => {
+const apiMiddleware = ({ dispatch }) => next => async action => {
   if (
     action.type !== actionNames.API &&
     action.type !== actionNames.API_MULTI
