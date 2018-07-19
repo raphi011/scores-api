@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -8,17 +6,17 @@ import Layout from '../components/Layout';
 import { playerSelector } from '../redux/reducers/entities';
 import { userSelector } from '../redux/reducers/auth';
 
-import type { Player } from '../types';
+import { Player } from '../types';
 
-type Props = {
-  title: string,
-  children: React.Node,
-  userPlayer: Player,
-};
+interface Props {
+  title: string;
+  children: React.Node;
+  userPlayer: Player;
+}
 
 type State = {
-  drawerOpen: boolean,
-  groupOpen: { [number]: boolean },
+  drawerOpen: boolean;
+  groupOpen: { [key: number]: boolean };
 };
 
 class LayoutContainer extends React.Component<Props, State> {
@@ -43,7 +41,7 @@ class LayoutContainer extends React.Component<Props, State> {
 
   onOpenDrawer = () => {
     this.setState({ drawerOpen: true });
-  }
+  };
 
   onCloseDrawer = () => {
     this.setState({ drawerOpen: false });

@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import Link from 'next/link';
 
@@ -14,14 +12,14 @@ import { loadTournamentAction } from '../../redux/actions/entities';
 import { tournamentSelector } from '../../redux/reducers/entities';
 import { userSelector } from '../../redux/reducers/auth';
 
-import type { Tournament, User } from '../../types';
+import { Tournament, User } from '../../types';
 
 const styles = () => ({});
 
-type Props = {
-  tournament: ?Tournament,
-  user: User,
-};
+interface Props {
+  tournament?: Tournament;
+  user: User;
+}
 
 class ShowTournament extends React.Component<Props> {
   static getParameters(query) {

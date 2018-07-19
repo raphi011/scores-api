@@ -1,5 +1,4 @@
-// @flow
-import type { NewMatch } from '../types';
+import { NewMatch } from '../types';
 
 /* eslint-disable import/prefer-default-export */
 export function validateMatch({
@@ -21,14 +20,14 @@ export function validateMatch({
   }
 
   if (!player1Id || !player2Id || !player3Id || !player4Id) {
-    errors.all = "Four players have to be selected";
+    errors.all = 'Four players have to be selected';
   }
 
   if (scoreTeam1 <= 0) {
-    errors.scoreTeam1 = "Invalid score";
+    errors.scoreTeam1 = 'Invalid score';
   }
   if (scoreTeam2 <= 0) {
-    errors.scoreTeam2 = "Invalid score";
+    errors.scoreTeam2 = 'Invalid score';
   }
 
   if (higherScore < targetScore) {
@@ -39,7 +38,7 @@ export function validateMatch({
     (higherScore === targetScore && lowerScore === targetScore - 1) ||
     (higherScore > targetScore && lowerScore !== higherScore - 2)
   ) {
-    errors.all = "Scores have to be two points apart";
+    errors.all = 'Scores have to be two points apart';
   }
 
   errors.valid = Object.keys(errors).length === 0;

@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { connect } from 'react-redux';
 import Typography from '@material-ui/core/Typography';
@@ -12,7 +10,7 @@ import PlayerList from '../../components/volleynet/PlayerList';
 import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
 import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
 
-import type { Gender, VolleynetSearchPlayer } from '../../types';
+import { Gender, VolleynetSearchPlayer, Classes } from '../../types';
 
 const styles = () => ({
   container: {
@@ -21,20 +19,19 @@ const styles = () => ({
 });
 
 type Props = {
-  gender: Gender,
-  onSelectPlayer: VolleynetSearchPlayer,
-  searchVolleynetPlayers: ({
-    fname: string,
-    lname: string,
-    bday: string,
-  }) => void,
-  foundPlayers: Array<VolleynetSearchPlayer>,
+  gender: Gender;
+  onSelectPlayer: VolleynetSearchPlayer;
+  searchVolleynetPlayers: (
+    params: { fname: string; lname: string; bday: string },
+  ) => void;
+  foundPlayers: Array<VolleynetSearchPlayer>;
+  classes: Classes;
 };
 
 type State = {
-  firstName: string,
-  lastName: string,
-  birthday: string,
+  firstName: string;
+  lastName: string;
+  birthday: string;
 };
 
 class SearchPlayer extends React.Component<Props, State> {
@@ -127,6 +124,7 @@ function mapStateToProps(state) {
   return { foundPlayers };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-  withStyles(styles)(SearchPlayer),
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withStyles(styles)(SearchPlayer));

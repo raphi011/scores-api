@@ -1,12 +1,10 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
 import TournamentListItem from './TournamentListItem';
 
-import type { Tournament } from '../../types';
+import { Tournament, Classes } from '../../types';
 
 const styles = () => ({
   root: {
@@ -15,9 +13,9 @@ const styles = () => ({
 });
 
 type Props = {
-  tournaments: Array<Tournament>,
-  classes: Object,
-  onTournamentClick: () => void,
+  tournaments: Array<Tournament>;
+  classes: Classes;
+  onTournamentClick: () => void;
 };
 
 class TournamentList extends React.PureComponent<Props> {

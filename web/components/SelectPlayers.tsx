@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Badge from '@material-ui/core/Badge';
 
-import type { Player } from '../types';
+import { Player, Classes } from '../types';
 
 const styles = theme => ({
   root: {
@@ -30,14 +28,14 @@ const playerItemStyles = theme => ({
 });
 
 type Props = {
-  players: Array<Player>,
-  onUnsetPlayer: number => void,
-  onSetPlayer: (number, Player, boolean) => void,
-  player1: Player,
-  player2: Player,
-  player3: Player,
-  player4: Player,
-  classes: Object,
+  players: Array<Player>;
+  onUnsetPlayer: (number) => void;
+  onSetPlayer: (number, Player, boolean) => void;
+  player1: Player;
+  player2: Player;
+  player3: Player;
+  player4: Player;
+  classes: Classes;
 };
 
 class SelectPlayers extends React.Component<Props> {
@@ -105,9 +103,9 @@ class SelectPlayers extends React.Component<Props> {
 }
 
 type PlayerListProps = {
-  onClick: Event => void,
-  player: Player,
-  playerNr: number,
+  onClick: (Event) => void;
+  player: Player;
+  playerNr: number;
 };
 
 function PlayerListItem({ player, onClick, playerNr }: PlayerListProps) {

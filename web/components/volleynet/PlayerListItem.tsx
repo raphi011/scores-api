@@ -1,14 +1,13 @@
-// @flow
 import React from 'react';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import type { VolleynetPlayer } from '../../types';
+import { VolleynetPlayer } from '../../types';
 
 type Props = {
-  player: VolleynetPlayer,
-  onClick: VolleynetPlayer => void,
+  player: VolleynetPlayer;
+  onClick: (VolleynetPlayer) => void;
 };
 
 const PlayerListItem = ({ player, onClick }: Props) => (

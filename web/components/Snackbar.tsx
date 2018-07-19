@@ -1,10 +1,9 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import { Classes } from 'types';
 
 const styles = theme => ({
   close: {
@@ -21,12 +20,12 @@ const handleRequestClose = onClose => (event, reason) => {
   onClose();
 };
 
-type Props = {
-  onClose: () => void,
-  status: string,
-  open: boolean,
-  classes: Object,
-};
+interface Props {
+  onClose: () => void;
+  status: string;
+  open: boolean;
+  classes: Classes;
+}
 
 const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
   <Snackbar

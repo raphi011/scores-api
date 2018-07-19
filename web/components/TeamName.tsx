@@ -1,9 +1,7 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
-import type { Team } from '../types';
+import { Team, Classes } from '../types';
 
 const styles = theme => ({
   normal: { padding: '2px 4px' },
@@ -13,11 +11,11 @@ const styles = theme => ({
   },
 });
 
-type Props = {
-  team: Team,
-  highlightPlayerId: number,
-  classes: { [string]: string },
-};
+interface Props {
+  team: Team;
+  highlightPlayerId: number;
+  classes: Classes;
+}
 
 const TeamName = ({ team, highlightPlayerId, classes }: Props) => {
   if (team.name) {

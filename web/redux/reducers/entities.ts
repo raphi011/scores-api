@@ -1,39 +1,37 @@
-// @flow
-
 import { createSelector } from 'reselect';
 
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
 import { denorm, norm } from '../entitySchemas';
 
-import type { EntityName, EntityType } from '../../types';
-import type { Store } from '../store';
+import { EntityName, EntityType } from '../../types';
+import { Store } from '../store';
 
-export type EntityStore = {
-  [EntityName]: { values: { [number]: EntityType } },
-};
+export interface EntityStore {
+  [key: EntityName]: { values: { [key: number]: EntityType } };
+}
 
-export type EntityMap = {
-  [EntityName]: { [number]: EntityType },
-};
+export interface EntityMap {
+  [key: EntityName]: { [key: number]: EntityType };
+}
 
-export type ReceiveEntityAction = {
-  payload: Array<Object>,
-  entityName: EntityName,
-  assignId?: boolean,
+export interface ReceiveEntityAction {
+  payload: Object[];
+  entityName: EntityName;
+  assignId?: boolean;
   listOptions?: {
-    [EntityName]: {
-      name: string,
-      key?: number,
-      mode?: 'replace' | 'append',
-    },
-  },
-};
+    [key: EntityName]: {
+      name: string;
+      key?: number;
+      mode?: 'replace' | 'append';
+    };
+  };
+}
 
 export type DeleteEntityAction = {
-  payload: Object,
-  entityName: EntityName,
-  listNames: Array<string>,
+  payload: Object;
+  entityName: EntityName;
+  listNames: string[];
 };
 
 export const initialEntitiesState = {

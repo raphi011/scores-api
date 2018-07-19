@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import Link from 'next/link';
 
@@ -20,7 +18,7 @@ import { tournamentDateString, isSignedup } from '../../utils/tournament';
 import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';
 
-import type { Tournament, User } from '../../types';
+import { Tournament, User, Classes } from '../../types';
 
 const styles = theme => ({
   headerContainer: {
@@ -43,12 +41,13 @@ const styles = theme => ({
 });
 
 type Props = {
-  tournament: Tournament,
-  user: User,
+  tournament: Tournament;
+  user: User;
+  classes: Classes;
 };
 
 type State = {
-  tabOpen: number,
+  tabOpen: number;
 };
 
 class TournamentView extends React.Component<Props, State> {

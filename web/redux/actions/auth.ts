@@ -1,7 +1,5 @@
-// @flow
-
 import * as actionNames from '../actionNames';
-import type { ApiAction } from '../../types';
+import { ApiAction } from '../../types';
 
 export const userOrLoginRouteAction = (): ApiAction => ({
   type: actionNames.API,

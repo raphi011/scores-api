@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -8,7 +6,8 @@ import Chip from '@material-ui/core/Chip';
 
 import MatchListItem from './MatchListItem';
 import { formatDate } from '../utils/dateFormat';
-import type { Match } from '../types';
+
+import { Match, Classes } from '../types';
 
 const styles = () => ({
   root: {
@@ -16,12 +15,12 @@ const styles = () => ({
   },
 });
 
-type Props = {
-  matches: Array<Match>,
-  onMatchClick: Match => void,
-  classes: Object,
-  highlightPlayerId: number,
-};
+interface Props {
+  matches: Match[];
+  onMatchClick: (Match) => void;
+  highlightPlayerId: number;
+  classes: Classes;
+}
 
 function isSameDay(date1: Date, date2: Date): boolean {
   return (
@@ -32,7 +31,7 @@ function isSameDay(date1: Date, date2: Date): boolean {
 }
 
 type DayHeaderProps = {
-  date: Date,
+  date: Date;
 };
 
 const DayHeader = ({ date }: DayHeaderProps) => (

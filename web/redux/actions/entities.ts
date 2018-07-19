@@ -1,7 +1,5 @@
-// @flow
-
 import * as actionNames from '../actionNames';
-import type { ApiAction, Match, NewMatch, StatisticFilter } from '../../types';
+import { ApiAction, Match, NewMatch, StatisticFilter } from '../../types';
 
 export const loadMatchesAction = (
   groupId: number,
@@ -177,9 +175,9 @@ export const deleteMatchAction = (match: Match): ApiAction => ({
 });
 
 export const searchVolleynetPlayersAction = (filters: {
-  fname: string,
-  lname: string,
-  bday: string,
+  fname: string;
+  lname: string;
+  bday: string;
 }): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
@@ -208,9 +206,9 @@ export const loadTournamentAction = (tournamentId: string): ApiAction => ({
 });
 
 export const loadTournamentsAction = (filters: {
-  gender: string,
-  league: string,
-  season: string,
+  gender: string;
+  league: string;
+  season: string;
 }): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
@@ -230,12 +228,12 @@ export const loadTournamentsAction = (filters: {
 });
 
 export const tournamentSignupAction = (form: {
-  username: string,
-  password: string,
-  partnerId: number,
-  tournamentId: number,
-  partnerName: string,
-  rememberMe: boolean,
+  username: string;
+  password: string;
+  partnerId: number;
+  tournamentId: number;
+  partnerName: string;
+  rememberMe: boolean;
 }): ApiAction => ({
   type: actionNames.API,
   method: 'POST',

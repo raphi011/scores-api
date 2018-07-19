@@ -1,5 +1,3 @@
-// @flow
-
 import * as actionNames from '../actionNames';
 
 export const setStatusAction = (status: string) => ({

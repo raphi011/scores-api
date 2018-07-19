@@ -1,8 +1,6 @@
-// @flow
-
 import fetch from 'isomorphic-unfetch';
 import * as actionNames from './actionNames';
-import type { Action, ApiAction, ApiActions } from '../types';
+import { Action, ApiAction, ApiActions } from '../types';
 import { buildUrl, isJson } from '../api';
 
 function getHost(req): string {
@@ -118,7 +116,7 @@ async function doAction(
   return Promise.reject();
 }
 
-const apiMiddleware = ({ dispatch }: Action => Promise<any>) => (
+const apiMiddleware = ({ dispatch }: (Action) => Promise<any>) => (
   next: Action => Promise<any>,
 ) => async (action: Action) => {
   if (

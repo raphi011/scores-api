@@ -1,5 +1,3 @@
-// @flow
-
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
 
@@ -7,9 +5,9 @@ export const initialStatusState = {
   status: '',
 };
 
-export type StatusStore = {
-  status: string,
-};
+export interface StatusStore {
+  status: string;
+}
 
 function setStatus(state: StatusStore, action): StatusStore {
   return {

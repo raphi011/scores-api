@@ -1,8 +1,7 @@
-// @flow
 /* eslint-disable prefer-destructuring */
 
 import React from 'react';
-import type { Element, ComponentType } from 'react';
+import { Element, ReactNode } from 'react';
 
 import Router from 'next/router';
 import { connect } from 'react-redux';
@@ -11,7 +10,7 @@ import { dispatchAction, dispatchActions } from '../redux/store';
 import { userSelector } from '../redux/reducers/auth';
 import { userOrLoginRouteAction } from '../redux/actions/auth';
 
-import type { User } from '../types';
+import { User } from '../types';
 
 type Props = {
   isLoggedIn: boolean,

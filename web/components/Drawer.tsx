@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import MDrawer from '@material-ui/core/Drawer';
@@ -16,7 +14,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import LadderIcon from '@material-ui/icons/LooksOne';
 import Link from 'next/link';
 
-import type { Player } from '../types';
+import { Player, Classes } from '../types';
 
 const styles = theme => ({
   list: {
@@ -37,15 +35,15 @@ const styles = theme => ({
   },
 });
 
-type Props = {
-  open: boolean,
-  onOpen: Event => void,
-  onClose: Event => void,
-  userPlayer: Player,
-  classes: Object,
-};
+interface Props {
+  open: boolean;
+  onOpen: (Event) => void;
+  onClose: (Event) => void;
+  userPlayer: Player;
+  classes: Classes;
+}
 
-function Drawer({ open, userPlayer, onClose, onOpen, classes }: Props) {
+function Drawer({ open, userPlayer, onClose, classes }: Props) {
   const { groups = [] } = userPlayer;
 
   const groupList = groups.map(g => (

@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import DateRangeIcon from '@material-ui/icons/DateRange';
@@ -16,7 +15,7 @@ import StatisticList from '../../components/StatisticList';
 import { userOrLoginRouteAction } from '../../redux/actions/auth';
 import { loadGroupStatisticsAction } from '../../redux/actions/entities';
 import { statisticByGroupSelector } from '../../redux/reducers/entities';
-import type { Statistic, StatisticFilter } from '../../types';
+import { Statistic, StatisticFilter, Classes } from '../../types';
 
 const styles = () => ({
   title: {
@@ -31,7 +30,7 @@ type Props = {
   groupId: number,
   filter: StatisticFilter,
   statistics: Array<Statistic>,
-  classes: Object,
+  classes: Classes,
 };
 
 type State = {

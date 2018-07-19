@@ -1,5 +1,3 @@
-// @flow
-
 import { connect } from 'react-redux';
 import { statusSelector } from '../redux/reducers/status';
 import { clearStatusAction } from '../redux/actions/status';
@@ -18,4 +16,7 @@ const mapDispatchToProps = {
   onClose: clearStatusAction,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Snackbar);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Snackbar);

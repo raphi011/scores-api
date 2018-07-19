@@ -1,9 +1,7 @@
-// @flow
-
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
-import type { User } from '../../types';
-import type { Store } from '../store';
+import { User } from '../../types';
+import { Store } from '../store';
 
 export const initialAuthState = {
   user: null,
@@ -11,8 +9,8 @@ export const initialAuthState = {
 };
 
 export type AuthStore = {
-  user: ?User,
-  loginRoute: ?string,
+  user?: User;
+  loginRoute?: string;
 };
 
 function loggedOut(state: AuthStore, action): AuthStore {

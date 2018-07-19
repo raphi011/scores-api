@@ -1,6 +1,4 @@
-// @flow
-
-type Params = { [string]: string };
+type Params = { [key: string]: string };
 
 export function buildUrl(host: string, endpoint: string, params: Params = {}) {
   let paramUrl = '';
@@ -17,7 +15,7 @@ export function buildUrl(host: string, endpoint: string, params: Params = {}) {
 }
 
 export function isJson(response: {
-  headers: { get: string => string },
+  headers: { get: (string) => string };
 }): boolean {
   const contentType = response.headers.get('content-type');
 

@@ -1,12 +1,10 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
 import PlayerListItem from './PlayerListItem';
 
-import type { VolleynetPlayer } from '../../types';
+import { VolleynetPlayer, Classes } from '../../types';
 
 const styles = () => ({
   root: {
@@ -14,11 +12,11 @@ const styles = () => ({
   },
 });
 
-type Props = {
-  players: Array<VolleynetPlayer>,
-  onPlayerClick: VolleynetPlayer => void,
-  classes: Object,
-};
+interface Props {
+  players: VolleynetPlayer[];
+  onPlayerClick: (VolleynetPlayer) => void;
+  classes: Classes;
+}
 
 class PlayerList extends React.PureComponent<Props> {
   render() {

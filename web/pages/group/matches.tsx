@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -17,7 +15,7 @@ import {
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
 
-import type { Match, User, Classes } from '../../types';
+import { Match, User, Classes } from '../../types';
 
 const styles = theme => ({
   button: {
@@ -28,17 +26,17 @@ const styles = theme => ({
   },
 });
 
-type Props = {
-  classes: Classes,
-  groupId: number,
-  user: User,
-  matches: Array<Match>,
-  loadMatches: (number, ?string) => Promise<{ empty: boolean }>,
-};
+interface Props {
+  groupId: number;
+  user: User;
+  matches: Array<Match>;
+  loadMatches: (groupId: number, after?: string) => Promise<{ empty: boolean }>;
+  classes: Classes;
+}
 
 type State = {
-  loading: boolean,
-  hasMore: boolean,
+  loading: boolean;
+  hasMore: boolean;
 };
 
 class Index extends React.Component<Props, State> {

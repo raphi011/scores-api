@@ -1,12 +1,10 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
 import TeamListItem from './TeamListItem';
 
-import type { VolleynetTeam } from '../../types';
+import { VolleynetTeam, Classes } from '../../types';
 
 const styles = () => ({
   root: {
@@ -15,8 +13,8 @@ const styles = () => ({
 });
 
 type Props = {
-  teams: Array<VolleynetTeam>,
-  classes: Object,
+  teams: VolleynetTeam[];
+  classes: Classes;
 };
 
 const sortByRankOrSeed = (a, b) => (a.rank || a.seed) - (b.rank || b.seed);

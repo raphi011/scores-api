@@ -1,22 +1,20 @@
-// @flow
-
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import Drawer from './Drawer';
 import AppBar from '../containers/AppBarContainer';
 
-import type { Player } from '../types';
+import { Player, Classes } from '../types';
 
-type Props = {
-  title: string,
-  children: React$Element<>,
-  userPlayer: Player,
-  drawerOpen: boolean,
-  onCloseDrawer: () => void,
-  onOpenDrawer: () => void,
-  classes: Object,
-};
+interface Props {
+  title: string;
+  children: ReactNode;
+  userPlayer: Player;
+  drawerOpen: boolean;
+  onCloseDrawer: () => void;
+  onOpenDrawer: () => void;
+  classes: Classes;
+}
 
 const styles = theme => ({
   style: {

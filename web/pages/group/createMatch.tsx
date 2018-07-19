@@ -1,6 +1,4 @@
-// @flow
-
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
@@ -23,7 +21,7 @@ import {
   loadGroupAction,
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
-import type { NewMatch, Match, Player } from '../../types';
+import { NewMatch, Match, Player, Classes } from '../../types';
 
 const styles = theme => ({
   root: {
@@ -59,32 +57,32 @@ function calcWinnerScore(loserScore: number, targetScore: number): number {
 }
 
 type Props = {
-  rematch: ?Match,
-  classes: Object,
-  players: Array<Player>,
-  createNewMatch: NewMatch => Promise<any>,
-  setStatus: string => void,
+  rematch?: Match;
+  players: Player[];
+  createNewMatch: (NewMatch) => Promise<any>;
+  setStatus: (string) => void;
   /* eslint-disable react/no-unused-prop-types */
-  groupId: number,
-  rematchId: number,
+  groupId: number;
+  rematchId: number;
+  classes: Classes;
 };
 
 type State = {
-  activeStep: number,
-  teamsComplete: boolean,
+  activeStep: number;
+  teamsComplete: boolean;
   match: {
-    groupId: number,
-    player1: ?Player,
-    player2: ?Player,
-    player3: ?Player,
-    player4: ?Player,
-    scoreTeam1: string,
-    scoreTeam2: string,
-    targetScore: string,
-  },
+    groupId: number;
+    player1?: Player;
+    player2?: Player;
+    player3?: Player;
+    player4?: Player;
+    scoreTeam1: string;
+    scoreTeam2: string;
+    targetScore: string;
+  };
   errors: {
-    valid: boolean,
-  },
+    valid: boolean;
+  };
 };
 
 class CreateMatch extends React.Component<Props, State> {
@@ -321,7 +319,7 @@ class CreateMatch extends React.Component<Props, State> {
     this.setState({ match });
   };
 
-  onCreateMatch = async (e: SyntheticInputEvent<HTMLButtonElement>) => {
+  onCreateMatch = async (e: SyntheticEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const { createNewMatch, setStatus } = this.props;

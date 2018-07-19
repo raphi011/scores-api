@@ -1,11 +1,9 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-import type { PlayerStatistic } from '../types';
+import { PlayerStatistic, Classes } from '../types';
 
 const styles = theme => ({
   denseCell: {
@@ -13,12 +11,12 @@ const styles = theme => ({
   },
 });
 
-type Props = {
-  onPlayerClick: number => void,
-  statistic: PlayerStatistic,
-  rank: number,
-  classes: Object,
-};
+interface Props {
+  onPlayerClick: (number) => void;
+  statistic: PlayerStatistic;
+  rank: number;
+  classes: Classes;
+}
 
 class StatisticListRow extends React.PureComponent<Props> {
   onPlayerClick = () => {

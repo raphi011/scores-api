@@ -1,6 +1,4 @@
-// @flow
-
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import TextField from '@material-ui/core/TextField';
@@ -12,7 +10,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import type { Player } from '../types';
+import { Classes, Player } from '../types';
 
 const styles = theme => ({
   container: {
@@ -38,19 +36,25 @@ const styles = theme => ({
 });
 
 type Props = {
-  onChangeTargetScore: (Event, number) => void,
-  onChangeScore: (number, SyntheticInputEvent<HTMLButtonElement>) => void,
-  onLoseFocus: (number, SyntheticInputEvent<HTMLButtonElement>) => void,
-  player1: Player,
-  player2: Player,
-  player3: Player,
-  player4: Player,
-  scoreTeam1: string,
-  scoreTeam2: string,
-  targetScore: string,
-  onCreateMatch: Event => void,
-  errors: Object,
-  classes: Object,
+  onChangeTargetScore: (Event, number) => void;
+  onChangeScore: (
+    teamNr: number,
+    event: SyntheticEvent<HTMLButtonElement>,
+  ) => void;
+  onLoseFocus: (
+    teamNr: number,
+    event: SyntheticEvent<HTMLButtonElement>,
+  ) => void;
+  player1: Player;
+  player2: Player;
+  player3: Player;
+  player4: Player;
+  scoreTeam1: string;
+  scoreTeam2: string;
+  targetScore: string;
+  onCreateMatch: (Event) => void;
+  errors: { [key: string]: string };
+  classes: Classes;
 };
 
 class SetScores extends React.PureComponent<Props> {
@@ -129,7 +133,6 @@ class SetScores extends React.PureComponent<Props> {
             onBlur={this.onLoseFocusScoreTeam1}
             type="number"
             className={classes.textField}
-            min={0}
             InputLabelProps={{
               shrink: true,
             }}
@@ -149,7 +152,6 @@ class SetScores extends React.PureComponent<Props> {
             onBlur={this.onLoseFocusScoreTeam2}
             type="number"
             className={classes.textField}
-            min={0}
             InputLabelProps={{
               shrink: true,
             }}

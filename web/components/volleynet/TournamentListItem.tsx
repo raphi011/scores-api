@@ -1,15 +1,13 @@
-// @flow
-
 import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { tournamentDateString } from '../../utils/tournament';
 
-import type { Tournament } from '../../types';
+import { Tournament } from '../../types';
 
 type Props = {
-  tournament: Tournament,
-  onClick: Tournament => void,
+  tournament: Tournament;
+  onClick: (Tournament) => void;
 };
 
 const TournamentListItem = ({ tournament, onClick }: Props) => (

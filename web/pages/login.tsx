@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -17,23 +15,23 @@ import { loginWithPasswordAction } from '../redux/actions/auth';
 import { setStatusAction } from '../redux/actions/status';
 import Snackbar from '../containers/SnackbarContainer';
 
-import type { Classes } from '../types';
+import { Classes } from '../types';
 
-type Props = {
-  r: string,
-  loginRoute: string,
-  fromServer: boolean,
-  error: string,
-  classes: Classes,
-  loginWithPassword: ({ email: string, password: string }) => Promise<any>,
-  setStatus: string => void,
-};
+interface Props {
+  r: string;
+  loginRoute: string;
+  fromServer: boolean;
+  error: string;
+  classes: Classes;
+  loginWithPassword: ({ email: string, password: string }) => Promise<any>;
+  setStatus: (string) => void;
+}
 
-type State = {
-  email: string,
-  password: string,
-  loggingIn: boolean,
-};
+interface State {
+  email: string;
+  password: string;
+  loggingIn: boolean;
+}
 
 const styles = theme => ({
   wrapper: {

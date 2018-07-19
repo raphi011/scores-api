@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
@@ -15,16 +13,17 @@ const styles = () => ({
   },
 });
 
-type Props = {
-  onLogin: (string, string, boolean) => void,
-};
+interface Props {
+  onLogin: (username: string, password: string, rememberMe: boolean) => void;
+  classes: { [key: string]: string };
+}
 
-type State = {
-  username: string,
-  password: string,
-  rememberMe: boolean,
-  usernameValidation: string,
-};
+interface State {
+  username: string;
+  password: string;
+  rememberMe: boolean;
+  usernameValidation: string;
+}
 
 class Login extends React.Component<Props, State> {
   state = {

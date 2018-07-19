@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import Router from 'next/router';
 
@@ -14,19 +12,19 @@ import { loadTournamentsAction } from '../../redux/actions/entities';
 import { tournamentsByLeagueSelector } from '../../redux/reducers/entities';
 import LeagueSelect from '../../components/LeagueSelect';
 
-import type { Tournament } from '../../types';
+import { Tournament } from '../../types';
 
 const leagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TEAM'];
 
-type State = {
-  tabOpen: number,
-};
+interface State {
+  tabOpen: number;
+}
 
-type Props = {
-  tournaments: Array<Tournament>,
-  loadTournaments: () => void,
-  league: string,
-};
+interface Props {
+  tournaments: Tournament[];
+  loadTournaments: () => void;
+  league: string;
+}
 
 const thisYear = new Date().getFullYear().toString();
 

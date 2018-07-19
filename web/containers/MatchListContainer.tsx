@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { connect } from 'react-redux';
 import Router from 'next/router';
@@ -10,21 +8,21 @@ import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';
 import { deleteMatchAction } from '../redux/actions/entities';
 
-import type { Match } from '../types';
+import { Match } from '../types';
 
-type Props = {
-  matches: Array<Match>,
-  deleteMatch: Match => void,
-  onLoadMore: () => void,
-  highlightPlayerId: number,
-  loading: boolean,
-  hasMore: boolean,
-};
+interface Props {
+  matches: Match[];
+  deleteMatch: (Match) => void;
+  onLoadMore: () => void;
+  highlightPlayerId: number;
+  loading: boolean;
+  hasMore: boolean;
+}
 
-type State = {
-  selectedMatch: ?Match,
-  dialogOpen: boolean,
-};
+interface State {
+  selectedMatch?: Match;
+  dialogOpen: boolean;
+}
 
 class MatchListContainer extends React.PureComponent<Props, State> {
   state = {
@@ -97,4 +95,7 @@ const mapDispatchToProps = {
   deleteMatch: deleteMatchAction,
 };
 
-export default connect(null, mapDispatchToProps)(MatchListContainer);
+export default connect(
+  null,
+  mapDispatchToProps,
+)(MatchListContainer);

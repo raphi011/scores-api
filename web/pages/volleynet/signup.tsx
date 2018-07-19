@@ -1,7 +1,4 @@
-// @flow
-
 import React from 'react';
-import Router from 'next/router';
 
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -16,19 +13,19 @@ import {
 } from '../../redux/actions/entities';
 import { tournamentSelector } from '../../redux/reducers/entities';
 
-import type { Tournament, VolleynetPlayer } from '../../types';
+import { Tournament, VolleynetPlayer } from '../../types';
 
 const styles = () => ({});
 
-type Props = {
-  tournamentId: number,
-  tournament: ?Tournament,
-  signup: () => void,
-};
+interface Props {
+  tournamentId: number;
+  tournament?: Tournament;
+  signup: () => void;
+}
 
-type State = {
-  partner: ?VolleynetPlayer,
-};
+interface State {
+  partner?: VolleynetPlayer;
+}
 
 class Signup extends React.Component<Props, State> {
   static getParameters(query) {

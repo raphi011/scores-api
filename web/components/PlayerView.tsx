@@ -1,11 +1,9 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
-import type { PlayerStatistic, Player } from '../types';
+import { PlayerStatistic, Player, Classes } from '../types';
 
 const styles = () => ({
   profileHead: {
@@ -24,9 +22,9 @@ const styles = () => ({
 });
 
 type Props = {
-  statistic: PlayerStatistic,
-  classes: Object,
-  player: Player,
+  statistic: PlayerStatistic;
+  player: Player;
+  classes: Classes;
 };
 
 function PlayerView({ player, statistic, classes }: Props) {

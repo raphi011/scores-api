@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -14,7 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Link from 'next/link';
 
-import type { Match } from '../types';
+import { Match, Classes } from '../types';
 
 const styles = () => ({
   root: {
@@ -22,14 +20,14 @@ const styles = () => ({
   },
 });
 
-type Props = {
-  match: Match,
-  onDelete: Match => void,
-  onClose: Event => void,
-  onShowPlayer: number => void,
-  open: boolean,
-  classes: Object,
-};
+interface Props {
+  match: Match;
+  onDelete: (Match) => void;
+  onClose: (Event) => void;
+  onShowPlayer: (number) => void;
+  open: boolean;
+  classes: Classes;
+}
 
 class MatchOptionsDialog extends React.Component<Props> {
   shouldComponentUpdate(nextProps) {

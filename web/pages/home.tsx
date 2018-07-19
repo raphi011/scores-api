@@ -1,23 +1,14 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-// import Router from 'next/router';
 
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import withAuth from '../containers/AuthContainer';
 
 import Layout from '../containers/LayoutContainer';
-// import {
-//   loadPlayerTeamStatisticAction,
-//   loadPlayerStatisticAction,
-//   loadPlayerMatchesAction,
-// } from '../redux/actions/entities';
-// import { multiApiAction } from '../redux/actions/api';
 import { userSelector } from '../redux/reducers/auth';
 import { playerSelector } from '../redux/reducers/entities';
-import type { Player, Classes } from '../types';
+import { Player, Classes } from '../types';
 
 const styles = theme => ({
   container: {
@@ -30,8 +21,8 @@ const styles = theme => ({
 });
 
 type Props = {
-  player: Player,
-  classes: Classes,
+  player: Player;
+  classes: Classes;
 };
 
 class Home extends React.Component<Props> {
@@ -47,10 +38,6 @@ class Home extends React.Component<Props> {
     return {};
   }
 
-  //   static buildActions({ playerId, user }) {
-  // return [multiApiAction([])];
-  //   }
-
   static mapStateToProps(state) {
     const { user } = userSelector(state);
 
@@ -63,10 +50,6 @@ class Home extends React.Component<Props> {
       user,
     };
   }
-
-  //   static mapDispatchToProps = {
-  //     loadMatches: loadPlayerMatchesAction,
-  //   };
 
   render() {
     const { player, classes } = this.props;

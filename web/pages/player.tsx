@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -25,21 +23,22 @@ import {
   statisticByPlayerTeamSelector,
   matchesByPlayerSelector,
 } from '../redux/reducers/entities';
-import type { Player, Statistic } from '../types';
+import { Player, Statistic, Match, User, TeamStatistic } from '../types';
 
-type Props = {
-  player: Player,
-  statistic: Statistic,
-  teamStatistic: Array<Statistic>,
-  matches: Array<MatchList>,
-  playerId: number,
-  loadMatches: (number, ?string) => Promise<any>,
-};
+interface Props {
+  player: Player;
+  user: User;
+  statistic: Statistic;
+  teamStatistic: TeamStatistic[];
+  matches: Match[];
+  playerId: number;
+  loadMatches: (playerId: number, after?: string) => Promise<any>;
+}
 
 type State = {
-  tabOpen: number,
-  loading: boolean,
-  hasMore: boolean,
+  tabOpen: number;
+  loading: boolean;
+  hasMore: boolean;
 };
 
 class PlayerInfo extends React.Component<Props, State> {

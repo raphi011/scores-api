@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
@@ -7,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 import TeamName from './TeamName';
 
-import type { Match, Team } from '../types';
+import { Match, Team, Classes } from '../types';
 
 const itemStyles = () => ({
   listContainer: {
@@ -20,20 +19,20 @@ const itemStyles = () => ({
   points: { fontWeight: 'lighter', flex: '2 2 0' },
 });
 
-type Props = {
-  match: Match,
-  onMatchClick: Match => void,
-  highlightPlayerId: number,
-  classes: Object,
-};
+interface Props {
+  match: Match;
+  onMatchClick: (Match) => void;
+  highlightPlayerId: number;
+  classes: Classes;
+}
 
 function WinnerAndLoser(
   match: Match,
 ): {
-  winner: Team,
-  loser: Team,
-  winnerScore: number,
-  loserScore: number,
+  winner: Team;
+  loser: Team;
+  winnerScore: number;
+  loserScore: number;
 } {
   if (match.scoreTeam1 > match.scoreTeam2) {
     return {

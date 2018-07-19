@@ -1,8 +1,7 @@
-// @flow
-
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Classes } from 'types';
 
 const styles = () => ({
   container: {
@@ -13,9 +12,9 @@ const styles = () => ({
   },
 });
 
-type Props = {
-  classes: Object,
-};
+interface Props {
+  classes: Classes;
+}
 
 const CenteredLoading = ({ classes }: Props) => (
   <div className={classes.container}>

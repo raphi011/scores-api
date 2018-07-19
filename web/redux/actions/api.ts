@@ -1,7 +1,5 @@
-// @flow
-
 import * as actionNames from '../actionNames';
-import type { ApiAction, ApiActions } from '../../types';
+import { ApiAction, ApiActions } from '../../types';
 
 // eslint-disable-next-line import/prefer-default-export
 export const multiApiAction = (actions: Array<ApiAction>): ApiActions => ({
