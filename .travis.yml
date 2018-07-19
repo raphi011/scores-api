@@ -2,15 +2,14 @@ git:
   depth: 1
   submodules: false
 
-
-
 jobs:
   include:
     - stage: test
       language: go
       go: "1.10"
-      install: 
+      before_install: 
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      install: 
         - dep ensure
 
     - language: node_js
