@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores"
@@ -19,6 +20,7 @@ const userInsertSQL = `
 	VALUES (CURRENT_TIMESTAMP, $1, $2, $3, $4, $5)
 `
 
+// Create creates persists user and assigns a new id
 func (s *UserService) Create(user *scores.User) (*scores.User, error) {
 	result, err := s.DB.Exec(userInsertSQL, user.Email, user.ProfileImageURL, user.VolleynetUserId, user.VolleynetLogin, user.Role)
 
