@@ -22,12 +22,30 @@ jobs:
       before_install:
         - sudo rm /usr/local/bin/docker-compose
         - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - chmod +x docker-compose
-        - sudo mv docker-compose /usr/local/bin
+        - sudo install docker-compose /usr/local/bin
+        - curl -L https://github.com/docker/machine/releases/download/${DOCKER_MACHINE_VERSION}/docker-machine-`uname -s`-`uname -m` > docker-machine
+        - sudo install docker-machine /usr/local/bin
       provider: script
       env:
         - DOCKER_COMPOSE_VERSION=1.21.2
+        - DOCKER_MACHINE_VERSION=v0.14.0
+        - DOCKER_TLS_VERIFY=1
+        - DOCKER_HOST=tcp://${SCORES_HOST}:2376
+        - DOCKER_CERT_PATH=certs
       script: 
-        - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-        - docker-compose build && docker-compose push
+        - mkdir $DOCKER_CERT_PATH
+        - echo "$CA" > $DOCKER_CERT_PATH/ca.pem
+        - echo "$CLIENT_CERT" > $DOCKER_CERT_PATH/cert.pem
+        - echo "$CLIENT_KEY" > $DOCKER_CERT_PATH/key.pem
+        - docker-compose build
+        - docker-compose down
+        - docker-compose up -d --force-recreate
+        - rm -rf $DOCKER_CERT_PATH
+  only:
+    - master
+  variables:
+        - 
+
+        # - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+        # - docker-compose build && docker-compose push
     
