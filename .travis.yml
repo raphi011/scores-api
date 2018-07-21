@@ -16,9 +16,3 @@ jobs:
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
-
-    - stage: deploy
-      if: branch IN (master, development)
-      provider: script
-      script: 
-        - echo test
