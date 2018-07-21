@@ -15,8 +15,6 @@ import { loginWithPasswordAction } from '../redux/actions/auth';
 import { setStatusAction } from '../redux/actions/status';
 import Snackbar from '../containers/SnackbarContainer';
 
-classes: any;
-
 interface Props {
   r: string;
   loginRoute: string;

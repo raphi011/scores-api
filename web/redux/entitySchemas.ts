@@ -20,7 +20,9 @@ const team = new schema.Entity(
     player1: player,
     player2: player,
   },
-  { idAttribute: t => Number.parseInt(`${t.player1Id}${t.player2Id}`, 10) },
+  {
+    idAttribute: (t: any) => `${t.player1Id}${t.player2Id}`,
+  },
 );
 
 const teamList = new schema.Array(team);

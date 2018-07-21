@@ -3,11 +3,11 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { VolleynetPlayer } from '../../types';
+import { VolleynetSearchPlayer } from '../../types';
 
 interface Props {
-  player: VolleynetPlayer;
-  onClick: (VolleynetPlayer) => void;
+  player: VolleynetSearchPlayer;
+  onClick: (VolleynetSearchPlayer) => void;
 }
 
 const PlayerListItem = ({ player, onClick }: Props) => (

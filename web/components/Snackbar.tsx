@@ -3,7 +3,6 @@ import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-import { Classes } from 'types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -13,7 +12,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-const handleRequestClose = onClose => (event, reason) => {
+const handleRequestClose = onClose => (_, reason) => {
   if (reason === 'clickaway') {
     return;
   }

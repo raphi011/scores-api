@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 
 import PlayerListItem from './PlayerListItem';
 
-import { VolleynetPlayer } from '../../types';
+import { VolleynetSearchPlayer } from '../../types';
 
 const styles = createStyles({
   root: {
@@ -13,8 +13,8 @@ const styles = createStyles({
 });
 
 interface Props {
-  players: VolleynetPlayer[];
-  onPlayerClick: (VolleynetPlayer) => void;
+  players: VolleynetSearchPlayer[];
+  onPlayerClick: (VolleynetSearchPlayer) => void;
   classes: any;
 }
 

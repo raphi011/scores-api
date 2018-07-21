@@ -20,7 +20,7 @@ const styles = createStyles({
 
 interface Props {
   gender: Gender;
-  onSelectPlayer: VolleynetSearchPlayer;
+  onSelectPlayer: (VolleynetSearchPlayer) => void;
   searchVolleynetPlayers: (
     params: { fname: string; lname: string; bday: string },
   ) => void;

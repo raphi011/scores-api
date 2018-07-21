@@ -56,7 +56,7 @@ class TournamentView extends React.Component<Props, State> {
     tabOpen: 0,
   };
 
-  onTabClick = (event, tabOpen) => {
+  onTabClick = (_, tabOpen) => {
     this.setState({ tabOpen });
   };
 

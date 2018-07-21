@@ -1,3 +1,4 @@
+import { Params } from './api';
 export type EntityName =
   | 'player'
   | 'team'
@@ -168,7 +169,7 @@ export interface ApiAction extends Action {
   url: string;
   success?: string;
   isServer?: boolean;
-  params?: Object;
+  params?: Params;
   req?: Object; // todo
   res?: Object; // todo
   headers?: Object;

@@ -23,13 +23,13 @@ import {
   statisticByPlayerTeamSelector,
   matchesByPlayerSelector,
 } from '../redux/reducers/entities';
-import { Player, PlayerStatistic, Match, User, TeamStatistic } from '../types';
+import { Player, PlayerStatistic, Match, User } from '../types';
 
 interface Props {
   player: Player;
   user: User;
   statistic: PlayerStatistic;
-  teamStatistic: TeamStatistic[];
+  teamStatistic: PlayerStatistic[];
   matches: Match[];
   playerId: number;
   loadMatches: (playerId: number, after?: string) => Promise<any>;
@@ -130,7 +130,7 @@ class PlayerInfo extends React.Component<Props, State> {
     Router.push(`/player?id=${playerId}`);
   };
 
-  onTabClick = (event, index) => {
+  onTabClick = (_, index) => {
     this.setState({ tabOpen: index });
   };
 
