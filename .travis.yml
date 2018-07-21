@@ -16,3 +16,26 @@ jobs:
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
+
+    - stage: deploy
+      if: branch IN (master, development)
+      before_install:
+        - sudo rm /usr/local/bin/docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
+      provider: script
+      env:
+        - DOCKER_COMPOSE_VERSION=1.21.2
+        - DOCKER_TLS_VERIFY=1
+        - DOCKER_HOST=tcp://raphi011.com:2376
+        - DOCKER_CERT_PATH=certs
+      script: 
+        - mkdir $DOCKER_CERT_PATH
+        - echo "$CA" > $DOCKER_CERT_PATH/ca.pem
+        - echo "$CLIENT_CERT" > $DOCKER_CERT_PATH/cert.pem
+        - echo "$CLIENT_KEY" > $DOCKER_CERT_PATH/key.pem
+        - docker-compose build
+        - docker-compose down
+        - docker-compose up -d --force-recreate
+        - rm -rf $DOCKER_CERT_PATH
