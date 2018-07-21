@@ -8,7 +8,7 @@ import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
 import { userSelector } from '../redux/reducers/auth';
 import { playerSelector } from '../redux/reducers/entities';
-import { Player, Classes } from '../types';
+import { Player } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -23,7 +23,7 @@ const styles = (theme: Theme) =>
 
 interface Props {
   player: Player;
-  classes: Classes;
+  classes: any;
 }
 
 class Home extends React.Component<Props> {
@@ -53,7 +53,7 @@ class Home extends React.Component<Props> {
   }
 
   render() {
-    const { player, classes } = this.props;
+    const { classes } = this.props;
 
     return (
       <Layout title="Home">

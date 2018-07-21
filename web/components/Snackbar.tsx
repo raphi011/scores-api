@@ -25,7 +25,7 @@ interface Props {
   onClose: () => void;
   status: string;
   open: boolean;
-  classes: Classes;
+  classes: any;
 }
 
 const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (

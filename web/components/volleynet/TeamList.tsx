@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 
 import TeamListItem from './TeamListItem';
 
-import { VolleynetTeam, Classes } from '../../types';
+import { VolleynetTeam } from '../../types';
 
 const styles = createStyles({
   root: {
@@ -14,7 +14,7 @@ const styles = createStyles({
 
 interface Props {
   teams: VolleynetTeam[];
-  classes: Classes;
+  classes: any;
 }
 
 const sortByRankOrSeed = (a, b) => (a.rank || a.seed) - (b.rank || b.seed);

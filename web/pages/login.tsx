@@ -15,14 +15,14 @@ import { loginWithPasswordAction } from '../redux/actions/auth';
 import { setStatusAction } from '../redux/actions/status';
 import Snackbar from '../containers/SnackbarContainer';
 
-import { Classes } from '../types';
+classes: any;
 
 interface Props {
   r: string;
   loginRoute: string;
   fromServer: boolean;
   error: string;
-  classes: Classes;
+  classes: any;
   loginWithPassword: (
     credentials: { email: string; password: string },
   ) => Promise<any>;

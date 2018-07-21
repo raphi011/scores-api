@@ -7,7 +7,7 @@ import MobileStepper from '@material-ui/core/MobileStepper';
 import Router from 'next/router';
 
 import withAuth from '../../containers/AuthContainer';
-import { validateMatch } from '../../validation/match';
+import { validateMatch, MatchValidation } from '../../validation/match';
 import Layout from '../../containers/LayoutContainer';
 import SelectPlayers from '../../components/SelectPlayers';
 import SetScores from '../../components/SetScores';
@@ -21,7 +21,7 @@ import {
   loadGroupAction,
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
-import { NewMatch, Match, Player, Classes } from '../../types';
+import { NewMatch, Match, Player } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -65,7 +65,7 @@ interface Props {
   /* eslint-disable react/no-unused-prop-types */
   groupId: number;
   rematchId: number;
-  classes: Classes;
+  classes: any;
 }
 
 interface State {
@@ -81,9 +81,7 @@ interface State {
     scoreTeam2: string;
     targetScore: string;
   };
-  errors: {
-    valid: boolean;
-  };
+  errors: MatchValidation;
 }
 
 class CreateMatch extends React.Component<Props, State> {
@@ -282,7 +280,7 @@ class CreateMatch extends React.Component<Props, State> {
     this.setState({ match });
   };
 
-  onChangeTargetScore = (e, targetScore: string) => {
+  onChangeTargetScore = (_, targetScore: string) => {
     const match = {
       ...this.state.match,
       targetScore,
@@ -387,7 +385,6 @@ class CreateMatch extends React.Component<Props, State> {
             className={classes.mobileStepper}
             steps={2}
             activeStep={activeStep}
-            orientation="vertical"
             backButton={
               <Button size="small" onClick={this.onPrevious}>
                 <BackIcon className={classes.button} />

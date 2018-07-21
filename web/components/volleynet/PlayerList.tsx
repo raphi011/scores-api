@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 
 import PlayerListItem from './PlayerListItem';
 
-import { VolleynetPlayer, Classes } from '../../types';
+import { VolleynetPlayer } from '../../types';
 
 const styles = createStyles({
   root: {
@@ -15,7 +15,7 @@ const styles = createStyles({
 interface Props {
   players: VolleynetPlayer[];
   onPlayerClick: (VolleynetPlayer) => void;
-  classes: Classes;
+  classes: any;
 }
 
 class PlayerList extends React.PureComponent<Props> {

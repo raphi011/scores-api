@@ -15,7 +15,7 @@ import {
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
 
-import { Match, User, Classes } from '../../types';
+import { Match, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -32,7 +32,7 @@ interface Props {
   user: User;
   matches: Array<Match>;
   loadMatches: (groupId: number, after?: string) => Promise<{ empty: boolean }>;
-  classes: Classes;
+  classes: any;
 }
 
 interface State {

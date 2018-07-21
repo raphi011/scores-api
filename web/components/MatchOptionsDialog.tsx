@@ -12,7 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import Link from 'next/link';
 
-import { Match, Classes } from '../types';
+import { Match } from '../types';
 
 const styles = createStyles({
   root: {
@@ -26,7 +26,7 @@ interface Props {
   onClose: (Event) => void;
   onShowPlayer: (number) => void;
   open: boolean;
-  classes: Classes;
+  classes: any;
 }
 
 class MatchOptionsDialog extends React.Component<Props> {

@@ -10,7 +10,7 @@ import PlayerList from '../../components/volleynet/PlayerList';
 import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
 import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
 
-import { Gender, VolleynetSearchPlayer, Classes } from '../../types';
+import { Gender, VolleynetSearchPlayer } from '../../types';
 
 const styles = createStyles({
   container: {
@@ -25,7 +25,7 @@ interface Props {
     params: { fname: string; lname: string; bday: string },
   ) => void;
   foundPlayers: VolleynetSearchPlayer[];
-  classes: Classes;
+  classes: any;
 }
 
 interface State {

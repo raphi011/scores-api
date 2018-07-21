@@ -15,7 +15,7 @@ const styles = createStyles({
 
 interface Props {
   onLogin: (username: string, password: string, rememberMe: boolean) => void;
-  classes: { [key: string]: string };
+  classes: any;
 }
 
 interface State {

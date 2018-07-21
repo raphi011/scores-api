@@ -15,7 +15,7 @@ import StatisticList from '../../components/StatisticList';
 import { userOrLoginRouteAction } from '../../redux/actions/auth';
 import { loadGroupStatisticsAction } from '../../redux/actions/entities';
 import { statisticByGroupSelector } from '../../redux/reducers/entities';
-import { Statistic, StatisticFilter, Classes } from '../../types';
+import { PlayerStatistic, StatisticFilter } from '../../types';
 
 const styles = createStyles({
   title: {
@@ -29,8 +29,8 @@ const styles = createStyles({
 interface Props {
   groupId: number;
   filter: StatisticFilter;
-  statistics: Statistic[];
-  classes: Classes;
+  statistics: PlayerStatistic[];
+  classes: any;
 }
 
 interface State {

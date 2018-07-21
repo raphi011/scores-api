@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import { Team, Classes } from '../types';
+import { Team } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -15,7 +15,7 @@ const styles = (theme: Theme) =>
 interface Props {
   team: Team;
   highlightPlayerId: number;
-  classes: Classes;
+  classes: any;
 }
 
 const TeamName = ({ team, highlightPlayerId, classes }: Props) => {

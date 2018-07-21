@@ -4,7 +4,7 @@ import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Drawer from './Drawer';
 import AppBar from '../containers/AppBarContainer';
 
-import { Player, Classes } from '../types';
+import { Player } from '../types';
 
 interface Props {
   title: string;
@@ -13,7 +13,7 @@ interface Props {
   drawerOpen: boolean;
   onCloseDrawer: () => void;
   onOpenDrawer: () => void;
-  classes: Classes;
+  classes: any;
 }
 
 const styles = (theme: Theme) =>

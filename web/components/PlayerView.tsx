@@ -3,7 +3,7 @@ import { withStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
-import { PlayerStatistic, Player, Classes } from '../types';
+import { PlayerStatistic, Player } from '../types';
 
 const styles = createStyles({
   profileHead: {
@@ -24,7 +24,7 @@ const styles = createStyles({
 interface Props {
   statistic: PlayerStatistic;
   player: Player;
-  classes: Classes;
+  classes: any;
 }
 
 function PlayerView({ player, statistic, classes }: Props) {

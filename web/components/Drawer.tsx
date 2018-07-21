@@ -14,7 +14,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import LadderIcon from '@material-ui/icons/LooksOne';
 import Link from 'next/link';
 
-import { Player, Classes } from '../types';
+import { Player } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -41,7 +41,7 @@ interface Props {
   onOpen: (Event) => void;
   onClose: (Event) => void;
   userPlayer: Player;
-  classes: Classes;
+  classes: any;
 }
 
 function Drawer({ open, userPlayer, onClose, classes }: Props) {

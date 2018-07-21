@@ -14,6 +14,7 @@ import {
   loadMatchesAction,
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
+import { Match, User } from 'types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -25,7 +26,15 @@ const styles = (theme: Theme) =>
     },
   });
 
-class Home extends React.Component {
+interface Props {
+  groupId: number;
+  loadMatches: (groupId: number, after?: string) => Promise<{ empty: boolean }>;
+  user: User;
+  matches: Match[];
+  classes: any;
+}
+
+class Home extends React.Component<Props> {
   static getParameters(query) {
     let { groupId } = query;
 

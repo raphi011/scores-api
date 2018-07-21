@@ -10,7 +10,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import { Classes, Player } from '../types';
+import { Player } from '../types';
+import { MatchValidation } from 'validation/match';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -38,10 +39,7 @@ const styles = (theme: Theme) =>
 
 interface Props {
   onChangeTargetScore: (Event, number) => void;
-  onChangeScore: (
-    teamNr: number,
-    event: SyntheticEvent<HTMLButtonElement>,
-  ) => void;
+  onChangeScore: (teamNr: number, event: string) => void;
   onLoseFocus: (
     teamNr: number,
     event: SyntheticEvent<HTMLButtonElement>,
@@ -54,8 +52,8 @@ interface Props {
   scoreTeam2: string;
   targetScore: string;
   onCreateMatch: (Event) => void;
-  errors: { [key: string]: string };
-  classes: Classes;
+  errors: MatchValidation;
+  classes: any;
 }
 
 class SetScores extends React.PureComponent<Props> {

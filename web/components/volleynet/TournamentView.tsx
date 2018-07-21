@@ -18,7 +18,7 @@ import { tournamentDateString, isSignedup } from '../../utils/tournament';
 import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';
 
-import { Tournament, User, Classes } from '../../types';
+import { Tournament, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -44,7 +44,7 @@ const styles = (theme: Theme) =>
 interface Props {
   tournament: Tournament;
   user: User;
-  classes: Classes;
+  classes: any;
 }
 
 interface State {

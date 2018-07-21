@@ -3,7 +3,7 @@ import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 
-import { PlayerStatistic, Classes } from '../types';
+import { PlayerStatistic } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -16,7 +16,7 @@ interface Props {
   onPlayerClick: (number) => void;
   statistic: PlayerStatistic;
   rank: number;
-  classes: Classes;
+  classes: any;
 }
 
 class StatisticListRow extends React.PureComponent<Props> {

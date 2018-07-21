@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { PlayerStatistic, Classes } from '../types';
+import { PlayerStatistic } from '../types';
 
 import StatisticListRow from './StatisticListRow';
 
@@ -19,7 +19,7 @@ const styles = (theme: Theme) =>
 interface Props {
   statistics: PlayerStatistic[];
   onPlayerClick: (number) => void;
-  classes: Classes;
+  classes: any;
 }
 
 function StatisticList({ statistics, onPlayerClick, classes }: Props) {

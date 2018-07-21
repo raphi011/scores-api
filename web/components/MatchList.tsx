@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 
 import MatchListItem from './MatchListItem';
 
-import { Match, Classes } from '../types';
+import { Match } from '../types';
 import DayHeader from './DayHeader';
 
 const styles = createStyles({
@@ -25,7 +25,7 @@ interface Props {
   matches: Match[];
   onMatchClick: (Match) => void;
   highlightPlayerId: number;
-  classes: Classes;
+  classes: any;
 }
 
 class MatchList extends React.PureComponent<Props> {

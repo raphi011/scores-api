@@ -1,7 +1,6 @@
 import React from 'react';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Classes } from 'types';
 
 const styles = createStyles({
   container: {
@@ -13,7 +12,7 @@ const styles = createStyles({
 });
 
 interface Props {
-  classes: Classes;
+  classes: any;
 }
 
 const CenteredLoading = ({ classes }: Props) => (

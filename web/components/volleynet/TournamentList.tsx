@@ -4,7 +4,7 @@ import List from '@material-ui/core/List';
 
 import TournamentListItem from './TournamentListItem';
 
-import { Tournament, Classes } from '../../types';
+import { Tournament } from '../../types';
 
 const styles = createStyles({
   root: {
@@ -15,7 +15,7 @@ const styles = createStyles({
 interface Props {
   tournaments: Tournament[];
   onTournamentClick: () => void;
-  classes: Classes;
+  classes: any;
 }
 
 class TournamentList extends React.PureComponent<Props> {

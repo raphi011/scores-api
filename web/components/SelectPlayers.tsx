@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 
-import { Player, Classes } from '../types';
+import { Player } from '../types';
 import PlayerListItem from './PlayerListItem';
 
 const styles = (theme: Theme) =>
@@ -21,7 +21,7 @@ interface Props {
   player2: Player;
   player3: Player;
   player4: Player;
-  classes: Classes;
+  classes: any;
 }
 
 class SelectPlayers extends React.Component<Props> {

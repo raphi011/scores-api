@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 import TeamName from './TeamName';
 
-import { Match, Team, Classes } from '../types';
+import { Match, Team } from '../types';
 
 const itemStyles = createStyles({
   listContainer: {
@@ -23,7 +23,7 @@ interface Props {
   match: Match;
   onMatchClick: (Match) => void;
   highlightPlayerId: number;
-  classes: Classes;
+  classes: any;
 }
 
 function WinnerAndLoser(
