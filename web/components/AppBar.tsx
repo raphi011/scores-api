@@ -29,7 +29,7 @@ interface Props {
   onOpenMenu: () => void;
   title: string;
   isLoggedIn: boolean;
-  onLogout: () => void;
+  onLogout: () => Promise<void>;
   classes: Classes;
 }
 

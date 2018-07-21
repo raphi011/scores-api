@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { connect } from 'react-redux';
 
 import Layout from '../components/Layout';
@@ -10,7 +10,7 @@ import { Player } from '../types';
 
 interface Props {
   title: string;
-  children: React.Node;
+  children: ReactNode;
   userPlayer: Player;
 }
 
@@ -54,8 +54,6 @@ class LayoutContainer extends React.Component<Props, State> {
         userPlayer={userPlayer}
         onCloseDrawer={this.onCloseDrawer}
         onOpenDrawer={this.onOpenDrawer}
-        onToggleGroup={this.onToggleGroup}
-        groupOpen={this.state.groupOpen}
         drawerOpen={this.state.drawerOpen}
         title={title}
       >

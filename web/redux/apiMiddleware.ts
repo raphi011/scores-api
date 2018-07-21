@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-unfetch';
 import * as actionNames from './actionNames';
-import { Action, ApiAction, ApiActions } from '../types';
+import { ApiAction, ApiActions } from '../types';
 import { buildUrl, isJson } from '../api';
 
 function getHost(req): string {

@@ -118,12 +118,7 @@ function Drawer({ open, userPlayer, onClose, classes }: Props) {
 
   return (
     <MDrawer open={open} onClose={onClose}>
-      <div
-        tabIndex={0}
-        role="button"
-        // onClick={onClose}
-        // onKeyDown={onClose}
-      >
+      <div tabIndex={0} role="button">
         {sideList}
       </div>
     </MDrawer>

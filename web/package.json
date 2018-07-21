@@ -23,6 +23,7 @@
     "reselect": "latest"
   },
   "devDependencies": {
+    "@types/next": "^6.0.4",
     "babel-eslint": "latest",
     "babel-jest": "latest",
     "eslint": "latest",
@@ -38,6 +39,7 @@
   },
   "scripts": {
     "dev": "next",
+    "debug": "next --inspect",
     "build": "next build",
     "start": "next start",
     "pretty": "prettier --write \"**/*.js\"",

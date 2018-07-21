@@ -48,90 +48,95 @@ const withAuth = Component => {
     }
 
     static async getInitialProps(ctx) {
-      const { isServer, store, res, req, query } = ctx;
+      try {
+        const { isServer, store, res, req, query } = ctx;
 
-      const dispatch = store.dispatch;
+        const dispatch = store.dispatch;
 
-      let user;
-      let url;
-      let isLoggedIn;
-      let loginRoute = '';
+        let user;
+        let url;
+        let isLoggedIn;
+        let loginRoute = '';
 
-      if (isServer) {
-        const result = await dispatchAction(
-          dispatch,
-          userOrLoginRouteAction(),
-          isServer,
-          req,
-          res,
-        );
+        if (isServer) {
+          const result = await dispatchAction(
+            dispatch,
+            userOrLoginRouteAction(),
+            isServer,
+            req,
+            res,
+          );
 
-        user = result.response.user;
-        loginRoute = result.response.loginRoute;
-        url = req.url;
-        isLoggedIn = !!user;
-      } else {
-        const authState = userSelector(store.getState());
+          user = result.response.user;
+          loginRoute = result.response.loginRoute;
+          url = req.url;
+          isLoggedIn = !!user;
+        } else {
+          const authState = userSelector(store.getState());
 
-        url = Router.asPath;
-        isLoggedIn = authState.isLoggedIn;
-        user = authState.user;
-      }
-
-      let props = {
-        user,
-        isLoggedIn,
-        loginRoute: '',
-        fromServer: isServer,
-        dispatch,
-      };
-
-      if (!isLoggedIn) {
-        if (!url.includes('/login')) {
-          // redirect to '/login'
-          const redir = url ? `?r=${encodeURIComponent(url)}` : '';
-
-          if (isServer) {
-            // TODO: improve this
-            const protocol =
-              process.env.NODE_ENV === 'development' ? 'http' : 'https';
-
-            const host = req.headers.host;
-            const loginUrl = `${protocol}://${host}/login${redir}`;
-            res.writeHead(302, {
-              Location: loginUrl,
-            });
-            res.end();
-            res.finished = true;
-          } else {
-            Router.push(`/login${redir}`);
-          }
-
-          return {};
+          url = Router.asPath;
+          isLoggedIn = authState.isLoggedIn;
+          user = authState.user;
         }
 
-        props.loginRoute = loginRoute;
-      }
-
-      // All good, return props!
-      if (Component.getParameters) {
-        const parameters = await Component.getParameters(query);
-
-        props = {
-          ...props,
-          ...parameters,
+        let props = {
+          user,
+          isLoggedIn,
+          loginRoute: '',
+          fromServer: isServer,
+          dispatch,
         };
+
+        if (!isLoggedIn) {
+          if (!url.includes('/login')) {
+            // redirect to '/login'
+            const redir = url ? `?r=${encodeURIComponent(url)}` : '';
+
+            if (isServer) {
+              // TODO: improve this
+              const protocol =
+                process.env.NODE_ENV === 'development' ? 'http' : 'https';
+
+              const host = req.headers.host;
+              const loginUrl = `${protocol}://${host}/login${redir}`;
+              res.writeHead(302, {
+                Location: loginUrl,
+              });
+              res.end();
+              res.finished = true;
+            } else {
+              Router.push(`/login${redir}`);
+            }
+
+            return {};
+          }
+
+          props.loginRoute = loginRoute;
+        }
+
+        // All good, return props!
+        if (Component.getParameters) {
+          const parameters = await Component.getParameters(query);
+
+          props = {
+            ...props,
+            ...parameters,
+          };
+        }
+
+        // Execute these only on the server side to avoid waiting for
+        // api calls before rendering the page
+        if (isServer && Component.buildActions) {
+          const actions = Component.buildActions(props);
+
+          await dispatchActions(dispatch, actions, isServer, req, res);
+        }
+
+        return props;
+      } catch (e) {
+        console.log(e);
+        return {};
       }
-
-      // Execute these only on the server side to avoid waiting for
-      // api calls before rendering the page
-      if (isServer && Component.buildActions) {
-        const actions = Component.buildActions(props);
-
-        await dispatchActions(dispatch, actions, isServer, req, res);
-      }
-
-      return props;
     }
 
     render() {

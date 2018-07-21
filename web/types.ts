@@ -12,6 +12,7 @@ export interface Player {
   name: string;
   userId?: number;
   profileImageUrl?: string;
+  groups: Group[];
 }
 
 export interface Team {

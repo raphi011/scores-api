@@ -1,26 +1,17 @@
 import React from 'react';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import Chip from '@material-ui/core/Chip';
 
 import MatchListItem from './MatchListItem';
-import { formatDate } from '../utils/dateFormat';
 
 import { Match, Classes } from '../types';
+import DayHeader from './DayHeader';
 
 const styles = createStyles({
   root: {
     width: '100%',
   },
 });
-
-interface Props {
-  matches: Match[];
-  onMatchClick: (Match) => void;
-  highlightPlayerId: number;
-  classes: Classes;
-}
 
 function isSameDay(date1: Date, date2: Date): boolean {
   return (
@@ -30,15 +21,12 @@ function isSameDay(date1: Date, date2: Date): boolean {
   );
 }
 
-interface DayHeaderProps {
-  date: Date;
+interface Props {
+  matches: Match[];
+  onMatchClick: (Match) => void;
+  highlightPlayerId: number;
+  classes: Classes;
 }
-
-const DayHeader = ({ date }: DayHeaderProps) => (
-  <ListItem dense style={{ justifyContent: 'center' }}>
-    <Chip label={formatDate(date)} />
-  </ListItem>
-);
 
 class MatchList extends React.PureComponent<Props> {
   render() {
@@ -74,6 +62,4 @@ class MatchList extends React.PureComponent<Props> {
   }
 }
 
-const StyledMatchList = withStyles(styles)(MatchList);
-
-export default StyledMatchList;
+export default withStyles(styles)(MatchList);

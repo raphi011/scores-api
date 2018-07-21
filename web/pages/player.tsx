@@ -23,12 +23,12 @@ import {
   statisticByPlayerTeamSelector,
   matchesByPlayerSelector,
 } from '../redux/reducers/entities';
-import { Player, Statistic, Match, User, TeamStatistic } from '../types';
+import { Player, PlayerStatistic, Match, User, TeamStatistic } from '../types';
 
 interface Props {
   player: Player;
   user: User;
-  statistic: Statistic;
+  statistic: PlayerStatistic;
   teamStatistic: TeamStatistic[];
   matches: Match[];
   playerId: number;

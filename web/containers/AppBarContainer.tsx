@@ -5,12 +5,12 @@ import Router from 'next/router';
 import { loginRouteSelector, userSelector } from '../redux/reducers/auth';
 import { logoutAction } from '../redux/actions/auth';
 import AppBar from '../components/AppBar';
-import { User } from '../types';
 
 interface Props {
   isLoggedIn: boolean;
-  user: User;
   loginRoute: string;
+  onOpenMenu: () => void;
+  title: string;
   logout: () => void;
 }
 
@@ -28,12 +28,11 @@ class AppBarContainer extends React.Component<Props> {
 }
 
 function mapStateToProps(state) {
-  const { isLoggedIn, user } = userSelector(state);
+  const { isLoggedIn } = userSelector(state);
   const loginRoute = loginRouteSelector(state);
 
   return {
     isLoggedIn,
-    user,
     loginRoute,
   };
 }

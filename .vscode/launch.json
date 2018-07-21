@@ -12,6 +12,16 @@
       "cwd": "${workspaceRoot}"
     },
     {
+      "name": "Next: Node",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "cwd": "${workspaceFolder}/web",
+      "runtimeArgs": ["run-script", "debug"],
+      "port": 9229,
+      "console": "integratedTerminal"
+    },
+    {
       "name": "Terminal",
       "type": "go",
       "request": "launch",
