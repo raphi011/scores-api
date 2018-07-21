@@ -22,12 +22,13 @@ jobs:
       before_install:
         - sudo rm /usr/local/bin/docker-compose
         - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - sudo install docker-compose /usr/local/bin
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
       provider: script
       env:
         - DOCKER_COMPOSE_VERSION=1.21.2
         - DOCKER_TLS_VERIFY=1
-        - DOCKER_HOST=tcp://raphi11.com:2376
+        - DOCKER_HOST=tcp://raphi011.com:2376
         - DOCKER_CERT_PATH=certs
       script: 
         - mkdir $DOCKER_CERT_PATH
