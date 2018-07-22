@@ -22,15 +22,13 @@ jobs:
         - DOCKER_HOST=tcp://raphi011.com:2376
         - DOCKER_CERT_PATH=certs
       before_install:
+        - openssl aes-256-cbc -K $encrypted_67e87caa25ce_key -iv $encrypted_67e87caa25ce_iv -in secrets.tar.enc -out secrets.tar -d
+        - tar xvf secrets.tar -C $DOCKER_CERT_PATH
         - sudo rm /usr/local/bin/docker-compose
-        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-${uname -s}-${uname -m} > docker-compose
+        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
         - chmod +x docker-compose
         - sudo mv docker-compose /usr/local/bin
       script:
-        - mkdir $DOCKER_CERT_PATH
-        - echo "$CA" > $DOCKER_CERT_PATH/ca.pem
-        - echo "$CLIENT_CERT" > $DOCKER_CERT_PATH/cert.pem
-        - echo "$CLIENT_KEY" > $DOCKER_CERT_PATH/key.pem
         - docker-compose build
         - docker-compose down
         - docker-compose up -d --force-recreate
