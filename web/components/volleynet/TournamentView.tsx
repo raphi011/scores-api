@@ -112,7 +112,7 @@ class TournamentView extends React.Component<Props, State> {
     return (
       <div>
         <Card className={classes.headerContainer}>
-          <a href={`//${tournament.link}`} target="_blank">
+          <a href={`${tournament.link}`} target="_blank">
             <Typography variant="title">{tournament.name}</Typography>
           </a>
           <div className={classes.infoContainer}>

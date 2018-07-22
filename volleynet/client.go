@@ -28,6 +28,14 @@ func DefaultClient() *Client {
 }
 
 func (c *Client) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
+	return buildGetAPIURL(c.GetURL, "/api", relativePath, routeArgs...)
+}
+
+func (c *Client) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
+	return buildGetAPIURL(c.GetURL, "", relativePath, routeArgs...)
+}
+
+func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interface{}) *url.URL {
 	escapedArgs := make([]interface{}, len(routeArgs))
 
 	for i, val := range routeArgs {
@@ -38,12 +46,12 @@ func (c *Client) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *
 		} else if stringer, ok := val.(fmt.Stringer); ok {
 			escapedArgs[i] = stringer.String()
 		} else {
-			escapedArgs[i] = ""
+			escapedArgs[i] = val
 		}
 	}
 
 	path := fmt.Sprintf(relativePath, escapedArgs...)
-	link, err := url.Parse(c.GetURL + "/api/beach" + path)
+	link, err := url.Parse(host + prefixedPath + "/beach" + path)
 
 	if err != nil {
 		panic("cannot parse client GetUrl")
@@ -62,9 +70,22 @@ func (c *Client) buildPostURL(relativePath string) *url.URL {
 	return link
 }
 
-// GetTournamentLink returns the API link for a tournament.
+// GetTournamentLink returns the link for a tournament.
 func (c *Client) GetTournamentLink(t *Tournament) string {
-	url := c.buildGetAPIURL("/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%s",
+	url := c.buildGetURL("/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
+		t.League,
+		t.League,
+		t.Gender,
+		t.Season,
+		t.ID,
+	)
+
+	return url.String()
+}
+
+// GetAPITournamentLink returns the API link for a tournament.
+func (c *Client) GetAPITournamentLink(t *Tournament) string {
+	url := c.buildGetAPIURL("/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
 		t.Gender,
@@ -125,7 +146,7 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 
 	defer resp.Body.Close()
 
-	return parseTournamentList(resp.Body)
+	return parseTournamentList(resp.Body, c.GetURL)
 }
 
 // Ladder reads all players of a certain gender.
@@ -159,8 +180,9 @@ func genderLong(gender string) string {
 // ComplementTournament adds the missing information from `AllTournaments`.
 func (c *Client) ComplementTournament(tournament Tournament) (
 	*FullTournament, error) {
-	url := c.GetTournamentLink(&tournament)
+	url := c.GetAPITournamentLink(&tournament)
 
+	fmt.Print(url)
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -172,6 +194,8 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 	if err != nil {
 		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
 	}
+
+	t.Link = c.GetTournamentLink(&tournament)
 
 	return t, nil
 }

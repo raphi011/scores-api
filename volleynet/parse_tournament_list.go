@@ -35,7 +35,7 @@ type Tournament struct {
 	Gender           string    `json:"gender"`
 }
 
-func parseTournamentList(html io.Reader) ([]Tournament, error) {
+func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
 
 	doc, err := parseHTML(html)
 
@@ -58,7 +58,7 @@ func parseTournamentList(html io.Reader) ([]Tournament, error) {
 
 		column := columns.Eq(2)
 
-		tournament := extractTournamentLinkData(parseHref(column.Find("a")))
+		tournament := extractTournamentLinkData(parseHref(column.Find("a")), host)
 		tournament.Name = trimmTournamentName(column)
 
 		column = columns.Eq(1)
@@ -84,17 +84,17 @@ func parseTournamentList(html io.Reader) ([]Tournament, error) {
 	return tournaments, nil
 }
 
-func extractTournamentLinkData(link string) Tournament {
-	id, _ := strconv.Atoi(readURLPart(link, "cup/"))
-	season, _ := strconv.Atoi(readURLPart(link, "saison/"))
+func extractTournamentLinkData(relativeLink, host string) Tournament {
+	id, _ := strconv.Atoi(readURLPart(relativeLink, "cup/"))
+	season, _ := strconv.Atoi(readURLPart(relativeLink, "saison/"))
 
 	return Tournament{
-		Gender: readURLPart(link, "sex/"),
-		League: readURLPart(link, "bewerbe/"),
-		Phase:  readURLPart(link, "phase/"),
+		Gender: readURLPart(relativeLink, "sex/"),
+		League: readURLPart(relativeLink, "bewerbe/"),
+		Phase:  readURLPart(relativeLink, "phase/"),
 		ID:     id,
 		Season: season,
-		Link:   link,
+		Link:   host + "/" + relativeLink,
 	}
 }
 
