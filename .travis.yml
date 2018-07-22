@@ -18,9 +18,9 @@ jobs:
       script: npm --prefix ./web test
       name: "nextjs"
     - stage: "Deploy"
-      name: "Deploy to server"
+      name: "deploy to server"
       script: echo Test
-      # if: branch IN (master, development)
+      if: branch IN (master, development)
       # before_install:
       #   - sudo rm /usr/local/bin/docker-compose
       #   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
