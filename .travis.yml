@@ -4,7 +4,8 @@ git:
 
 jobs:
   include:
-    - stage: test
+    - stage: "Test"
+      name: "go"
       language: go
       go: "1.10"
       before_install: 
@@ -15,15 +16,18 @@ jobs:
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
-    - stage: deploy
-      if: branch IN (master, development)
-      before_install:
-        - sudo rm /usr/local/bin/docker-compose
-        - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-        - chmod +x docker-compose
-        - sudo mv docker-compose /usr/local/bin
-      env:
-        - DOCKER_COMPOSE_VERSION=1.21.2
-      script:
-        - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-        - docker-compose build && docker-compose push
+      name: "nextjs"
+    - stage: "Deploy"
+      name: "Deploy to server"
+      script: echo Test
+      # if: branch IN (master, development)
+      # before_install:
+      #   - sudo rm /usr/local/bin/docker-compose
+      #   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+      #   - chmod +x docker-compose
+      #   - sudo mv docker-compose /usr/local/bin
+      # env:
+      #   - DOCKER_COMPOSE_VERSION=1.21.2
+      # script:
+      #   - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+      #   - docker-compose build && docker-compose push
