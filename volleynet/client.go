@@ -11,12 +11,15 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Client is the interface to the volleynet api, use DefaultClient()
+// to get a new Client.
 type Client struct {
 	PostURL string
 	GetURL  string
 	Cookie  string
 }
 
+// DefaultClient returns a Client with the correct PostURL and GetURL fields set.
 func DefaultClient() *Client {
 	return &Client{
 		PostURL: "https://beach.volleynet.at/Admin",
@@ -59,6 +62,7 @@ func (c *Client) buildPostURL(relativePath string) *url.URL {
 	return link
 }
 
+// GetTournamentLink returns the API link for a tournament.
 func (c *Client) GetTournamentLink(t *Tournament) string {
 	url := c.buildGetAPIURL("/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%s",
 		t.League,
@@ -71,6 +75,8 @@ func (c *Client) GetTournamentLink(t *Tournament) string {
 	return url.String()
 }
 
+// Login authenticates the user against the volleynet page, if
+// successfull the Client cookie is set, else an error is returned.
 func (c *Client) Login(username, password string) error {
 	form := url.Values{}
 	form.Add("login_name", username)
@@ -100,6 +106,8 @@ func (c *Client) Login(username, password string) error {
 	return nil
 }
 
+// AllTournaments reads all tournaments of a certain gender, league and year.
+// To get more detailed tournamnent information call `ComplementTournament`.
 func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {
 	url := c.buildGetAPIURL(
 		"/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
@@ -120,6 +128,7 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 	return parseTournamentList(resp.Body)
 }
 
+// Ladder reads all players of a certain gender.
 func (c *Client) Ladder(gender string) ([]Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
@@ -147,6 +156,7 @@ func genderLong(gender string) string {
 	return ""
 }
 
+// ComplementTournament adds the missing information from `AllTournaments`.
 func (c *Client) ComplementTournament(tournament Tournament) (
 	*FullTournament, error) {
 	url := c.GetTournamentLink(&tournament)
@@ -191,7 +201,12 @@ func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
 	return code, errors.Wrap(err, "parsing unique writecode failed")
 }
 
+// TournamentEntry signs a player up for a tournament. A valid session Cookie must be set.
 func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) error {
+	if c.Cookie == "" {
+		return errors.New("cookie must be set")
+	}
+
 	form := url.Values{}
 
 	code, err := c.loadUniqueWriteCode(tournamentID)
@@ -233,6 +248,7 @@ func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) 
 	return nil
 }
 
+// SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
 func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]PlayerInfo, error) {
 	form := url.Values{}
 
