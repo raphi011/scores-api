@@ -2,6 +2,7 @@ package volleynet
 
 import "io"
 
+// PlayerInfo contains all player information that the search player api returns
 type PlayerInfo struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"firstName"`
@@ -12,7 +13,7 @@ type PlayerInfo struct {
 
 func parsePlayers(html io.Reader) ([]PlayerInfo, error) {
 	players := []PlayerInfo{}
-	doc, err := parseHtml(html)
+	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err

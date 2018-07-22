@@ -11,11 +11,15 @@ import (
 )
 
 const (
+	// StatusUpcoming represents the state of a tournament not done yet
 	StatusUpcoming = "upcoming"
-	StatusDone     = "done"
+	// StatusDone represents the state of a completed tournament
+	StatusDone = "done"
+	// StatusCanceled represents the state of a canceled tournament
 	StatusCanceled = "canceled"
 )
 
+// Tournament is all the information that can be parsed from the tournament list
 type Tournament struct {
 	Start            time.Time `json:"start"`
 	End              time.Time `json:"end"`
@@ -26,14 +30,14 @@ type Tournament struct {
 	Link             string    `json:"link"`
 	EntryLink        string    `json:"entryLink"`
 	ID               int       `json:"id"`
-	Status           string    `json:"status"` // done, upcoming, canceled
+	Status           string    `json:"status"` // can be `StatusUpcoming`, `StatusDone` or `StatusCanceled`
 	RegistrationOpen bool      `json:"registrationOpen"`
 	Gender           string    `json:"gender"`
 }
 
 func parseTournamentList(html io.Reader) ([]Tournament, error) {
 
-	doc, err := parseHtml(html)
+	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err
@@ -81,20 +85,20 @@ func parseTournamentList(html io.Reader) ([]Tournament, error) {
 }
 
 func extractTournamentLinkData(link string) Tournament {
-	id, _ := strconv.Atoi(readUrlPart(link, "cup/"))
-	season, _ := strconv.Atoi(readUrlPart(link, "saison/"))
+	id, _ := strconv.Atoi(readURLPart(link, "cup/"))
+	season, _ := strconv.Atoi(readURLPart(link, "saison/"))
 
 	return Tournament{
-		Gender: readUrlPart(link, "sex/"),
-		League: readUrlPart(link, "bewerbe/"),
-		Phase:  readUrlPart(link, "phase/"),
+		Gender: readURLPart(link, "sex/"),
+		League: readURLPart(link, "bewerbe/"),
+		Phase:  readURLPart(link, "phase/"),
 		ID:     id,
 		Season: season,
 		Link:   link,
 	}
 }
 
-func readUrlPart(link, start string) string {
+func readURLPart(link, start string) string {
 	startIndex := strings.Index(link, start)
 
 	if startIndex == -1 {

@@ -128,7 +128,7 @@ func parseHref(anchor *goquery.Selection) string {
 	return strings.TrimSpace(href)
 }
 
-func parseHtml(html io.Reader) (*goquery.Document, error) {
+func parseHTML(html io.Reader) (*goquery.Document, error) {
 	doc, err := goquery.NewDocumentFromReader(html)
 
 	return doc, errors.Wrap(err, "invalid html")

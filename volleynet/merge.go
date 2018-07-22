@@ -1,5 +1,7 @@
 package volleynet
 
+// MergeTournamentTeam merges two tournament teams depending on the syncType
+// and returns the new TournamentTeam.
 func MergeTournamentTeam(syncType string, persisted, current *TournamentTeam) *TournamentTeam {
 	persisted.Deregistered = current.Deregistered
 
@@ -15,6 +17,8 @@ func MergeTournamentTeam(syncType string, persisted, current *TournamentTeam) *T
 	return persisted
 }
 
+// MergeTournament merges two tournaments depending on the syncType
+// and returns the new Tournament.
 func MergeTournament(syncType string, persisted, current *FullTournament) *FullTournament {
 	if syncType == SyncTournamentUpcomingToCanceled {
 		persisted.Name = current.Name
@@ -56,6 +60,8 @@ func MergeTournament(syncType string, persisted, current *FullTournament) *FullT
 	return persisted
 }
 
+// MergePlayer merges two players depending on the syncType
+// and returns the new player.
 func MergePlayer(persisted, current *Player) *Player {
 	persisted.FirstName = current.FirstName
 	persisted.LastName = current.LastName

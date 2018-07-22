@@ -5,7 +5,7 @@ import (
 )
 
 func parseLadder(html io.Reader) ([]Player, error) {
-	doc, err := parseHtml(html)
+	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err

@@ -1,14 +1,17 @@
 package volleynet
 
+// PlayerSyncInformation contains sync information for two `Player`s
 type PlayerSyncInformation struct {
 	IsNew     bool
 	OldPlayer *Player
 	NewPlayer *Player
 }
 
+// SyncPlayers takes a slice of current and old `Player`s and finds out which
+// one is new and which needs to get updated
 func SyncPlayers(persisted []Player, current ...Player) []PlayerSyncInformation {
 	ps := []PlayerSyncInformation{}
-	for i, _ := range current {
+	for i := range current {
 		newPlayer := &current[i]
 		oldPlayer := FindPlayer(persisted, newPlayer.ID)
 
@@ -22,6 +25,7 @@ func SyncPlayers(persisted []Player, current ...Player) []PlayerSyncInformation 
 	return ps
 }
 
+// TournamentSyncInformation contains sync information for two `Tournament`s
 type TournamentSyncInformation struct {
 	IsNew         bool
 	SyncType      string
@@ -29,6 +33,7 @@ type TournamentSyncInformation struct {
 	NewTournament *Tournament
 }
 
+// represents the various tournament sync states.
 const (
 	SyncTournamentNoUpdate           = "SyncTournamentNoUpdate"
 	SyncTournamentUpcomingToCanceled = "SyncTournamentUpcomingToCanceled"
@@ -57,9 +62,10 @@ func tournamentSyncType(persisted *FullTournament, current *Tournament) string {
 	return ""
 }
 
+// SyncTournaments finds out if and how tournaments have to be synced
 func SyncTournaments(persisted []FullTournament, current ...Tournament) []TournamentSyncInformation {
 	ts := []TournamentSyncInformation{}
-	for i, _ := range current {
+	for i := range current {
 		newTournament := &current[i]
 		oldTournament := FindTournament(persisted, newTournament.ID)
 
@@ -80,6 +86,7 @@ func SyncTournaments(persisted []FullTournament, current ...Tournament) []Tourna
 	return ts
 }
 
+// represents the various tournament team sync states.
 const (
 	SyncTeamNew      = "SyncTeamNew"
 	SyncTeamUpcoming = "SyncTeamUpcoming"
@@ -87,6 +94,7 @@ const (
 	SyncTeamNoUpdate = "SyncTeamNoUpdate"
 )
 
+// TournamentTeamSyncInformation contains sync information for two `TournamentTeam`s
 type TournamentTeamSyncInformation struct {
 	IsNew    bool
 	SyncType string
@@ -111,9 +119,10 @@ func tournamentTeamSyncType(tournamentSyncType string, persisted, current *Tourn
 	return ""
 }
 
+// SyncTournamentTeams finds out if and how tournament teams have to be synced
 func SyncTournamentTeams(tournamentSyncType string, persisted, current []TournamentTeam) []TournamentTeamSyncInformation {
 	ts := []TournamentTeamSyncInformation{}
-	for i, _ := range current {
+	for i := range current {
 		newTeam := &current[i]
 		oldTeam := FindTeam(persisted, newTeam.TournamentID, newTeam.Player1.ID, newTeam.Player2.ID)
 		syncType := tournamentTeamSyncType(tournamentSyncType, oldTeam, newTeam)

@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Player adds additional information to `PlayerInfo`
 type Player struct {
 	PlayerInfo
 	Gender       string `json:"gender"`
@@ -20,6 +21,9 @@ type Player struct {
 	License      string `json:"license"`
 }
 
+// TournamentTeam is the current status of the team entry in a
+// tournament, if the tournament is finished it may also contain
+// the seed
 type TournamentTeam struct {
 	TournamentID int     `json:"tournamentId"`
 	TotalPoints  int     `json:"totalPoints"`
@@ -32,6 +36,7 @@ type TournamentTeam struct {
 	Deregistered bool    `json:"deregistered"`
 }
 
+// FullTournament adds additional information to `Tournament`
 type FullTournament struct {
 	Tournament
 	CreatedAt       time.Time        `json:"createdAt"`
@@ -58,7 +63,7 @@ func parseFullTournament(
 	html io.Reader,
 	tournament Tournament) (*FullTournament, error) {
 
-	doc, err := parseHtml(html)
+	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "parseFullTournament failed")

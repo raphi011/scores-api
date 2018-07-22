@@ -7,7 +7,7 @@ import (
 )
 
 func parseUniqueWriteCode(html io.Reader) (string, error) {
-	doc, err := parseHtml(html)
+	doc, err := parseHTML(html)
 
 	if err != nil {
 		return "", errors.Wrap(err, "parseUniqueWriteCode failed")
