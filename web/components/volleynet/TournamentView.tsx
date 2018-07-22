@@ -72,22 +72,27 @@ class TournamentView extends React.Component<Props, State> {
       {
         icon: <LocationIcon className={classes.infoElement} />,
         info: tournament.location,
+        show: !!tournament.location,
       },
       {
         icon: <PeopleIcon className={classes.infoElement} />,
         info: `${(tournament.teams || []).length} / ${tournament.maxTeams}`,
+        show: true,
       },
       {
         icon: <CalendarIcon className={classes.infoElement} />,
         info: tournamentDateString(tournament),
+        show: true,
       },
       {
         icon: <PhoneIcon className={classes.infoElement} />,
         info: tournament.phone,
+        show: !!tournament.phone,
       },
       {
         icon: <EmailIcon className={classes.infoElement} />,
         info: <a href={`emailto:${tournament.email}`}>{tournament.email}</a>,
+        show: !!tournament.email,
       },
       {
         icon: <LinkIcon className={classes.infoElement} />,
@@ -96,10 +101,13 @@ class TournamentView extends React.Component<Props, State> {
             {tournament.web}
           </a>
         ),
+        show: !!tournament.web,
       },
-    ];
+    ].filter(detail => detail.show);
 
     const signedup = isSignedup(tournament, user.volleynetUserId);
+
+    const showSignup = signedup || tournament.registrationOpen;
 
     return (
       <div>
@@ -115,17 +123,19 @@ class TournamentView extends React.Component<Props, State> {
               </Typography>
             ))}
           </div>
-          <Link
-            prefetch
-            href={{
-              pathname: '/volleynet/signup',
-              query: { id: tournament.id },
-            }}
-          >
-            <Button variant="raised" color="primary" fullWidth>
-              {signedup ? 'You are signed up' : 'Signup'}
-            </Button>
-          </Link>
+          {!showSignup || (
+            <Link
+              prefetch
+              href={{
+                pathname: '/volleynet/signup',
+                query: { id: tournament.id },
+              }}
+            >
+              <Button variant="raised" color="primary" fullWidth>
+                {signedup ? 'You are signed up' : 'Signup'}
+              </Button>
+            </Link>
+          )}
         </Card>
 
         <Tabs
