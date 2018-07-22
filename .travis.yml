@@ -14,7 +14,7 @@ jobs:
       script: npm --prefix ./web test
       name: "nextjs"
     - stage: "Deploy"
-      if: branch IN (master, development)
+      # if: branch IN (master, development)
       name: "deploy to server"
       script: echo Test
       # before_install:
