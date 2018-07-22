@@ -26,6 +26,6 @@ jobs:
         - sudo mv docker-compose /usr/local/bin
       env:
         - DOCKER_COMPOSE_VERSION=1.21.2
-      script: 
+      script:
         - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
         - docker-compose build && docker-compose push
