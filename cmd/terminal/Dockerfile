@@ -4,8 +4,11 @@ WORKDIR /go/src/github.com/raphi011/scores
 
 RUN go get -u github.com/golang/dep/...
 
+COPY Gopkg.lock .
+COPY Gopkg.toml .
+RUN dep ensure -vendor-only
+
 COPY . .
-RUN dep ensure
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/terminal
 
