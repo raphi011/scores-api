@@ -86,7 +86,7 @@ class TournamentView extends React.Component<Props, State> {
       },
       {
         icon: <PhoneIcon className={classes.infoElement} />,
-        info: tournament.phone,
+        info: <a href={`tel:${tournament.phone}`}>{tournament.phone}</a>,
         show: !!tournament.phone,
       },
       {

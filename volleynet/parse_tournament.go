@@ -27,11 +27,11 @@ type Player struct {
 type TournamentTeam struct {
 	TournamentID int     `json:"tournamentId"`
 	TotalPoints  int     `json:"totalPoints"`
-	Player1      *Player `json:"player1"`
-	Player2      *Player `json:"player2"`
 	Seed         int     `json:"seed"`
 	Rank         int     `json:"rank"`
 	WonPoints    int     `json:"wonPoints"`
+	Player1      *Player `json:"player1"`
+	Player2      *Player `json:"player2"`
 	PrizeMoney   float32 `json:"prizeMoney"`
 	Deregistered bool    `json:"deregistered"`
 }
@@ -41,20 +41,20 @@ type FullTournament struct {
 	Tournament
 	CreatedAt       time.Time        `json:"createdAt"`
 	UpdatedAt       time.Time        `json:"updatedAt"`
+	EndRegistration time.Time        `json:"endRegistration"`
 	Teams           []TournamentTeam `json:"teams"`
 	Location        string           `json:"location"`
 	HTMLNotes       string           `json:"htmlNotes"`
 	Mode            string           `json:"mode"`
-	MaxTeams        int              `json:"maxTeams"`
-	MinTeams        int              `json:"minTeams"`
-	MaxPoints       int              `json:"maxPoints"`
-	EndRegistration string           `json:"endRegistration"`
 	Organiser       string           `json:"organiser"`
 	Phone           string           `json:"phone"`
 	Email           string           `json:"email"`
 	Web             string           `json:"web"`
 	CurrentPoints   string           `json:"currentPoints"`
 	LivescoringLink string           `json:"livescoringLink"`
+	MaxTeams        int              `json:"maxTeams"`
+	MinTeams        int              `json:"minTeams"`
+	MaxPoints       int              `json:"maxPoints"`
 	Latitude        float32          `json:"latitude"`
 	Longitude       float32          `json:"longitude"`
 }
@@ -71,53 +71,8 @@ func parseFullTournament(
 
 	t := &FullTournament{Tournament: tournament}
 
-	htmlNotes := doc.Find(".extrainfo")
-
-	if htmlNotes.Find("iframe").Length() > 0 {
-		t.HTMLNotes = "Cannot display these notes yet."
-	} else {
-		t.HTMLNotes, _ = htmlNotes.Html()
-	}
-
-	table := doc.Find("tbody")
-
-	for i := range table.Nodes {
-		r := table.Eq(i)
-		rows := r.Find("tr")
-
-		if rows.First().Children().Eq(0).Text() == "Kategorie" {
-			for j := range rows.Nodes {
-				row := rows.Eq(j).Children()
-				value := row.Eq(1)
-
-				switch j {
-				case 2:
-					t.Location = trimmSelectionText(value)
-				case 3:
-					t.Mode = trimmSelectionText(value)
-					t.MaxTeams = findInt(t.Mode)
-				case 4:
-					t.MinTeams = findInt(value.Text())
-				case 5:
-					t.MaxPoints = findInt(value.Text())
-				case 6:
-					t.EndRegistration = trimmSelectionText(value)
-				case 7:
-					t.Organiser = trimmSelectionText(value)
-				case 8:
-					t.Phone = trimmSelectionText(value)
-				case 9:
-					t.Email = trimmSelectionText(value)
-				case 10:
-					t.Web = trimmSelectionText(value)
-				case 11:
-					t.CurrentPoints = trimmSelectionText(value)
-				}
-			}
-
-			break
-		}
-	}
+	parseTournamentNotes(doc, t)
+	parseTournamentDetails(doc, t)
 
 	t.Teams, err = parseFullTournamentTeams(
 		doc,
@@ -129,6 +84,81 @@ func parseFullTournament(
 	}
 
 	return t, nil
+}
+
+func parseTournamentNotes(doc *goquery.Document, t *FullTournament) {
+	htmlNotes := doc.Find(".extrainfo")
+
+	if htmlNotes.Find("iframe").Length() > 0 {
+		t.HTMLNotes = "Cannot display these notes yet."
+	} else {
+		t.HTMLNotes, _ = htmlNotes.Html()
+	}
+}
+
+type detailsParser func(*goquery.Selection, *FullTournament)
+
+var parseTournamentDetailsMap = map[string]detailsParser{
+	"Kategorie": func(value *goquery.Selection, t *FullTournament) {
+
+	},
+	"Modus": func(value *goquery.Selection, t *FullTournament) {
+		t.Mode = trimmSelectionText(value)
+		t.MaxTeams = findInt(t.Mode)
+	},
+	"Teiln. Qual.": func(value *goquery.Selection, t *FullTournament) {
+		t.MinTeams = findInt(value.Text())
+	},
+	"Datum": func(value *goquery.Selection, t *FullTournament) {
+		// TODO
+	},
+	"Ort": func(value *goquery.Selection, t *FullTournament) {
+		t.Location = trimmSelectionText(value)
+	},
+	"Max. Punkte": func(value *goquery.Selection, t *FullTournament) {
+		t.MaxPoints = findInt(value.Text())
+	},
+	"Veranstalter": func(value *goquery.Selection, t *FullTournament) {
+		t.Organiser = trimmSelectionText(value)
+	},
+	"Telefon": func(value *goquery.Selection, t *FullTournament) {
+		t.Phone = trimmSelectionText(value)
+	},
+	"EMail": func(value *goquery.Selection, t *FullTournament) {
+		t.Email = trimmSelectionText(value)
+	},
+	"Web": func(value *goquery.Selection, t *FullTournament) {
+		t.Web = trimmSelectionText(value)
+	},
+	"Vorläufige Punkte": func(value *goquery.Selection, t *FullTournament) {
+		t.CurrentPoints = trimmSelectionText(value)
+	},
+	"Nennschluss": func(value *goquery.Selection, t *FullTournament) {
+		t.EndRegistration, _ = parseDate(value.Text())
+	},
+}
+
+func parseTournamentDetails(doc *goquery.Document, t *FullTournament) {
+	table := doc.Find("tbody")
+
+	for i := range table.Nodes {
+		r := table.Eq(i)
+		rows := r.Find("tr")
+
+		firstColumnName := rows.First().Children().Eq(0).Text()
+
+		if _, ok := parseTournamentDetailsMap[firstColumnName]; ok {
+			for j := range rows.Nodes {
+				row := rows.Eq(j).Children()
+				columnName := row.Eq(0).Text()
+				value := row.Eq(1)
+
+				if parser, ok := parseTournamentDetailsMap[columnName]; ok {
+					parser(value, t)
+				}
+			}
+		}
+	}
 }
 
 func parseFullTournamentTeams(body *goquery.Document, tournamentID int, gender string) ([]TournamentTeam, error) {
