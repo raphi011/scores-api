@@ -11,7 +11,7 @@ jobs:
       before_install: 
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       install: 
-        - dep ensure
+        - dep ensure -vendor-only
     - language: node_js
       node_js: node
       install: npm --prefix ./web install ./web

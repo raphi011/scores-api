@@ -8,7 +8,7 @@ import (
 func Test_tournament_list(t *testing.T) {
 	response, _ := os.Open("testdata/tournament-list.html")
 
-	tournaments, err := parseTournamentList(response)
+	tournaments, err := parseTournamentList(response, "http://example.com")
 
 	if err != nil {
 		t.Errorf("parseTournaments() err: %s", err)
