@@ -15,7 +15,7 @@ jobs:
       name: "nextjs"
     - stage: "Deploy"
       name: "deploy to server"
-      if: branch IN (master, development)
+      # if: branch IN (master, development)
       env:
         - DOCKER_COMPOSE_VERSION=1.21.2
         - DOCKER_TLS_VERIFY=1
