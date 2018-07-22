@@ -14,16 +14,5 @@ jobs:
       script: npm --prefix ./web test
       name: "nextjs"
     - stage: "Deploy"
-      # if: branch IN (master, development)
       name: "deploy to server"
       script: echo Test
-      # before_install:
-      #   - sudo rm /usr/local/bin/docker-compose
-      #   - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-      #   - chmod +x docker-compose
-      #   - sudo mv docker-compose /usr/local/bin
-      # env:
-      #   - DOCKER_COMPOSE_VERSION=1.21.2
-      # script:
-      #   - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-      #   - docker-compose build && docker-compose push
