@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -83,7 +83,9 @@ class Login extends React.Component<Props, State> {
     this.setState({ password: e.target.value });
   };
 
-  loginWithPassword = async () => {
+  loginWithPassword = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const { setStatus, loginWithPassword, r } = this.props;
     const { email, password } = this.state;
 
@@ -133,55 +135,60 @@ class Login extends React.Component<Props, State> {
         }}
       >
         <Paper style={{ textAlign: 'center', padding: '30px' }}>
-          <Typography variant="display2">Welcome</Typography>
-          <br />
-          <FormGroup>
-            <TextField
-              label="Email"
-              type="email"
-              value={email}
-              onChange={this.onEmailChange}
-              autoComplete="email"
-              margin="normal"
-            />
-            <TextField
-              label="Password"
-              type="password"
-              value={password}
-              onChange={this.onPasswordChange}
-              autoComplete="current-password"
-              margin="normal"
-            />
-          </FormGroup>
-          <div className={classes.wrapper}>
+          <form onSubmit={this.loginWithPassword}>
+            <Typography variant="display2">Welcome</Typography>
+            <br />
+            <FormGroup>
+              <TextField
+                label="Email"
+                type="email"
+                value={email}
+                onChange={this.onEmailChange}
+                autoComplete="email"
+                margin="normal"
+              />
+              <TextField
+                label="Password"
+                type="password"
+                value={password}
+                onChange={this.onPasswordChange}
+                autoComplete="current-password"
+                margin="normal"
+              />
+            </FormGroup>
+            <div className={classes.wrapper}>
+              <Button
+                color="primary"
+                fullWidth
+                variant="raised"
+                disabled={loggingIn}
+                type="submit"
+              >
+                Login
+              </Button>
+              {loggingIn && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
+              )}
+            </div>
+            <div style={{ margin: '20px 0' }}>- or -</div>
             <Button
               color="primary"
+              disabled={!loginRoute}
               fullWidth
               variant="raised"
-              disabled={loggingIn}
-              onClick={this.loginWithPassword}
+              href={loginRoute}
             >
-              Login
+              Login with Google
             </Button>
-            {loggingIn && (
-              <CircularProgress size={24} className={classes.buttonProgress} />
-            )}
-          </div>
-          <div style={{ margin: '20px 0' }}>- or -</div>
-          <Button
-            color="primary"
-            disabled={!loginRoute}
-            fullWidth
-            variant="raised"
-            href={loginRoute}
-          >
-            Login with Google
-          </Button>
-          <div
-            style={{ color: Red['800'], height: '50px', paddingTop: '20px' }}
-          >
-            {errorBox}
-          </div>
+            <div
+              style={{ color: Red['800'], height: '50px', paddingTop: '20px' }}
+            >
+              {errorBox}
+            </div>
+          </form>
         </Paper>
         <Snackbar />
       </div>
