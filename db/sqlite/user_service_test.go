@@ -7,7 +7,7 @@ import (
 )
 
 func TestSetPassword(t *testing.T) {
-	s := createServices()
+	s := createServices(t)
 	defer Reset(s.db)
 
 	email := "test@test.com"
@@ -39,7 +39,7 @@ func TestSetPassword(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	s := createServices()
+	s := createServices(t)
 	defer Reset(s.db)
 
 	email := "test@test.com"
@@ -67,7 +67,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestUsers(t *testing.T) {
-	s := createServices()
+	s := createServices(t)
 	defer Reset(s.db)
 
 	s.userService.Create(&scores.User{
@@ -92,27 +92,26 @@ func TestUsers(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer Reset(db)
+	s := createServices(t)
+	defer Reset(s.db)
 
 	email := "test@test.com"
 	newEmail := "test2@test.com"
 
-	userService := UserService{DB: db}
-	user, _ := userService.Create(&scores.User{
+	user, _ := s.userService.Create(&scores.User{
 		Email:           email,
 		ProfileImageURL: "image.url",
 	})
 
 	user.Email = newEmail
 
-	err := userService.Update(user)
+	err := s.userService.Update(user)
 
 	if err != nil {
 		t.Errorf("UserService.Update() err: %s", err)
 	}
 
-	user, err = userService.ByEmail(newEmail)
+	user, err = s.userService.ByEmail(newEmail)
 
 	if err != nil || user.Email != newEmail {
 		t.Error("UserService.Update(), user not updated")

@@ -7,7 +7,7 @@ import (
 )
 
 func TestCreateGroup(t *testing.T) {
-	s := createServices()
+	s := createServices(t)
 	defer Reset(s.db)
 
 	groupName := "Test"
@@ -28,7 +28,7 @@ func TestCreateGroup(t *testing.T) {
 }
 
 func TestAddPlayerToGroup(t *testing.T) {
-	s := createServices()
+	s := createServices(t)
 	defer Reset(s.db)
 
 	p, _ := s.playerService.Create(&scores.Player{Name: "Player"})

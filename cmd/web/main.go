@@ -36,7 +36,7 @@ func main() {
 		host = "http://localhost:3000"
 	}
 
-	db, err := sqlite.Open(*dbPath)
+	db, err := sqlite.Open(*dbPath, "")
 
 	if err != nil {
 		panic(fmt.Sprintf("Could not open DB: %v\n", err))

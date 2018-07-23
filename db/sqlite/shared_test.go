@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"testing"
 
 	"github.com/raphi011/scores"
 )
@@ -17,8 +18,13 @@ type services struct {
 	pwService        scores.PasswordService
 }
 
-func createServices() *services {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
+func createServices(t *testing.T) *services {
+	db, err := Open("file::memory:", "&mode=memory&cache=shared")
+
+	if err != nil {
+		t.Fatal("unable to create db")
+	}
+
 	Migrate(db)
 
 	saltBytes := 16

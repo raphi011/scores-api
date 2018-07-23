@@ -26,15 +26,13 @@ func TestTeamPlayerOrder(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	db, _ := Open("file::memory:?mode=memory&cache=shared")
-	defer Reset(db)
+	s := createServices(t)
+	defer Reset(s.db)
 
-	playerService := &PlayerService{DB: db}
-	player1, _ := playerService.Create(&scores.Player{Name: "Player1"})
-	player2, _ := playerService.Create(&scores.Player{Name: "Player2"})
-	teamService := &TeamService{DB: db}
+	player1, _ := s.playerService.Create(&scores.Player{Name: "Player1"})
+	player2, _ := s.playerService.Create(&scores.Player{Name: "Player2"})
 
-	_, err := teamService.Create(&scores.Team{
+	_, err := s.teamService.Create(&scores.Team{
 		Name:      "Team1",
 		Player1ID: player1.ID,
 		Player2ID: player2.ID,
@@ -44,7 +42,7 @@ func TestCreate(t *testing.T) {
 		t.Error("Can't create team")
 	}
 
-	newTeam, err := teamService.ByPlayers(player1.ID, player2.ID)
+	newTeam, err := s.teamService.ByPlayers(player1.ID, player2.ID)
 
 	if err != nil {
 		t.Errorf("TeamService.ByPlayers() err: %s", err)

@@ -3,7 +3,7 @@ package sqlite
 import "testing"
 
 func TestPlayerStatistic(t *testing.T) {
-	s := createServices()
+	s := createServices(t)
 	defer Reset(s.db)
 
 	m := newMatch(s)
