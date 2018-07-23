@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 
 import DeleteIcon from '@material-ui/icons/Delete';
-import CopyIcon from '@material-ui/icons/ContentCopy';
+import CopyIcon from '@material-ui/icons/FileCopy';
 import Divider from '@material-ui/core/Divider';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';

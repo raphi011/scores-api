@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import GroupIcon from '@material-ui/icons/Group';
 import Avatar from '@material-ui/core/Avatar';
 import TournamentIcon from '@material-ui/icons/Star';
-import SettingsIcon from '@material-ui/icons/Settings';
+import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import HomeIcon from '@material-ui/icons/Home';
 import LadderIcon from '@material-ui/icons/LooksOne';
 import Link from 'next/link';
