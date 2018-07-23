@@ -8,7 +8,7 @@ import (
 )
 
 func seedDb() {
-	db, err := sqlite.Open(*dbPath)
+	db, err := sqlite.Open(*dbPath, "")
 
 	if err != nil {
 		fmt.Println(err)
