@@ -14,5 +14,7 @@ services:
       - './web:/web'
 
   backend:
+    environment:
+      -  GIN_MODE=debug
     volumes:
       - './data:/srv/scores'

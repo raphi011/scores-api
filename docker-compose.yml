@@ -13,6 +13,7 @@ services:
       context: .
       dockerfile: ./cmd/web/Dockerfile
     environment:
+      - GIN_MODE=release
       - BACKEND_URL=https://scores.raphi011.com
       - APP_ENV=production
       
