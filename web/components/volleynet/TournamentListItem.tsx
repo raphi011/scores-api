@@ -14,7 +14,9 @@ const TournamentListItem = ({ tournament, onClick }: Props) => (
   <ListItem button onClick={() => onClick(tournament)}>
     <ListItemText
       primary={tournament.name}
-      secondary={tournamentDateString(tournament)}
+      secondary={`${tournamentDateString(tournament)} • ${
+        tournament.signedupTeams
+      } / ${tournament.maxTeams} teams`}
     />
   </ListItem>
 );

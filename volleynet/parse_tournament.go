@@ -52,6 +52,7 @@ type FullTournament struct {
 	Web             string           `json:"web"`
 	CurrentPoints   string           `json:"currentPoints"`
 	LivescoringLink string           `json:"livescoringLink"`
+	SignedupTeams   int              `json:"signedupTeams"`
 	MaxTeams        int              `json:"maxTeams"`
 	MinTeams        int              `json:"minTeams"`
 	MaxPoints       int              `json:"maxPoints"`
@@ -74,10 +75,7 @@ func parseFullTournament(
 	parseTournamentNotes(doc, t)
 	parseTournamentDetails(doc, t)
 
-	t.Teams, err = parseFullTournamentTeams(
-		doc,
-		tournament.ID,
-		tournament.Gender)
+	err = parseFullTournamentTeams(doc, t)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "error parsing tournament teams")
@@ -161,10 +159,8 @@ func parseTournamentDetails(doc *goquery.Document, t *FullTournament) {
 	}
 }
 
-func parseFullTournamentTeams(body *goquery.Document, tournamentID int, gender string) ([]TournamentTeam, error) {
-	teams := []TournamentTeam{}
-
-	tables := body.Find("tbody")
+func parseFullTournamentTeams(doc *goquery.Document, t *FullTournament) error {
+	tables := doc.Find("tbody")
 
 	for i := range tables.Nodes {
 		table := tables.Eq(i)
@@ -172,7 +168,7 @@ func parseFullTournamentTeams(body *goquery.Document, tournamentID int, gender s
 
 		if rows.First().Children().Eq(0).Text() == "Nr." {
 			team := TournamentTeam{}
-			team.TournamentID = tournamentID
+			team.TournamentID = t.ID
 
 			for j := range rows.Nodes {
 				if j == 0 {
@@ -187,22 +183,25 @@ func parseFullTournamentTeams(body *goquery.Document, tournamentID int, gender s
 					continue
 				}
 
-				player.Gender = gender
+				player.Gender = t.Gender
 
 				if team.Player1 == nil {
 					team.Player1 = player
 				} else {
 					team.Player2 = player
-					teams = append(teams, team)
+					t.Teams = append(t.Teams, team)
 					team = TournamentTeam{}
-					team.TournamentID = tournamentID
-				}
+					team.TournamentID = t.ID
 
+					if !team.Deregistered {
+						t.SignedupTeams++
+					}
+				}
 			}
 		}
 	}
 
-	return teams, nil
+	return nil
 }
 
 func parsePlayerRow(row *goquery.Selection, team *TournamentTeam) (player *Player, err error) {
