@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { withStyles, createStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import withAuth from '../../containers/AuthContainer';
@@ -14,11 +14,21 @@ import { userSelector } from '../../redux/reducers/auth';
 
 import { Tournament, User } from '../../types';
 
-const styles = createStyles({});
+const styles = (theme: Theme) =>
+  createStyles({
+    backButton: {
+      position: 'absolute',
+      right: theme.spacing.unit,
+    },
+    tournamentContainer: {
+      paddingTop: theme.spacing.unit * 3,
+    },
+  });
 
 interface Props {
   tournament?: Tournament;
   user: User;
+  classes: any;
 }
 
 class ShowTournament extends React.Component<Props> {
@@ -42,14 +52,20 @@ class ShowTournament extends React.Component<Props> {
   }
 
   render() {
-    const { tournament, user } = this.props;
+    const { tournament, user, classes } = this.props;
 
     return (
       <Layout title="Tournament">
-        <Link prefetch href="/volleynet">
-          <Button color="primary">Back</Button>
-        </Link>
-        <TournamentView tournament={tournament} user={user} />
+        <div className={classes.backButton}>
+          <Link prefetch href="/volleynet">
+            <Button variant="outlined" color="primary">
+              Back
+            </Button>
+          </Link>
+        </div>
+        <div className={classes.tournamentContainer}>
+          <TournamentView tournament={tournament} user={user} />
+        </div>
       </Layout>
     );
   }

@@ -239,5 +239,5 @@ export const tournamentSignupAction = (form: {
   method: 'POST',
   url: 'volleynet/signup',
   body: JSON.stringify(form),
-  successStatus: 'Successfully signed up',
+  successStatus: '🎉 Successfully signed up',
 });

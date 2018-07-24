@@ -126,7 +126,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 	err = client.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
 
 	if err != nil {
-		log.Printf("entry to tournamentID %v with partnerID %v did not work", su.TournamentID, su.PartnerID)
+		log.Printf("entry to tournamentID %v with partnerID %v did not work: %s", su.TournamentID, su.PartnerID, err)
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}

@@ -14,6 +14,7 @@ import CalendarIcon from '@material-ui/icons/DateRange';
 import EmailIcon from '@material-ui/icons/Email';
 import LocationIcon from '@material-ui/icons/GpsFixed';
 import { tournamentDateString, isSignedup } from '../../utils/tournament';
+import { formatDateTime } from '../../utils/dateFormat';
 
 import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';
@@ -22,8 +23,22 @@ import { Tournament, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
+    link: {
+      textDecoration: 'none',
+    },
+    title: {
+      marginTop: theme.spacing.unit,
+      textDecoration: 'none',
+      marginBottom: theme.spacing.unit * 2,
+      wrapWrap: 'break-word',
+    },
+    updatedAt: {
+      marginTop: theme.spacing.unit,
+    },
+    header: {
+      padding: theme.spacing.unit * 2,
+    },
     headerContainer: {
-      margin: theme.spacing.unit,
       padding: theme.spacing.unit * 2,
     },
     infoContainer: {
@@ -66,7 +81,17 @@ class TournamentView extends React.Component<Props, State> {
     if (!tournament) {
       return <CenteredLoading />;
     }
-    const body = { __html: tournament.htmlNotes };
+
+    const hasInfos = !!tournament.htmlNotes.trim();
+
+    const infoText = hasInfos ? (
+      <div
+        className={classes.descriptionContainer}
+        dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
+      />
+    ) : (
+      'No infos'
+    );
 
     const infos = [
       {
@@ -111,32 +136,48 @@ class TournamentView extends React.Component<Props, State> {
 
     return (
       <div>
-        <Card className={classes.headerContainer}>
-          <a href={`${tournament.link}`} target="_blank">
-            <Typography variant="title">{tournament.name}</Typography>
-          </a>
-          <div className={classes.infoContainer}>
-            {infos.map((info, i) => (
-              <Typography key={i} variant="subheading">
-                {info.icon}{' '}
-                <span className={classes.infoElement}>{info.info}</span>
-              </Typography>
-            ))}
-          </div>
-          {!showSignup || (
-            <Link
-              prefetch
-              href={{
-                pathname: '/volleynet/signup',
-                query: { id: tournament.id },
-              }}
+        <div className={classes.headerContainer}>
+          <div className={classes.title}>
+            <a
+              className={classes.link}
+              href={`${tournament.link}`}
+              target="_blank"
             >
-              <Button variant="raised" color="primary" fullWidth>
-                {signedup ? 'You are signed up' : 'Signup'}
-              </Button>
-            </Link>
-          )}
-        </Card>
+              <Typography variant="display1">{tournament.name}</Typography>
+            </a>
+          </div>
+          <Card className={classes.header}>
+            <div className={classes.infoContainer}>
+              {infos.map((info, i) => (
+                <Typography key={i} variant="subheading">
+                  {info.icon}{' '}
+                  <span className={classes.infoElement}>{info.info}</span>
+                </Typography>
+              ))}
+            </div>
+            {!showSignup || (
+              <Link
+                prefetch
+                href={{
+                  pathname: '/volleynet/signup',
+                  query: { id: tournament.id },
+                }}
+              >
+                <Button variant="raised" color="primary" fullWidth>
+                  {signedup ? 'You are signed up' : 'Signup'}
+                </Button>
+              </Link>
+            )}
+          </Card>
+          <Typography
+            className={classes.updatedAt}
+            variant="caption"
+            align="center"
+            paragraph
+          >
+            Last updated: {formatDateTime(tournament.updatedAt)}
+          </Typography>
+        </div>
 
         <Tabs
           onChange={this.onTabClick}
@@ -149,14 +190,7 @@ class TournamentView extends React.Component<Props, State> {
           <Tab label="Teams" />
         </Tabs>
         <div className={classes.tabContent}>
-          {tabOpen === 0 ? (
-            <div
-              className={classes.descriptionContainer}
-              dangerouslySetInnerHTML={body}
-            />
-          ) : (
-            <TeamList teams={tournament.teams} />
-          )}
+          {tabOpen === 0 ? infoText : <TeamList teams={tournament.teams} />}
         </div>
       </div>
     );

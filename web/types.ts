@@ -124,6 +124,7 @@ export interface VolleynetTeam {
 
 export interface Tournament {
   id: number;
+  updatedAt: string;
   gender: Gender;
   registrationOpen: boolean;
   start: string;
@@ -137,6 +138,7 @@ export interface Tournament {
   location: string;
   htmlNotes: string;
   mode: string;
+  signedupTeams: number;
   maxTeams: number;
   minTeams: string;
   maxPoints: string;
@@ -172,7 +174,7 @@ export interface ApiAction extends Action {
   params?: Params;
   req?: Object; // todo
   res?: Object; // todo
-  headers?: Object;
+  headers?: { [key: string]: string };
 
   error?: string;
   body?: string;

@@ -211,6 +211,10 @@ func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
 		url.String(),
 		nil)
 
+	if err != nil {
+		return "", errors.Wrap(err, "creating request failed")
+	}
+
 	req.Header.Add("Cookie", c.Cookie)
 
 	httpClient := &http.Client{}

@@ -25,7 +25,7 @@ type createMatchDto struct {
 
 type matchQueryDto struct {
 	After time.Time `json:"after"`
-	count uint      `json:"count"`
+	Count uint      `json:"count"`
 }
 
 type matchHandler struct {
@@ -152,7 +152,7 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 	jsonn(c, http.StatusCreated, match, "")
 }
 
-func (a *matchHandler) matchShow(c *gin.Context) {
+func (h *matchHandler) matchShow(c *gin.Context) {
 	matchID, err := strconv.Atoi(c.Param("matchID"))
 
 	if err != nil {
@@ -160,7 +160,7 @@ func (a *matchHandler) matchShow(c *gin.Context) {
 		return
 	}
 
-	match, err := a.matchService.Match(uint(matchID))
+	match, err := h.matchService.Match(uint(matchID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Match not found")
