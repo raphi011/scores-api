@@ -59,9 +59,11 @@ func initRouter(app app) *gin.Engine {
 		volleynetService: volleynetService,
 		userService:      userService,
 	}
+	infoHandler := infoHandler{}
 
 	router.Use(sessions.Sessions("goquestsession", store))
 
+	router.GET("/version", infoHandler.version)
 	router.GET("/userOrLoginRoute", authHandler.loginRouteOrUser)
 	router.GET("/auth", authHandler.googleAuthenticate)
 	router.POST("/pwAuth", authHandler.passwordAuthenticate)
@@ -69,6 +71,7 @@ func initRouter(app app) *gin.Engine {
 	localhost := router.Group("/")
 	localhost.Use(localAuth())
 	localhost.GET("/volleynet/scrape/tournaments", volleynetScrapeHandler.scrapeTournaments)
+	localhost.GET("/volleynet/scrape/tournaments/:tournamentID", volleynetScrapeHandler.scrapeTournament)
 	localhost.GET("/volleynet/scrape/ladder", volleynetScrapeHandler.scrapeLadder)
 
 	auth := router.Group("/")
