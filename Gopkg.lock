@@ -51,6 +51,17 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/google/go-cmp"
+  packages = [
+    "cmp",
+    "cmp/internal/diff",
+    "cmp/internal/function",
+    "cmp/internal/value"
+  ]
+  revision = "3af367b6b30c263d47e8895973edcca9a49cf029"
+  version = "v0.2.0"
+
+[[projects]]
   name = "github.com/gorilla/context"
   packages = ["."]
   revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
@@ -171,6 +182,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "49754320a0c84d450034dcc881c1136b64480125845849ddc4462596ddea3a58"
+  inputs-digest = "5f68c7cbadaea7a7dd9a2470545504cbcce7829018bba3115eb310a07eabbe09"
   solver-name = "gps-cdcl"
   solver-version = 1

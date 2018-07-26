@@ -85,7 +85,16 @@ func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
 }
 
 func extractTournamentLinkData(relativeLink, host string) Tournament {
+	if len(relativeLink) == 0 {
+		return Tournament{}
+	}
+
+	if relativeLink[0] == '/' {
+		relativeLink = relativeLink[1:]
+	}
+
 	id, _ := strconv.Atoi(readURLPart(relativeLink, "cup/"))
+
 	season, _ := strconv.Atoi(readURLPart(relativeLink, "saison/"))
 
 	return Tournament{
