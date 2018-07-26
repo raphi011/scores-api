@@ -2,6 +2,7 @@ import fetch from 'isomorphic-unfetch';
 import * as actionNames from './actionNames';
 import { ApiAction, ApiActions } from '../types';
 import { buildUrl, isJson } from '../api';
+import { userSelector } from './reducers/auth';
 
 function getHost(req): string {
   if (req) {
@@ -21,13 +22,7 @@ export function serverAction(action, req, res) {
   };
 }
 
-async function doAction(
-  dispatch,
-  action: ApiAction,
-  isServer = false,
-  req,
-  res,
-) {
+async function doAction(store, action: ApiAction, isServer = false, req, res) {
   let { headers = {} } = action;
   const {
     success,
@@ -39,6 +34,7 @@ async function doAction(
     params,
     method = 'GET',
   } = action;
+  const { dispatch, getState } = store;
 
   if (isServer && req.headers.cookie) {
     // set the client's cookie for serverside request
@@ -54,7 +50,7 @@ async function doAction(
       body,
       credentials: 'same-origin',
     });
-    if (response.status === 401) {
+    if (response.status === 401 && userSelector(getState()).isLoggedIn) {
       dispatch({ type: actionNames.LOGGEDOUT });
       dispatch({
         type: actionNames.SET_STATUS,
@@ -116,7 +112,7 @@ async function doAction(
   return Promise.reject();
 }
 
-const apiMiddleware = ({ dispatch }) => next => async action => {
+const apiMiddleware = store => next => async action => {
   if (
     action.type !== actionNames.API &&
     action.type !== actionNames.API_MULTI
@@ -134,10 +130,10 @@ const apiMiddleware = ({ dispatch }) => next => async action => {
     const { actions } = apiAction;
 
     result = await Promise.all(
-      actions.map(a => doAction(dispatch, a, isServer, req, res)),
+      actions.map(a => doAction(store, a, isServer, req, res)),
     );
   } else {
-    result = await doAction(dispatch, apiAction, isServer, req, res);
+    result = await doAction(store, apiAction, isServer, req, res);
   }
 
   return result;
