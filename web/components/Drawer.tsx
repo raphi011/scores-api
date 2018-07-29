@@ -117,7 +117,7 @@ function Drawer({ open, userPlayer, onClose, classes }: Props) {
   );
 
   return (
-    <MDrawer open={open} onClose={onClose}>
+    <MDrawer open={open} onClose={onClose} ModalProps={{ keepMounted: true }}>
       <div tabIndex={0} role="button">
         {sideList}
       </div>
