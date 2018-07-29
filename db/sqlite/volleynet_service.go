@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores/volleynet"
@@ -86,6 +87,10 @@ func (s *VolleynetService) AllTournaments() ([]volleynet.FullTournament, error) 
 	return scanTournaments(s.DB, tournamentsBaseSelectSQL)
 }
 
+func (s *VolleynetService) SeasonTournaments(season int) ([]volleynet.FullTournament, error) {
+	return scanTournaments(s.DB, tournamentsSeasonSelectSQL, season)
+}
+
 func (s *VolleynetService) SearchPlayers() ([]volleynet.Player, error) {
 	return nil, nil
 }
@@ -123,6 +128,8 @@ const (
 		t.season
 	FROM volleynetTournaments t
 	`
+
+	tournamentsSeasonSelectSQL = tournamentsBaseSelectSQL + " WHERE t.season = $1"
 
 	tournamentsFilterSelectSQL = tournamentsBaseSelectSQL + `
 	 WHERE t.gender = $1 AND t.league = $2 AND t.season = $3

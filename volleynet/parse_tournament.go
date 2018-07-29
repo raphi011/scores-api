@@ -81,6 +81,10 @@ func parseFullTournament(
 		return nil, errors.Wrap(err, "error parsing tournament teams")
 	}
 
+	if len(t.Teams) > 0 && t.Teams[0].Rank > 0 {
+		t.Status = StatusDone
+	}
+
 	return t, nil
 }
 
@@ -108,7 +112,12 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		t.MinTeams = findInt(value.Text())
 	},
 	"Datum": func(value *goquery.Selection, t *FullTournament) {
-		// TODO
+		var err error
+		t.Start, t.End, err = parseStartEndDates(value)
+
+		if err != nil {
+			log.Warn("error parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
+		}
 	},
 	"Ort": func(value *goquery.Selection, t *FullTournament) {
 		t.Location = trimmSelectionText(value)

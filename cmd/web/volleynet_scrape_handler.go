@@ -66,6 +66,7 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// ScrapeTournamentResult contains scrape statistics.
 type ScrapeTournamentResult struct {
 	NewTournaments      int
 	UpdatedTournaments  int
@@ -77,10 +78,50 @@ type ScrapeTournamentResult struct {
 	Error               error
 }
 
+func (h *volleynetScrapeHandler) scrapeTournament(c *gin.Context) {
+	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	tournament, err := h.volleynetService.Tournament(tournamentID)
+
+	if err != nil {
+		log.Warn(err)
+	}
+
+	client := volleynet.DefaultClient()
+	fullTournament, err := client.ComplementTournament(tournament.Tournament)
+
+	if err != nil {
+		log.Warn(err)
+	}
+
+	syncInformation := volleynet.SyncTournaments([]volleynet.FullTournament{*tournament}, fullTournament.Tournament)
+	sync := syncInformation[0]
+
+	mergedTournament := volleynet.MergeTournament(sync.SyncType, sync.OldTournament, fullTournament)
+
+	err = h.volleynetService.UpdateTournament(mergedTournament)
+
+	if err != nil {
+		log.Warn(err)
+	}
+}
+
 func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 	league := c.DefaultQuery("league", "AMATEUR TOUR")
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
+	seasonInt, err := strconv.Atoi(season)
+
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
 	result := ScrapeTournamentResult{}
 
 	client := volleynet.DefaultClient()
@@ -93,7 +134,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 		return
 	}
 
-	persisted, err := h.volleynetService.AllTournaments()
+	persisted, err := h.volleynetService.SeasonTournaments(seasonInt)
 
 	syncInformation := volleynet.SyncTournaments(persisted, current...)
 

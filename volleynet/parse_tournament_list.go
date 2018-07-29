@@ -36,7 +36,6 @@ type Tournament struct {
 }
 
 func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
-
 	doc, err := parseHTML(html)
 
 	if err != nil {
@@ -69,13 +68,14 @@ func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
 		if content == "Abgesagt" {
 			tournament.Status = StatusCanceled
 			tournament.RegistrationOpen = false
-		} else if entryLink := column.Find("a"); entryLink.Length() == 1 {
-			tournament.Status = StatusUpcoming
-			tournament.EntryLink = parseHref(entryLink)
-			tournament.RegistrationOpen = true
 		} else {
-			tournament.Status = StatusDone
-			tournament.RegistrationOpen = false
+			tournament.RegistrationOpen = true
+			// `StatusClosed` is set exclusively in parseFullTournament
+			tournament.Status = StatusUpcoming
+
+			if entryLink := column.Find("a"); entryLink.Length() == 1 {
+				tournament.EntryLink = parseHref(entryLink)
+			}
 		}
 
 		tournaments = append(tournaments, tournament)
