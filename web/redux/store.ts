@@ -35,11 +35,15 @@ export async function dispatchActions(
   }
 }
 
+const middleware = process.env.NODE_ENV === 'development'
+ ? composeWithDevTools(applyMiddleware(apiMiddleware))
+ : applyMiddleware(apiMiddleware);
+
 const initStore = (state: Store = initialState) =>
   createStore(
     reducer,
     state,
-    composeWithDevTools(applyMiddleware(apiMiddleware)),
+    middleware,
   );
 
 export default initStore;
