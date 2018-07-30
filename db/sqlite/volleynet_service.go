@@ -68,6 +68,7 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 		&t.Latitude,
 		&t.Longitude,
 		&t.Season,
+		&t.SignedupTeams,
 	)
 
 	if err != nil {
@@ -125,7 +126,8 @@ const (
 		t.live_scoring_link,
 		t.loc_lat,
 		t.loc_lon,
-		t.season
+		t.season,
+		t.signedup_teams
 	FROM volleynetTournaments t
 	`
 
@@ -167,7 +169,8 @@ const (
 			live_scoring_link,
 			loc_lat,
 			loc_lon,
-			season
+			season,
+			signedup_teams
 		)
 		VALUES
 		(
@@ -198,7 +201,8 @@ const (
 			$23,
 			$24,
 			$25,
-			$26
+			$26,
+			$27
 		)
 	`
 
@@ -229,8 +233,9 @@ const (
 			live_scoring_link = $22,
 			loc_lat = $23,
 			loc_lon = $24,
-			season = $25
-		WHERE id = $26
+			season = $25,
+			signedup_teams = $26
+		WHERE id = $27
 	`
 )
 
@@ -266,6 +271,7 @@ func (s *VolleynetService) NewTournament(t *volleynet.FullTournament) error {
 		t.Longitude,
 		t.Latitude,
 		t.Season,
+		t.SignedupTeams,
 	)
 
 	return err
@@ -336,6 +342,7 @@ func (s *VolleynetService) UpdateTournament(t *volleynet.FullTournament) error {
 		t.Longitude,
 		t.Latitude,
 		t.Season,
+		t.SignedupTeams,
 		t.ID)
 
 	if err != nil {

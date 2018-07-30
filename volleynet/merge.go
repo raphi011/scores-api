@@ -43,6 +43,7 @@ func MergeTournament(syncType string, persisted, current *FullTournament) *FullT
 		persisted.LivescoringLink = current.LivescoringLink
 		persisted.Latitude = current.Latitude
 		persisted.Longitude = current.Longitude
+		persisted.SignedupTeams = current.SignedupTeams
 
 		if syncType == SyncTournamentUpcomingToDone {
 			persisted.EntryLink = ""
