@@ -69,12 +69,14 @@ func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
 			tournament.Status = StatusCanceled
 			tournament.RegistrationOpen = false
 		} else {
-			tournament.RegistrationOpen = true
 			// `StatusClosed` is set exclusively in parseFullTournament
 			tournament.Status = StatusUpcoming
 
 			if entryLink := column.Find("a"); entryLink.Length() == 1 {
+				tournament.RegistrationOpen = true
 				tournament.EntryLink = parseHref(entryLink)
+			} else {
+				tournament.RegistrationOpen = false
 			}
 		}
 
