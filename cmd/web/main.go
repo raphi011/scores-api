@@ -44,6 +44,12 @@ func main() {
 
 	defer db.Close()
 
+	err = sqlite.Migrate(db)
+
+	if err != nil {
+		panic(fmt.Sprintf("Error migrating %v", err))
+	}
+
 	googleOAuth, err := googleOAuthConfig(*gSecret, host)
 
 	if err != nil {
