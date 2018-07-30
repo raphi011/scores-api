@@ -10,13 +10,21 @@ interface Props {
   onClick: (Tournament) => void;
 }
 
+function buildSubtitle(tournament: Tournament) {
+  let st = tournamentDateString(tournament);
+
+  if (tournament.maxTeams >= 0) {
+    st += ` • ${tournament.signedupTeams} / ${tournament.maxTeams} teams`;
+  }
+  
+  return st;
+}
+
 const TournamentListItem = ({ tournament, onClick }: Props) => (
   <ListItem button onClick={() => onClick(tournament)}>
     <ListItemText
       primary={tournament.name}
-      secondary={`${tournamentDateString(tournament)} • ${
-        tournament.signedupTeams
-      } / ${tournament.maxTeams} teams`}
+      secondary={buildSubtitle(tournament)}
     />
   </ListItem>
 );

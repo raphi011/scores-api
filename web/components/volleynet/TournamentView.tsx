@@ -102,7 +102,7 @@ class TournamentView extends React.Component<Props, State> {
       {
         icon: <PeopleIcon className={classes.infoElement} />,
         info: `${(tournament.teams || []).length} / ${tournament.maxTeams}`,
-        show: true,
+        show: tournament.maxTeams !== -1,
       },
       {
         icon: <CalendarIcon className={classes.infoElement} />,
