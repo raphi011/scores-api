@@ -14,7 +14,7 @@ const styles = createStyles({
 
 interface Props {
   tournaments: Tournament[];
-  onTournamentClick: () => void;
+  onTournamentClick: (t: Tournament) => void;
   classes: any;
 }
 

@@ -16,7 +16,7 @@ interface League {
 interface Props {
   selected: string;
   onChange: (string) => void;
-  leagues: League[];
+  leagues?: League[];
 }
 
 export default ({ selected, onChange, leagues = defaultLeagues }: Props) => (

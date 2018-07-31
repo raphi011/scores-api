@@ -20,7 +20,17 @@ const styles = createStyles({});
 interface Props {
   tournamentId: number;
   tournament?: Tournament;
-  signup: () => void;
+  signup: (
+    info: {
+      username: string;
+      password: string;
+      partnerId: number;
+      tournamentId: number;
+      partnerName: string;
+      rememberMe: boolean;
+    },
+  ) => void;
+  classes: any;
 }
 
 interface State {
