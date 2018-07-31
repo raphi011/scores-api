@@ -16,7 +16,9 @@ services:
 
   backend:
     environment:
-      -  GIN_MODE=debug
+      - GIN_MODE=debug
+      - BACKEND_URL=http://localhost
+      - APP_ENV=debug
     build:
       dockerfile: ./cmd/web/Dockerfile.dev
     volumes:
