@@ -22,8 +22,11 @@ interface State {
 
 interface Props {
   tournaments: Tournament[];
-  loadTournaments: () => void;
+  loadTournaments: (
+    filters: { gender: string; league: string; season: string },
+  ) => void;
   league: string;
+  classes: any;
 }
 
 const thisYear = new Date().getFullYear().toString();
@@ -83,9 +86,15 @@ class Volleynet extends React.Component<Props, State> {
     });
   };
 
-  onTabClick = (event, tabOpen) => {
+  onTabClick = (_, tabOpen) => {
     this.setState({ tabOpen });
   };
+
+  static sortAscending = (a, b) =>
+    new Date(a.start).getTime() - new Date(b.start).getTime();
+
+  static sortDescending = (a, b) =>
+    new Date(b.start).getTime() - new Date(a.start).getTime();
 
   orderTournaments = () => {
     let { tournaments } = this.props;
@@ -94,14 +103,22 @@ class Volleynet extends React.Component<Props, State> {
       return null;
     }
 
-    tournaments = tournaments.sort(
-      (a, b) => new Date(a.start) - new Date(b.start),
-    );
-
     return {
-      upcoming: tournaments.filter(t => t.status === 'upcoming'),
-      past: tournaments.filter(t => t.status === 'done'),
-      canceled: tournaments.filter(t => t.status === 'canceled'),
+      upcoming: tournaments
+        .filter(
+          t =>
+            t.status === 'upcoming' ||
+            (t.status === 'canceled' && new Date(t.end) >= new Date()),
+        )
+        .sort(Volleynet.sortAscending),
+
+      past: tournaments
+        .filter(
+          t =>
+            t.status === 'done' ||
+            (t.status === 'canceled' && new Date(t.end) < new Date()),
+        )
+        .sort(Volleynet.sortDescending),
       played: [],
     };
   };
@@ -124,9 +141,6 @@ class Volleynet extends React.Component<Props, State> {
           ts = tournaments.past;
           break;
         case 2:
-          ts = tournaments.canceled;
-          break;
-        case 3:
           ts = tournaments.played;
           break;
         default: // this shouldn't happen
@@ -145,7 +159,6 @@ class Volleynet extends React.Component<Props, State> {
         <Tabs onChange={this.onTabClick} value={tabOpen} fullWidth>
           <Tab label="Upcoming" />
           <Tab label="Past" />
-          <Tab label="Canceled" />
           <Tab label="Played" />
         </Tabs>
         {content}

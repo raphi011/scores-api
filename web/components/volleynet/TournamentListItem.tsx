@@ -16,17 +16,27 @@ function buildSubtitle(tournament: Tournament) {
   if (tournament.maxTeams >= 0) {
     st += ` • ${tournament.signedupTeams} / ${tournament.maxTeams} teams`;
   }
-  
+
   return st;
 }
 
-const TournamentListItem = ({ tournament, onClick }: Props) => (
-  <ListItem button onClick={() => onClick(tournament)}>
-    <ListItemText
-      primary={tournament.name}
-      secondary={buildSubtitle(tournament)}
-    />
-  </ListItem>
-);
+const TournamentListItem = ({ tournament, onClick }: Props) => {
+  let primary: string | JSX.Element = tournament.name;
+
+  if (tournament.status === 'canceled') {
+    primary = (
+      <span>
+        <span style={{ textDecoration: 'line-through' }}>{primary}</span>{' '}
+        (canceled)
+      </span>
+    );
+  }
+
+  return (
+    <ListItem button onClick={() => onClick(tournament)}>
+      <ListItemText primary={primary} secondary={buildSubtitle(tournament)} />
+    </ListItem>
+  );
+};
 
 export default TournamentListItem;

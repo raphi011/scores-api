@@ -1,8 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
-
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
@@ -14,21 +10,9 @@ import { userSelector } from '../../redux/reducers/auth';
 
 import { Tournament, User } from '../../types';
 
-const styles = (theme: Theme) =>
-  createStyles({
-    backButton: {
-      position: 'absolute',
-      right: theme.spacing.unit,
-    },
-    tournamentContainer: {
-      paddingTop: theme.spacing.unit * 3,
-    },
-  });
-
 interface Props {
   tournament?: Tournament;
   user: User;
-  classes: any;
 }
 
 class ShowTournament extends React.Component<Props> {
@@ -52,15 +36,14 @@ class ShowTournament extends React.Component<Props> {
   }
 
   render() {
-    const { tournament, user, classes } = this.props;
+    const { tournament, user } = this.props;
 
     return (
       <Layout title={{ text: 'Tournaments', href: '/volleynet' }}>
-          <TournamentView tournament={tournament} user={user} />
-        </div>
+        <TournamentView tournament={tournament} user={user} />
       </Layout>
     );
   }
 }
 
-export default withAuth(withStyles(styles)(ShowTournament));
+export default withAuth(ShowTournament);
