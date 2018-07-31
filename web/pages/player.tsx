@@ -149,7 +149,7 @@ class PlayerInfo extends React.Component<Props, State> {
     const loadingPlayer = !(player && statistic);
 
     return (
-      <Layout title="Players">
+      <Layout title={{ text: 'Players', href: '' }}>
         {loadingPlayer ? (
           <CircularProgress />
         ) : (

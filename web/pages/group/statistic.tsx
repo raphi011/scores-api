@@ -115,7 +115,7 @@ class Statistics extends React.Component<Props, State> {
     const { statistics, classes } = this.props;
 
     return (
-      <Layout title="Players">
+      <Layout title={{ text: 'Players', href: '' }}>
         <Toolbar className={classes.toolbar}>
           <Typography variant="title">{this.timeFilter()}</Typography>
           <IconButton onClick={this.onOpenFilterMenu}>

@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import Link from 'next/link';
 
 const styles = createStyles({
   row: {
@@ -17,6 +18,7 @@ const styles = createStyles({
   },
   flex: {
     flex: 1,
+    cursor: 'pointer',
   },
   menuButton: {
     marginLeft: -12,
@@ -26,7 +28,7 @@ const styles = createStyles({
 
 interface Props {
   onOpenMenu: () => void;
-  title: string;
+  title: { text: string; href: string };
   isLoggedIn: boolean;
   onLogout: () => Promise<void>;
   classes: any;
@@ -57,9 +59,15 @@ function ButtonAppBar({
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="title" color="inherit" className={classes.flex}>
-            {title}
-          </Typography>
+          <Link href={title.href}>
+            <Typography
+              variant="title"
+              color="inherit"
+              className={classes.flex}
+            >
+              {title.text}
+            </Typography>
+          </Link>
           {button}
         </Toolbar>
       </AppBar>

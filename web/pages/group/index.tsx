@@ -105,7 +105,7 @@ class Home extends React.Component<Props> {
     const { loading, hasMore } = this.state;
 
     return (
-      <Layout title="Matches">
+      <Layout title={{ text: 'Matches', href: '' }}>
         <div>
           <Toolbar>
             <Button

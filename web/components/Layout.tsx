@@ -7,7 +7,7 @@ import AppBar from '../containers/AppBarContainer';
 import { Player } from '../types';
 
 interface Props {
-  title: string;
+  title: { text: string; href: string };
   children: ReactNode;
   userPlayer: Player;
   drawerOpen: boolean;

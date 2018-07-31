@@ -56,7 +56,7 @@ class Home extends React.Component<Props> {
     const { classes } = this.props;
 
     return (
-      <Layout title="Home">
+      <Layout title={{ text: 'Home', href: '' }}>
         <div className={classes.container}>
           <Typography variant="headline">Home</Typography>
           <Paper className={classes.paper}>

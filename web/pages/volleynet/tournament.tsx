@@ -55,15 +55,7 @@ class ShowTournament extends React.Component<Props> {
     const { tournament, user, classes } = this.props;
 
     return (
-      <Layout title="Tournament">
-        <div className={classes.backButton}>
-          <Link prefetch href="/volleynet">
-            <Button variant="outlined" color="primary">
-              Back
-            </Button>
-          </Link>
-        </div>
-        <div className={classes.tournamentContainer}>
+      <Layout title={{ text: 'Tournaments', href: '/volleynet' }}>
           <TournamentView tournament={tournament} user={user} />
         </div>
       </Layout>

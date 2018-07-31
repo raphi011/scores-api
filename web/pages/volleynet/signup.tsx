@@ -86,7 +86,7 @@ class Signup extends React.Component<Props, State> {
     }
 
     return (
-      <Layout title="Signup">
+      <Layout title={{ text: 'Signup', href: '' }}>
         <Typography variant="headline">{tournament.name}</Typography>
         {partner ? (
           <>

@@ -111,7 +111,7 @@ class Index extends React.Component<Props, State> {
     const { loading, hasMore } = this.state;
 
     return (
-      <Layout title="Matches">
+      <Layout title={{ text: 'Matches', href: '' }}>
         <div>
           <Toolbar>
             <Button

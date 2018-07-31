@@ -378,7 +378,7 @@ class CreateMatch extends React.Component<Props, State> {
     } = match;
 
     return (
-      <Layout title="New Match">
+      <Layout title={{ text: 'New Match', href: '' }}>
         <div>
           <MobileStepper
             position="static"

@@ -10,7 +10,7 @@ interface Props {
   isLoggedIn: boolean;
   loginRoute: string;
   onOpenMenu: () => void;
-  title: string;
+  title: { text: string; href: string };
   logout: () => void;
 }
 

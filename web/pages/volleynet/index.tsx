@@ -140,7 +140,7 @@ class Volleynet extends React.Component<Props, State> {
     }
 
     return (
-      <Layout title="Volleynet">
+      <Layout title={{ text: 'Volleynet', href: '' }}>
         <LeagueSelect selected={league} onChange={this.onLeagueChange} />
         <Tabs onChange={this.onTabClick} value={tabOpen} fullWidth>
           <Tab label="Upcoming" />
