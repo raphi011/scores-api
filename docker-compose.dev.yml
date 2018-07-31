@@ -9,12 +9,15 @@ services:
       - './nginx-config:/etc/nginx/conf.d:ro'
 
   frontend:
-    command: run dev
+    build:
+      dockerfile: ./Dockerfile.dev
     volumes:
       - './web:/web'
 
   backend:
     environment:
       -  GIN_MODE=debug
+    build:
+      dockerfile: ./cmd/web/Dockerfile.dev
     volumes:
       - './data:/srv/scores'
