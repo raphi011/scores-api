@@ -1,23 +1,25 @@
 FROM golang
 
-WORKDIR /go/src/github.com/raphi011/scores
-RUN go get -u github.com/golang/dep/...
-COPY Gopkg.lock .
-COPY Gopkg.toml .
-RUN dep ensure -vendor-only
-COPY . .
-WORKDIR /go/src/github.com/raphi011/scores/cmd/web
-RUN go install -ldflags="-X main.version=$(git describe --always --long --dirty)"
-
-FROM alpine:latest
-
 ARG app_env
 ARG backend_url
 ENV APP_ENV $app_env
 ENV BACKEND_URL $backend_url
 
-COPY --from=0 /go/bin/web .
-ENTRYPOINT [ "./web" ]
+WORKDIR /go/src/github.com/raphi011/scores
+
+RUN go get -u github.com/golang/dep/...
+
+COPY Gopkg.lock .
+COPY Gopkg.toml .
+RUN dep ensure -vendor-only
+
+COPY . .
+
+WORKDIR /go/src/github.com/raphi011/scores/cmd/web
+
+RUN go install -ldflags="-X main.version=$(git describe --always --long --dirty)"
+
+ENTRYPOINT [ "/go/bin/web" ]
 CMD ["-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
 
 EXPOSE 8080
