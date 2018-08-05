@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Hidden from '@material-ui/core/Hidden';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -49,8 +50,9 @@ function ButtonAppBar({
 
   return (
     <div className={classes.root}>
-      <AppBar>
+      <AppBar position="static">
         <Toolbar>
+        <Hidden mdUp>
           <IconButton
             color="inherit"
             onClick={onOpenMenu}
@@ -59,6 +61,7 @@ function ButtonAppBar({
           >
             <MenuIcon />
           </IconButton>
+          </Hidden>
           <Link href={title.href}>
             <Typography
               variant="title"

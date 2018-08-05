@@ -1,6 +1,7 @@
 import React from 'react';
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import MDrawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -17,10 +18,11 @@ import Link from 'next/link';
 import { Player } from '../types';
 import { Typography } from '@material-ui/core';
 
+const drawerWidth = 300;
+
 const styles = (theme: Theme) =>
   createStyles({
     list: {
-      width: 250,
       background: theme.palette.background.paper,
     },
     listFull: {
@@ -31,6 +33,12 @@ const styles = (theme: Theme) =>
       marginBottom: '5px',
       lineHeight: 'inherit',
       textTransform: 'uppercase',
+    },
+    drawerPaper: {
+      width: drawerWidth,
+      [theme.breakpoints.up('md')]: {
+        position: 'relative',
+      },
     },
     nested: {
       paddingLeft: theme.spacing.unit * 4,
@@ -117,13 +125,38 @@ function Drawer({ open, userPlayer, onClose, classes }: Props) {
     </div>
   );
 
+  const content = (
+    <div tabIndex={0} role="button">
+      {sideList}
+      <Typography align="center" variant="caption">
+        {VERSION}
+      </Typography>
+    </div>
+  );
+
   return (
-    <MDrawer open={open} onClose={onClose} ModalProps={{ keepMounted: true }}>
-      <div tabIndex={0} role="button">
-        {sideList}
-        <Typography align="center" variant="caption">{VERSION}</Typography>
-      </div>
-    </MDrawer>
+    <>
+      <Hidden mdUp>
+        <MDrawer
+          open={open}
+          onClose={onClose}
+          ModalProps={{ keepMounted: true }}
+        >
+          {content}
+        </MDrawer>
+      </Hidden>
+      <Hidden smDown implementation="css">
+        <MDrawer
+          variant="permanent"
+          open
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          {content}
+        </MDrawer>
+      </Hidden>
+    </>
   );
 }
 

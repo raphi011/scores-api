@@ -18,10 +18,20 @@ interface Props {
 
 const styles = (theme: Theme) =>
   createStyles({
-    style: {
+    container: {
+      flexGrow: 1,
+      zIndex: 1,
+      overflowY: 'hidden',
+      position: 'relative',
+      display: 'flex',
+      width: '100%',
       backgroundColor: theme.palette.background.default,
-      marginTop: '70px',
     },
+    content: {
+      maxHeight: '100vh',
+      overflowY: 'auto',
+      flexGrow: 1
+    }
   });
 
 const Layout = ({
@@ -33,15 +43,19 @@ const Layout = ({
   onOpenDrawer,
   classes,
 }: Props) => (
-  <div className={classes.style}>
-    <Drawer
-      userPlayer={userPlayer}
-      onClose={onCloseDrawer}
-      onOpen={onOpenDrawer}
-      open={drawerOpen}
-    />
+  <div>
     <AppBar onOpenMenu={onOpenDrawer} title={title} />
-    {children}
+    <div className={classes.container}>
+      <Drawer
+        userPlayer={userPlayer}
+        onClose={onCloseDrawer}
+        onOpen={onOpenDrawer}
+        open={drawerOpen}
+      />
+      <main className={classes.content}>
+        {children}
+      </main>
+    </div>
   </div>
 );
 

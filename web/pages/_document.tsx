@@ -7,7 +7,7 @@ class MyDocument extends Document {
     const { pageContext } = this.props;
 
     return (
-      <html lang="en" dir="ltr">
+      <html style={{ overflow: 'hidden' }} lang="en" dir="ltr">
         <Head>
           <title>Scores</title>
           <meta charSet="utf-8" />
