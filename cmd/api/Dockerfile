@@ -15,11 +15,11 @@ RUN dep ensure -vendor-only
 
 COPY . .
 
-WORKDIR /go/src/github.com/raphi011/scores/cmd/web
+WORKDIR /go/src/github.com/raphi011/scores/cmd/api
 
 RUN go install -ldflags="-X main.version=$(git describe --always --long --dirty)"
 
-ENTRYPOINT [ "/go/bin/web" ]
+ENTRYPOINT [ "/go/bin/api" ]
 CMD ["-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
 
 EXPOSE 8080

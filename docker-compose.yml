@@ -12,7 +12,7 @@ services:
     image: raphi011/scores-backend
     build: 
       context: .
-      dockerfile: ./cmd/web/Dockerfile
+      dockerfile: ./cmd/api/Dockerfile
     environment:
       - GIN_MODE=release
       - BACKEND_URL=https://scores.raphi011.com

@@ -6,7 +6,7 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/cmd/web",
+      "program": "${workspaceFolder}/cmd/api",
       "args": ["-db", "data/scores.db", "-goauth", "data/client_secret.json"],
       "showLog": true,
       "cwd": "${workspaceRoot}"
@@ -16,10 +16,10 @@
       "type": "go",
       "request": "launch",
       "mode": "remote",
-      "remotePath": "/go/src/github.com/raphi011/scores/cmd/web",
+      "remotePath": "/go/src/github.com/raphi011/scores/cmd/api",
       "port": 40000,
       "host": "localhost",
-      "program": "${workspaceRoot}/cmd/web",
+      "program": "${workspaceRoot}/cmd/api",
       "env": {},
       "args": []
     },
