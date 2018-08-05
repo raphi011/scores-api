@@ -1,12 +1,14 @@
 version: '3.6'
 
 services:
+
   frontend:
     image: raphi011/scores-frontend
     build:
-      context: ./web
+      context: .
+      dockerfile: ./web/Dockerfile
     ports:  
-      - '3000:3000'
+        - '3000:3000'
     
   backend:
     image: raphi011/scores-backend

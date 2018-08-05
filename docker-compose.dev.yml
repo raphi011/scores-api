@@ -1,21 +1,13 @@
 version: '3.6'
 
 services:
-  nginx:
-    image: 'nginx:latest'
-    ports:
-      - '80:80'
-    volumes:
-      - './nginx-config:/etc/nginx/conf.d:ro'
-    logging:
-      driver: none
-
 
   frontend:
     build:
-      dockerfile: ./Dockerfile.dev
+      context: .
+      dockerfile: ./web/Dockerfile.dev
     volumes:
-      - './web:/web'
+      - '.:/scores'
 
   backend:
     ports:
@@ -31,3 +23,12 @@ services:
       - './data:/srv/scores'
     security_opt:
       - seccomp:unconfined
+
+  nginx:
+    image: 'nginx:latest'
+    ports:
+      - '80:80'
+    volumes:
+      - './nginx-config:/etc/nginx/conf.d:ro'
+    logging:
+      driver: none

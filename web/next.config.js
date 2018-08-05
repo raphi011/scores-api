@@ -1,3 +1,16 @@
+const webpack = require('webpack');
+const child_process = require('child_process');
 const withTypescript = require('@zeit/next-typescript');
 
-module.exports = withTypescript();
+const version = child_process.execSync('git describe --always --long --dirty').toString();
+
+
+module.exports = withTypescript({
+    webpack(config) {
+        config.plugins.push(new webpack.DefinePlugin({
+            VERSION: JSON.stringify(version)
+        }))
+
+        return config;
+    }
+});

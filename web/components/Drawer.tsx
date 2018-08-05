@@ -15,6 +15,7 @@ import LadderIcon from '@material-ui/icons/LooksOne';
 import Link from 'next/link';
 
 import { Player } from '../types';
+import { Typography } from '@material-ui/core';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -120,6 +121,7 @@ function Drawer({ open, userPlayer, onClose, classes }: Props) {
     <MDrawer open={open} onClose={onClose} ModalProps={{ keepMounted: true }}>
       <div tabIndex={0} role="button">
         {sideList}
+        <Typography align="center" variant="caption">{VERSION}</Typography>
       </div>
     </MDrawer>
   );
