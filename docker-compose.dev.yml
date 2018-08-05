@@ -7,6 +7,9 @@ services:
       - '80:80'
     volumes:
       - './nginx-config:/etc/nginx/conf.d:ro'
+    logging:
+      driver: none
+
 
   frontend:
     build:
@@ -15,6 +18,9 @@ services:
       - './web:/web'
 
   backend:
+    ports:
+      - '8080:8080'
+      - '40000:40000'
     environment:
       - GIN_MODE=debug
       - BACKEND_URL=http://localhost
@@ -23,3 +29,5 @@ services:
       dockerfile: ./cmd/web/Dockerfile.dev
     volumes:
       - './data:/srv/scores'
+    security_opt:
+      - seccomp:unconfined

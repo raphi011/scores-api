@@ -8,6 +8,7 @@ ENV BACKEND_URL $backend_url
 WORKDIR /go/src/github.com/raphi011/scores
 
 RUN go get -u github.com/golang/dep/...
+RUN go get -u github.com/derekparker/delve/cmd/dlv
 
 COPY Gopkg.lock .
 COPY Gopkg.toml .
@@ -17,9 +18,23 @@ COPY . .
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/web
 
-RUN go install -ldflags="-X main.version=$(git describe --always --long --dirty)"
+RUN go install \
+  -ldflags="-X main.version=$(git describe --always --long --dirty)" \
+  -gcflags "all=-N -l" # turn off optimizations for debugging
 
-ENTRYPOINT [ "/go/bin/web" ]
-CMD ["-db", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
+CMD [ \
+  "/go/bin/dlv", \ 
+  "--listen=:40000", \
+  "--log=true", \
+  "--headless=true", \ 
+  "--api-version=1", \ 
+  "exec", \ 
+  "/go/bin/web", \ 
+  "--", \
+  "-db", \ 
+  "/srv/scores/scores.db", \
+  "-goauth", \
+  "/srv/scores/client_secret.json" \
+]
 
-EXPOSE 8080
+EXPOSE 8080 40000

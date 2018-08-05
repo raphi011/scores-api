@@ -22,6 +22,11 @@ services:
       - '8080:8080'
     volumes:
       - '~/data:/srv/scores'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "localhost:8080/version"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
     
   scrape:
     image: raphi011/scores-scrape
