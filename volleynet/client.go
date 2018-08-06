@@ -22,7 +22,7 @@ type Client struct {
 // DefaultClient returns a Client with the correct PostURL and GetURL fields set.
 func DefaultClient() *Client {
 	return &Client{
-		PostURL: "https://beach.volleynet.at/Admin",
+		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",
 	}
 }
@@ -35,7 +35,7 @@ func (c *Client) buildGetURL(relativePath string, routeArgs ...interface{}) *url
 	return buildGetAPIURL(c.GetURL, "", relativePath, routeArgs...)
 }
 
-func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interface{}) *url.URL {
+func escapeArgs(path string, routeArgs ...interface{}) string {
 	escapedArgs := make([]interface{}, len(routeArgs))
 
 	for i, val := range routeArgs {
@@ -50,8 +50,13 @@ func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interf
 		}
 	}
 
-	path := fmt.Sprintf(relativePath, escapedArgs...)
-	link, err := url.Parse(host + prefixedPath + "/beach" + path)
+	return fmt.Sprintf(path, escapedArgs...)
+}
+
+func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interface{}) *url.URL {
+	path := escapeArgs(relativePath, routeArgs...)
+
+	link, err := url.Parse(host + prefixedPath + path)
 
 	if err != nil {
 		panic("cannot parse client GetUrl")
@@ -60,8 +65,10 @@ func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interf
 	return link
 }
 
-func (c *Client) buildPostURL(relativePath string) *url.URL {
-	link, err := url.Parse(c.PostURL + relativePath)
+func (c *Client) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
+	path := escapeArgs(relativePath, routeArgs...)
+
+	link, err := url.Parse(c.PostURL + path)
 
 	if err != nil {
 		panic("cannot parse client GetUrl")
@@ -72,7 +79,7 @@ func (c *Client) buildPostURL(relativePath string) *url.URL {
 
 // GetTournamentLink returns the link for a tournament.
 func (c *Client) GetTournamentLink(t *Tournament) string {
-	url := c.buildGetURL("/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
+	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
 		t.Gender,
@@ -85,7 +92,7 @@ func (c *Client) GetTournamentLink(t *Tournament) string {
 
 // GetAPITournamentLink returns the API link for a tournament.
 func (c *Client) GetAPITournamentLink(t *Tournament) string {
-	url := c.buildGetAPIURL("/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
+	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
 		t.Gender,
@@ -106,7 +113,7 @@ func (c *Client) Login(username, password string) error {
 	form.Add("submit", "OK")
 	form.Add("mode", "X")
 
-	url := c.buildPostURL("/formular")
+	url := c.buildPostURL("/Admin/formular")
 	resp, err := http.PostForm(url.String(), form)
 
 	if err != nil {
@@ -131,7 +138,7 @@ func (c *Client) Login(username, password string) error {
 // To get more detailed tournamnent information call `ComplementTournament`.
 func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {
 	url := c.buildGetAPIURL(
-		"/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
+		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
 		league,
 		league,
 		gender,
@@ -154,9 +161,9 @@ func (c *Client) Ladder(gender string) ([]Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
 		genderLong(gender),
-	)
+	).String()
 
-	resp, err := http.Get(url.String())
+	resp, err := http.Get(url)
 
 	if err != nil {
 		return nil, err
@@ -201,8 +208,8 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 }
 
 func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
-	url := c.buildGetAPIURL(
-		"/index.php?screen=Beach/Profile/TurnierAnmeldung&screen=Beach%2FProfile%2FTurnierAnmeldung&parent=0&prev=0&next=0&cur=%d",
+	url := c.buildPostURL(
+		"/Anmelden/0-%d-00",
 		tournamentID,
 	)
 
@@ -253,7 +260,7 @@ func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) 
 	form.Add("bte_per_id_b", strconv.Itoa(playerID))
 	form.Add("submit", "Anmelden")
 
-	url := c.buildPostURL("/formular")
+	url := c.buildPostURL("/Admin/formular")
 
 	req, err := http.NewRequest("POST", url.String(), bytes.NewBufferString(form.Encode()))
 	if err != nil {
@@ -295,7 +302,7 @@ func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]PlayerIn
 	form.Add("doit", "1")
 	form.Add("text", "0")
 
-	url := c.buildPostURL("/formular")
+	url := c.buildPostURL("/Admin/formular")
 
 	response, err := http.PostForm(url.String(), form)
 
