@@ -42,6 +42,7 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
   }
 
   const endpoint = buildUrl(getHost(req), url, params);
+  let responseCode = -1;
 
   try {
     const response = await fetch(endpoint, {
@@ -50,7 +51,10 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
       body,
       credentials: 'same-origin',
     });
-    if (response.status === 401 && userSelector(getState()).isLoggedIn) {
+
+    responseCode = response.status;
+
+    if (responseCode === 401 && userSelector(getState()).isLoggedIn) {
       dispatch({ type: actionNames.LOGGEDOUT });
       dispatch({
         type: actionNames.SET_STATUS,
@@ -76,7 +80,7 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
       statusMessage = message;
     }
 
-    if (response.status >= 200 && response.status < 300) {
+    if (responseCode >= 200 && responseCode < 300) {
       if (success) {
         dispatch({ type: success, payload, ...successParams });
       }
@@ -89,11 +93,15 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
         return Promise.resolve({ empty });
       }
 
-      return Promise.resolve({ empty: false, response: payload });
+      return Promise.resolve({
+        empty: false,
+        response: payload,
+        responseCode,
+      });
     }
 
     // error ...
-    if (response.status === 504) {
+    if (responseCode === 504) {
       dispatch({
         type: actionNames.SET_STATUS,
         status: 'Cannot connect to server, please try again',
@@ -109,7 +117,7 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
     }
   }
 
-  return Promise.reject();
+  return Promise.reject({ responseCode });
 }
 
 const apiMiddleware = store => next => async action => {

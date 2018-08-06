@@ -100,9 +100,14 @@ class Login extends React.Component<Props, State> {
       await loginWithPassword(credentials);
       const path = r || '/';
       await Router.push(path);
-    } catch (e) {
-      setStatus('Something went wrong there');
+    } catch ({ responseCode }) {
       this.setState({ loggingIn: false });
+
+      if (responseCode === 401) {
+        setStatus('Wrong username or password.');
+      } else {
+        setStatus('Something went wrong there.');
+      }
     }
   };
 
