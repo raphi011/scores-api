@@ -24,4 +24,17 @@ Get your statistics directly in your Telegram (Group) Chat!
 
 ## Build locally
 
-... TODO
+1. Install [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
+
+1. Start Docker service.
+
+1. Run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+`.
+
+1. Go to `http://localhost`
+
+
+### Missing:
+
+* How to seed database
+* Run without attaching delve debugger
