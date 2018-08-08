@@ -118,6 +118,8 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 
 		if user.VolleynetLogin != su.Username {
 			user.VolleynetLogin = su.Username
+			// SET user.VolleynetUserId
+
 			// todo: check for error
 			_ = h.userService.Update(user)
 		}

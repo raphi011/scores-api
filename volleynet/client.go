@@ -209,13 +209,13 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 
 func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
 	url := c.buildPostURL(
-		"/Anmelden/0-%d-00",
+		"/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&parent=0&prev=0&next=0&cur=%d",
 		tournamentID,
-	)
+	).String()
 
 	req, err := http.NewRequest(
 		"GET",
-		url.String(),
+		url,
 		nil)
 
 	if err != nil {
@@ -234,6 +234,28 @@ func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
 	code, err := parseUniqueWriteCode(resp.Body)
 
 	return code, errors.Wrap(err, "parsing unique writecode failed")
+}
+
+// TournamentWithdrawal signs a player out of a tournament. A valid session Cookie must be set.
+func (c *Client) TournamentWithdrawal(tournamentID int) error {
+	url := c.buildPostURL("/Abmelden/0-%d-00-0", tournamentID).String()
+
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Add("Cookie", c.Cookie)
+
+	httpClient := &http.Client{}
+	resp, err := httpClient.Do(req)
+	defer resp.Body.Close()
+
+	if err != nil {
+		return errors.Wrapf(err, "tournamentwithdrawal request for tournamentID: %d failed", tournamentID)
+	} else if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("tournamentwithdrawal request for tournamentID: %d failed with code %d",
+			tournamentID,
+			resp.StatusCode)
+	}
+
+	return nil
 }
 
 // TournamentEntry signs a player up for a tournament. A valid session Cookie must be set.
@@ -260,17 +282,20 @@ func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) 
 	form.Add("bte_per_id_b", strconv.Itoa(playerID))
 	form.Add("submit", "Anmelden")
 
-	url := c.buildPostURL("/Admin/formular")
+	url := c.buildPostURL("/Admin/formular").String()
 
-	req, err := http.NewRequest("POST", url.String(), bytes.NewBufferString(form.Encode()))
+	req, err := http.NewRequest("POST", url, bytes.NewBufferString(form.Encode()))
 	if err != nil {
 		return errors.Wrap(err, "creating tournamententry request failed")
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-=rlencoded")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Cookie", c.Cookie)
 
 	httpClient := &http.Client{}
 	resp, err := httpClient.Do(req)
+	defer resp.Body.Close()
+
+	// TODO: volleynet always returns 200, parse content and see what really happened ..
 
 	if err != nil {
 		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
