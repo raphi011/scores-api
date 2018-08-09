@@ -185,7 +185,7 @@ class TournamentView extends React.Component<Props, State> {
           textColor="primary"
           fullWidth
         >
-          RegisterI
+          Register
           <Tab label="Infos" />
           <Tab label="Teams" />
         </Tabs>

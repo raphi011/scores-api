@@ -38,6 +38,19 @@ func trimmSelectionText(s *goquery.Selection) string {
 	return strings.TrimSpace(s.Text())
 }
 
+func parseLicenseNr(s string) (id int, year int) {
+	parts := strings.Split(s, "/")
+
+	if len(parts) != 2 {
+		return -1, -1
+	}
+
+	id, _ = strconv.Atoi(parts[0])
+	year, _ = strconv.Atoi(parts[1])
+
+	return id, year
+}
+
 func parsePlayerID(s *goquery.Selection) (int, error) {
 	href := parseHref(s)
 

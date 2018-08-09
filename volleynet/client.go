@@ -105,7 +105,7 @@ func (c *Client) GetAPITournamentLink(t *Tournament) string {
 
 // Login authenticates the user against the volleynet page, if
 // successfull the Client cookie is set, else an error is returned.
-func (c *Client) Login(username, password string) error {
+func (c *Client) Login(username, password string) (*LoginData, error) {
 	form := url.Values{}
 	form.Add("login_name", username)
 	form.Add("login_pass", password)
@@ -113,15 +113,18 @@ func (c *Client) Login(username, password string) error {
 	form.Add("submit", "OK")
 	form.Add("mode", "X")
 
-	url := c.buildPostURL("/Admin/formular")
-	resp, err := http.PostForm(url.String(), form)
+	url := c.buildPostURL("/Admin/formular").String()
+	resp, err := http.PostForm(url, form)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("unauthorized")
+		return nil, errors.New("unauthorized")
 	}
+	defer resp.Body.Close()
+
+	loginData, err := parseLogin(resp.Body)
 
 	c.Cookie = resp.Header.Get("Set-Cookie")
 
@@ -131,7 +134,7 @@ func (c *Client) Login(username, password string) error {
 		c.Cookie = c.Cookie[:semicolonIndex]
 	}
 
-	return nil
+	return loginData, nil
 }
 
 // AllTournaments reads all tournaments of a certain gender, league and year.

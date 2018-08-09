@@ -100,7 +100,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 	}
 
 	client := volleynet.DefaultClient()
-	err := client.Login(su.Username, su.Password)
+	loginData, err := client.Login(su.Username, su.Password)
 
 	if err != nil {
 		c.AbortWithError(http.StatusUnauthorized, err)
@@ -113,15 +113,20 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 		user, err := h.userService.ByEmail(userID.(string))
 
 		if err != nil {
-			// this shouldn't happen
+			log.Warnf("loading user by email failed", userID.(string))
 		}
 
-		if user.VolleynetLogin != su.Username {
-			user.VolleynetLogin = su.Username
-			// SET user.VolleynetUserId
+		if user.VolleynetLogin != su.Username ||
+			user.VolleynetUserId != loginData.ID {
 
-			// todo: check for error
-			_ = h.userService.Update(user)
+			user.VolleynetLogin = su.Username
+			user.VolleynetUserId = loginData.ID
+
+			err = h.userService.Update(user)
+
+			if err != nil {
+				log.Warnf("updating volleynet user information failed for userID: %d", user.ID)
+			}
 		}
 	}
 
