@@ -12,7 +12,7 @@ import withAuth from '../containers/AuthContainer';
 import { loginWithPasswordAction } from '../redux/actions/auth';
 import { setStatusAction } from '../redux/actions/status';
 import Snackbar from '../containers/SnackbarContainer';
-import LoadingButton from 'components/LoadingButton';
+import LoadingButton from '../components/LoadingButton';
 
 interface Props {
   r: string;
