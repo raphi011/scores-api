@@ -28,7 +28,7 @@ const styles = (theme: Theme) =>
       backgroundColor: theme.palette.background.default,
     },
     content: {
-      maxHeight: '100vh',
+      maxHeight: 'calc(100vh - 56px)',
       overflowY: 'scroll',
       scrollBehavior: 'smooth',
       '-webkit-overflow-scrolling': 'touch',
