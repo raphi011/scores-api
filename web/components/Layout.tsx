@@ -29,9 +29,11 @@ const styles = (theme: Theme) =>
     },
     content: {
       maxHeight: '100vh',
-      overflowY: 'auto',
-      flexGrow: 1
-    }
+      overflowY: 'scroll',
+      scrollBehavior: 'smooth',
+      '-webkit-overflow-scrolling': 'touch',
+      flexGrow: 1,
+    },
   });
 
 const Layout = ({
@@ -52,9 +54,7 @@ const Layout = ({
         onOpen={onOpenDrawer}
         open={drawerOpen}
       />
-      <main className={classes.content}>
-        {children}
-      </main>
+      <main className={classes.content}>{children}</main>
     </div>
   </div>
 );
