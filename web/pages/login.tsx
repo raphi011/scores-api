@@ -1,11 +1,9 @@
 import React, { SyntheticEvent } from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Router from 'next/router';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Red from '@material-ui/core/colors/red';
 import WarningIcon from '@material-ui/icons/Warning';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -14,6 +12,7 @@ import withAuth from '../containers/AuthContainer';
 import { loginWithPasswordAction } from '../redux/actions/auth';
 import { setStatusAction } from '../redux/actions/status';
 import Snackbar from '../containers/SnackbarContainer';
+import LoadingButton from 'components/LoadingButton';
 
 interface Props {
   r: string;
@@ -32,21 +31,6 @@ interface State {
   password: string;
   loggingIn: boolean;
 }
-
-const styles = (theme: Theme) =>
-  createStyles({
-    wrapper: {
-      margin: theme.spacing.unit,
-      position: 'relative',
-    },
-    buttonProgress: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      marginTop: -12,
-      marginLeft: -12,
-    },
-  });
 
 class Login extends React.Component<Props, State> {
   static getParameters(query) {
@@ -161,23 +145,7 @@ class Login extends React.Component<Props, State> {
                 margin="normal"
               />
             </FormGroup>
-            <div className={classes.wrapper}>
-              <Button
-                color="primary"
-                fullWidth
-                variant="raised"
-                disabled={loggingIn}
-                type="submit"
-              >
-                Login
-              </Button>
-              {loggingIn && (
-                <CircularProgress
-                  size={24}
-                  className={classes.buttonProgress}
-                />
-              )}
-            </div>
+            <LoadingButton loading={loggingIn}>Login</LoadingButton>
             <div style={{ margin: '20px 0' }}>- or -</div>
             <Button
               color="primary"
@@ -201,4 +169,4 @@ class Login extends React.Component<Props, State> {
   }
 }
 
-export default withAuth(withStyles(styles)(Login));
+export default withAuth(Login);

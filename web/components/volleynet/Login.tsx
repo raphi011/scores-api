@@ -4,14 +4,10 @@ import { withStyles, createStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
-import Button from '@material-ui/core/Button';
 import DoneIcon from '@material-ui/icons/Done';
+import LoadingButton from '../LoadingButton';
 
-const styles = createStyles({
-  container: {
-    padding: '0 10px',
-  },
-});
+const styles = createStyles({});
 
 interface Props {
   onLogin: (username: string, password: string, rememberMe: boolean) => void;
@@ -20,6 +16,7 @@ interface Props {
 }
 
 interface State {
+  loggingIn: boolean;
   username: string;
   password: string;
   rememberMe: boolean;
@@ -35,6 +32,7 @@ class Login extends React.Component<Props, State> {
       password: '',
       rememberMe: true,
       usernameValidation: '',
+      loggingIn: false,
     };
   }
 
@@ -57,12 +55,19 @@ class Login extends React.Component<Props, State> {
     this.setState({ password });
   };
 
-  onLogin = () => {
+  onLogin = e => {
+    e.preventDefault();
+
     const { onLogin } = this.props;
     const { username, password, rememberMe } = this.state;
 
     if (username && this.loginRegex.test(username) && password) {
-      onLogin(username, password, rememberMe);
+      try {
+        this.setState({ loggingIn: true });
+        onLogin(username, password, rememberMe);
+      } finally {
+        this.setState({ loggingIn: false });
+      }
     }
   };
 
@@ -74,10 +79,16 @@ class Login extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
-    const { username, password, rememberMe, usernameValidation } = this.state;
+    const {
+      username,
+      password,
+      rememberMe,
+      usernameValidation,
+      loggingIn,
+    } = this.state;
 
     return (
-      <div className={classes.container}>
+      <form onSubmit={this.onLogin} className={classes.container}>
         <TextField
           label={usernameValidation || 'Username'}
           error={!!usernameValidation}
@@ -90,6 +101,7 @@ class Login extends React.Component<Props, State> {
         <TextField
           label="Password"
           type="password"
+          helperText="Your password will NOT be saved"
           margin="normal"
           fullWidth
           onChange={this.onChangePassword}
@@ -102,17 +114,11 @@ class Login extends React.Component<Props, State> {
           label="Remember me"
         />
 
-        <Button
-          color="primary"
-          type="submit"
-          onClick={this.onLogin}
-          variant="raised"
-          fullWidth
-        >
+        <LoadingButton loading={loggingIn}>
           <DoneIcon />
           Signup
-        </Button>
-      </div>
+        </LoadingButton>
+      </form>
     );
   }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import Link from 'next/link';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -13,10 +14,20 @@ import {
   tournamentSignupAction,
 } from '../../redux/actions/entities';
 import { tournamentSelector } from '../../redux/reducers/entities';
+import { title, link, card } from '../../styles/shared';
 
 import { Tournament, VolleynetPlayer, User } from '../../types';
+import { Card, Theme } from '@material-ui/core';
 
-const styles = createStyles({});
+const styles = (theme: Theme) =>
+  createStyles({
+    title: title(theme),
+    link,
+    card,
+    container: {
+      padding: theme.spacing.unit * 2,
+    },
+  });
 
 interface Props {
   tournamentId: number;
@@ -92,29 +103,49 @@ class Signup extends React.Component<Props, State> {
 
   render() {
     const { partner } = this.state;
-    const { tournament, user } = this.props;
+    const { tournament, user, classes } = this.props;
 
     if (!tournament) {
       return null;
     }
 
+    let content;
+
+    if (partner) {
+      content = (
+        <>
+          <Typography variant="title">{`Partner: ${partner.firstName} ${
+            partner.lastName
+          }`}</Typography>
+          <Login onLogin={this.onSignup} username={user.volleynetLogin} />
+        </>
+      );
+    } else {
+      content = (
+        <SearchPlayer
+          gender={tournament.gender}
+          onSelectPlayer={this.onSelectPlayer}
+        />
+      );
+    }
+
     return (
-      <Layout title={{ text: 'Signup', href: '' }}>
-        <Typography variant="headline">{tournament.name}</Typography>
-        {partner ? (
-          <>
-            <Typography
-              variant="title"
-              style={{ margin: '20px 0' }}
-            >{`Partner: ${partner.firstName} ${partner.lastName}`}</Typography>
-            <Login onLogin={this.onSignup} username={user.volleynetLogin} />
-          </>
-        ) : (
-          <SearchPlayer
-            gender={tournament.gender}
-            onSelectPlayer={this.onSelectPlayer}
-          />
-        )}
+      <Layout
+        title={{
+          text: 'Signup',
+          href: `/volleynet/tournament?id=${tournament.id}`,
+        }}
+      >
+        <div className={classes.container}>
+          <div className={`${classes.title} ${classes.link}`}>
+            <Link href={`/volleynet/tournament?id=${tournament.id}`}>
+              <a className={classes.link}>
+                <Typography variant="display1">{tournament.name}</Typography>
+              </a>
+            </Link>
+          </div>
+          <Card className={classes.card}>{content}</Card>
+        </div>
       </Layout>
     );
   }

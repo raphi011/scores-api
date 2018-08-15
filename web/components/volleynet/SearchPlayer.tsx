@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { withStyles, createStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
 
 import PlayerList from '../../components/volleynet/PlayerList';
@@ -11,6 +9,7 @@ import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
 import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
 
 import { Gender, VolleynetSearchPlayer } from '../../types';
+import LoadingButton from '../LoadingButton';
 
 const styles = createStyles({
   container: {
@@ -32,6 +31,7 @@ interface State {
   firstName: string;
   lastName: string;
   birthday: string;
+  searching: boolean;
 }
 
 class SearchPlayer extends React.Component<Props, State> {
@@ -39,6 +39,7 @@ class SearchPlayer extends React.Component<Props, State> {
     firstName: '',
     lastName: '',
     birthday: '',
+    searching: false,
   };
 
   onChangeFirstname = event => {
@@ -58,22 +59,27 @@ class SearchPlayer extends React.Component<Props, State> {
     this.setState({ birthday });
   };
 
-  onSearch = async () => {
+  onSearch = async e => {
     const { firstName: fname, lastName: lname, birthday: bday } = this.state;
     const { searchVolleynetPlayers } = this.props;
 
-    searchVolleynetPlayers({ fname, lname, bday });
+    this.setState({ searching: true });
+
+    e.preventDefault();
+
+    try {
+      await searchVolleynetPlayers({ fname, lname, bday });
+    } finally {
+      this.setState({ searching: false });
+    }
   };
 
   render() {
     const { onSelectPlayer, foundPlayers, classes } = this.props;
-    const { firstName, lastName, birthday } = this.state;
+    const { firstName, lastName, birthday, searching } = this.state;
 
     return (
-      <div className={classes.container}>
-        <Typography variant="title" style={{ margin: '20px 0' }}>
-          Search for your partner
-        </Typography>
+      <form onSubmit={this.onSearch} className={classes.container}>
         <TextField
           label="Firstname"
           type="search"
@@ -99,17 +105,11 @@ class SearchPlayer extends React.Component<Props, State> {
           value={birthday}
         />
         <PlayerList players={foundPlayers} onPlayerClick={onSelectPlayer} />
-        <Button
-          color="primary"
-          type="submit"
-          variant="raised"
-          onClick={this.onSearch}
-          fullWidth
-        >
+        <LoadingButton loading={searching}>
           <SearchIcon />
           Search
-        </Button>
-      </div>
+        </LoadingButton>
+      </form>
     );
   }
 }

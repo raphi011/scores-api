@@ -16,19 +16,15 @@ import { formatDateTime } from '../../utils/dateFormat';
 
 import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';
+import { card, link, title } from '../../styles/shared';
 
 import { Tournament, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
-    link: {
-      textDecoration: 'none',
-    },
-    title: {
-      marginTop: theme.spacing.unit * 2,
-      marginBottom: theme.spacing.unit,
-      wrapWrap: 'break-word',
-    },
+    link,
+    title: title(theme),
+    card,
     updatedAt: {
       marginTop: theme.spacing.unit,
     },
@@ -37,9 +33,6 @@ const styles = (theme: Theme) =>
     },
     headerContainer: {
       padding: theme.spacing.unit * 2,
-    },
-    card: {
-      padding: '10px',
     },
     tabContent: {
       background: theme.palette.background.paper,
