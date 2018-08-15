@@ -3,6 +3,7 @@ import React from 'react';
 import { withStyles, createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
+import { userSelector } from '../../redux/reducers/auth';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
@@ -13,13 +14,14 @@ import {
 } from '../../redux/actions/entities';
 import { tournamentSelector } from '../../redux/reducers/entities';
 
-import { Tournament, VolleynetPlayer } from '../../types';
+import { Tournament, VolleynetPlayer, User } from '../../types';
 
 const styles = createStyles({});
 
 interface Props {
   tournamentId: number;
   tournament?: Tournament;
+  user: User;
   signup: (
     info: {
       username: string;
@@ -56,8 +58,9 @@ class Signup extends React.Component<Props, State> {
 
   static mapStateToProps(state, { tournamentId }) {
     const tournament = tournamentSelector(state, tournamentId);
+    const { user } = userSelector(state);
 
-    return { tournament };
+    return { tournament, user };
   }
 
   static mapDispatchToProps = {
@@ -89,7 +92,7 @@ class Signup extends React.Component<Props, State> {
 
   render() {
     const { partner } = this.state;
-    const { tournament } = this.props;
+    const { tournament, user } = this.props;
 
     if (!tournament) {
       return null;
@@ -104,7 +107,7 @@ class Signup extends React.Component<Props, State> {
               variant="title"
               style={{ margin: '20px 0' }}
             >{`Partner: ${partner.firstName} ${partner.lastName}`}</Typography>
-            <Login onLogin={this.onSignup} />
+            <Login onLogin={this.onSignup} username={user.volleynetLogin} />
           </>
         ) : (
           <SearchPlayer

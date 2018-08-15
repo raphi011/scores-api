@@ -16,6 +16,7 @@ const styles = createStyles({
 interface Props {
   onLogin: (username: string, password: string, rememberMe: boolean) => void;
   classes: any;
+  username?: string;
 }
 
 interface State {
@@ -26,12 +27,16 @@ interface State {
 }
 
 class Login extends React.Component<Props, State> {
-  state = {
-    username: '',
-    password: '',
-    rememberMe: true,
-    usernameValidation: '',
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: props.username || '',
+      password: '',
+      rememberMe: true,
+      usernameValidation: '',
+    };
+  }
 
   loginRegex = /^[A-Z][a-z]+\.[A-Z]+$/;
 
