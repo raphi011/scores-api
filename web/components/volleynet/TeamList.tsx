@@ -23,13 +23,15 @@ class TeamList extends React.PureComponent<Props> {
   render() {
     const { teams = [], classes } = this.props;
 
+    if (!teams || !teams.length) {
+      return 'No teams are signed up yet.';
+    }
+
     return (
       <List className={classes.root}>
-        {teams
-          .sort(sortByRankOrSeed)
-          .map(t => (
-            <TeamListItem key={t.player1.id + t.player2.id} team={t} />
-          ))}
+        {teams.sort(sortByRankOrSeed).map(t => (
+          <TeamListItem key={t.player1.id + t.player2.id} team={t} />
+        ))}
       </List>
     );
   }

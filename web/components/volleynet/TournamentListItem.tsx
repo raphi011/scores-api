@@ -14,7 +14,9 @@ function buildSubtitle(tournament: Tournament) {
   let st = tournamentDateString(tournament);
 
   if (tournament.maxTeams >= 0) {
-    st += ` • ${tournament.signedupTeams} / ${tournament.maxTeams} teams`;
+    st += ` • ${tournament.signedupTeams} / ${tournament.maxTeams} teams • ${
+      tournament.league
+    }`;
   }
 
   return st;

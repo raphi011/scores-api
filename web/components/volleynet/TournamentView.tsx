@@ -2,8 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 
 import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -27,22 +25,21 @@ const styles = (theme: Theme) =>
       textDecoration: 'none',
     },
     title: {
-      marginTop: theme.spacing.unit,
-      textDecoration: 'none',
-      marginBottom: theme.spacing.unit * 2,
+      marginTop: theme.spacing.unit * 2,
+      marginBottom: theme.spacing.unit,
       wrapWrap: 'break-word',
     },
     updatedAt: {
       marginTop: theme.spacing.unit,
     },
-    header: {
+    container: {
       padding: theme.spacing.unit * 2,
     },
     headerContainer: {
       padding: theme.spacing.unit * 2,
     },
-    infoContainer: {
-      margin: '20px 0',
+    card: {
+      padding: '10px',
     },
     tabContent: {
       background: theme.palette.background.paper,
@@ -67,17 +64,9 @@ interface State {
 }
 
 class TournamentView extends React.Component<Props, State> {
-  state = {
-    tabOpen: 0,
-  };
-
-  onTabClick = (_, tabOpen) => {
-    this.setState({ tabOpen });
-  };
-
   render() {
     const { user, tournament, classes } = this.props;
-    const { tabOpen } = this.state;
+
     if (!tournament) {
       return <CenteredLoading />;
     }
@@ -135,63 +124,59 @@ class TournamentView extends React.Component<Props, State> {
     const showSignup = signedup || tournament.registrationOpen;
 
     return (
-      <div>
-        <div className={classes.headerContainer}>
-          <div className={classes.title}>
-            <a
-              className={classes.link}
-              href={`${tournament.link}`}
-              target="_blank"
-            >
-              <Typography variant="display1">{tournament.name}</Typography>
-            </a>
-          </div>
-          <Card className={classes.header}>
-            <div className={classes.infoContainer}>
-              {infos.map((info, i) => (
-                <Typography key={i} variant="subheading">
-                  {info.icon}{' '}
-                  <span className={classes.infoElement}>{info.info}</span>
-                </Typography>
-              ))}
-            </div>
-            {!showSignup || (
-              <Link
-                prefetch
-                href={{
-                  pathname: '/volleynet/signup',
-                  query: { id: tournament.id },
-                }}
-              >
-                <Button variant="raised" color="primary" fullWidth>
-                  {signedup ? 'You are signed up' : 'Signup'}
-                </Button>
-              </Link>
-            )}
-          </Card>
-          <Typography
-            className={classes.updatedAt}
-            variant="caption"
-            align="center"
-            paragraph
+      <div className={classes.container}>
+        <div className={`${classes.title} ${classes.link}`}>
+          <a
+            className={classes.link}
+            href={`${tournament.link}`}
+            target="_blank"
           >
-            Last updated: {formatDateTime(tournament.updatedAt)}
-          </Typography>
+            <Typography variant="display1">{tournament.name}</Typography>
+          </a>
         </div>
-
-        <Tabs
-          onChange={this.onTabClick}
-          value={tabOpen}
-          textColor="primary"
-          fullWidth
+        <Card className={classes.card}>
+          <div className={classes.infoContainer}>
+            {infos.map((info, i) => (
+              <Typography key={i} variant="subheading">
+                {info.icon}{' '}
+                <span className={classes.infoElement}>{info.info}</span>
+              </Typography>
+            ))}
+          </div>
+          {!showSignup || (
+            <Link
+              prefetch
+              href={{
+                pathname: '/volleynet/signup',
+                query: { id: tournament.id },
+              }}
+            >
+              <Button variant="raised" color="primary" fullWidth>
+                {signedup ? 'You are signed up' : 'Signup'}
+              </Button>
+            </Link>
+          )}
+        </Card>
+        <Typography
+          className={classes.updatedAt}
+          variant="caption"
+          align="center"
+          paragraph
         >
-          Register
-          <Tab label="Infos" />
-          <Tab label="Teams" />
-        </Tabs>
-        <div className={classes.tabContent}>
-          {tabOpen === 0 ? infoText : <TeamList teams={tournament.teams} />}
-        </div>
+          Last updated: {formatDateTime(tournament.updatedAt)}
+        </Typography>
+
+        <Typography className={classes.title} variant="display1">
+          Notes
+        </Typography>
+        <Card className={classes.card}>{infoText}</Card>
+
+        <Typography className={classes.title} variant="display1">
+          Teams
+        </Typography>
+        <Card className={classes.card}>
+          <TeamList teams={tournament.teams} />
+        </Card>
       </div>
     );
   }
