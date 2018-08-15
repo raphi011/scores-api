@@ -30,7 +30,7 @@ class ShowTournament extends React.Component<Props> {
 
   static mapStateToProps(state, { tournamentId }) {
     const tournament = tournamentSelector(state, tournamentId);
-    const user = userSelector(state);
+    const { user } = userSelector(state);
 
     return { tournament, user };
   }
