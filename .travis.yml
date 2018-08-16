@@ -10,7 +10,7 @@ jobs:
         - dep ensure -vendor-only
     - language: node_js
       node_js: node
-      install: travis_wait npm --prefix ./web install ./web
+      install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
       name: "nextjs"
     - stage: "Deploy"
@@ -30,7 +30,7 @@ jobs:
         - chmod +x docker-compose
         - sudo mv docker-compose /usr/local/bin
       script:
-        - travis_wait docker-compose build
+        - travis_wait 40 docker-compose build
         - docker-compose down
         - docker-compose up -d --force-recreate
         - rm -rf $DOCKER_CERT_PATH
