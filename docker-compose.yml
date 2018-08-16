@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./web/Dockerfile
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
 
   backend:
     image: raphi011/scores-backend
@@ -20,7 +20,7 @@ services:
       - APP_ENV=production
 
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - "~/data:/srv/scores"
     healthcheck:
