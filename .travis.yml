@@ -4,9 +4,9 @@ jobs:
       name: "go"
       language: go
       go: "1.10"
-      before_install: 
+      before_install:
         - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      install: 
+      install:
         - dep ensure -vendor-only
     - language: node_js
       node_js: node
@@ -19,10 +19,10 @@ jobs:
       env:
         - DOCKER_COMPOSE_VERSION=1.21.2
         - DOCKER_TLS_VERIFY=1
-        - DOCKER_HOST=tcp://raphi011.com:2376
+        - DOCKER_HOST=tcp://scores.network:2376
         - DOCKER_CERT_PATH=certs
       before_install:
-        - openssl aes-256-cbc -K $encrypted_67e87caa25ce_key -iv $encrypted_67e87caa25ce_iv -in secrets.tar.enc -out secrets.tar -d
+        - openssl aes-256-cbc -K $encrypted_531129a75a03_key -iv $encrypted_531129a75a03_iv -in secrets.tar.enc -out secrets.tar -d
         - mkdir $DOCKER_CERT_PATH
         - tar xvf secrets.tar -C $DOCKER_CERT_PATH
         - sudo rm /usr/local/bin/docker-compose
