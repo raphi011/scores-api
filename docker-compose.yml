@@ -1,39 +1,38 @@
-version: '3.6'
+version: "3.6"
 
 services:
-
   frontend:
     image: raphi011/scores-frontend
     build:
       context: .
       dockerfile: ./web/Dockerfile
-    ports:  
-        - '3000:3000'
-    
+    ports:
+      - "3000:3000"
+
   backend:
     image: raphi011/scores-backend
-    build: 
+    build:
       context: .
       dockerfile: ./cmd/api/Dockerfile
     environment:
       - GIN_MODE=release
-      - BACKEND_URL=https://scores.raphi011.com
+      - BACKEND_URL=https://scores.network
       - APP_ENV=production
-      
+
     ports:
-      - '8080:8080'
+      - "8080:8080"
     volumes:
-      - '~/data:/srv/scores'
+      - "~/data:/srv/scores"
     healthcheck:
       test: ["CMD", "curl", "-f", "localhost:8080/version"]
       interval: 10s
       timeout: 10s
       retries: 3
-    
+
   scrape:
     image: raphi011/scores-scrape
     depends_on:
-      - 'backend'
-    build: 
+      - "backend"
+    build:
       context: .
       dockerfile: ./cmd/terminal/Dockerfile
