@@ -102,7 +102,7 @@ type detailsParser func(*goquery.Selection, *FullTournament)
 
 var parseTournamentDetailsMap = map[string]detailsParser{
 	"Kategorie": func(value *goquery.Selection, t *FullTournament) {
-
+		t.Phase = trimmSelectionText(value)
 	},
 	"Modus": func(value *goquery.Selection, t *FullTournament) {
 		t.Mode = trimmSelectionText(value)
@@ -120,7 +120,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		}
 	},
 	"Ort": func(value *goquery.Selection, t *FullTournament) {
-		t.Location = trimmSelectionText(value)
+		t.Location = trimmSelectionHtml(value)
 	},
 	"Max. Punkte": func(value *goquery.Selection, t *FullTournament) {
 		t.MaxPoints = findInt(value.Text())
@@ -275,7 +275,7 @@ func parsePlayerRow(row *goquery.Selection, team *TournamentTeam) (player *Playe
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
 				player.FirstName, player.LastName = parsePlayerName(column)
 			case 1:
-				player.License = trimmSelectionText(column)
+				player.CountryUnion = trimmSelectionText(column)
 			}
 		} else {
 			return nil, fmt.Errorf("unknown tournament player table row count: %d", columnsCount)

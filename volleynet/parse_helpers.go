@@ -34,6 +34,11 @@ func findInt(text string) int {
 	return nr
 }
 
+func trimmSelectionHtml(s *goquery.Selection) string {
+	html, _ := s.Html()
+	return strings.TrimSpace(strings.Replace(html, "<br/>", " ", -1))
+}
+
 func trimmSelectionText(s *goquery.Selection) string {
 	return strings.TrimSpace(s.Text())
 }
