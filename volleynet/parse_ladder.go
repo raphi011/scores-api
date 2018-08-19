@@ -41,7 +41,7 @@ func parseLadder(html io.Reader) ([]Player, error) {
 			case 1:
 				p.Rank = findInt(c.Text())
 			case 2:
-				p.FirstName, p.LastName, p.Login = parsePlayerName(c)
+				p.FirstName, p.LastName = parsePlayerName(c)
 				p.ID, err = parsePlayerIDFromSteckbrief(c.Find("a"))
 			case 3:
 				break

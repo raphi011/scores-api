@@ -7,7 +7,6 @@ type PlayerInfo struct {
 	ID        int    `json:"id"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
-	Login     string `json:"login"`
 	Birthday  string `json:"birthday"`
 }
 
@@ -39,7 +38,7 @@ func parsePlayers(html io.Reader) ([]PlayerInfo, error) {
 
 			switch j {
 			case 1:
-				player.FirstName, player.LastName, player.Login = parsePlayerName(c)
+				player.FirstName, player.LastName = parsePlayerName(c)
 
 				player.ID, err = parsePlayerID(c.Find("a"))
 				if err == nil {

@@ -528,7 +528,6 @@ const (
 			p.id,
 			p.first_name,
 			p.last_name,
-			p.login,
 			p.birthday,
 			p.gender,
 			p.total_points,
@@ -548,16 +547,15 @@ const (
 			updated_at = CURRENT_TIMESTAMP,
 			first_name = $1,
 			last_name = $2,
-			login = $3,
-			birthday = $4,
-			gender = $5,
-			total_points = $6,
-			rank = $7,
-			club = $8,
-			country_union = $9,
-			license = $10,
-			total_points = $11
-		WHERE id = $12
+			birthday = $3,
+			gender = $4,
+			total_points = $5,
+			rank = $6,
+			club = $7,
+			country_union = $8,
+			license = $9,
+			total_points = $10
+		WHERE id = $11
 	`
 
 	volleynetPlayersInsertSQL = `
@@ -568,7 +566,6 @@ const (
 			updated_at,
 			first_name,
 			last_name,
-			login,
 			birthday,
 			gender,
 			total_points,
@@ -592,8 +589,7 @@ const (
 			$8,
 			$9,
 			$10,
-			$11,
-			$12
+			$11
 		)
 	`
 )
@@ -628,7 +624,6 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 		&p.ID,
 		&p.FirstName,
 		&p.LastName,
-		&p.Login,
 		&p.Birthday,
 		&p.Gender,
 		&p.TotalPoints,
@@ -655,7 +650,6 @@ func (s *VolleynetService) NewPlayer(p *volleynet.Player) error {
 		p.ID,
 		p.FirstName,
 		p.LastName,
-		p.Login,
 		p.Birthday,
 		p.Gender,
 		p.TotalPoints,
@@ -674,7 +668,6 @@ func (s *VolleynetService) UpdatePlayer(p *volleynet.Player) error {
 		volleynetPlayersUpdateSQL,
 		p.FirstName,
 		p.LastName,
-		p.Login,
 		p.Birthday,
 		p.Gender,
 		p.TotalPoints,

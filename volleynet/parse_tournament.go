@@ -230,7 +230,7 @@ func parsePlayerRow(row *goquery.Selection, team *TournamentTeam) (player *Playe
 				team.Rank = findInt(column.Text())
 			case 1:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
-				player.LastName, player.FirstName, player.Login = parsePlayerName(column)
+				player.FirstName, player.LastName = parsePlayerName(column)
 			case 2:
 				player.CountryUnion = trimmSelectionText(column)
 			case 3:
@@ -242,7 +242,7 @@ func parsePlayerRow(row *goquery.Selection, team *TournamentTeam) (player *Playe
 			switch k {
 			case 0:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
-				player.LastName, player.FirstName, player.Login = parsePlayerName(column)
+				player.LastName, player.FirstName = parsePlayerName(column)
 			case 1:
 				player.License = trimmSelectionText(column)
 			case 2:
@@ -256,7 +256,7 @@ func parsePlayerRow(row *goquery.Selection, team *TournamentTeam) (player *Playe
 				team.Seed = findInt(column.Text())
 			case 1:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
-				player.LastName, player.FirstName, player.Login = parsePlayerName(column)
+				player.FirstName, player.LastName = parsePlayerName(column)
 			case 2:
 				player.License = trimmSelectionText(column)
 			case 3:
@@ -273,7 +273,7 @@ func parsePlayerRow(row *goquery.Selection, team *TournamentTeam) (player *Playe
 			switch k {
 			case 0:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
-				player.LastName, player.FirstName, player.Login = parsePlayerName(column)
+				player.FirstName, player.LastName = parsePlayerName(column)
 			case 1:
 				player.License = trimmSelectionText(column)
 			}

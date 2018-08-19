@@ -66,7 +66,6 @@ func MergeTournament(syncType string, persisted, current *FullTournament) *FullT
 func MergePlayer(persisted, current *Player) *Player {
 	persisted.FirstName = current.FirstName
 	persisted.LastName = current.LastName
-	persisted.Login = current.Login
 	persisted.Birthday = current.Birthday
 	persisted.Gender = current.Gender
 	persisted.TotalPoints = current.TotalPoints

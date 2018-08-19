@@ -72,13 +72,13 @@ func parsePlayerID(s *goquery.Selection) (int, error) {
 var lastNameRegex = regexp.MustCompile("\\p{Lu}+\\b")
 var firstNameRegex = regexp.MustCompile("\\p{Lu}\\p{Ll}+\\b")
 
-func parsePlayerName(c *goquery.Selection) (string, string, string) {
+func parsePlayerName(c *goquery.Selection) (string, string) {
 	playerName := c.Text()
 
-	lastName := strings.Join(lastNameRegex.FindAllString(playerName, -1), " ")
-	firstName := strings.Join(firstNameRegex.FindAllString(playerName, -1), " ")
+	lastName := strings.Title(strings.ToLower(strings.Join(lastNameRegex.FindAllString(playerName, -1), " ")))
+	firstName := strings.Title(strings.Join(firstNameRegex.FindAllString(playerName, -1), " "))
 
-	return strings.Title(firstName), strings.Title(lastName), strings.Join([]string{firstName, lastName}, ".")
+	return strings.Title(firstName), strings.Title(lastName)
 }
 
 func parsePlayerIDFromSteckbrief(s *goquery.Selection) (int, error) {
