@@ -242,7 +242,7 @@ func parsePlayerRow(row *goquery.Selection, team *TournamentTeam) (player *Playe
 			switch k {
 			case 0:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
-				player.LastName, player.FirstName = parsePlayerName(column)
+				player.FirstName, player.LastName = parsePlayerName(column)
 			case 1:
 				player.License = trimmSelectionText(column)
 			case 2:
