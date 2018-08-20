@@ -1,0 +1,413 @@
+<html>
+<!-- Admin/Search -->
+
+<head>
+    <title>Person - beach.volleynet.at</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="shortcut icon" type="image/x-icon" href="/volleynet/resources/favicon/beach2.ico">
+    <link rel="stylesheet" href="/volleynet/resources/style.beach2.css" type="text/css">
+
+    <script type="text/javascript" src="/volleynet_libs/calendar/calendar1.js"></script>
+    <script src="/volleynet/js/tools.js" type="text/javascript"></script>
+    <script type="text/javascript" language="JavaScript">
+        function getValidators() {
+            return new Array((new Validator('per_name', 'Zumindest der Nachname oder das Geburtsdatum müssen angegeben werden!', /.*/, false, 0)).setAdditionalCheckings('var f = document.forms[\'volleynet\'], ok = false;' +
+                'if (f != null) {' +
+                '  ok = f[\'per_name\'] != null && f[\'per_geburtsdatum\'] != null &&' +
+                '    f[\'per_name\'].value != null && f[\'per_geburtsdatum\'].value != null &&' +
+                '    f[\'per_name\'].value.length + f[\'per_geburtsdatum\'].value.length > 0;' +
+                '}' +
+                'return ok;'),
+                new Validator('per_geburtsdatum', 'Das Geburtsdatum ist nicht gültig!', /^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$/, false, 0));
+        }
+    </script>
+</head>
+
+<body>
+    <form action="https://beach.volleynet.at/Admin/formular" name="volleynet" method="POST">
+        <div><input type="hidden" name="action" value="Admin/Search"></div><input class="input_field" name="XX_unique_write_XXAdmin/Search"
+            type="hidden" value="0.38810700 1534784727">
+        <!-- start of content -->
+        <input class="input_field" name="popup" type="hidden" value="1"><input class="input_field" name="add" type="hidden"
+            value=""><input class="input_field" name="txm_language" type="hidden" value="de"><input id="search" class="input_field"
+            name="search" type="hidden" value="Person"><input id="target" class="input_field" name="target" type="hidden" value="bte_per_id_b"><input
+            id="target2" class="input_field" name="target2" type="hidden" value=""><input id="set" class="input_field" name="set"
+            type="hidden" value=""><input id="info" class="input_field" name="info" type="hidden" value=""><input class="input_field"
+            name="id" type="hidden" value="-1"><input class="input_field" name="text" type="hidden" value="0"><input class="input_field"
+            name="sai_id" type="hidden" value=""><input class="input_field" name="doit" type="hidden" value="1"><table cellpadding="0"
+            cellspacing="0" border="0">
+            <colgroup>
+                <col width="10">
+                <col width="1%">
+                <col width="99%">
+                <col width="10">
+            </colgroup>
+            <tbody>
+                <tr class="tablehead">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td colspan="2">Filter</td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+                <tr class="tablehell">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td>Nachname</td>
+                    <td><input id="focus" class="input_field" style="width:100%" name="per_name" type="text" value="pfau"
+                            maxlength="100"></td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+                <tr class="tabledunkel">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td>Vorname</td>
+                    <td><input class="input_field" style="width:100%" name="per_vorname" type="text" value="" maxlength="100"></td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+                <tr class="tablehell">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td>Geburtsdatum</td>
+                    <td>
+                        <script type="text/javascript">function searchReset(id1, id2, id3, id4) {
+                                var elem = document.getElementById(id1);
+                                if (elem != null) {
+                                    elem.value = '';
+                                    handleOnChange(elem, '');
+                                }
+                                if (id2 != null) {
+                                    if ((elem = document.getElementById(id2)) != null) {
+                                        if (elem.value != null) {
+                                            elem.value = '';
+                                        } else {
+                                            elem.innerHTML = '&nbsp;';
+                                        }
+                                        handleOnChange(elem, '');
+                                    }
+                                }
+                                if (id3 != null) {
+                                    if ((elem = document.getElementById(id3)) != null) {
+                                        if (elem.value != null) {
+                                            elem.value = '';
+                                        } else {
+                                            elem.innerHTML = '&nbsp;';
+                                        }
+                                        handleOnChange(elem, '');
+                                    }
+                                }
+                                if (id4 != null) {
+                                    if ((elem = document.getElementById(id4)) != null) {
+                                        if (elem.value != null) {
+                                            elem.value = '';
+                                        } else {
+                                            elem.innerHTML = '&nbsp;';
+                                        }
+                                        handleOnChange(elem, '');
+                                    }
+                                }
+                            }
+
+                            /**
+                             * Starts the search.
+                             * @param string url The url of the iframe to set.
+                             * @return boolean False to ignore the target of the link.
+                             */
+                            function startSearch(url) {
+
+                                var search1 = document.getElementById('search_frame');
+                                if (search1 != null) {
+                                    document.body.style.overflow = 'hidden';
+                                    frames['search_frame'].location.href = url;
+                                    search1.style.display = 'block';
+                                }
+
+                                return false;
+                            }
+                        </script>
+                        <script type="text/javascript">
+                            // -- calendar -------------------------------------------------------------------------------
+                            /**
+                             * Opens a month calendar to select a date.
+                             * @param string elid The id of the input field.
+                             */
+                            function openCalendar(elid) {
+                                var id = 'iframe_calendar_' + elid,
+                                    elemCtrl = document.getElementById(elid), dat,
+                                    elemIFrame = document.getElementById(id);
+
+                                if (elemCtrl != null && elemIFrame != null) {
+                                    if (elemIFrame.style.display != 'block') {
+                                        dat = elemCtrl.value;
+                                        if (isValidDate(dat)) {
+                                            elemIFrame.src = '/Admin/MCalendar?mcalendar_date=' + dat.substr(6, 4) + dat.substr(3, 2) +
+                                                '&d=' + dat.substr(6, 4) + dat.substr(3, 2) + dat.substr(0, 2);
+                                        } else {
+                                            elemIFrame.src = '/Admin/MCalendar';
+                                        }
+                                        elemIFrame.style.display = 'block';
+                                    } else {
+                                        elemIFrame.style.display = 'none';
+                                    }
+                                }
+                            }
+
+                            /**
+                             * Opens a month calendar to select a timestamp
+                             * @param string elid The id of the input field.
+                             * @param boolean seconds True to edit seconds, too, otherwise false
+                             */
+                            function openCalendarTS(elid, seconds) {
+                                var id = 'iframe_calendar_' + elid,
+                                    elemCtrl = document.getElementById(elid), dat,
+                                    elemIFrame = document.getElementById(id);
+
+                                if (elemCtrl != null && elemIFrame != null) {
+                                    if (elemIFrame.style.display != 'block') {
+                                        dat = elemCtrl.value;
+                                        if (isValidTS(dat, seconds)) {
+                                            elemIFrame.src = '/Admin/MCalendar?mcalendar_date=' + dat.substr(6, 4) + dat.substr(3, 2) +
+                                                '&t=' + (seconds ? '2' : '1') +
+                                                '&mcalendar_time=' + dat.substr(11, 2) + dat.substr(14, 2) + (seconds ? dat.substr(17, 2) : '') +
+                                                '&d=' + dat.substr(6, 4) + dat.substr(3, 2) + dat.substr(0, 2);
+                                        } else {
+                                            elemIFrame.src = '/Admin/MCalendar?t=' + (seconds ? '2' : '1');
+                                        }
+                                        elemIFrame.style.display = 'block';
+                                    } else {
+                                        elemIFrame.style.display = 'none';
+                                    }
+                                }
+                            }
+// -- calendar -------------------------------------------------------------------------------
+                        </script>
+                        <div style="position: relative;">
+                            <table class="line" cellspacing="0" cellpadding="0" border="0">
+                                <tbody>
+                                    <tr class="line">
+                                        <td><input type="text" class="input_field" maxlength="10" id="per_geburtsdatum_1"
+                                                name="per_geburtsdatum" value="" style="width:10ex;"></td>
+                                        <td><a href="javascript:openCalendar('per_geburtsdatum_1');"><img src="/volleynet_libs/calendar/img/cal.gif"
+                                                    width="16" height="16" border="0" alt="Datum auswählen" title="Datum auswählen"></a></td>
+                                    </tr>
+                                </tbody>
+                            </table><iframe id="iframe_calendar_per_geburtsdatum_1" name="iframe_calendar_per_geburtsdatum_1"
+                                src="" style="position: absolute; top: 21px; left: -11px; width: 195px; height: 220px; overflow: hidden; display: none; z-index: 1;"
+                                frameborder="0"></iframe></div>
+                    </td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+                <tr class="tabledunkel">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td align="center" colspan="2"><input type="button" onclick="closeSearch();" value="Zurück"><input type="submit"
+                            name="submit" value="Suchen" onclick="return checkValid(document.volleynet);"></td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+            </tbody>
+        </table><br>
+        <script type="text/javascript">
+            /**
+             * Selects a result.
+             * @param string id The id of the result.
+             * @param string name The name(or text) of the result.
+             */
+            function select(id, name) {
+                var set = document.getElementById('set').value,
+                    info = document.getElementById('info').value,
+                    target = document.getElementById('target').value,
+                    ownerOfSelect = opener == null ? window.parent : opener;
+                if (set != '') {
+                    eval('opener.' + set + '(' + info + ', ' + id + ', \'' + name + '\')');
+                } else {
+                    // handle id field
+                    //var elem = opener.document.getElementById(target + '_id');
+                    var elem = ownerOfSelect.document.getElementById(target + '_id');
+                    if (elem != null) {
+                        if (elem.value != null) {
+                            elem.value = id;
+                        } else {
+                            elem.innerHTML = id;
+                        }
+                        handleOnChange(elem, id);
+                    }
+
+                    // handle name field
+                    //elem = opener.document.getElementById(target + '_name');
+                    elem = ownerOfSelect.document.getElementById(target + '_name');
+                    if (elem != null) {
+                        if (elem.value != null) {
+                            elem.value = name;
+                        } else {
+                            elem.innerHTML = name;
+                        }
+                        handleOnChange(elem, name);
+                    }
+
+                    // handle name div
+                    //elem = opener.document.getElementById(target + '_div');
+                    elem = ownerOfSelect.document.getElementById(target + '_div');
+                    if (elem != null) {
+                        elem.innerHTML = name;
+                        handleOnChange(elem, name);
+                    }
+                }
+
+                closeSearch();
+            }
+
+            /**
+             * Selects a text
+             * @param string txt The text to set.
+             */
+            function selectText(txt) {
+                var target = document.getElementById('target'),
+                    ownerOfSelect = opener == null ? window.parent : opener;
+
+                if (target != null && target.value != null) {
+                    //var elem = opener.document.getElementById(target.value);
+                    var elem = ownerOfSelect.document.getElementById(target.value);
+                    if (elem != null) {
+                        if (elem.value != null) {
+                            elem.value = txt;
+                        } else {
+                            elem.innerHTML = txt;
+                        }
+                        handleOnChange(elem, txt);
+                    }
+
+                    // handle div
+                    //elem = opener.document.getElementById(target.value + '_div');
+                    elem = ownerOfSelect.document.getElementById(target.value + '_div');
+                    if (elem != null) {
+                        elem.innerHTML = txt;
+                        handleOnChange(elem, txt);
+                    }
+                }
+
+                closeSearch();
+            }
+
+            /**
+             * Selects two parts of a text
+             * @param string txt The 1st text to set.
+             * @param string txt2 The 2nd text to set.
+             */
+            function selectText2(txt, txt2) {
+                var target = document.getElementById('target'),
+                    target2 = document.getElementById('target2'),
+                    ownerOfSelect = opener == null ? window.parent : opener;
+
+                if (target != null && target.value != null &&
+                    target2 != null && target2.value != null) {
+                    var elem = ownerOfSelect.document.getElementById(target.value),
+                        elemDiv = ownerOfSelect.document.getElementById(target.value + '_div'),
+                        elem2 = ownerOfSelect.document.getElementById(target2.value),
+                        elem2Div = ownerOfSelect.document.getElementById(target2.value + '_div');
+                    if (elem != null && elem2 != null) {
+
+                        // part 1
+                        if (elem.value != null) {
+                            elem.value = txt;
+                        }
+                        // div of part 1
+                        if (elemDiv != null) {
+                            elemDiv.innerHTML = txt;
+                        }
+                        handleOnChange(elem, txt);
+
+                        // part 2
+                        if (elem2.value != null) {
+                            elem2.value = txt2;
+                        }
+                        // div of part 2
+                        if (elem2Div != null) {
+                            elem2Div.innerHTML = txt2;
+                        }
+                        handleOnChange(elem2, txt2);
+                    }
+                }
+
+                closeSearch();
+            }
+
+            /**
+             * Hides or closes the search window.
+             */
+            function closeSearch() {
+                if (opener == null) {
+                    var iframe = window.parent.document.getElementById('search_frame');
+                    iframe.style.display = 'none';
+                    window.parent.document.body.style.overflow = 'auto';
+                    iframe.src = "";
+                } else {
+                    window.close();
+                }
+            }
+        </script>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <colgroup>
+                <col width="10">
+                <col width="99%">
+                <col width="1%">
+                <col width="10">
+            </colgroup>
+            <tbody>
+                <tr class="tablehead">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td>Name</td>
+                    <td>Geburtsdatum</td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+                <tr class="tablehell">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td><span style="white-space: nowrap;"><a id="search_list_0" href="javascript:select(34822, 'Cristopher PFAU');">Cristopher
+                                PFAU
+                            </a></span></td>
+                    <td><span style="white-space: nowrap;"><a id="search_list_0" href="javascript:select(34822, 'Cristopher PFAU');">28.01.2000</a></span></td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+                <tr class="tabledunkel">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td><span style="white-space: nowrap;"><a id="search_list_1" href="javascript:select(50427, 'Hannes PFAU');">Hannes
+                                PFAU
+                            </a></span></td>
+                    <td><span style="white-space: nowrap;"><a id="search_list_1" href="javascript:select(50427, 'Hannes PFAU');">22.10.2002</a></span></td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+                <tr class="tablehell">
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                    <td><span style="white-space: nowrap;"><a id="search_list_2" href="javascript:select(42378, 'Jennifer PFAU');">Jennifer
+                                PFAU
+                            </a></span></td>
+                    <td><span style="white-space: nowrap;"><a id="search_list_2" href="javascript:select(42378, 'Jennifer PFAU');">26.08.1988</a></span></td>
+                    <td class="table_border"><img src="/volleynet/resources/Indoor/oevv2/trans.gif" width="10" height="1"
+                            alt="spacer ?"></td>
+                </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript" language="JavaScript">setTimeout("document.getElementById('search_list_0').focus();", 10);</script>
+        <!-- end of content -->
+    </form>
+    <div id="search_frame">
+        <div id="search_frame2">
+            <iframe src="" class="search_frame" name="search_frame" id="frame_search_frame" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <div id="cVim-status-bar" style="top: 0px;"></div>
+</body>
+
+</html>
