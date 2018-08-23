@@ -29,6 +29,8 @@ type SyncService struct {
 }
 
 type LadderSyncReport struct {
+	NewPlayers     int
+	UpdatedPlayers int
 }
 
 type TournamentSyncReport struct {
@@ -201,6 +203,7 @@ func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 				info.NewPlayer.LastName)
 
 			err = s.VolleynetService.NewPlayer(info.NewPlayer)
+			report.NewPlayers++
 
 		} else {
 			merged := MergePlayer(info.OldPlayer, info.NewPlayer)
@@ -211,6 +214,7 @@ func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 				merged.LastName)
 
 			err = s.VolleynetService.UpdatePlayer(merged)
+			report.UpdatedPlayers++
 
 		}
 
