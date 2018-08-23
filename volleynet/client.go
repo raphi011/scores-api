@@ -13,25 +13,38 @@ import (
 
 // Client is the interface to the volleynet api, use DefaultClient()
 // to get a new Client.
-type Client struct {
+type Client interface {
+	GetTournamentLink(t *Tournament) string
+	GetAPITournamentLink(t *Tournament) string
+	Login(username, password string) (*LoginData, error)
+	AllTournaments(gender, league string, year int) ([]Tournament, error)
+	Ladder(gender string) ([]Player, error)
+	ComplementTournament(tournament Tournament) (*FullTournament, error)
+	TournamentWithdrawal(tournamentID int) error
+	TournamentEntry(playerName string, playerID, tournamentID int) error
+	SearchPlayers(firstName, lastName, birthday string) ([]PlayerInfo, error)
+}
+
+// ClientImpl implements the Client interface
+type ClientImpl struct {
 	PostURL string
 	GetURL  string
 	Cookie  string
 }
 
 // DefaultClient returns a Client with the correct PostURL and GetURL fields set.
-func DefaultClient() *Client {
-	return &Client{
+func DefaultClient() Client {
+	return &ClientImpl{
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",
 	}
 }
 
-func (c *Client) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *ClientImpl) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	return buildGetAPIURL(c.GetURL, "/api", relativePath, routeArgs...)
 }
 
-func (c *Client) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *ClientImpl) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	return buildGetAPIURL(c.GetURL, "", relativePath, routeArgs...)
 }
 
@@ -65,7 +78,7 @@ func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interf
 	return link
 }
 
-func (c *Client) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *ClientImpl) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	path := escapeArgs(relativePath, routeArgs...)
 
 	link, err := url.Parse(c.PostURL + path)
@@ -78,7 +91,7 @@ func (c *Client) buildPostURL(relativePath string, routeArgs ...interface{}) *ur
 }
 
 // GetTournamentLink returns the link for a tournament.
-func (c *Client) GetTournamentLink(t *Tournament) string {
+func (c *ClientImpl) GetTournamentLink(t *Tournament) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -91,7 +104,7 @@ func (c *Client) GetTournamentLink(t *Tournament) string {
 }
 
 // GetAPITournamentLink returns the API link for a tournament.
-func (c *Client) GetAPITournamentLink(t *Tournament) string {
+func (c *ClientImpl) GetAPITournamentLink(t *Tournament) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -105,7 +118,7 @@ func (c *Client) GetAPITournamentLink(t *Tournament) string {
 
 // Login authenticates the user against the volleynet page, if
 // successfull the Client cookie is set, else an error is returned.
-func (c *Client) Login(username, password string) (*LoginData, error) {
+func (c *ClientImpl) Login(username, password string) (*LoginData, error) {
 	form := url.Values{}
 	form.Add("login_name", username)
 	form.Add("login_pass", password)
@@ -139,9 +152,9 @@ func (c *Client) Login(username, password string) (*LoginData, error) {
 
 // AllTournaments reads all tournaments of a certain gender, league and year.
 // To get more detailed tournamnent information call `ComplementTournament`.
-func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, error) {
+func (c *ClientImpl) AllTournaments(gender, league string, year int) ([]Tournament, error) {
 	url := c.buildGetAPIURL(
-		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/information/all",
+		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/information/all",
 		league,
 		league,
 		gender,
@@ -160,7 +173,7 @@ func (c *Client) AllTournaments(gender, league, year string) ([]Tournament, erro
 }
 
 // Ladder reads all players of a certain gender.
-func (c *Client) Ladder(gender string) ([]Player, error) {
+func (c *ClientImpl) Ladder(gender string) ([]Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
 		genderLong(gender),
@@ -188,7 +201,7 @@ func genderLong(gender string) string {
 }
 
 // ComplementTournament adds the missing information from `AllTournaments`.
-func (c *Client) ComplementTournament(tournament Tournament) (
+func (c *ClientImpl) ComplementTournament(tournament Tournament) (
 	*FullTournament, error) {
 	url := c.GetAPITournamentLink(&tournament)
 
@@ -210,7 +223,7 @@ func (c *Client) ComplementTournament(tournament Tournament) (
 	return t, nil
 }
 
-func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
+func (c *ClientImpl) loadUniqueWriteCode(tournamentID int) (string, error) {
 	url := c.buildPostURL(
 		"/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&parent=0&prev=0&next=0&cur=%d",
 		tournamentID,
@@ -240,7 +253,7 @@ func (c *Client) loadUniqueWriteCode(tournamentID int) (string, error) {
 }
 
 // TournamentWithdrawal signs a player out of a tournament. A valid session Cookie must be set.
-func (c *Client) TournamentWithdrawal(tournamentID int) error {
+func (c *ClientImpl) TournamentWithdrawal(tournamentID int) error {
 	url := c.buildPostURL("/Abmelden/0-%d-00-0", tournamentID).String()
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -262,7 +275,7 @@ func (c *Client) TournamentWithdrawal(tournamentID int) error {
 }
 
 // TournamentEntry signs a player up for a tournament. A valid session Cookie must be set.
-func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) error {
+func (c *ClientImpl) TournamentEntry(playerName string, playerID, tournamentID int) error {
 	if c.Cookie == "" {
 		return errors.New("cookie must be set")
 	}
@@ -312,7 +325,7 @@ func (c *Client) TournamentEntry(playerName string, playerID, tournamentID int) 
 }
 
 // SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
-func (c *Client) SearchPlayers(firstName, lastName, birthday string) ([]PlayerInfo, error) {
+func (c *ClientImpl) SearchPlayers(firstName, lastName, birthday string) ([]PlayerInfo, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")

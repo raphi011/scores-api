@@ -8,7 +8,28 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-type VolleynetService struct {
+type VolleynetService interface {
+	Tournament(tournamentID int) (*volleynet.FullTournament, error)
+	AllTournaments() ([]volleynet.FullTournament, error)
+	SeasonTournaments(season int) ([]volleynet.FullTournament, error)
+	GetTournaments(gender, league string, season int) ([]volleynet.FullTournament, error)
+	NewTournament(t *volleynet.FullTournament) error
+	UpdateTournament(t *volleynet.FullTournament) error
+
+	UpdateTournamentTeam(t *volleynet.TournamentTeam) error
+	UpdateTournamentTeams(teams []volleynet.TournamentTeam) error
+	NewTeam(t *volleynet.TournamentTeam) error
+	NewTeams(teams []volleynet.TournamentTeam) error
+	TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error)
+
+	SearchPlayers() ([]volleynet.Player, error)
+	AllPlayers() ([]volleynet.Player, error)
+	NewPlayer(p *volleynet.Player) error
+	UpdatePlayer(p *volleynet.Player) error
+}
+
+// VolleynetServiceImpl implements VolleynetService
+type VolleynetServiceImpl struct {
 	DB *sql.DB
 }
 
@@ -78,22 +99,18 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 	return t, nil
 }
 
-func (s *VolleynetService) Tournament(tournamentID int) (*volleynet.FullTournament, error) {
+func (s *VolleynetServiceImpl) Tournament(tournamentID int) (*volleynet.FullTournament, error) {
 	row := s.DB.QueryRow(tournamentSelectSQL, tournamentID)
 
 	return scanTournament(row)
 }
 
-func (s *VolleynetService) AllTournaments() ([]volleynet.FullTournament, error) {
+func (s *VolleynetServiceImpl) AllTournaments() ([]volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, tournamentsBaseSelectSQL)
 }
 
-func (s *VolleynetService) SeasonTournaments(season int) ([]volleynet.FullTournament, error) {
+func (s *VolleynetServiceImpl) SeasonTournaments(season int) ([]volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, tournamentsSeasonSelectSQL, season)
-}
-
-func (s *VolleynetService) SearchPlayers() ([]volleynet.Player, error) {
-	return nil, nil
 }
 
 const (
@@ -239,11 +256,11 @@ const (
 	`
 )
 
-func (s *VolleynetService) GetTournaments(gender, league string, season int) ([]volleynet.FullTournament, error) {
+func (s *VolleynetServiceImpl) GetTournaments(gender, league string, season int) ([]volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, tournamentsFilterSelectSQL, gender, league, season)
 }
 
-func (s *VolleynetService) NewTournament(t *volleynet.FullTournament) error {
+func (s *VolleynetServiceImpl) NewTournament(t *volleynet.FullTournament) error {
 	_, err := s.DB.Exec(tournamentsInsertSQL,
 		t.ID,
 		t.Gender,
@@ -277,7 +294,7 @@ func (s *VolleynetService) NewTournament(t *volleynet.FullTournament) error {
 	return err
 }
 
-func (s *VolleynetService) UpdateTournamentTeam(t *volleynet.TournamentTeam) error {
+func (s *VolleynetServiceImpl) UpdateTournamentTeam(t *volleynet.TournamentTeam) error {
 	result, err := s.DB.Exec(
 		volleynetTeamsUpdateSQL,
 		t.Rank,
@@ -304,17 +321,7 @@ func (s *VolleynetService) UpdateTournamentTeam(t *volleynet.TournamentTeam) err
 	return nil
 }
 
-func (s *VolleynetService) UpdateTournamentTeams(teams []volleynet.TournamentTeam) error {
-	for _, t := range teams {
-		if err := s.UpdateTournamentTeam(&t); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (s *VolleynetService) UpdateTournament(t *volleynet.FullTournament) error {
+func (s *VolleynetServiceImpl) UpdateTournament(t *volleynet.FullTournament) error {
 	result, err := s.DB.Exec(
 		tournamentsUpdateSQL,
 		t.Gender,
@@ -429,7 +436,7 @@ const (
 	`
 )
 
-func (s *VolleynetService) NewTeam(t *volleynet.TournamentTeam) error {
+func (s *VolleynetServiceImpl) NewTeam(t *volleynet.TournamentTeam) error {
 	_, err := s.DB.Exec(volleynetTeamsInsertSQL,
 		t.TournamentID,
 		t.Player1.ID,
@@ -445,7 +452,7 @@ func (s *VolleynetService) NewTeam(t *volleynet.TournamentTeam) error {
 	return err
 }
 
-func (s *VolleynetService) NewTeams(teams []volleynet.TournamentTeam) error {
+func (s *VolleynetServiceImpl) NewTeams(teams []volleynet.TournamentTeam) error {
 	for _, t := range teams {
 		err := s.NewTeam(&t)
 
@@ -518,7 +525,17 @@ func scanTournamentTeam(scanner scan) (*volleynet.TournamentTeam, error) {
 	return t, nil
 }
 
-func (s *VolleynetService) TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error) {
+func (s *VolleynetServiceImpl) UpdateTournamentTeams(teams []volleynet.TournamentTeam) error {
+	for _, t := range teams {
+		if err := s.UpdateTournamentTeam(&t); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *VolleynetServiceImpl) TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error) {
 	return scanTournamentTeams(s.DB, volleynetTeamsSelectSQL, tournamentID)
 }
 
@@ -641,11 +658,11 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 	return p, nil
 }
 
-func (s *VolleynetService) AllPlayers() ([]volleynet.Player, error) {
+func (s *VolleynetServiceImpl) AllPlayers() ([]volleynet.Player, error) {
 	return scanVolleynetPlayers(s.DB, volleynetPlayersSelectSQL)
 }
 
-func (s *VolleynetService) NewPlayer(p *volleynet.Player) error {
+func (s *VolleynetServiceImpl) NewPlayer(p *volleynet.Player) error {
 	_, err := s.DB.Exec(volleynetPlayersInsertSQL,
 		p.ID,
 		p.FirstName,
@@ -663,7 +680,7 @@ func (s *VolleynetService) NewPlayer(p *volleynet.Player) error {
 	return err
 }
 
-func (s *VolleynetService) UpdatePlayer(p *volleynet.Player) error {
+func (s *VolleynetServiceImpl) UpdatePlayer(p *volleynet.Player) error {
 	result, err := s.DB.Exec(
 		volleynetPlayersUpdateSQL,
 		p.FirstName,
@@ -689,4 +706,8 @@ func (s *VolleynetService) UpdatePlayer(p *volleynet.Player) error {
 	}
 
 	return nil
+}
+
+func (s *VolleynetServiceImpl) SearchPlayers() ([]volleynet.Player, error) {
+	return nil, nil
 }

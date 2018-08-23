@@ -1,5 +1,227 @@
 package volleynet
 
+import (
+	"fmt"
+	"log"
+	"time"
+
+	"github.com/pkg/errors"
+)
+
+// PersistanceService is a way to persist and retrieve tournaments
+type PersistanceService interface {
+	UpdateTournament(t *FullTournament) error
+	NewTournament(t *FullTournament) error
+	SeasonTournaments(season int) ([]FullTournament, error)
+
+	AllPlayers() ([]Player, error)
+	NewPlayer(p *Player) error
+	UpdatePlayer(p *Player) error
+
+	TournamentTeams(tournamentID int) ([]TournamentTeam, error)
+	NewTeam(t *TournamentTeam) error
+	UpdateTournamentTeam(t *TournamentTeam) error
+}
+
+type SyncService struct {
+	VolleynetService PersistanceService
+	Client           Client
+}
+
+type LadderSyncReport struct {
+}
+
+type TournamentSyncReport struct {
+	NewTournaments      int
+	UpdatedTournaments  int
+	CanceledTournaments int
+	NewTeams            int
+	UpdatedTeams        int
+	ScrapeDuration      time.Duration
+	Success             bool
+	Error               error
+}
+
+func (s *SyncService) Tournaments(gender, league string, season int) (*TournamentSyncReport, error) {
+	report := &TournamentSyncReport{}
+
+	start := time.Now()
+	current, err := s.Client.AllTournaments(gender, league, season)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "loading the tournament list failed")
+	}
+
+	persisted, err := s.VolleynetService.SeasonTournaments(season)
+
+	syncInformation := SyncTournaments(persisted, current...)
+
+	for _, t := range syncInformation {
+		fullTournament, err := s.Client.ComplementTournament(*t.NewTournament)
+
+		if err != nil {
+			return nil, errors.Wrap(err, "loading the full tournament failed")
+		}
+
+		if t.IsNew {
+			report.NewTournaments++
+			log.Printf("adding tournament id: %v, name: %v, start: %v",
+				fullTournament.ID,
+				fullTournament.Name,
+				fullTournament.Start)
+
+			err = s.VolleynetService.NewTournament(fullTournament)
+		} else {
+			report.UpdatedTournaments++
+			log.Printf("updating tournament id: %v, name: %v, start: %v, sync: %v",
+				fullTournament.ID,
+				fullTournament.Name,
+				fullTournament.Start,
+				t.SyncType,
+			)
+
+			mergedTournament := MergeTournament(t.SyncType, t.OldTournament, fullTournament)
+
+			err = s.VolleynetService.UpdateTournament(mergedTournament)
+		}
+
+		if err != nil {
+			log.Print(err)
+			return nil, errors.Wrap(err, "sync tournament failed")
+		}
+
+		persistedTeams, err := s.VolleynetService.TournamentTeams(t.NewTournament.ID)
+
+		if err != nil {
+			log.Print(err)
+			return nil, errors.Wrap(err, "saving a tournament team failed")
+		}
+
+		persistedPlayers, err := s.VolleynetService.AllPlayers()
+
+		if err != nil {
+			log.Print(err)
+			return nil, errors.Wrap(err, "loading players failed")
+		}
+
+		syncTournamentTeams := SyncTournamentTeams(t.SyncType, persistedTeams, fullTournament.Teams)
+
+		for _, team := range syncTournamentTeams {
+			if team.IsNew {
+				persistedPlayers, err = s.addPlayersIfNew(persistedPlayers, team.NewTeam.Player1, team.NewTeam.Player2)
+
+				if err == nil {
+					report.NewTeams++
+
+					log.Printf("adding tournament team tournamentid: %v, player1ID: %v, player2ID: %v",
+						team.NewTeam.TournamentID,
+						team.NewTeam.Player1.ID,
+						team.NewTeam.Player2.ID,
+					)
+
+					err = s.VolleynetService.NewTeam(team.NewTeam)
+				}
+			} else {
+				report.UpdatedTeams++
+
+				log.Printf("updating tournament team tournamentid: %v, player1ID: %v, player2ID: %v, sync: %v",
+					team.NewTeam.TournamentID,
+					team.NewTeam.Player1.ID,
+					team.NewTeam.Player2.ID,
+					t.SyncType,
+				)
+
+				if team.OldTeam == nil || team.NewTeam == nil {
+					fmt.Print("asdasd")
+				}
+
+				mergedTeam := MergeTournamentTeam(team.SyncType, team.OldTeam, team.NewTeam)
+
+				err = s.VolleynetService.UpdateTournamentTeam(mergedTeam)
+			}
+
+			if err != nil {
+				log.Print(err)
+				return nil, errors.Wrap(err, "TODO")
+			}
+		}
+
+	}
+
+	report.ScrapeDuration = time.Since(start) / time.Millisecond
+	report.Success = true
+
+	return nil, nil
+}
+
+func (s *SyncService) addPlayersIfNew(persistedPlayers []Player, players ...*Player) (
+	[]Player, error) {
+
+	for _, p := range players {
+		player := FindPlayer(persistedPlayers, p.ID)
+
+		if player == nil {
+			log.Printf("adding missing player id: %v, name: %v",
+				p.ID,
+				fmt.Sprintf("%v %v", p.FirstName, p.LastName))
+
+			err := s.VolleynetService.NewPlayer(p)
+
+			if err != nil {
+				return nil, err
+			}
+			persistedPlayers = append(persistedPlayers, *p)
+		}
+	}
+
+	return persistedPlayers, nil
+}
+
+func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
+	ranks, err := s.Client.Ladder(gender)
+	report := &LadderSyncReport{}
+
+	if err != nil {
+		return nil, errors.Wrap(err, "loading the ladder failed")
+	}
+
+	persisted, err := s.VolleynetService.AllPlayers()
+
+	if err != nil {
+		return nil, errors.Wrap(err, "loading persisted players failed")
+	}
+
+	syncInfos := SyncPlayers(persisted, ranks...)
+
+	for _, info := range syncInfos {
+		if info.IsNew {
+			log.Printf("adding player id: %v, name: %s %s",
+				info.NewPlayer.ID,
+				info.NewPlayer.FirstName,
+				info.NewPlayer.LastName)
+
+			err = s.VolleynetService.NewPlayer(info.NewPlayer)
+
+		} else {
+			merged := MergePlayer(info.OldPlayer, info.NewPlayer)
+
+			log.Printf("updating player id: %d, name: %s %s",
+				info.NewPlayer.ID,
+				merged.FirstName,
+				merged.LastName)
+
+			err = s.VolleynetService.UpdatePlayer(merged)
+
+		}
+
+		if err != nil {
+			return nil, errors.Wrap(err, "sync player update failed")
+		}
+	}
+
+	return report, nil
+}
+
 // PlayerSyncInformation contains sync information for two `Player`s
 type PlayerSyncInformation struct {
 	IsNew     bool
