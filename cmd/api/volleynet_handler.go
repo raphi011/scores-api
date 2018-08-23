@@ -18,7 +18,7 @@ import (
 )
 
 type volleynetHandler struct {
-	volleynetService *sqlite.VolleynetService
+	volleynetService sqlite.VolleynetService
 	userService      *sqlite.UserService
 }
 
