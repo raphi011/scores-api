@@ -153,7 +153,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Tournamen
 	report.ScrapeDuration = time.Since(start) / time.Millisecond
 	report.Success = true
 
-	return nil, nil
+	return report, nil
 }
 
 func (s *SyncService) addPlayersIfNew(persistedPlayers []Player, players ...*Player) (
