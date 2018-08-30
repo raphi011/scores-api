@@ -1,4 +1,4 @@
-package volleynet
+package parse
 
 import (
 	"os"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/volleynet"
 )
 
 func mustParseDate(date string) time.Time {
@@ -19,21 +20,21 @@ func mustParseDate(date string) time.Time {
 }
 
 func Test_tournament_list(t *testing.T) {
-	response, _ := os.Open("testdata/tournament-list-amateur.html")
+	response, _ := os.Open("../testdata/tournament-list-amateur.html")
 
-	tournaments, err := parseTournamentList(response, "http://example.com")
+	tournaments, err := TournamentList(response, "http://example.com")
 
 	if err != nil {
-		t.Errorf("parseTournaments() err: %s", err)
+		t.Errorf("Tournaments() err: %s", err)
 	}
 
 	if !cmp.Equal(tournaments, tournamentListAmateur) {
-		t.Errorf("parseTournamentList() err: mismatch of tournament list")
+		t.Errorf("TournamentList() err: mismatch of tournament list")
 	}
 }
 
-var tournamentListAmateur = []Tournament{
-	Tournament{
+var tournamentListAmateur = []volleynet.Tournament{
+	volleynet.Tournament{
 		Name:             "Herren Beachvolley Wien Summer Opening",
 		Start:            mustParseDate("21.04.2018"),
 		End:              mustParseDate("21.04.2018"),
@@ -46,7 +47,7 @@ var tournamentListAmateur = []Tournament{
 		Phase:            "ABV Tour AMATEUR 1",
 		Link:             "http://example.com/beach/bewerbe/AMATEUR TOUR/phase/ABV Tour AMATEUR 1/sex/M/saison/2018/cup/21908",
 	},
-	Tournament{
+	volleynet.Tournament{
 		Name:             "Herren Graz",
 		Start:            mustParseDate("21.04.2018"),
 		End:              mustParseDate("22.04.2018"),
@@ -59,7 +60,7 @@ var tournamentListAmateur = []Tournament{
 		Phase:            "ABV Tour AMATEUR 1",
 		Link:             "http://example.com/beach/bewerbe/AMATEUR TOUR/phase/ABV Tour AMATEUR 1/sex/M/saison/2018/cup/21880",
 	},
-	Tournament{
+	volleynet.Tournament{
 		Name:             "Herren Beachvolley Grieskirchen",
 		Start:            mustParseDate("06.05.2018"),
 		End:              mustParseDate("06.05.2018"),
@@ -73,7 +74,7 @@ var tournamentListAmateur = []Tournament{
 		Link:             "http://example.com/beach/bewerbe/AMATEUR TOUR/phase/ABV Tour AMATEUR 1/sex/M/saison/2018/cup/22055",
 		EntryLink:        "https://beach.volleynet.at/Anmelden/21617-22055-00",
 	},
-	Tournament{
+	volleynet.Tournament{
 		Name:             "Herren Innsbruck",
 		Start:            mustParseDate("01.05.2018"),
 		End:              mustParseDate("01.05.2018"),

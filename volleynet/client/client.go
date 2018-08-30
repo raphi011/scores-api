@@ -1,4 +1,4 @@
-package volleynet
+package client
 
 import (
 	"bytes"
@@ -9,20 +9,22 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores/volleynet/parse"
 )
 
 // Client is the interface to the volleynet api, use DefaultClient()
 // to get a new Client.
 type Client interface {
-	GetTournamentLink(t *Tournament) string
-	GetAPITournamentLink(t *Tournament) string
-	Login(username, password string) (*LoginData, error)
-	AllTournaments(gender, league string, year int) ([]Tournament, error)
-	Ladder(gender string) ([]Player, error)
-	ComplementTournament(tournament Tournament) (*FullTournament, error)
+	GetTournamentLink(t *volleynet.Tournament) string
+	GetAPITournamentLink(t *volleynet.Tournament) string
+	Login(username, password string) (*volleynet.LoginData, error)
+	AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error)
+	Ladder(gender string) ([]volleynet.Player, error)
+	ComplementTournament(tournament volleynet.Tournament) (*volleynet.FullTournament, error)
 	TournamentWithdrawal(tournamentID int) error
 	TournamentEntry(playerName string, playerID, tournamentID int) error
-	SearchPlayers(firstName, lastName, birthday string) ([]PlayerInfo, error)
+	SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error)
 }
 
 // ClientImpl implements the Client interface
@@ -91,7 +93,7 @@ func (c *ClientImpl) buildPostURL(relativePath string, routeArgs ...interface{})
 }
 
 // GetTournamentLink returns the link for a tournament.
-func (c *ClientImpl) GetTournamentLink(t *Tournament) string {
+func (c *ClientImpl) GetTournamentLink(t *volleynet.Tournament) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -104,7 +106,7 @@ func (c *ClientImpl) GetTournamentLink(t *Tournament) string {
 }
 
 // GetAPITournamentLink returns the API link for a tournament.
-func (c *ClientImpl) GetAPITournamentLink(t *Tournament) string {
+func (c *ClientImpl) GetAPITournamentLink(t *volleynet.Tournament) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -118,7 +120,7 @@ func (c *ClientImpl) GetAPITournamentLink(t *Tournament) string {
 
 // Login authenticates the user against the volleynet page, if
 // successfull the Client cookie is set, else an error is returned.
-func (c *ClientImpl) Login(username, password string) (*LoginData, error) {
+func (c *ClientImpl) Login(username, password string) (*volleynet.LoginData, error) {
 	form := url.Values{}
 	form.Add("login_name", username)
 	form.Add("login_pass", password)
@@ -137,7 +139,7 @@ func (c *ClientImpl) Login(username, password string) (*LoginData, error) {
 	}
 	defer resp.Body.Close()
 
-	loginData, err := parseLogin(resp.Body)
+	loginData, err := parse.Login(resp.Body)
 
 	c.Cookie = resp.Header.Get("Set-Cookie")
 
@@ -152,7 +154,7 @@ func (c *ClientImpl) Login(username, password string) (*LoginData, error) {
 
 // AllTournaments reads all tournaments of a certain gender, league and year.
 // To get more detailed tournamnent information call `ComplementTournament`.
-func (c *ClientImpl) AllTournaments(gender, league string, year int) ([]Tournament, error) {
+func (c *ClientImpl) AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/information/all",
 		league,
@@ -169,11 +171,11 @@ func (c *ClientImpl) AllTournaments(gender, league string, year int) ([]Tourname
 
 	defer resp.Body.Close()
 
-	return parseTournamentList(resp.Body, c.GetURL)
+	return parse.TournamentList(resp.Body, c.GetURL)
 }
 
 // Ladder reads all players of a certain gender.
-func (c *ClientImpl) Ladder(gender string) ([]Player, error) {
+func (c *ClientImpl) Ladder(gender string) ([]volleynet.Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
 		genderLong(gender),
@@ -187,7 +189,7 @@ func (c *ClientImpl) Ladder(gender string) ([]Player, error) {
 
 	defer resp.Body.Close()
 
-	return parseLadder(resp.Body)
+	return parse.Ladder(resp.Body)
 }
 
 func genderLong(gender string) string {
@@ -201,8 +203,8 @@ func genderLong(gender string) string {
 }
 
 // ComplementTournament adds the missing information from `AllTournaments`.
-func (c *ClientImpl) ComplementTournament(tournament Tournament) (
-	*FullTournament, error) {
+func (c *ClientImpl) ComplementTournament(tournament volleynet.Tournament) (
+	*volleynet.FullTournament, error) {
 	url := c.GetAPITournamentLink(&tournament)
 
 	fmt.Print(url)
@@ -212,7 +214,7 @@ func (c *ClientImpl) ComplementTournament(tournament Tournament) (
 		return nil, errors.Wrapf(err, "loading tournament %d failed", tournament.ID)
 	}
 
-	t, err := parseFullTournament(resp.Body, tournament)
+	t, err := parse.FullTournament(resp.Body, tournament)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
@@ -247,7 +249,7 @@ func (c *ClientImpl) loadUniqueWriteCode(tournamentID int) (string, error) {
 		return "", errors.Wrap(err, "loading unique writecode failed")
 	}
 
-	code, err := parseUniqueWriteCode(resp.Body)
+	code, err := parse.UniqueWriteCode(resp.Body)
 
 	return code, errors.Wrap(err, "parsing unique writecode failed")
 }
@@ -325,7 +327,7 @@ func (c *ClientImpl) TournamentEntry(playerName string, playerID, tournamentID i
 }
 
 // SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
-func (c *ClientImpl) SearchPlayers(firstName, lastName, birthday string) ([]PlayerInfo, error) {
+func (c *ClientImpl) SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")
@@ -351,5 +353,5 @@ func (c *ClientImpl) SearchPlayers(firstName, lastName, birthday string) ([]Play
 		return nil, err
 	}
 
-	return parsePlayers(response.Body)
+	return parse.Players(response.Body)
 }

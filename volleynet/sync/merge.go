@@ -1,8 +1,10 @@
-package volleynet
+package sync
+
+import "github.com/raphi011/scores/volleynet"
 
 // MergeTournamentTeam merges two tournament teams depending on the syncType
 // and returns the new TournamentTeam.
-func MergeTournamentTeam(syncType string, persisted, current *TournamentTeam) *TournamentTeam {
+func MergeTournamentTeam(syncType string, persisted, current *volleynet.TournamentTeam) *volleynet.TournamentTeam {
 	persisted.Deregistered = current.Deregistered
 
 	if syncType == SyncTeamDone {
@@ -19,7 +21,7 @@ func MergeTournamentTeam(syncType string, persisted, current *TournamentTeam) *T
 
 // MergeTournament merges two tournaments depending on the syncType
 // and returns the new Tournament.
-func MergeTournament(syncType string, persisted, current *FullTournament) *FullTournament {
+func MergeTournament(syncType string, persisted, current *volleynet.FullTournament) *volleynet.FullTournament {
 	if syncType == SyncTournamentUpcomingToCanceled {
 		persisted.Name = current.Name
 		persisted.HTMLNotes = current.HTMLNotes
@@ -63,7 +65,7 @@ func MergeTournament(syncType string, persisted, current *FullTournament) *FullT
 
 // MergePlayer merges two players depending on the syncType
 // and returns the new player.
-func MergePlayer(persisted, current *Player) *Player {
+func MergePlayer(persisted, current *volleynet.Player) *volleynet.Player {
 	persisted.FirstName = current.FirstName
 	persisted.LastName = current.LastName
 	persisted.Birthday = current.Birthday

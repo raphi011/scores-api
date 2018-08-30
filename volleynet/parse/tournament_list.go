@@ -1,48 +1,23 @@
-package volleynet
+package parse
 
 import (
 	"io"
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/raphi011/scores/volleynet"
 )
 
-const (
-	// StatusUpcoming represents the state of a tournament not done yet
-	StatusUpcoming = "upcoming"
-	// StatusDone represents the state of a completed tournament
-	StatusDone = "done"
-	// StatusCanceled represents the state of a canceled tournament
-	StatusCanceled = "canceled"
-)
-
-// Tournament is all the information that can be parsed from the tournament list
-type Tournament struct {
-	Start            time.Time `json:"start"`
-	End              time.Time `json:"end"`
-	Name             string    `json:"name"`
-	Season           int       `json:"season"`
-	League           string    `json:"league"`
-	Phase            string    `json:"phase"`
-	Link             string    `json:"link"`
-	EntryLink        string    `json:"entryLink"`
-	ID               int       `json:"id"`
-	Status           string    `json:"status"` // can be `StatusUpcoming`, `StatusDone` or `StatusCanceled`
-	RegistrationOpen bool      `json:"registrationOpen"`
-	Gender           string    `json:"gender"`
-}
-
-func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
+func TournamentList(html io.Reader, host string) ([]volleynet.Tournament, error) {
 	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err
 	}
 
-	tournaments := []Tournament{}
+	tournaments := []volleynet.Tournament{}
 
 	rows := doc.Find("tbody>tr")
 
@@ -66,11 +41,11 @@ func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
 		column = columns.Eq(4)
 		content := trimmSelectionText(column)
 		if content == "Abgesagt" {
-			tournament.Status = StatusCanceled
+			tournament.Status = volleynet.StatusCanceled
 			tournament.RegistrationOpen = false
 		} else {
 			// `StatusClosed` is set exclusively in parseFullTournament
-			tournament.Status = StatusUpcoming
+			tournament.Status = volleynet.StatusUpcoming
 
 			if entryLink := column.Find("a"); entryLink.Length() == 1 {
 				tournament.RegistrationOpen = true
@@ -86,9 +61,9 @@ func parseTournamentList(html io.Reader, host string) ([]Tournament, error) {
 	return tournaments, nil
 }
 
-func extractTournamentLinkData(relativeLink, host string) Tournament {
+func extractTournamentLinkData(relativeLink, host string) volleynet.Tournament {
 	if len(relativeLink) == 0 {
-		return Tournament{}
+		return volleynet.Tournament{}
 	}
 
 	if relativeLink[0] == '/' {
@@ -99,7 +74,7 @@ func extractTournamentLinkData(relativeLink, host string) Tournament {
 
 	season, _ := strconv.Atoi(readURLPart(relativeLink, "saison/"))
 
-	return Tournament{
+	return volleynet.Tournament{
 		Gender: readURLPart(relativeLink, "sex/"),
 		League: readURLPart(relativeLink, "bewerbe/"),
 		Phase:  readURLPart(relativeLink, "phase/"),

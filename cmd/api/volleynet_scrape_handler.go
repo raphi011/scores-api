@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/raphi011/scores/db/sqlite"
 	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores/volleynet/client"
+	"github.com/raphi011/scores/volleynet/sync"
 )
 
 type volleynetScrapeHandler struct {
@@ -19,10 +21,10 @@ type volleynetScrapeHandler struct {
 
 func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
-	client := volleynet.DefaultClient()
+	vnClient := client.DefaultClient()
 
-	sync := volleynet.SyncService{
-		Client:           client,
+	sync := sync.SyncService{
+		Client:           vnClient,
 		VolleynetService: h.volleynetService,
 	}
 
@@ -50,17 +52,17 @@ func (h *volleynetScrapeHandler) scrapeTournament(c *gin.Context) {
 		log.Warn(err)
 	}
 
-	client := volleynet.DefaultClient()
-	fullTournament, err := client.ComplementTournament(tournament.Tournament)
+	vnClient := client.DefaultClient()
+	fullTournament, err := vnClient.ComplementTournament(tournament.Tournament)
 
 	if err != nil {
 		log.Warn(err)
 	}
 
-	syncInformation := volleynet.SyncTournaments([]volleynet.FullTournament{*tournament}, fullTournament.Tournament)
-	sync := syncInformation[0]
+	syncInformation := sync.SyncTournaments([]volleynet.FullTournament{*tournament}, fullTournament.Tournament)
+	tSync := syncInformation[0]
 
-	mergedTournament := volleynet.MergeTournament(sync.SyncType, sync.OldTournament, fullTournament)
+	mergedTournament := sync.MergeTournament(tSync.SyncType, tSync.OldTournament, fullTournament)
 
 	err = h.volleynetService.UpdateTournament(mergedTournament)
 
@@ -80,10 +82,10 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 		return
 	}
 
-	client := volleynet.DefaultClient()
+	vnClient := client.DefaultClient()
 
-	sync := volleynet.SyncService{
-		Client:           client,
+	sync := sync.SyncService{
+		Client:           vnClient,
 		VolleynetService: h.volleynetService,
 	}
 

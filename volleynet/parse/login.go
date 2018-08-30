@@ -1,52 +1,42 @@
-package volleynet
+package parse
 
 import (
 	"io"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/raphi011/scores/volleynet"
 )
 
-type LoginData struct {
-	PlayerInfo
-	License License
-}
-
-type License struct {
-	Nr        string
-	Type      string
-	Requested string
-}
-
-type loginDataParser func(*goquery.Selection, *LoginData)
+type loginDataParser func(*goquery.Selection, *volleynet.LoginData)
 
 var parseLoginDataMap = map[string]loginDataParser{
-	"Name": func(value *goquery.Selection, d *LoginData) {
+	"Name": func(value *goquery.Selection, d *volleynet.LoginData) {
 		//  parsePlayerName(value) TODO
 	},
-	"Geburtsdatum": func(value *goquery.Selection, d *LoginData) {
+	"Geburtsdatum": func(value *goquery.Selection, d *volleynet.LoginData) {
 		d.Birthday = value.Text()
 	},
-	"Lizenz": func(value *goquery.Selection, d *LoginData) {
+	"Lizenz": func(value *goquery.Selection, d *volleynet.LoginData) {
 		d.License.Type = value.Text()
 	},
-	"Lizenznummer": func(value *goquery.Selection, d *LoginData) {
+	"Lizenznummer": func(value *goquery.Selection, d *volleynet.LoginData) {
 		d.License.Nr = value.Text()
 
 		d.ID, _ = parseLicenseNr(d.License.Nr)
 	},
-	"Beantragt": func(value *goquery.Selection, d *LoginData) {
+	"Beantragt": func(value *goquery.Selection, d *volleynet.LoginData) {
 		d.License.Requested = value.Text()
 	},
 }
 
-func parseLogin(html io.Reader) (*LoginData, error) {
+func Login(html io.Reader) (*volleynet.LoginData, error) {
 	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err
 	}
 
-	loginData := &LoginData{}
+	loginData := &volleynet.LoginData{}
 
 	form := doc.Find("form[name='volleynet']")
 

@@ -14,7 +14,7 @@ import (
 
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/db/sqlite"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores/volleynet/client"
 )
 
 type volleynetHandler struct {
@@ -99,8 +99,8 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 		return
 	}
 
-	client := volleynet.DefaultClient()
-	loginData, err := client.Login(su.Username, su.Password)
+	vnClient := client.DefaultClient()
+	loginData, err := vnClient.Login(su.Username, su.Password)
 
 	if err != nil {
 		c.AbortWithError(http.StatusUnauthorized, err)
@@ -130,7 +130,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 		}
 	}
 
-	err = client.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
+	err = vnClient.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
 
 	if err != nil {
 		log.Printf("entry to tournamentID %v with partnerID %v did not work: %s", su.TournamentID, su.PartnerID, err)
@@ -142,11 +142,11 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 }
 
 func (h *volleynetHandler) searchPlayers(c *gin.Context) {
-	client := volleynet.DefaultClient()
+	vnClient := client.DefaultClient()
 	firstName := c.Query("fname")
 	lastName := c.Query("lname")
 	birthday := c.Query("bday")
-	players, err := client.SearchPlayers(firstName, lastName, birthday)
+	players, err := vnClient.SearchPlayers(firstName, lastName, birthday)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)

@@ -1,17 +1,13 @@
-package volleynet
+package parse
 
-import "io"
+import (
+	"io"
 
-// PlayerInfo contains all player information that the search player api returns
-type PlayerInfo struct {
-	ID        int    `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Birthday  string `json:"birthday"`
-}
+	"github.com/raphi011/scores/volleynet"
+)
 
-func parsePlayers(html io.Reader) ([]PlayerInfo, error) {
-	players := []PlayerInfo{}
+func Players(html io.Reader) ([]volleynet.PlayerInfo, error) {
+	players := []volleynet.PlayerInfo{}
 	doc, err := parseHTML(html)
 
 	if err != nil {
@@ -25,7 +21,7 @@ func parsePlayers(html io.Reader) ([]PlayerInfo, error) {
 
 		r := rows.Eq(i)
 
-		player := PlayerInfo{}
+		player := volleynet.PlayerInfo{}
 
 		columns := r.Find("td")
 

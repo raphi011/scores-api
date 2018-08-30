@@ -1,17 +1,19 @@
-package volleynet
+package parse
 
 import (
 	"io"
+
+	"github.com/raphi011/scores/volleynet"
 )
 
-func parseLadder(html io.Reader) ([]Player, error) {
+func Ladder(html io.Reader) ([]volleynet.Player, error) {
 	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err
 	}
 
-	players := []Player{}
+	players := []volleynet.Player{}
 	rows := doc.Find("tbody>tr")
 	genderTitle := doc.Find("h2").Text()
 	var gender string
@@ -31,7 +33,7 @@ func parseLadder(html io.Reader) ([]Player, error) {
 			continue
 		}
 
-		p := Player{}
+		p := volleynet.Player{}
 		p.Gender = gender
 
 		for j := range columns.Nodes {

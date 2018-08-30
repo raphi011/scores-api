@@ -1,18 +1,19 @@
-package volleynet
+package parse
 
 import (
 	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/volleynet"
 )
 
 func TestParseLadderTest(t *testing.T) {
-	response, _ := os.Open("testdata/ladder-men.html")
+	response, _ := os.Open("../testdata/ladder-men.html")
 
-	expected := []Player{
-		Player{
-			PlayerInfo: PlayerInfo{
+	expected := []volleynet.Player{
+		volleynet.Player{
+			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Alexander",
 				LastName:  "Horst",
 				ID:        246,
@@ -24,8 +25,8 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
-		Player{
-			PlayerInfo: PlayerInfo{
+		volleynet.Player{
+			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Clemens",
 				LastName:  "Doppler",
 				ID:        1050,
@@ -37,8 +38,8 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
-		Player{
-			PlayerInfo: PlayerInfo{
+		volleynet.Player{
+			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Robin Valentin",
 				LastName:  "Seidl",
 				ID:        5626,
@@ -50,8 +51,8 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  1900,
 			Gender:       "M",
 		},
-		Player{
-			PlayerInfo: PlayerInfo{
+		volleynet.Player{
+			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Martin",
 				LastName:  "Ermacora",
 				ID:        6656,
@@ -65,13 +66,13 @@ func TestParseLadderTest(t *testing.T) {
 		},
 	}
 
-	ladder, err := parseLadder(response)
+	ladder, err := Ladder(response)
 
 	if err != nil {
-		t.Errorf("parsePlayers() err: %s", err)
+		t.Errorf("Ladder() err: %s", err)
 	}
 
 	if !cmp.Equal(ladder, expected) {
-		t.Errorf("parsePlayers(): %s", cmp.Diff(expected, ladder))
+		t.Errorf("Ladder(): %s", cmp.Diff(expected, ladder))
 	}
 }

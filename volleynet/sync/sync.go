@@ -1,4 +1,4 @@
-package volleynet
+package sync
 
 import (
 	"fmt"
@@ -6,26 +6,28 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores/volleynet/client"
 )
 
 // PersistanceService is a way to persist and retrieve tournaments
 type PersistanceService interface {
-	UpdateTournament(t *FullTournament) error
-	NewTournament(t *FullTournament) error
-	SeasonTournaments(season int) ([]FullTournament, error)
+	UpdateTournament(t *volleynet.FullTournament) error
+	NewTournament(t *volleynet.FullTournament) error
+	SeasonTournaments(season int) ([]volleynet.FullTournament, error)
 
-	AllPlayers() ([]Player, error)
-	NewPlayer(p *Player) error
-	UpdatePlayer(p *Player) error
+	AllPlayers() ([]volleynet.Player, error)
+	NewPlayer(p *volleynet.Player) error
+	UpdatePlayer(p *volleynet.Player) error
 
-	TournamentTeams(tournamentID int) ([]TournamentTeam, error)
-	NewTeam(t *TournamentTeam) error
-	UpdateTournamentTeam(t *TournamentTeam) error
+	TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error)
+	NewTeam(t *volleynet.TournamentTeam) error
+	UpdateTournamentTeam(t *volleynet.TournamentTeam) error
 }
 
 type SyncService struct {
 	VolleynetService PersistanceService
-	Client           Client
+	Client           client.Client
 }
 
 type LadderSyncReport struct {
@@ -156,8 +158,8 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Tournamen
 	return report, nil
 }
 
-func (s *SyncService) addPlayersIfNew(persistedPlayers []Player, players ...*Player) (
-	[]Player, error) {
+func (s *SyncService) addPlayersIfNew(persistedPlayers []volleynet.Player, players ...*volleynet.Player) (
+	[]volleynet.Player, error) {
 
 	for _, p := range players {
 		player := FindPlayer(persistedPlayers, p.ID)
@@ -229,13 +231,13 @@ func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 // PlayerSyncInformation contains sync information for two `Player`s
 type PlayerSyncInformation struct {
 	IsNew     bool
-	OldPlayer *Player
-	NewPlayer *Player
+	OldPlayer *volleynet.Player
+	NewPlayer *volleynet.Player
 }
 
 // SyncPlayers takes a slice of current and old `Player`s and finds out which
 // one is new and which needs to get updated
-func SyncPlayers(persisted []Player, current ...Player) []PlayerSyncInformation {
+func SyncPlayers(persisted []volleynet.Player, current ...volleynet.Player) []PlayerSyncInformation {
 	ps := []PlayerSyncInformation{}
 	for i := range current {
 		newPlayer := &current[i]
@@ -255,8 +257,8 @@ func SyncPlayers(persisted []Player, current ...Player) []PlayerSyncInformation 
 type TournamentSyncInformation struct {
 	IsNew         bool
 	SyncType      string
-	OldTournament *FullTournament
-	NewTournament *Tournament
+	OldTournament *volleynet.FullTournament
+	NewTournament *volleynet.Tournament
 }
 
 // represents the various tournament sync states.
@@ -268,20 +270,20 @@ const (
 	SyncTournamentNew                = "SyncTournamentNew"
 )
 
-func tournamentSyncType(persisted *FullTournament, current *Tournament) string {
+func tournamentSyncType(persisted *volleynet.FullTournament, current *volleynet.Tournament) string {
 	if persisted == nil {
 		return SyncTournamentNew
 	}
-	if persisted.Status != StatusUpcoming {
+	if persisted.Status != volleynet.StatusUpcoming {
 		return SyncTournamentNoUpdate
 	}
-	if current.Status == StatusCanceled {
+	if current.Status == volleynet.StatusCanceled {
 		return SyncTournamentUpcomingToCanceled
 	}
-	if current.Status == StatusUpcoming {
+	if current.Status == volleynet.StatusUpcoming {
 		return SyncTournamentUpcoming
 	}
-	if current.Status == StatusDone {
+	if current.Status == volleynet.StatusDone {
 		return SyncTournamentUpcomingToDone
 	}
 
@@ -289,7 +291,7 @@ func tournamentSyncType(persisted *FullTournament, current *Tournament) string {
 }
 
 // SyncTournaments finds out if and how tournaments have to be synced
-func SyncTournaments(persisted []FullTournament, current ...Tournament) []TournamentSyncInformation {
+func SyncTournaments(persisted []volleynet.FullTournament, current ...volleynet.Tournament) []TournamentSyncInformation {
 	ts := []TournamentSyncInformation{}
 	for i := range current {
 		newTournament := &current[i]
@@ -324,11 +326,11 @@ const (
 type TournamentTeamSyncInformation struct {
 	IsNew    bool
 	SyncType string
-	OldTeam  *TournamentTeam
-	NewTeam  *TournamentTeam
+	OldTeam  *volleynet.TournamentTeam
+	NewTeam  *volleynet.TournamentTeam
 }
 
-func tournamentTeamSyncType(tournamentSyncType string, persisted, current *TournamentTeam) string {
+func tournamentTeamSyncType(tournamentSyncType string, persisted, current *volleynet.TournamentTeam) string {
 	if tournamentSyncType == SyncTournamentNew {
 		return SyncTeamNew
 	}
@@ -346,7 +348,7 @@ func tournamentTeamSyncType(tournamentSyncType string, persisted, current *Tourn
 }
 
 // SyncTournamentTeams finds out if and how tournament teams have to be synced
-func SyncTournamentTeams(tournamentSyncType string, persisted, current []TournamentTeam) []TournamentTeamSyncInformation {
+func SyncTournamentTeams(tournamentSyncType string, persisted, current []volleynet.TournamentTeam) []TournamentTeamSyncInformation {
 	ts := []TournamentTeamSyncInformation{}
 	for i := range current {
 		newTeam := &current[i]

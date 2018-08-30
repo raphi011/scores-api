@@ -1,4 +1,4 @@
-package volleynet
+package parse
 
 import (
 	"fmt"

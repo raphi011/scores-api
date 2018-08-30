@@ -1,29 +1,30 @@
-package volleynet
+package parse
 
 import (
 	"os"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/volleynet"
 )
 
 func TestParsePlayers(t *testing.T) {
-	response, _ := os.Open("testdata/search.html")
+	response, _ := os.Open("../testdata/search.html")
 
-	expected := []PlayerInfo{
-		PlayerInfo{
+	expected := []volleynet.PlayerInfo{
+		volleynet.PlayerInfo{
 			FirstName: "Cristopher",
 			LastName:  "Pfau",
 			ID:        34822,
 			Birthday:  "28.01.2000",
 		},
-		PlayerInfo{
+		volleynet.PlayerInfo{
 			FirstName: "Hannes",
 			LastName:  "Pfau",
 			ID:        50427,
 			Birthday:  "22.10.2002",
 		},
-		PlayerInfo{
+		volleynet.PlayerInfo{
 			FirstName: "Jennifer",
 			LastName:  "Pfau",
 			ID:        42378,
@@ -31,13 +32,13 @@ func TestParsePlayers(t *testing.T) {
 		},
 	}
 
-	players, err := parsePlayers(response)
+	players, err := Players(response)
 
 	if err != nil {
-		t.Errorf("parsePlayers() err: %s", err)
+		t.Errorf("Players() err: %s", err)
 	}
 
 	if !cmp.Equal(players, expected) {
-		t.Errorf("parsePlayers(): %s", cmp.Diff(expected, players))
+		t.Errorf("Players(): %s", cmp.Diff(expected, players))
 	}
 }

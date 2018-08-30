@@ -1,4 +1,4 @@
-package volleynet
+package parse
 
 import (
 	"io"
@@ -6,11 +6,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-func parseUniqueWriteCode(html io.Reader) (string, error) {
+func UniqueWriteCode(html io.Reader) (string, error) {
 	doc, err := parseHTML(html)
 
 	if err != nil {
-		return "", errors.Wrap(err, "parseUniqueWriteCode failed")
+		return "", errors.Wrap(err, "UniqueWriteCode failed")
 	}
 
 	input := doc.Find("input[name='XX_unique_write_XXBeach/Profile/TurnierAnmeldung']")
@@ -18,7 +18,7 @@ func parseUniqueWriteCode(html io.Reader) (string, error) {
 	val, exists := input.Attr("value")
 
 	if !exists {
-		return "", errors.New("parseUniqueWriteCode failed, code not found")
+		return "", errors.New("UniqueWriteCode failed, code not found")
 	}
 
 	return val, nil
