@@ -99,7 +99,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 		return
 	}
 
-	vnClient := client.DefaultClient()
+	vnClient := client.Default()
 	loginData, err := vnClient.Login(su.Username, su.Password)
 
 	if err != nil {
@@ -142,7 +142,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 }
 
 func (h *volleynetHandler) searchPlayers(c *gin.Context) {
-	vnClient := client.DefaultClient()
+	vnClient := client.Default()
 	firstName := c.Query("fname")
 	lastName := c.Query("lname")
 	birthday := c.Query("bday")

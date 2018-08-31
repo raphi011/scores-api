@@ -34,8 +34,8 @@ type ClientImpl struct {
 	Cookie  string
 }
 
-// DefaultClient returns a Client with the correct PostURL and GetURL fields set.
-func DefaultClient() Client {
+// Default returns a Client with the correct PostURL and GetURL fields set.
+func Default() Client {
 	return &ClientImpl{
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",

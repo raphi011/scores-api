@@ -21,7 +21,7 @@ type volleynetScrapeHandler struct {
 
 func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
-	vnClient := client.DefaultClient()
+	vnClient := client.Default()
 
 	sync := sync.SyncService{
 		Client:           vnClient,
@@ -52,7 +52,7 @@ func (h *volleynetScrapeHandler) scrapeTournament(c *gin.Context) {
 		log.Warn(err)
 	}
 
-	vnClient := client.DefaultClient()
+	vnClient := client.Default()
 	fullTournament, err := vnClient.ComplementTournament(tournament.Tournament)
 
 	if err != nil {
@@ -82,7 +82,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 		return
 	}
 
-	vnClient := client.DefaultClient()
+	vnClient := client.Default()
 
 	sync := sync.SyncService{
 		Client:           vnClient,
