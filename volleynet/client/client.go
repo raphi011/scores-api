@@ -22,6 +22,7 @@ type Client interface {
 	AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error)
 	Ladder(gender string) ([]volleynet.Player, error)
 	ComplementTournament(tournament volleynet.Tournament) (*volleynet.FullTournament, error)
+	ComplementMultipleTournaments(tournaments []volleynet.Tournament) ([]volleynet.FullTournament, error)
 	TournamentWithdrawal(tournamentID int) error
 	TournamentEntry(playerName string, playerID, tournamentID int) error
 	SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error)
@@ -223,6 +224,23 @@ func (c *ClientImpl) ComplementTournament(tournament volleynet.Tournament) (
 	t.Link = c.GetTournamentLink(&tournament)
 
 	return t, nil
+}
+
+func (c *ClientImpl) ComplementMultipleTournaments(tournaments []volleynet.Tournament) (
+	[]volleynet.FullTournament, error) {
+	// maybe donwload tournaments in parallel in the future?
+	fullTournaments := []volleynet.FullTournament{}
+
+	for _, t := range tournaments {
+		fullTournament, err := c.ComplementTournament(t)
+		if err != nil {
+			return nil, err
+		}
+
+		fullTournaments = append(fullTournaments, *fullTournament)
+	}
+
+	return fullTournaments, nil
 }
 
 func (c *ClientImpl) loadUniqueWriteCode(tournamentID int) (string, error) {

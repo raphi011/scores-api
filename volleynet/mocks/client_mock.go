@@ -39,6 +39,12 @@ func (m *ClientMock) Ladder(gender string) ([]volleynet.Player, error) {
 	return args.Get(0).([]volleynet.Player), args.Error(1)
 }
 
+func (m *ClientMock) ComplementMultipleTournaments(tournament []volleynet.Tournament) ([]volleynet.FullTournament, error) {
+	args := m.Called(tournament)
+
+	return args.Get(0).([]volleynet.FullTournament), args.Error(1)
+}
+
 func (m *ClientMock) ComplementTournament(tournament volleynet.Tournament) (*volleynet.FullTournament, error) {
 	args := m.Called(tournament)
 

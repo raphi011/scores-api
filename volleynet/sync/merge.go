@@ -4,14 +4,16 @@ import "github.com/raphi011/scores/volleynet"
 
 // MergeTournamentTeam merges two tournament teams depending on the syncType
 // and returns the new TournamentTeam.
-func MergeTournamentTeam(syncType string, persisted, current *volleynet.TournamentTeam) *volleynet.TournamentTeam {
+func MergeTournamentTeam(persisted, current *volleynet.TournamentTeam) *volleynet.TournamentTeam {
 	persisted.Deregistered = current.Deregistered
 
-	if syncType == SyncTeamDone {
+	isTournamentDone := persisted.Rank == 0 && current.Rank > 0
+
+	if isTournamentDone {
 		persisted.PrizeMoney = current.PrizeMoney
 		persisted.Rank = current.Rank
 		persisted.WonPoints = current.WonPoints
-	} else if syncType == SyncTeamUpcoming {
+	} else {
 		persisted.Seed = current.Seed
 		persisted.TotalPoints = current.TotalPoints
 	}
@@ -21,8 +23,8 @@ func MergeTournamentTeam(syncType string, persisted, current *volleynet.Tourname
 
 // MergeTournament merges two tournaments depending on the syncType
 // and returns the new Tournament.
-func MergeTournament(syncType string, persisted, current *volleynet.FullTournament) *volleynet.FullTournament {
-	if syncType == SyncTournamentUpcomingToCanceled {
+func MergeTournament(persisted, current volleynet.FullTournament) volleynet.FullTournament {
+	if persisted.Status == volleynet.StatusUpcoming && current.Status == volleynet.StatusCanceled {
 		persisted.Name = current.Name
 		persisted.HTMLNotes = current.HTMLNotes
 	} else {
@@ -47,14 +49,13 @@ func MergeTournament(syncType string, persisted, current *volleynet.FullTourname
 		persisted.Longitude = current.Longitude
 		persisted.SignedupTeams = current.SignedupTeams
 
-		if syncType == SyncTournamentUpcomingToDone {
+		if persisted.Status == volleynet.StatusUpcoming && current.Status == volleynet.StatusDone {
 			persisted.EntryLink = ""
 			persisted.RegistrationOpen = false
 
-		} else if syncType == SyncTournamentUpcoming {
+		} else if current.Status == volleynet.StatusUpcoming {
 			persisted.EntryLink = current.EntryLink
 			persisted.RegistrationOpen = current.RegistrationOpen
-
 		}
 	}
 

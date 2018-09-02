@@ -18,7 +18,7 @@ func TestMergeTournamentTeam(t *testing.T) {
 		WonPoints:  35,
 	}
 
-	result := MergeTournamentTeam(SyncTeamDone, oldTeam, newTeam)
+	result := MergeTournamentTeam(oldTeam, newTeam)
 
 	if result.PrizeMoney != newTeam.PrizeMoney ||
 		result.Rank != newTeam.Rank ||
@@ -28,19 +28,19 @@ func TestMergeTournamentTeam(t *testing.T) {
 }
 
 func TestMergeCanceledTournament(t *testing.T) {
-	old := &volleynet.FullTournament{
+	old := volleynet.FullTournament{
 		Tournament: volleynet.Tournament{
 			Status: volleynet.StatusUpcoming,
 		},
 	}
 
-	new := &volleynet.FullTournament{
+	new := volleynet.FullTournament{
 		Tournament: volleynet.Tournament{
 			Status: volleynet.StatusCanceled,
 		},
 	}
 
-	merged := MergeTournament(SyncTournamentUpcomingToCanceled, old, new)
+	merged := MergeTournament(old, new)
 
 	if merged.Status != volleynet.StatusCanceled {
 		t.Errorf("MergeTournament(SyncTournamentUpcomingToCanceled, old, new) did not update correctly")

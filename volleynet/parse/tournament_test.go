@@ -8,142 +8,223 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-func Test_done_lms_tournament(t *testing.T) {
-	response, _ := os.Open("../testdata/done-tournament.html")
-
-	tournament, err := FullTournament(response, volleynet.Tournament{ID: 22750, Gender: "M", Status: "upcoming"})
-
-	if err != nil {
-		t.Errorf("FullTournament() err: %v", err)
-	}
-
-	compare := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
-			Phase:  "LMS",
-			Status: "done",
-			ID:     22750,
-			Gender: "M",
-			Start:  mustParseDate("18.08.2018"),
-			End:    mustParseDate("18.08.2018"),
-		},
-		Mode:          "Double Elimination 32er-Raster",
-		Location:      "Auf der Schmelz 10 1150 Wien",
-		MaxTeams:      32,
-		SignedupTeams: 4,
-		Organiser:     "Beachvolley Wien",
-		Email:         "office@sportz.at",
-		Web:           "www.beachvolleywien.at",
-		Phone:         "0699/81 49 1124",
-		Teams: []volleynet.TournamentTeam{
-			volleynet.TournamentTeam{
-				Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 4162, FirstName: "Christoph", LastName: "Haas"}, Gender: "M", CountryUnion: "STVV"},
-				Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 20158, FirstName: "Dominik Karl", LastName: "Blaha"}, Gender: "M", CountryUnion: "STVV"},
-				Deregistered: false,
-				Rank:         1,
-				TournamentID: 22750,
-				WonPoints:    80,
-			},
-			volleynet.TournamentTeam{
-				Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 4523, FirstName: "Josef", LastName: "Buchner"}, Gender: "M", CountryUnion: "SVV"},
-				Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 4179, FirstName: "Florian", LastName: "Tatra"}, Gender: "M", CountryUnion: "SVV"},
-				Deregistered: false,
-				Rank:         2,
-				TournamentID: 22750,
-				WonPoints:    70,
-			},
-			volleynet.TournamentTeam{
-				Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 13011, FirstName: "Daniel", LastName: "Wimmer"}, Gender: "M", CountryUnion: "SVV"},
-				Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 44897, FirstName: "Maximilian", LastName: "Wieser"}, Gender: "M", CountryUnion: "SVV"},
-				Deregistered: false,
-				Rank:         3,
-				TournamentID: 22750,
-				WonPoints:    60,
-			},
-			volleynet.TournamentTeam{
-				Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 39947, FirstName: "Michael", LastName: "Seiser"}, Gender: "M", CountryUnion: "WVV"},
-				Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1991, FirstName: "Wolfgang", LastName: "Ertl"}, Gender: "M", CountryUnion: "WVV"},
-				Deregistered: false,
-				Rank:         4,
-				TournamentID: 22750,
-				WonPoints:    50,
-			},
-		},
-	}
-
-	if !cmp.Equal(tournament, compare) {
-		t.Errorf("FullTournament(): %+v", cmp.Diff(tournament, compare))
-	}
-
-}
-
-func Test_done_tournament(t *testing.T) {
-	response, _ := os.Open("../testdata/done.html")
-
-	tournament, err := FullTournament(response, volleynet.Tournament{ID: 22228, Gender: "M", Status: "upcoming"})
-
-	if err != nil {
-		t.Errorf("FullTournament() err: %s", err)
-	}
-
-	// ignore notes
-	tournament.HTMLNotes = ""
-
-	compare := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
-			ID:     22228,
-			Phase:  "ABV Tour AMATEUR 1",
-			Start:  mustParseDate("21.05.2018"),
-			End:    mustParseDate("21.05.2018"),
-			Gender: "M",
-			Status: "done",
-		},
-		SignedupTeams: 3,
-		MaxTeams:      32,
-		Web:           "www.beachvolleyclub.at",
-		Location:      "Arbeiterstrandbadstraße 87b 1210, Wien",
-		Mode:          "Double Elimination 32er-Raster",
-		MaxPoints:     339,
-		Organiser:     "MOHAMED Tarek Mohie El-Din",
-		Phone:         "0699 106 934 19",
-		Email:         "tarek.mohamed@outlook.com",
-		Teams: []volleynet.TournamentTeam{
-			volleynet.TournamentTeam{
-				Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1043, FirstName: "Peter", LastName: "Dietl"}, Gender: "M", CountryUnion: "WVV"},
-				Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 39947, FirstName: "Michael", LastName: "Seiser"}, Gender: "M", CountryUnion: "WVV"},
-				Deregistered: false,
-				Rank:         1,
-				TournamentID: 22228,
-				WonPoints:    50,
-			},
-			volleynet.TournamentTeam{
-				Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 11072, FirstName: "Christoph", LastName: "Brunnhofer"}, Gender: "M", CountryUnion: "STVV"},
-				Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 27471, FirstName: "Christoph", LastName: "Mittendrein"}, Gender: "M", CountryUnion: "STVV"},
-				Deregistered: false,
-				Rank:         2,
-				TournamentID: 22228,
-				WonPoints:    45,
-			},
-			volleynet.TournamentTeam{
-				Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 36552, FirstName: "Dominik", LastName: "Koudela"}, Gender: "M", CountryUnion: "WVV"},
-				Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 18348, FirstName: "Marian", LastName: "Schwinner"}, Gender: "M", CountryUnion: "NÖVV"},
-				Deregistered: false,
-				Rank:         3,
-				TournamentID: 22228,
-				WonPoints:    40,
-			},
-		},
-	}
-
-	if !cmp.Equal(tournament, compare) {
-		t.Errorf("FullTournament(): %+v", cmp.Diff(tournament, compare))
-	}
-}
-
-var upcoming_tests = []struct {
+var tournament_tests = []struct {
 	file       string
 	tournament volleynet.Tournament
 	out        *volleynet.FullTournament
 }{
+	{
+		"../testdata/22764-done.html",
+		volleynet.Tournament{ID: 22764, Gender: "M", Status: "upcoming"},
+		&volleynet.FullTournament{
+			Tournament: volleynet.Tournament{
+				ID:     22764,
+				Phase:  "ABV Tour AMATEUR 1",
+				Start:  mustParseDate("01.09.2018"),
+				End:    mustParseDate("01.09.2018"),
+				Gender: "M",
+				Status: "done",
+			},
+			SignedupTeams: 10,
+			MaxTeams:      16,
+			MinTeams:      4,
+			Web:           "www.12ndr.at",
+			Location:      "Beachvolleyballplatz Stockerau - Pestalozzigasse 1  2000 Stockerau",
+			Mode:          "Double Elimination 16er-Raster",
+			MaxPoints:     540,
+			Organiser:     "Michael Gahler",
+			Phone:         "+43 664 6122639",
+			Email:         "Vorstand@12ndr.at",
+			Teams: []volleynet.TournamentTeam{
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22606, FirstName: "Richard", LastName: "Bosse"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         1,
+					TournamentID: 22764,
+					WonPoints:    36,
+				},
+				volleynet.TournamentTeam{Player1: &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 28725, FirstName: "Alexander", LastName: "Jäger"}, Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 20436, FirstName: "Bernhard", LastName: "Metzger"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         2,
+					TournamentID: 22764,
+					WonPoints:    33,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 27201, FirstName: "Alexander", LastName: "Jirgal"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 17623, FirstName: "Luca Maxim", LastName: "Wojnar"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         3,
+					TournamentID: 22764,
+					WonPoints:    29,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 10198, FirstName: "Markus", LastName: "Mayer"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 42403, FirstName: "Constantin", LastName: "Schieber"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         4,
+					TournamentID: 22764,
+					WonPoints:    26,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22913, FirstName: "Herbert", LastName: "Eminger"}, Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 33125, FirstName: "Stefan", LastName: "Handschmann"}, Gender: "M", CountryUnion: "WVV"},
+					Deregistered: false,
+					Rank:         5,
+					TournamentID: 22764,
+					WonPoints:    22,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 44906, FirstName: "Reinhard", LastName: "Weiskirchner"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 13788, FirstName: "Michael", LastName: "Gahler"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         5,
+					TournamentID: 22764,
+					WonPoints:    22,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 18427, FirstName: "Michael", LastName: "Haas"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 39945, FirstName: "Werner", LastName: "Schmid"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         7,
+					TournamentID: 22764,
+					WonPoints:    18,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 36540, FirstName: "Andreas", LastName: "Zelinka"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 51104, FirstName: "Simon", LastName: "Sladek"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         7,
+					TournamentID: 22764,
+					WonPoints:    18,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 55789, FirstName: "Martin", LastName: "Gschweidl"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 36557, FirstName: "Stefan", LastName: "Müller"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         9,
+					TournamentID: 22764,
+					WonPoints:    15,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 55596, FirstName: "Thomas", LastName: "Müllner"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 43098, FirstName: "Sebastian", LastName: "Lechner"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         9,
+					TournamentID: 22764,
+					WonPoints:    15,
+				},
+			},
+		},
+	},
+	{
+
+		"../testdata/done.html",
+		volleynet.Tournament{ID: 22228, Gender: "M", Status: "upcoming"},
+		&volleynet.FullTournament{
+			Tournament: volleynet.Tournament{
+				ID:     22228,
+				Phase:  "ABV Tour AMATEUR 1",
+				Start:  mustParseDate("21.05.2018"),
+				End:    mustParseDate("21.05.2018"),
+				Gender: "M",
+				Status: "done",
+			},
+			SignedupTeams: 3,
+			MaxTeams:      32,
+			Web:           "www.beachvolleyclub.at",
+			Location:      "Arbeiterstrandbadstraße 87b 1210, Wien",
+			Mode:          "Double Elimination 32er-Raster",
+			MaxPoints:     339,
+			Organiser:     "MOHAMED Tarek Mohie El-Din",
+			Phone:         "0699 106 934 19",
+			Email:         "tarek.mohamed@outlook.com",
+			Teams: []volleynet.TournamentTeam{
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1043, FirstName: "Peter", LastName: "Dietl"}, Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 39947, FirstName: "Michael", LastName: "Seiser"}, Gender: "M", CountryUnion: "WVV"},
+					Deregistered: false,
+					Rank:         1,
+					TournamentID: 22228,
+					WonPoints:    50,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 11072, FirstName: "Christoph", LastName: "Brunnhofer"}, Gender: "M", CountryUnion: "STVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 27471, FirstName: "Christoph", LastName: "Mittendrein"}, Gender: "M", CountryUnion: "STVV"},
+					Deregistered: false,
+					Rank:         2,
+					TournamentID: 22228,
+					WonPoints:    45,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 36552, FirstName: "Dominik", LastName: "Koudela"}, Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 18348, FirstName: "Marian", LastName: "Schwinner"}, Gender: "M", CountryUnion: "NÖVV"},
+					Deregistered: false,
+					Rank:         3,
+					TournamentID: 22228,
+					WonPoints:    40,
+				},
+			},
+		},
+	},
+	{
+		"../testdata/done-tournament.html",
+		volleynet.Tournament{ID: 22750, Gender: "M", Status: "upcoming"},
+		&volleynet.FullTournament{
+			Tournament: volleynet.Tournament{
+				Phase:  "LMS",
+				Status: "done",
+				ID:     22750,
+				Gender: "M",
+				Start:  mustParseDate("18.08.2018"),
+				End:    mustParseDate("18.08.2018"),
+			},
+			Mode:          "Double Elimination 32er-Raster",
+			Location:      "Auf der Schmelz 10 1150 Wien",
+			MaxTeams:      32,
+			SignedupTeams: 4,
+			Organiser:     "Beachvolley Wien",
+			Email:         "office@sportz.at",
+			Web:           "www.beachvolleywien.at",
+			Phone:         "0699/81 49 1124",
+			Teams: []volleynet.TournamentTeam{
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 4162, FirstName: "Christoph", LastName: "Haas"}, Gender: "M", CountryUnion: "STVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 20158, FirstName: "Dominik Karl", LastName: "Blaha"}, Gender: "M", CountryUnion: "STVV"},
+					Deregistered: false,
+					Rank:         1,
+					TournamentID: 22750,
+					WonPoints:    80,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 4523, FirstName: "Josef", LastName: "Buchner"}, Gender: "M", CountryUnion: "SVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 4179, FirstName: "Florian", LastName: "Tatra"}, Gender: "M", CountryUnion: "SVV"},
+					Deregistered: false,
+					Rank:         2,
+					TournamentID: 22750,
+					WonPoints:    70,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 13011, FirstName: "Daniel", LastName: "Wimmer"}, Gender: "M", CountryUnion: "SVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 44897, FirstName: "Maximilian", LastName: "Wieser"}, Gender: "M", CountryUnion: "SVV"},
+					Deregistered: false,
+					Rank:         3,
+					TournamentID: 22750,
+					WonPoints:    60,
+				},
+				volleynet.TournamentTeam{
+					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 39947, FirstName: "Michael", LastName: "Seiser"}, Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1991, FirstName: "Wolfgang", LastName: "Ertl"}, Gender: "M", CountryUnion: "WVV"},
+					Deregistered: false,
+					Rank:         4,
+					TournamentID: 22750,
+					WonPoints:    50,
+				},
+			},
+		},
+	},
+
 	{
 		"../testdata/upcoming.html",
 		volleynet.Tournament{ID: 22231, Gender: "M", Status: "upcoming"},
@@ -196,7 +277,7 @@ var upcoming_tests = []struct {
 	},
 
 	{
-		"../testdata/upcoming-wildcard-22764.html",
+		"../testdata/22764-upcoming-wildcard.html",
 		volleynet.Tournament{ID: 22764, Gender: "M", Status: "upcoming"},
 		&volleynet.FullTournament{
 			Tournament: volleynet.Tournament{
@@ -365,87 +446,13 @@ var upcoming_tests = []struct {
 					TournamentID: 22616,
 					WonPoints:    30,
 				},
-				/*
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         5,
-						TournamentID: 22616,
-						WonPoints:    26,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         5,
-						TournamentID: 22616,
-						WonPoints:    26,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         7,
-						TournamentID: 22616,
-						WonPoints:    21,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         7,
-						TournamentID: 22616,
-						WonPoints:    21,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         9,
-						TournamentID: 22616,
-						WonPoints:    17,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         9,
-						TournamentID: 22616,
-						WonPoints:    17,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         9,
-						TournamentID: 22616,
-						WonPoints:    17,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         9,
-						TournamentID: 22616,
-						WonPoints:    17,
-					},
-					volleynet.TournamentTeam{
-						Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 41275, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-						Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 22590, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
-						Deregistered: false,
-						Rank:         13,
-						TournamentID: 22616,
-						WonPoints:    14,
-					},
-				*/
 			},
 		},
 	},
 }
 
-func Test_upcoming_tournament(t *testing.T) {
-	for _, tt := range upcoming_tests {
+func Test_tournament(t *testing.T) {
+	for _, tt := range tournament_tests {
 		t.Run(tt.file, func(t *testing.T) {
 			response, _ := os.Open(tt.file)
 

@@ -71,7 +71,6 @@ func initRouter(app app) *gin.Engine {
 	localhost := router.Group("/")
 	localhost.Use(localAuth())
 	localhost.GET("/volleynet/scrape/tournaments", volleynetScrapeHandler.scrapeTournaments)
-	localhost.GET("/volleynet/scrape/tournaments/:tournamentID", volleynetScrapeHandler.scrapeTournament)
 	localhost.GET("/volleynet/scrape/ladder", volleynetScrapeHandler.scrapeLadder)
 
 	auth := router.Group("/")

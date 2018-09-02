@@ -50,23 +50,31 @@ func TestSyncTournamentInformation(t *testing.T) {
 	response, _ := os.Open("../testdata/upcoming.html")
 	tournament, _ := parse.FullTournament(response, volleynet.Tournament{Status: volleynet.StatusUpcoming, ID: 22231})
 
-	syncInfos := SyncTournaments([]volleynet.FullTournament{*tournament}, volleynet.Tournament{ID: 22231, Status: volleynet.StatusUpcoming})
+	syncInfos := SyncTournaments(tournament, &volleynet.Tournament{ID: 22231, Status: volleynet.StatusUpcoming})
 
-	if syncInfos[0].SyncType != SyncTournamentUpcoming {
-		t.Fatalf("SyncService.SyncTournaments() want: %s, got: %s", SyncTournamentUpcoming, syncInfos[0].SyncType)
+	if syncInfos.Type != SyncTournamentUpcoming {
+		t.Fatalf("SyncService.SyncTournaments() want: %s, got: %s", SyncTournamentUpcoming, syncInfos.Type)
 	}
 }
 
 func TestSyncTournaments(t *testing.T) {
 	clientTournaments := []volleynet.Tournament{volleynet.Tournament{
 		ID:     1,
-		Status: "upcoming",
+		Status: volleynet.StatusUpcoming,
 	}}
 	persistedTournaments := []volleynet.FullTournament{
 		volleynet.FullTournament{
-			Tournament: volleynet.Tournament{ID: 1, Status: "upcoming"}},
+			Tournament: volleynet.Tournament{ID: 1, Status: volleynet.StatusUpcoming}},
 	}
-	clientFullTournament := &volleynet.FullTournament{}
+	clientFullTournament := []volleynet.FullTournament{
+		volleynet.FullTournament{Tournament: volleynet.Tournament{
+			ID:     1,
+			Status: volleynet.StatusUpcoming,
+			Name:   "New name",
+		},
+			Teams: []volleynet.TournamentTeam{},
+		},
+	}
 
 	clientMock, volleynetMock, syncService := syncMock()
 
@@ -75,11 +83,9 @@ func TestSyncTournaments(t *testing.T) {
 	season := 2018
 
 	clientMock.On("AllTournaments", gender, league, season).Return(clientTournaments, nil)
-	volleynetMock.On("SeasonTournaments", season).Return(persistedTournaments, nil)
-	clientMock.On("ComplementTournament", clientTournaments[0]).Return(clientFullTournament, nil)
-	volleynetMock.On("UpdateTournament", &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{ID: 1},
-	}).Return(nil)
+	volleynetMock.On("Tournament", persistedTournaments[0].ID).Return(&persistedTournaments[0], nil)
+	clientMock.On("ComplementMultipleTournaments", clientTournaments).Return(clientFullTournament, nil)
+	volleynetMock.On("UpdateTournament", &clientFullTournament[0]).Return(nil)
 	volleynetMock.On("TournamentTeams", 1).Return([]volleynet.TournamentTeam{}, nil)
 	volleynetMock.On("AllPlayers").Return([]volleynet.Player{}, nil)
 
@@ -89,7 +95,18 @@ func TestSyncTournaments(t *testing.T) {
 		t.Error(err)
 	}
 
-	if report.UpdatedTournaments != 1 {
-		t.Errorf("SyncService.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", report.UpdatedTournaments)
+	if len(report.Tournament.Update) != 1 {
+		t.Errorf("SyncService.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", len(report.Tournament.Update))
 	}
 }
+
+// func TestSyncTournamentTeams(t *testing.T) {
+// 	response, _ := os.Open("22764-upcoming-firstteams.html")
+
+// 	clientMock, volleynetMock, syncService := syncMock()
+
+// 	volleynetMock.On("AllPlayers").Return([]volleynet.Player{}, nil)
+
+// 	full, _ := parse.FullTournament(response, volleynet.Tournament{})
+
+// }
