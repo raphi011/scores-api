@@ -93,6 +93,12 @@ func (m *VolleynetServiceMock) AllPlayers() ([]volleynet.Player, error) {
 	return args.Get(0).([]volleynet.Player), args.Error(1)
 }
 
+func (m *VolleynetServiceMock) Player(id int) (*volleynet.Player, error) {
+	args := m.Called(id)
+
+	return args.Get(0).(*volleynet.Player), args.Error(1)
+}
+
 func (m *VolleynetServiceMock) UpdatePlayer(p *volleynet.Player) error {
 	args := m.Called(p)
 

@@ -25,6 +25,7 @@ type VolleynetService interface {
 	SearchPlayers() ([]volleynet.Player, error)
 	AllPlayers() ([]volleynet.Player, error)
 	NewPlayer(p *volleynet.Player) error
+	Player(id int) (*volleynet.Player, error)
 	UpdatePlayer(p *volleynet.Player) error
 }
 
@@ -92,7 +93,7 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 		&t.SignedupTeams,
 	)
 
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 
@@ -660,6 +661,15 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 
 func (s *VolleynetServiceImpl) AllPlayers() ([]volleynet.Player, error) {
 	return scanVolleynetPlayers(s.DB, volleynetPlayersSelectSQL)
+}
+
+func (s *VolleynetServiceImpl) Player(id int) (*volleynet.Player, error) {
+	row := s.DB.QueryRow(
+		volleynetPlayerSelectSQL,
+		id,
+	)
+
+	return scanVolleynetPlayer(row)
 }
 
 func (s *VolleynetServiceImpl) NewPlayer(p *volleynet.Player) error {
