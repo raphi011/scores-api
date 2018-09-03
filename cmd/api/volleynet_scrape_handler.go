@@ -35,7 +35,7 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	report, err := sync.Ladder(gender)
 
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusBadGateway, err)
 		return
 	}
 
@@ -52,7 +52,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	seasonInt, err := strconv.Atoi(season)
 
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		c.AbortWithError(http.StatusBadGateway, err)
 		return
 	}
 
@@ -66,7 +66,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	report, err := sync.Tournaments(gender, league, seasonInt)
 
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusBadGateway, err)
 		return
 	}
 
