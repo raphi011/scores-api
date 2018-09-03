@@ -99,14 +99,3 @@ func TestSyncTournaments(t *testing.T) {
 		t.Errorf("SyncService.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", len(report.Tournament.Update))
 	}
 }
-
-// func TestSyncTournamentTeams(t *testing.T) {
-// 	response, _ := os.Open("22764-upcoming-firstteams.html")
-
-// 	clientMock, volleynetMock, syncService := syncMock()
-
-// 	volleynetMock.On("AllPlayers").Return([]volleynet.Player{}, nil)
-
-// 	full, _ := parse.FullTournament(response, volleynet.Tournament{})
-
-// }

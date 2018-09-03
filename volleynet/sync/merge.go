@@ -4,7 +4,7 @@ import "github.com/raphi011/scores/volleynet"
 
 // MergeTournamentTeam merges two tournament teams depending on the syncType
 // and returns the new TournamentTeam.
-func MergeTournamentTeam(persisted, current *volleynet.TournamentTeam) *volleynet.TournamentTeam {
+func MergeTournamentTeam(persisted, current volleynet.TournamentTeam) volleynet.TournamentTeam {
 	persisted.Deregistered = current.Deregistered
 
 	isTournamentDone := persisted.Rank == 0 && current.Rank > 0

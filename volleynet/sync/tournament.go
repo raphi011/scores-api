@@ -122,6 +122,7 @@ func (s *SyncService) persistTournaments(changes *TournamentChanges) error {
 		}
 	}
 
+	// TODO
 	// for _, delete := range changes.Delete {
 	// 	err := s.VolleynetService.Dele(&update)
 	// }

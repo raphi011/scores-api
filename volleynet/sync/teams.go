@@ -3,7 +3,6 @@ package sync
 import (
 	"fmt"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -36,23 +35,23 @@ func (s *SyncService) syncTournamentTeams(changes *TeamChanges, oldTeams, newTea
 		if oldTeam, ok := oldTeamMap[key]; !ok {
 			changes.New = append(changes.New, newTeam)
 		} else {
-			mergedTeam := MergeTournamentTeam(&oldTeam, &newTeam)
+			mergedTeam := MergeTournamentTeam(oldTeam, newTeam)
 
-			if hasTeamChanged(oldTeam, *mergedTeam) {
-				changes.Update = append(changes.Update, *mergedTeam)
+			if hasTeamChanged(oldTeam, mergedTeam) {
+				changes.Update = append(changes.Update, mergedTeam)
 			}
 		}
 	}
 
 	for key, oldTeam := range oldTeamMap {
-		if _, ok := oldTeamMap[key]; !ok {
+		if _, ok := newTeamMap[key]; !ok {
 			changes.Delete = append(changes.Delete, oldTeam)
 		}
 	}
 }
 
 func hasTeamChanged(old, new volleynet.TournamentTeam) bool {
-	return !cmp.Equal(new, old)
+	return new != old
 }
 
 func (s *SyncService) persistTeams(changes *TeamChanges) error {
@@ -75,6 +74,48 @@ func (s *SyncService) persistTeams(changes *TeamChanges) error {
 	// for _, delete := range changes.Delete {
 	// 	err := s.VolleynetService.Dele(&update)
 	// }
+
+	return nil
+}
+
+func (s *SyncService) addMissingPlayers(teams []volleynet.TournamentTeam) error {
+	players := distinctPlayers(teams)
+
+	for _, p := range players {
+		s.addPlayerIfNeeded(p)
+	}
+
+	return nil
+}
+
+func distinctPlayers(teams []volleynet.TournamentTeam) []*volleynet.Player {
+	encountered := map[int]bool{}
+
+	distinct := []*volleynet.Player{}
+
+	addIfNotEncountered := func(p *volleynet.Player) {
+		if !encountered[p.ID] {
+			encountered[p.ID] = true
+			distinct = append(distinct, p)
+		}
+	}
+
+	for _, t := range teams {
+		addIfNotEncountered(t.Player1)
+		addIfNotEncountered(t.Player2)
+	}
+
+	return distinct
+}
+
+func (s *SyncService) addPlayerIfNeeded(player *volleynet.Player) error {
+	if p, _ := s.VolleynetService.Player(player.ID); p == nil {
+		err := s.VolleynetService.NewPlayer(player)
+
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

@@ -18,6 +18,7 @@ type PersistanceService interface {
 	AllPlayers() ([]volleynet.Player, error)
 	NewPlayer(p *volleynet.Player) error
 	UpdatePlayer(p *volleynet.Player) error
+	Player(id int) (*volleynet.Player, error)
 
 	TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error)
 	NewTeam(t *volleynet.TournamentTeam) error
@@ -43,7 +44,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 	current, err := s.Client.AllTournaments(gender, league, season)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "loading the tournament list failed")
+		return nil, errors.Wrap(err, "loading the client tournament list failed")
 	}
 
 	persistedTournaments := []volleynet.FullTournament{}
@@ -53,7 +54,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 		persisted, err := s.VolleynetService.Tournament(t.ID)
 
 		if err != nil {
-			return report, errors.Wrap(err, "TODO")
+			return report, errors.Wrap(err, "loading the persisted tournament failed")
 		}
 
 		syncInfo := SyncTournaments(persisted, &t)
@@ -65,7 +66,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 		persisted.Teams, err = s.VolleynetService.TournamentTeams(t.ID)
 
 		if err != nil {
-			return report, errors.Wrap(err, "TODO")
+			return report, errors.Wrap(err, "loading the persisted tournament teams failed")
 		}
 
 		persistedTournaments = append(persistedTournaments, *persisted)
@@ -81,15 +82,20 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 	s.syncTournaments(report, persistedTournaments, currentTournaments)
 
 	err = s.persistChanges(report)
-	// todo logging
 
 	report.ScrapeDuration = time.Since(start) / time.Millisecond
 
-	return report, errors.Wrap(err, "todo")
+	return report, errors.Wrap(err, "persisting tournament scrape changes failed")
 }
 
 func (s *SyncService) persistChanges(report *Changes) error {
-	err := s.persistTournaments(report.Tournament)
+	err := s.addMissingPlayers(report.Team.New)
+
+	if err != nil {
+		return err
+	}
+
+	err = s.persistTournaments(report.Tournament)
 
 	if err != nil {
 		return err
