@@ -27,7 +27,6 @@ CMD [ \
   "--listen=:40000", \
   "--log=true", \
   "--headless=true", \ 
-  "--api-version=1", \ 
   "exec", \ 
   "/go/bin/api", \ 
   "--", \
