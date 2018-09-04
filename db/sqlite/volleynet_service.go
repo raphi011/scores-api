@@ -20,6 +20,7 @@ type VolleynetService interface {
 	UpdateTournamentTeams(teams []volleynet.TournamentTeam) error
 	NewTeam(t *volleynet.TournamentTeam) error
 	NewTeams(teams []volleynet.TournamentTeam) error
+	DeleteTeam(t *volleynet.TournamentTeam) error
 	TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error)
 
 	SearchPlayers() ([]volleynet.Player, error)
@@ -409,6 +410,13 @@ const (
 		WHERE volleynet_tournament_id = $7 AND volleynet_player_1_id = $8 AND volleynet_player_2_id = $9
 	`
 
+	volleynetTeamsDeleteSQL = `
+		DELETE FROM volleynetTournamentTeams
+		WHERE volleynet_tournament_id = $1 
+		  AND volleynet_player_1_id = $2
+		  AND volleynet_player_2_id = $3
+	`
+
 	volleynetTeamsInsertSQL = `
 		INSERT INTO volleynetTournamentTeams
 		(
@@ -534,6 +542,12 @@ func (s *VolleynetServiceImpl) UpdateTournamentTeams(teams []volleynet.Tournamen
 	}
 
 	return nil
+}
+
+func (s *VolleynetServiceImpl) DeleteTeam(t *volleynet.TournamentTeam) error {
+	_, err := s.DB.Exec(volleynetTeamsDeleteSQL, t.TournamentID, t.Player1.ID, t.Player2.ID)
+
+	return err
 }
 
 func (s *VolleynetServiceImpl) TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error) {

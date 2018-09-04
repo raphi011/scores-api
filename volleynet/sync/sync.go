@@ -22,6 +22,7 @@ type PersistanceService interface {
 
 	TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error)
 	NewTeam(t *volleynet.TournamentTeam) error
+	DeleteTeam(t *volleynet.TournamentTeam) error
 	UpdateTournamentTeam(t *volleynet.TournamentTeam) error
 }
 

@@ -71,9 +71,13 @@ func (s *SyncService) persistTeams(changes *TeamChanges) error {
 		}
 	}
 
-	// for _, delete := range changes.Delete {
-	// 	err := s.VolleynetService.Dele(&update)
-	// }
+	for _, delete := range changes.Delete {
+		err := s.VolleynetService.DeleteTeam(&delete)
+
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
