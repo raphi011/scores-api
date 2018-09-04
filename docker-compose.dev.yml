@@ -31,3 +31,8 @@ services:
       - './nginx-config:/etc/nginx/conf.d:ro'
     logging:
       driver: none
+
+  db:
+    image: mariadb:latest
+    volumes:
+      - "./data/mariadb:/var/lib/mysql"

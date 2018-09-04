@@ -22,12 +22,7 @@ services:
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
-      - "~/data:/srv/scores"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "localhost:8080/version"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
+      - "~/data/api:/srv/scores"
 
   scrape:
     image: raphi011/scores-scrape
@@ -36,3 +31,12 @@ services:
     build:
       context: .
       dockerfile: ./cmd/terminal/Dockerfile
+
+  db:
+    image: mariadb:latest
+    volumes:
+      - "~/data/mariadb:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
