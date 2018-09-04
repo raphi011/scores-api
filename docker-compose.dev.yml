@@ -19,7 +19,7 @@ services:
     build:
       dockerfile: ./cmd/api/Dockerfile.dev
     volumes:
-      - './data:/srv/scores'
+      - './data/scores:/srv/scores'
     security_opt:
       - seccomp:unconfined
 
