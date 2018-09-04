@@ -11,8 +11,7 @@ services:
 
   backend:
     ports:
-      - '8080:8080'
-      - '40000:40000'
+      - '127.0.0.1:40000:40000'
     environment:
       - GIN_MODE=debug
       - BACKEND_URL=http://localhost
