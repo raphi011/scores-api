@@ -19,7 +19,9 @@ type services struct {
 }
 
 func createServices(t *testing.T) *services {
-	db, err := Open("file::memory:", "&mode=memory&cache=shared")
+	t.Helper()
+
+	db, err := Open("sqlite3", "file::memory:?_busy_timeout=5000&mode=memory&cache=shared")
 
 	if err != nil {
 		t.Fatal("unable to create db")

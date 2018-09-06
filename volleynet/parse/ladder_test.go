@@ -3,6 +3,7 @@ package parse
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/raphi011/scores/volleynet"
@@ -17,7 +18,7 @@ func TestParseLadderTest(t *testing.T) {
 				FirstName: "Alexander",
 				LastName:  "Horst",
 				ID:        246,
-				Birthday:  "",
+				Birthday:  time.Time{},
 			},
 			Rank:         1,
 			Club:         "Badener Beach Volleyballverein",
@@ -30,7 +31,7 @@ func TestParseLadderTest(t *testing.T) {
 				FirstName: "Clemens",
 				LastName:  "Doppler",
 				ID:        1050,
-				Birthday:  "",
+				Birthday:  time.Time{},
 			},
 			Rank:         1,
 			Club:         "Badener Beach Volleyballverein",
@@ -43,7 +44,7 @@ func TestParseLadderTest(t *testing.T) {
 				FirstName: "Robin Valentin",
 				LastName:  "Seidl",
 				ID:        5626,
-				Birthday:  "",
+				Birthday:  time.Time{},
 			},
 			Rank:         3,
 			Club:         "ABC Wörthersee",
@@ -56,7 +57,7 @@ func TestParseLadderTest(t *testing.T) {
 				FirstName: "Martin",
 				LastName:  "Ermacora",
 				ID:        6656,
-				Birthday:  "",
+				Birthday:  time.Time{},
 			},
 			Rank:         4,
 			Club:         "My BeachEvent",

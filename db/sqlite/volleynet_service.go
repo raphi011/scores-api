@@ -147,19 +147,19 @@ const (
 		t.loc_lon,
 		t.season,
 		t.signedup_teams
-	FROM volleynetTournaments t
+	FROM volleynet_tournaments t
 	`
 
-	tournamentsSeasonSelectSQL = tournamentsBaseSelectSQL + " WHERE t.season = $1"
+	tournamentsSeasonSelectSQL = tournamentsBaseSelectSQL + " WHERE t.season = ?"
 
 	tournamentsFilterSelectSQL = tournamentsBaseSelectSQL + `
-	 WHERE t.gender = $1 AND t.league = $2 AND t.season = $3
+	 WHERE t.gender = ? AND t.league = ? AND t.season = ?
 	`
 
-	tournamentSelectSQL = tournamentsBaseSelectSQL + " WHERE t.id = $1"
+	tournamentSelectSQL = tournamentsBaseSelectSQL + " WHERE t.id = ?"
 
 	tournamentsInsertSQL = `
-		INSERT INTO volleynetTournaments
+		INSERT INTO volleynet_tournaments
 		(
 			id,
 			created_at,
@@ -193,68 +193,68 @@ const (
 		)
 		VALUES
 		(
-			$1,
+			?,
 			CURRENT_TIMESTAMP,
 			CURRENT_TIMESTAMP,
-			$2,
-			$3,
-			$4,
-			$5,
-			$6,
-			$7,
-			$8,
-			$9,
-			$10,
-			$11,
-			$12,
-			$13,
-			$14,
-			$15,
-			$16,
-			$17,
-			$18,
-			$19,
-			$20,
-			$21,
-			$22,
-			$23,
-			$24,
-			$25,
-			$26,
-			$27
+			?,
+			?,
+			?
+			?,
+			?,
+			?,
+			?,
+			?,
+			?
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?
 		)
 	`
 
 	tournamentsUpdateSQL = `
-		UPDATE volleynetTournaments SET
+		UPDATE volleynet_tournaments SET
 			updated_at = CURRENT_TIMESTAMP,
-			gender = $1,
-			start = $2,
-			end = $3,
-			name = $4,
-			league = $5,
-			link = $6,
-			entry_link = $7,
-			status = $8,
-			registration_open = $9,
-			location = $10,
-			html_notes = $11,
-			mode = $12,
-			max_points = $13,
-			min_teams = $14,
-			max_teams = $15,	
-			end_registration = $16,
-			organiser = $17,
-			phone = $18,
-			email = $19,
-			web = $20,
-			current_points = $21,
-			live_scoring_link = $22,
-			loc_lat = $23,
-			loc_lon = $24,
-			season = $25,
-			signedup_teams = $26
-		WHERE id = $27
+			gender = ?,
+			start = ?,
+			end = ?,
+			name = ?,
+			league = ?,
+			link = ?,
+			entry_link = ?,
+			status = ?,
+			registration_open = ?,
+			location = ?,
+			html_notes = ?,
+			mode = ?,
+			max_points = ?,
+			min_teams = ?,
+			max_teams = ?,	
+			end_registration = ?,
+			organiser = ?,
+			phone = ?,
+			email = ?,
+			web = ?,
+			current_points = ?,
+			live_scoring_link = ?,
+			loc_lat = ?,
+			loc_lon = ?,
+			season = ?,
+			signedup_teams = ?
+		WHERE id = ?
 	`
 )
 
@@ -393,32 +393,32 @@ const (
 			t.won_points,
 			t.prize_money,
 			t.deregistered
-		FROM volleynetTournamentTeams t
-		JOIN volleynetPlayers p1 on p1.id = t.volleynet_player_1_id
-		JOIN volleynetPlayers p2 on p2.id = t.volleynet_player_2_id
-		WHERE t.volleynet_tournament_id = $1	
+		FROM volleynet_tournament_teams t
+		JOIN volleynet_players p1 on p1.id = t.volleynet_player_1_id
+		JOIN volleynet_players p2 on p2.id = t.volleynet_player_2_id
+		WHERE t.volleynet_tournament_id = ?	
 	`
 
 	volleynetTeamsUpdateSQL = `
-		UPDATE volleynetTournamentTeams SET
-			rank = $1,
-			seed = $2,
-			total_points = $3,
-			won_points = $4,
-			prize_money = $5,
-			deregistered = $6
-		WHERE volleynet_tournament_id = $7 AND volleynet_player_1_id = $8 AND volleynet_player_2_id = $9
+		UPDATE volleynet_tournament_teams SET
+			rank = ?,
+			seed = ?,
+			total_points = ?,
+			won_points = ?,
+			prize_money = ?,
+			deregistered = ?
+		WHERE volleynet_tournament_id = ? AND volleynet_player_1_id = ? AND volleynet_player_2_id = ?
 	`
 
 	volleynetTeamsDeleteSQL = `
-		DELETE FROM volleynetTournamentTeams
-		WHERE volleynet_tournament_id = $1 
-		  AND volleynet_player_1_id = $2
-		  AND volleynet_player_2_id = $3
+		DELETE FROM volleynet_tournament_teams
+		WHERE volleynet_tournament_id = ? 
+		  AND volleynet_player_1_id = ?
+		  AND volleynet_player_2_id = ?
 	`
 
 	volleynetTeamsInsertSQL = `
-		INSERT INTO volleynetTournamentTeams
+		INSERT INTO volleynet_tournament_teams
 		(
 			volleynet_tournament_id,
 			volleynet_player_1_id,
@@ -432,15 +432,15 @@ const (
 		)
 		VALUES
 		(
-			$1,
-			$2,
-			$3,
-			$4,
-			$5,
-			$6,
-			$7,
-			$8,
-			$9
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?
 		)
 	`
 )
@@ -566,32 +566,30 @@ const (
 			p.rank,
 			p.club,
 			p.country_union,
-			p.license,
-			p.total_points
-		FROM volleynetPlayers p
+			p.license
+		FROM volleynet_players p
 	`
 
-	volleynetPlayerSelectSQL  = volleynetBasePlayersSelectSQL + " WHERE p.id = $1"
+	volleynetPlayerSelectSQL  = volleynetBasePlayersSelectSQL + " WHERE p.id = ?"
 	volleynetPlayersSelectSQL = volleynetBasePlayersSelectSQL
 
 	volleynetPlayersUpdateSQL = `
-		UPDATE volleynetPlayers SET
+		UPDATE volleynet_players SET
 			updated_at = CURRENT_TIMESTAMP,
-			first_name = $1,
-			last_name = $2,
-			birthday = $3,
-			gender = $4,
-			total_points = $5,
-			rank = $6,
-			club = $7,
-			country_union = $8,
-			license = $9,
-			total_points = $10
-		WHERE id = $11
+			first_name = ?,
+			last_name = ?,
+			birthday = ?,
+			gender = ?,
+			total_points = ?,
+			rank = ?,
+			club = ?,
+			country_union = ?,
+			license = ?
+		WHERE id = ?
 	`
 
 	volleynetPlayersInsertSQL = `
-		INSERT INTO volleynetPlayers
+		INSERT INTO volleynet_players
 		(
 			id,
 			created_at,
@@ -604,24 +602,22 @@ const (
 			rank,
 			club,
 			country_union,
-			license,
-			total_points
+			license
 		)
 		VALUES
 		(
-			$1,
+			?,
 			CURRENT_TIMESTAMP,
 			CURRENT_TIMESTAMP,
-			$2,
-			$3,
-			$4,
-			$5,
-			$6,
-			$7,
-			$8,
-			$9,
-			$10,
-			$11
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?
 		)
 	`
 )
@@ -663,7 +659,6 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 		&p.Club,
 		&p.CountryUnion,
 		&p.License,
-		&p.TotalPoints,
 	)
 
 	if err != nil {
@@ -698,7 +693,6 @@ func (s *VolleynetServiceImpl) NewPlayer(p *volleynet.Player) error {
 		p.Club,
 		p.CountryUnion,
 		p.License,
-		p.TotalPoints,
 	)
 
 	return err
@@ -716,7 +710,6 @@ func (s *VolleynetServiceImpl) UpdatePlayer(p *volleynet.Player) error {
 		p.Club,
 		p.CountryUnion,
 		p.License,
-		p.TotalPoints,
 		p.ID)
 
 	if err != nil {

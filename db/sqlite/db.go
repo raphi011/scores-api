@@ -15,11 +15,14 @@ type scan interface {
 	Scan(src ...interface{}) error
 }
 
-func Open(filename, params string) (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", filename+"?_busy_timeout=5000"+params)
+func Open(provider, connectionString string) (*sql.DB, error) {
+	db, err := sql.Open(provider, connectionString)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "open sqlite db: %s failed", filename)
+		return nil, errors.Wrapf(err, "open db provider: %s conncetion: %s failed",
+			provider,
+			connectionString,
+		)
 	}
 
 	return db, nil

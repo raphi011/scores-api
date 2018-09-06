@@ -27,12 +27,12 @@ const (
 		`
 	playersSelectSQL    = playersBaseSelectSQL + playersWhereSQL
 	playersWhereSQL     = " WHERE p.deleted_at is null"
-	playersGroupJoinSQL = " JOIN groupPlayers gp on gp.player_id = p.id"
+	playersGroupJoinSQL = " JOIN group_players gp on gp.player_id = p.id"
 	playersByGroupSQL   = playersBaseSelectSQL + playersGroupJoinSQL + playersWhereSQL + `
-	 AND gp.group_id = $1	
+	 AND gp.group_id = ?	
 	`
 
-	playerSelectSQL = playersBaseSelectSQL + playersWhereSQL + " and p.id = $1"
+	playerSelectSQL = playersBaseSelectSQL + playersWhereSQL + " and p.id = ?"
 )
 
 func scanPlayer(scanner scan) (*scores.Player, error) {
@@ -111,7 +111,7 @@ func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
 }
 
 func (s *PlayerService) Create(player *scores.Player) (*scores.Player, error) {
-	result, err := s.DB.Exec("INSERT INTO players (created_at, name) VALUES (CURRENT_TIMESTAMP, $1)", player.Name)
+	result, err := s.DB.Exec("INSERT INTO players (created_at, name) VALUES (CURRENT_TIMESTAMP, ?)", player.Name)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "creating player failed")
@@ -125,7 +125,7 @@ func (s *PlayerService) Create(player *scores.Player) (*scores.Player, error) {
 }
 
 func (s *PlayerService) Delete(ID uint) error {
-	result, err := s.DB.Exec("UPDATE players SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1", ID)
+	result, err := s.DB.Exec("UPDATE players SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", ID)
 
 	if err != nil {
 		return errors.Wrap(err, "deleting player failed")

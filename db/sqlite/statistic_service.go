@@ -16,35 +16,35 @@ type StatisticService struct {
 const (
 	statisticFieldsSelectSQL = `
 			max(s.name) as name,
-			cast((sum(s.won) / cast(count(1) as float) * 100) as int) as percentageWon,
-			sum(s.pointsWon) as pointsWon,
-			sum(s.pointsLost) as pointsLost,
+			cast((sum(s.won) / cast(count(1) as float) * 100) as int) as percentage_won,
+			sum(s.points_won) as points_won,
+			sum(s.points_lost) as points_lost,
 			count(1) as played,
-			sum(s.won) as gamesWon,
-			sum(1) - sum(s.won) as gamesLost
+			sum(s.won) as games_won,
+			sum(1) - sum(s.won) as games_lost
 	`
 	ungroupedPlayerStatisticSelectSQL = `
 		SELECT 
 			s.player_id,
-			COALESCE(u.profile_image_url, "") as profileImage,
+			COALESCE(u.profile_image_url, "") as profile_image,
 	` + statisticFieldsSelectSQL + `
-		FROM playerStatistics s
+		FROM player_statistics s
 		JOIN players p ON s.player_id = p.id
 		LEFT JOIN users u ON p.user_id = u.id 
-		WHERE s.created_at > $1
+		WHERE s.created_at > ?
 	`
 	groupedPlayerStatisticSQL = `
 		GROUP BY s.player_id 
-		ORDER BY percentageWon DESC
+		ORDER BY percentage_won DESC
 	`
 	playersStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL + groupedPlayerStatisticSQL
 
 	groupPlayersStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL +
-		" and s.group_id = $2 " +
+		" and s.group_id = ? " +
 		groupedPlayerStatisticSQL
 
 	playerStatisticSelectSQL = ungroupedPlayerStatisticSelectSQL +
-		" and s.player_id = $2 " + groupedPlayerStatisticSQL
+		" and s.player_id = ? " + groupedPlayerStatisticSQL
 )
 
 func parseTimeFilter(filter string) time.Time {
@@ -159,23 +159,23 @@ func (s *StatisticService) Player(playerID uint, filter string) (*scores.PlayerS
 const (
 	playerTeamsStatisticSelectSQL = `
 		SELECT 
-			MAX(CASE WHEN s.player1_id = $1 THEN s.player2_id ELSE s.player1_id END) AS player_id,
-			COALESCE(MAX(CASE WHEN s.player1_id = $1 THEN u2.profile_image_url ELSE u1.profile_image_url END), "") AS profileImage,
-			MAX(CASE WHEN s.player1_id = $1 THEN p2.name ELSE p1.name END) AS name,
-			CAST((SUM(s.won) / CAST(COUNT(1) AS float) * 100) AS int) AS percentageWon,
-			SUM(s.pointsWon) AS pointsWon,
-			SUM(s.pointsLost) AS pointsLost,
+			MAX(CASE WHEN s.player1_id = ? THEN s.player2_id ELSE s.player1_id END) AS player_id,
+			COALESCE(MAX(CASE WHEN s.player1_id = ? THEN u2.profile_image_url ELSE u1.profile_image_url END), "") AS profile_image,
+			MAX(CASE WHEN s.player1_id = ? THEN p2.name ELSE p1.name END) AS name,
+			CAST((SUM(s.won) / CAST(COUNT(1) AS float) * 100) AS int) AS percentage_won,
+			SUM(s.points_won) AS points_won,
+			SUM(s.points_lost) AS points_lost,
 			COUNT(1) AS played,
-			SUM(s.won) AS gamesWon,
-			SUM(1) - SUM(s.won) AS gamesLost
-		FROM teamStatistics s
+			SUM(s.won) AS games_won,
+			SUM(1) - SUM(s.won) AS games_lost
+		FROM team_statistics s
 		JOIN players p1 ON s.player1_id = p1.id
 		JOIN players p2 ON s.player2_id = p2.id
 		LEFT JOIN users u1 ON p1.user_id = u1.id 
 		LEFT JOIN users u2 ON p2.user_id = u2.id 
-		WHERE (s.player1_id = $1 OR s.player2_id = $1) and s.created_at > $2
+		WHERE (s.player1_id = ? OR s.player2_id = ?) and s.created_at > ?
 		GROUP BY s.player1_id, s.player2_id 
-		ORDER BY percentageWon DESC
+		ORDER BY percentage_won DESC
 	`
 )
 

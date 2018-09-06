@@ -6,10 +6,10 @@ import (
 
 // PlayerInfo contains all player information that the search player api returns
 type PlayerInfo struct {
-	ID        int    `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Birthday  string `json:"birthday"`
+	ID        int       `json:"id"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Birthday  time.Time `json:"birthday"`
 }
 
 // Player adds additional information to `PlayerInfo`

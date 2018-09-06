@@ -41,7 +41,7 @@ func Players(html io.Reader) ([]volleynet.PlayerInfo, error) {
 					playerFound = true
 				}
 			case 2:
-				player.Birthday = c.Text()
+				// player.Birthday = c.Text() // TODO
 			}
 		}
 

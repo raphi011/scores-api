@@ -17,7 +17,7 @@ type UserService struct {
 
 const userInsertSQL = `
 	INSERT INTO users (created_at, email, profile_image_url, volleynet_user_id, volleynet_login, role)
-	VALUES (CURRENT_TIMESTAMP, $1, $2, $3, $4, $5)
+	VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)
 `
 
 // Create creates persists user and assigns a new id
@@ -37,8 +37,8 @@ func (s *UserService) Create(user *scores.User) (*scores.User, error) {
 
 const userPasswordUpdateSQL = `
 	UPDATE users
-	SET salt = $1, hash = $2, iterations = $3
-	WHERE id = $4
+	SET salt = ?, hash = ?, iterations = ?
+	WHERE id = ?
 
 `
 
@@ -68,8 +68,8 @@ func (s *UserService) UpdatePasswordAuthentication(
 
 const userUpdateSQL = `
 	UPDATE users
-	SET profile_image_url = $1, email = $2, volleynet_user_id = $3, volleynet_login = $4, role = $5
-	WHERE id = $6
+	SET profile_image_url = ?, email = ?, volleynet_user_id = ?, volleynet_login = ?, role = ?
+	WHERE id = ?
 `
 
 func (s *UserService) Update(user *scores.User) error {
@@ -140,8 +140,8 @@ const (
 		WHERE u.deleted_at is null
 	`
 
-	userByIDSelectSQL    = usersSelectSQL + " and u.id = $1"
-	userByEmailSelectSQL = usersSelectSQL + " and u.email = $1"
+	userByIDSelectSQL    = usersSelectSQL + " and u.id = ?"
+	userByEmailSelectSQL = usersSelectSQL + " and u.email = ?"
 )
 
 func (s *UserService) Users() (scores.Users, error) {

@@ -7,9 +7,9 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/api",
-      "args": ["-db", "data/scores.db", "-goauth", "data/client_secret.json"],
+      "args": ["-provider", "mysql", "-connection", "root:test@/scores"],
       "showLog": true,
-      "cwd": "${workspaceRoot}"
+      "cwd": "${workspaceRoot}",
     },
     {
       "name": "Backend Docker",

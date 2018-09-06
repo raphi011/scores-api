@@ -69,7 +69,7 @@ func GetDBVersion(db *sql.DB) (uint16, error) {
 
 	err := db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='dbVersion'").Scan()
 
-	if err == sql.ErrNoRows {
+	if err != nil {
 		// version table doesn't exist
 		return 0, nil
 	}
@@ -143,7 +143,7 @@ func execMultiple(db *sql.Tx, statements ...string) error {
 }
 
 func setDBVersion(db *sql.Tx, version uint16) error {
-	_, err := db.Exec("UPDATE dbVersion SET version=$1", version)
+	_, err := db.Exec("UPDATE dbVersion SET version=?", version)
 
 	return err
 }

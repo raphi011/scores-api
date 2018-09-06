@@ -25,8 +25,10 @@ type app struct {
 var version = "undefined"
 
 func main() {
-	dbPath := flag.String("db", "./scores.db", "Path to sqlite db")
+	dbProvider := flag.String("provider", "sqlite3", "DB Driver (sqlite3 or mysql)")
+	connectionString := flag.String("connection", "./scores.db", "Path to sqlite db")
 	gSecret := flag.String("goauth", "./client_secret.json", "Path to google oauth secret")
+
 	flag.Parse()
 
 	production := os.Getenv("APP_ENV") == "production"
@@ -36,7 +38,7 @@ func main() {
 		host = "http://localhost:3000"
 	}
 
-	db, err := sqlite.Open(*dbPath, "")
+	db, err := sqlite.Open(*dbProvider, *connectionString)
 
 	if err != nil {
 		panic(fmt.Sprintf("Could not open DB: %v\n", err))
@@ -44,10 +46,12 @@ func main() {
 
 	defer db.Close()
 
-	err = sqlite.Migrate(db)
+	if *dbProvider == "sqlite3" {
+		err = sqlite.Migrate(db)
 
-	if err != nil {
-		panic(fmt.Sprintf("Error migrating %v", err))
+		if err != nil {
+			panic(fmt.Sprintf("Error migrating %v", err))
+		}
 	}
 
 	googleOAuth, err := googleOAuthConfig(*gSecret, host)

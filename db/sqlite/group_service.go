@@ -60,12 +60,12 @@ const (
 	groupsWhereSQL = " WHERE g.deleted_at is null "
 
 	groupsByPlayerSelectSQL = groupsBaseSelectSQL + `
-		JOIN groupPlayers gp on g.id = gp.group_id ` +
+		JOIN group_players gp on g.id = gp.group_id ` +
 		groupsWhereSQL +
-		" AND gp.player_id = $1 "
+		" AND gp.player_id = ? "
 
 	groupsSelectSQL = groupsBaseSelectSQL + groupsWhereSQL
-	groupSelectSQL  = groupsSelectSQL + " AND g.id = $1"
+	groupSelectSQL  = groupsSelectSQL + " AND g.id = ?"
 )
 
 type GroupService struct {
@@ -120,8 +120,8 @@ const (
 		VALUES
 		(
 			CURRENT_TIMESTAMP,
-			$1,
-			$2
+			?,
+			?
 		)
 	`
 )
@@ -145,8 +145,8 @@ func (s *GroupService) Create(group *scores.Group) (*scores.Group, error) {
 
 const (
 	addPlayerToGroupSQL = `
-		INSERT INTO groupPlayers (player_id, group_id, role)
-		VALUES ($1, $2, $3)
+		INSERT INTO group_players (player_id, group_id, role)
+		VALUES (?, ?, ?)
 	`
 )
 

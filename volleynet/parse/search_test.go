@@ -16,19 +16,19 @@ func TestParsePlayers(t *testing.T) {
 			FirstName: "Cristopher",
 			LastName:  "Pfau",
 			ID:        34822,
-			Birthday:  "28.01.2000",
+			Birthday:  mustParseDate("28.01.2000"),
 		},
 		volleynet.PlayerInfo{
 			FirstName: "Hannes",
 			LastName:  "Pfau",
 			ID:        50427,
-			Birthday:  "22.10.2002",
+			Birthday:  mustParseDate("22.10.2002"),
 		},
 		volleynet.PlayerInfo{
 			FirstName: "Jennifer",
 			LastName:  "Pfau",
 			ID:        42378,
-			Birthday:  "26.08.1988",
+			Birthday:  mustParseDate("26.08.1988"),
 		},
 	}
 

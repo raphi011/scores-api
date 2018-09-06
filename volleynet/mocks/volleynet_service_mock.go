@@ -63,6 +63,12 @@ func (m *VolleynetServiceMock) NewTeam(t *volleynet.TournamentTeam) error {
 	return args.Error(0)
 }
 
+func (m *VolleynetServiceMock) DeleteTeam(t *volleynet.TournamentTeam) error {
+	args := m.Called(t)
+
+	return args.Error(0)
+}
+
 func (m *VolleynetServiceMock) NewTeams(teams []volleynet.TournamentTeam) error {
 	args := m.Called(teams)
 

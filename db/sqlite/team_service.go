@@ -22,7 +22,7 @@ func TeamPlayerOrder(player1ID, player2ID uint) (uint, uint) {
 
 const teamInsertSQL = `
 	INSERT INTO teams (created_at, name, player1_id, player2_id)
-	VALUES (CURRENT_TIMESTAMP, $1, $2, $3)
+	VALUES (CURRENT_TIMESTAMP, ?, ?, ?)
 `
 
 func (s *TeamService) Create(team *scores.Team) (*scores.Team, error) {
@@ -37,7 +37,7 @@ func (s *TeamService) Create(team *scores.Team) (*scores.Team, error) {
 
 const teamSelectSQL = `
 	SELECT created_at, name, player1_id, player2_id FROM teams
-	WHERE player1_id = $1 and player2_id = $2
+	WHERE player1_id = ? and player2_id = ?
 `
 
 func (s *TeamService) ByPlayers(player1ID, player2ID uint) (*scores.Team, error) {

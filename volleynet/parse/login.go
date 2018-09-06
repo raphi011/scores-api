@@ -14,7 +14,7 @@ var parseLoginDataMap = map[string]loginDataParser{
 		//  parsePlayerName(value) TODO
 	},
 	"Geburtsdatum": func(value *goquery.Selection, d *volleynet.LoginData) {
-		d.Birthday = value.Text()
+		// d.Birthday = value.Text() TODO
 	},
 	"Lizenz": func(value *goquery.Selection, d *volleynet.LoginData) {
 		d.License.Type = value.Text()

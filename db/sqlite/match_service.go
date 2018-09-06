@@ -14,7 +14,7 @@ type MatchService struct {
 }
 
 func (s *MatchService) Delete(matchID uint) error {
-	_, err := s.DB.Exec("UPDATE matches SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1", matchID)
+	_, err := s.DB.Exec("UPDATE matches SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", matchID)
 
 	return err
 }
@@ -36,14 +36,14 @@ const (
 		VALUES
 		(
 			CURRENT_TIMESTAMP,
-			$1,
-			$2,
-			$3,
-			$4,
-			$5,
-			$6,
-			$7,
-			$8
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?,
+			?
 		)
 	`
 )
@@ -103,26 +103,26 @@ const (
 `
 
 	matchesSelectSQL = matchesBaseSelectSQL +
-		"AND m.created_at < $1" +
+		"AND m.created_at < ?" +
 		matchesOrderBySQL +
-		" LIMIT $2"
+		" LIMIT ?"
 
 	matchesOrderBySQL = " ORDER BY m.created_at DESC"
 
 	matchesByGroupSelectSQL = matchesBaseSelectSQL +
-		"AND m.group_id = $1 AND m.created_at < $2" + matchesOrderBySQL +
-		" LIMIT $3"
+		"AND m.group_id = ? AND m.created_at < ?" + matchesOrderBySQL +
+		" LIMIT ?"
 
 	matchesByPlayerSelectSQL = matchesBaseSelectSQL + ` 
- 	AND (m.team1_player1_id = $1 OR 
-			 m.team1_player2_id = $1 OR 
-			 m.team2_player1_id = $1 OR 
-			 m.team2_player2_id = $1)` +
-		" AND m.created_at < $2" +
+ 	AND (m.team1_player1_id = ? OR 
+			 m.team1_player2_id = ? OR 
+			 m.team2_player1_id = ? OR 
+			 m.team2_player2_id = ?)` +
+		" AND m.created_at < ?" +
 		matchesOrderBySQL +
-		" LIMIT $3"
+		" LIMIT ?"
 
-	matchSelectSQL = matchesBaseSelectSQL + " and m.id = $1"
+	matchSelectSQL = matchesBaseSelectSQL + " and m.id = ?"
 )
 
 func scanMatches(db *sql.DB, query string, args ...interface{}) (scores.Matches, error) {
