@@ -62,15 +62,16 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 
 		if syncInfo.Type == SyncTournamentNoUpdate {
 			continue
+		} else if syncInfo.Type != SyncTournamentNew {
+			persisted.Teams, err = s.VolleynetService.TournamentTeams(t.ID)
+
+			if err != nil {
+				return report, errors.Wrap(err, "loading the persisted tournament teams failed")
+			}
+
+			persistedTournaments = append(persistedTournaments, *persisted)
 		}
 
-		persisted.Teams, err = s.VolleynetService.TournamentTeams(t.ID)
-
-		if err != nil {
-			return report, errors.Wrap(err, "loading the persisted tournament teams failed")
-		}
-
-		persistedTournaments = append(persistedTournaments, *persisted)
 		toDownload = append(toDownload, t)
 	}
 

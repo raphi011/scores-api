@@ -113,7 +113,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 		user, err := h.userService.ByEmail(userID.(string))
 
 		if err != nil {
-			log.Warnf("loading user by email failed", userID.(string))
+			log.Warnf("loading user by email: %s failed", userID.(string))
 		}
 
 		if user.VolleynetLogin != su.Username ||

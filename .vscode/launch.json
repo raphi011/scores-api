@@ -7,7 +7,7 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/api",
-      "args": ["-provider", "mysql", "-connection", "root:test@/scores"],
+      "args": ["-provider", "mysql", "-connection", "root:test@/scores?charset=utf8mb4&parseTime=true"],
       "showLog": true,
       "cwd": "${workspaceRoot}",
     },

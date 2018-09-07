@@ -94,7 +94,9 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 		&t.SignedupTeams,
 	)
 
-	if err != nil && err != sql.ErrNoRows {
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 
@@ -198,13 +200,13 @@ const (
 			CURRENT_TIMESTAMP,
 			?,
 			?,
-			?
 			?,
 			?,
 			?,
 			?,
 			?,
-			?
+			?,
+			?,
 			?,
 			?,
 			?,

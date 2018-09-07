@@ -208,7 +208,7 @@ func (c *ClientImpl) ComplementTournament(tournament volleynet.Tournament) (
 	*volleynet.FullTournament, error) {
 	url := c.GetAPITournamentLink(&tournament)
 
-	fmt.Print(url)
+	fmt.Printf("Downloading tournament: %s\n", url)
 	resp, err := http.Get(url)
 
 	if err != nil {
