@@ -66,7 +66,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		t.Start, t.End, err = parseStartEndDates(value)
 
 		if err != nil {
-			log.Warn("error parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
+			log.Warnf("error parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
 		}
 	},
 	"Ort": func(value *goquery.Selection, t *volleynet.FullTournament) {
