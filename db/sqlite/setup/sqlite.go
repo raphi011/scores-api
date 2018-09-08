@@ -1,16 +1,16 @@
 package setup
 
-const mysql = `
+const SQLITE = `
 CREATE TABLE db_version ( version integer NOT NULL );
 
 CREATE TABLE users (
-	id integer PRIMARY KEY AUTO_INCREMENT,
+	id integer PRIMARY KEY autoincrement,
 	created_at datetime NOT NULL,
 	updated_at datetime,
 	deleted_at datetime,
 	role varchar(32) NOT NULL DEFAULT "user",
-	volleynet_login varchar(64) NOT NULL,
-	volleynet_user_id integer NOT NULL,
+	volleynet_login varchar(64),
+	volleynet_user_id integer,
 	email varchar(255) NOT NULL UNIQUE,
 	profile_image_url varchar(255),
 	salt blob,
@@ -19,24 +19,22 @@ CREATE TABLE users (
 );
 
 CREATE TABLE players (
-	id integer PRIMARY KEY AUTO_INCREMENT,
+	id integer PRIMARY KEY autoincrement,
 	created_at datetime NOT NULL,
 	updated_at datetime,
 	deleted_at datetime,
 	name varchar(255) NOT NULL,
 	user_id integer UNIQUE,
-	FOREIGN KEY(user_id) REFERENCES users(id),
-	INDEX(name)
+	FOREIGN KEY(user_id) REFERENCES users(id)
 );
 
 CREATE TABLE groups (
-	id integer PRIMARY KEY AUTO_INCREMENT,
+	id integer PRIMARY KEY autoincrement,
 	created_at datetime NOT NULL,
 	updated_at datetime,
 	deleted_at datetime,
 	image_url varchar(255),
-	name varchar(255) NOT NULL,
-	INDEX(name)
+	name varchar(255) NOT NULL
 );
 
 CREATE TABLE group_players (
@@ -55,12 +53,11 @@ CREATE TABLE teams (
 	player2_id integer NOT NULL,
 	FOREIGN KEY(player1_id) REFERENCES players(id),
 	FOREIGN KEY(player2_id) REFERENCES players(id),
-	PRIMARY KEY (player1_id, player2_id),
-	INDEX(name)
+	PRIMARY KEY (player1_id, player2_id)
 );
 
 CREATE TABLE matches (
-	id integer PRIMARY KEY AUTO_INCREMENT,
+	id integer PRIMARY KEY autoincrement,
 	created_at datetime NOT NULL,
 	updated_at datetime,
 	deleted_at datetime,
@@ -159,7 +156,7 @@ CREATE TABLE volleynet_tournaments (
 	registration_open integer NOT NULL,
 	location varchar(255) NOT NULL,
 	live_scoring_link varchar(255) NOT NULL,
-	html_notes text CHARACTER SET utf8mb4 NOT NULL,
+/*	html_notes text CHARACTER SET utf8mb4 NOT NULL, */
 	mode varchar(64) NOT NULL,
 	max_points integer NOT NULL,
 	min_teams integer NOT NULL,
@@ -172,12 +169,7 @@ CREATE TABLE volleynet_tournaments (
 	current_points varchar(256) NOT NULL,
 	season integer NOT NULL,
 	loc_lat double NOT NULL,
-	loc_lon double NOT NULL,
-	INDEX(season),
-	INDEX(gender),
-	INDEX(league),
-	INDEX(name),
-	INDEX(start)
+	loc_lon double NOT NULL
 );
 
 CREATE TABLE volleynet_players (
@@ -192,12 +184,7 @@ CREATE TABLE volleynet_players (
 	club varchar(255) NOT NULL,
 	birthday date NOT NULL,
 	license varchar(32) NOT NULL,
-	gender varchar(1) NOT NULL,
-	INDEX(first_name),
-	INDEX(last_name),
-	INDEX(birthday),
-	INDEX(gender),
-	INDEX(rank)
+	gender varchar(1) NOT NULL
 );
 
 CREATE TABLE volleynet_tournament_teams (

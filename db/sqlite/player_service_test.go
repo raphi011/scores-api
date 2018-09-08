@@ -8,7 +8,6 @@ import (
 
 func TestGetPlayersByGroup(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	g, _ := s.groupService.Create(&scores.Group{Name: "Testgroup"})
 
@@ -30,7 +29,6 @@ func TestGetPlayersByGroup(t *testing.T) {
 
 func TestGetPlayers(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	s.playerService.Create(&scores.Player{Name: "Test1"})
 	s.playerService.Create(&scores.Player{Name: "Test2"})
@@ -45,7 +43,6 @@ func TestGetPlayers(t *testing.T) {
 
 func TestCreatePlayer(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	player, err := s.playerService.Create(&scores.Player{Name: "Test"})
 
@@ -70,7 +67,6 @@ func TestCreatePlayer(t *testing.T) {
 
 func TestDeletePlayer(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	player, _ := s.playerService.Create(&scores.Player{Name: "Test"})
 	s.playerService.Create(&scores.Player{Name: "Test2"})

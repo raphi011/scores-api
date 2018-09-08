@@ -8,7 +8,6 @@ import (
 
 func TestSetPassword(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	email := "test@test.com"
 
@@ -40,7 +39,6 @@ func TestSetPassword(t *testing.T) {
 
 func TestCreateUser(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	email := "test@test.com"
 
@@ -68,12 +66,12 @@ func TestCreateUser(t *testing.T) {
 
 func TestUsers(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
-	s.userService.Create(&scores.User{
+	_, err := s.userService.Create(&scores.User{
 		Email: "test@test.at",
 	})
-	s.userService.Create(&scores.User{
+
+	_, err = s.userService.Create(&scores.User{
 		Email:           "test2@test.at",
 		ProfileImageURL: "image.url",
 	})
@@ -88,12 +86,10 @@ func TestUsers(t *testing.T) {
 	if userCount != 2 {
 		t.Errorf("len(UserService.Users()), want 2, got %d", userCount)
 	}
-
 }
 
 func TestUpdateUser(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	email := "test@test.com"
 	newEmail := "test2@test.com"

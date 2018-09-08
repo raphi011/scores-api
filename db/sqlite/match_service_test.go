@@ -6,7 +6,6 @@ import (
 
 func TestCreateMatch(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	match := newMatch(s)
 
@@ -21,7 +20,6 @@ func TestCreateMatch(t *testing.T) {
 
 func TestDeleteMatch(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	match := newMatch(s)
 	match, _ = s.matchService.Create(match)

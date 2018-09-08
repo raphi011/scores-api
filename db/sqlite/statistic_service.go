@@ -16,7 +16,7 @@ type StatisticService struct {
 const (
 	statisticFieldsSelectSQL = `
 			max(s.name) as name,
-			cast((sum(s.won) / cast(count(1) as float) * 100) as int) as percentage_won,
+			cast((sum(s.won) / cast(count(1) as decimal) * 100) as unsigned) as percentage_won,
 			sum(s.points_won) as points_won,
 			sum(s.points_lost) as points_lost,
 			count(1) as played,
@@ -162,7 +162,7 @@ const (
 			MAX(CASE WHEN s.player1_id = ? THEN s.player2_id ELSE s.player1_id END) AS player_id,
 			COALESCE(MAX(CASE WHEN s.player1_id = ? THEN u2.profile_image_url ELSE u1.profile_image_url END), "") AS profile_image,
 			MAX(CASE WHEN s.player1_id = ? THEN p2.name ELSE p1.name END) AS name,
-			CAST((SUM(s.won) / CAST(COUNT(1) AS float) * 100) AS int) AS percentage_won,
+			CAST((SUM(s.won) / CAST(COUNT(1) AS decimal) * 100) AS unsigned) AS percentage_won,
 			SUM(s.points_won) AS points_won,
 			SUM(s.points_lost) AS points_lost,
 			COUNT(1) AS played,

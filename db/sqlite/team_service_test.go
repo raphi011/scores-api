@@ -27,7 +27,6 @@ func TestTeamPlayerOrder(t *testing.T) {
 
 func TestCreate(t *testing.T) {
 	s := createServices(t)
-	defer Reset(s.db)
 
 	player1, _ := s.playerService.Create(&scores.Player{Name: "Player1"})
 	player2, _ := s.playerService.Create(&scores.Player{Name: "Player2"})

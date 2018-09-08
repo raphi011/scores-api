@@ -2,9 +2,11 @@ package sqlite
 
 import (
 	"database/sql"
+	"os"
 	"testing"
 
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/db/sqlite/setup"
 )
 
 type services struct {
@@ -19,18 +21,32 @@ type services struct {
 }
 
 func createServices(t *testing.T) *services {
-	t.Helper()
+	dbProvider := "sqlite3"
+	connectionString := "file::memory:?_busy_timeout=5000&mode=memory"
 
-	db, err := Open("sqlite3", "file::memory:?_busy_timeout=5000&mode=memory&cache=shared")
+	p := os.Getenv("TEST_DB_PROVIDER")
+	c := os.Getenv("TEST_DB_CONNECTION")
 
-	if err != nil {
-		t.Fatal("unable to create db")
+	if p != "" && c != "" {
+		dbProvider = p
+		connectionString = c
 	}
 
-	Migrate(db)
+	t.Helper()
 
-	saltBytes := 16
-	iterations := 10000
+	db, err := Open(dbProvider, connectionString)
+
+	if err != nil {
+		t.Fatal("unable to open db")
+	}
+
+	if dbProvider == "sqlite3" {
+		setupSQLite(t, db)
+	} else if dbProvider == "mysql" {
+		setupMysql(t, db)
+	} else {
+		t.Fatal("Unsupported db provider")
+	}
 
 	s := &services{
 		groupService:     &GroupService{DB: db},
@@ -41,12 +57,55 @@ func createServices(t *testing.T) *services {
 		statisticService: &StatisticService{DB: db},
 		db:               db,
 		pwService: &scores.PBKDF2PasswordService{
-			SaltBytes:  saltBytes,
-			Iterations: iterations,
+			SaltBytes:  16,
+			Iterations: 10000,
 		},
 	}
 
 	return s
+}
+
+func execMultiple(db *sql.DB, statements ...string) error {
+	for _, statement := range statements {
+		_, err := db.Exec(statement)
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func setupMysql(t *testing.T, db *sql.DB) {
+	// TODO somehow make sure this a test database
+	// TODO prevent parallel tests
+
+	err := execMultiple(
+		db,
+		"DELETE FROM volleynet_tournament_teams",
+		"DELETE FROM volleynet_players",
+		"DELETE FROM volleynet_tournaments",
+		"DELETE FROM matches",
+		"DELETE FROM teams",
+		"DELETE FROM group_players",
+		"DELETE FROM groups",
+		"DELETE FROM players",
+		"DELETE FROM users",
+		"DELETE FROM db_version",
+	)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func setupSQLite(t *testing.T, db *sql.DB) {
+	_, err := db.Exec(setup.SQLITE)
+
+	if err != nil {
+		t.Fatal(err)
+	}
 }
 
 func newMatch(s *services) *scores.Match {
