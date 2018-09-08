@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/raphi011/scores/volleynet"
@@ -17,8 +18,6 @@ func Players(html io.Reader) ([]volleynet.PlayerInfo, error) {
 	rows := doc.Find("tr")
 
 	for i := range rows.Nodes {
-		playerFound := false
-
 		r := rows.Eq(i)
 
 		player := volleynet.PlayerInfo{}
@@ -29,27 +28,24 @@ func Players(html io.Reader) ([]volleynet.PlayerInfo, error) {
 			continue
 		}
 
-		for j := range columns.Nodes {
-			c := columns.Eq(j)
+		column := columns.Eq(1)
+		player.FirstName, player.LastName = parsePlayerName(column)
 
-			switch j {
-			case 1:
-				player.FirstName, player.LastName = parsePlayerName(c)
+		player.ID, err = parsePlayerID(column.Find("a"))
 
-				player.ID, err = parsePlayerID(c.Find("a"))
-				if err == nil {
-					playerFound = true
-				}
-			case 2:
-				// player.Birthday = c.Text() // TODO
-			}
+		if err != nil {
+			continue
 		}
 
-		if playerFound {
-			players = append(players, player)
-		} else {
-			err = nil
+		column = columns.Eq(2)
+		dateString := column.Text()
+		player.Birthday, err = parseDate(dateString)
+
+		if err != nil {
+			return nil, fmt.Errorf("unable to parse date '%s'", dateString)
 		}
+
+		players = append(players, player)
 	}
 
 	return players, nil
