@@ -1,29 +1,95 @@
 package sqlite
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores"
+)
 
 func TestPlayerStatistic(t *testing.T) {
+	expect := scores.PlayerStatistics{
+		scores.PlayerStatistic{
+			Player:   &scores.Player{Name: "p1", Model: scores.Model{ID: 1}},
+			PlayerID: 1,
+			Statistic: scores.Statistic{
+				Played:        1,
+				GamesWon:      1,
+				GamesLost:     0,
+				PointsWon:     15,
+				PointsLost:    13,
+				PercentageWon: 100,
+				Rank:          "Hacker",
+			},
+		},
+		scores.PlayerStatistic{
+			Player:   &scores.Player{Name: "p2", Model: scores.Model{ID: 2}},
+			PlayerID: 2,
+			Statistic: scores.Statistic{
+				Played:        1,
+				GamesWon:      1,
+				GamesLost:     0,
+				PointsWon:     15,
+				PointsLost:    13,
+				PercentageWon: 100,
+				Rank:          "Hacker",
+			},
+		},
+		scores.PlayerStatistic{
+			Player:   &scores.Player{Name: "p3", Model: scores.Model{ID: 3}},
+			PlayerID: 3,
+			Statistic: scores.Statistic{
+				Played:        1,
+				GamesWon:      0,
+				GamesLost:     1,
+				PointsWon:     13,
+				PointsLost:    15,
+				PercentageWon: 0,
+				Rank:          "Curling doper",
+			},
+		},
+		scores.PlayerStatistic{
+			Player:   &scores.Player{Name: "p4", Model: scores.Model{ID: 4}},
+			PlayerID: 4,
+			Statistic: scores.Statistic{
+				Played:        1,
+				GamesWon:      0,
+				GamesLost:     1,
+				PointsWon:     13,
+				PointsLost:    15,
+				PercentageWon: 0,
+				Rank:          "Curling doper",
+			},
+		},
+	}
 	s := createServices(t)
 
 	m := newMatch(s)
-	_, _ = s.matchService.Create(m)
+	m, _ = s.matchService.Create(m)
 
 	filter := "all"
 	st, err := s.statisticService.Players(filter)
 
 	if err != nil {
-		t.Errorf("StatisticService.Players() err: %s", err)
-		return
+		t.Fatalf("StatisticService.Players() err: %s", err)
+	}
+
+	if !cmp.Equal(st, expect) {
+		t.Fatalf("StatisticService.Players()\n%s", cmp.Diff(st, expect))
 	}
 
 	len := len(st)
 	if len != 4 {
-		t.Errorf("StatisticService.Players() want len(p): 4, got %d ", len)
+		t.Fatalf("StatisticService.Players() want len(p): 4, got %d ", len)
 	}
 
-	_, err = s.statisticService.Player(m.Team1.Player1ID, filter)
+	ps, err := s.statisticService.Player(m.Team1.Player1ID, filter)
 
 	if err != nil {
-		t.Errorf("StatisticService.Player() err: %s", err)
+		t.Fatalf("StatisticService.Player() err: %s", err)
+	}
+
+	if !cmp.Equal(ps, &expect[0]) {
+		t.Fatalf("StatisticService.Player()\n%s", cmp.Diff(ps, &expect[0]))
 	}
 }

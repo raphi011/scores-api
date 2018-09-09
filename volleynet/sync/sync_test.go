@@ -3,6 +3,7 @@ package sync
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/mocks"
@@ -48,7 +49,7 @@ func TestSyncLadder(t *testing.T) {
 
 func TestSyncTournamentInformation(t *testing.T) {
 	response, _ := os.Open("../testdata/upcoming.html")
-	tournament, _ := parse.FullTournament(response, volleynet.Tournament{Status: volleynet.StatusUpcoming, ID: 22231})
+	tournament, _ := parse.FullTournament(response, time.Now(), volleynet.Tournament{Status: volleynet.StatusUpcoming, ID: 22231})
 
 	syncInfos := SyncTournaments(tournament, &volleynet.Tournament{ID: 22231, Status: volleynet.StatusUpcoming})
 

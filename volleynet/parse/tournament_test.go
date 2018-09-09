@@ -3,6 +3,7 @@ package parse
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/raphi011/scores/volleynet"
@@ -10,11 +11,38 @@ import (
 
 var tournament_tests = []struct {
 	file       string
+	now        time.Time
 	tournament volleynet.Tournament
 	out        *volleynet.FullTournament
 }{
 	{
+		"../testdata/done-no-teams.html",
+		mustParseDate("02.05.2018"),
+		volleynet.Tournament{ID: 21808, Gender: "M", Status: "upcoming"},
+		&volleynet.FullTournament{
+			Tournament: volleynet.Tournament{
+				ID:     21808,
+				Phase:  "ABV Tour AMATEUR 2",
+				Start:  mustParseDate("01.05.2018"),
+				End:    mustParseDate("01.05.2018"),
+				Gender: "M",
+				Status: "done",
+			},
+			MaxTeams:  8,
+			MinTeams:  8,
+			MaxPoints: -1,
+			Web:       "www.surfworldcup.at/sport/beach-summer-games/",
+			Location:  "Seegelände 7100 Neusiedl am See",
+			Mode:      "Double Elimination 8er-Raster",
+			Organiser: "Beach Summer Games",
+			Phone:     "0680 1412388",
+			Email:     "office@beachsummergames.com",
+			Teams:     []volleynet.TournamentTeam{},
+		},
+	},
+	{
 		"../testdata/22764-done.html",
+		mustParseDate("02.09.2018"),
 		volleynet.Tournament{ID: 22764, Gender: "M", Status: "upcoming"},
 		&volleynet.FullTournament{
 			Tournament: volleynet.Tournament{
@@ -121,6 +149,7 @@ var tournament_tests = []struct {
 	{
 
 		"../testdata/done.html",
+		mustParseDate("22.05.2018"),
 		volleynet.Tournament{ID: 22228, Gender: "M", Status: "upcoming"},
 		&volleynet.FullTournament{
 			Tournament: volleynet.Tournament{
@@ -170,6 +199,7 @@ var tournament_tests = []struct {
 	},
 	{
 		"../testdata/done-tournament.html",
+		mustParseDate("19.08.2018"),
 		volleynet.Tournament{ID: 22750, Gender: "M", Status: "upcoming"},
 		&volleynet.FullTournament{
 			Tournament: volleynet.Tournament{
@@ -227,6 +257,7 @@ var tournament_tests = []struct {
 
 	{
 		"../testdata/upcoming.html",
+		mustParseDate("19.08.2018"),
 		volleynet.Tournament{ID: 22231, Gender: "M", Status: "upcoming"},
 
 		&volleynet.FullTournament{
@@ -278,6 +309,7 @@ var tournament_tests = []struct {
 
 	{
 		"../testdata/22764-upcoming-wildcard.html",
+		mustParseDate("02.09.2018"),
 		volleynet.Tournament{ID: 22764, Gender: "M", Status: "upcoming"},
 		&volleynet.FullTournament{
 			Tournament: volleynet.Tournament{
@@ -392,6 +424,7 @@ var tournament_tests = []struct {
 
 	{
 		"../testdata/done3.html",
+		mustParseDate("26.08.2018"),
 		volleynet.Tournament{ID: 22616, Gender: "M", Status: "upcoming"},
 
 		&volleynet.FullTournament{
@@ -456,7 +489,7 @@ func Test_tournament(t *testing.T) {
 		t.Run(tt.file, func(t *testing.T) {
 			response, _ := os.Open(tt.file)
 
-			tournament, err := FullTournament(response, tt.tournament)
+			tournament, err := FullTournament(response, tt.now, tt.tournament)
 
 			if err != nil {
 				t.Fatalf("FullTournament() err: %s", err)

@@ -22,15 +22,22 @@ RUN go install \
   -ldflags="-X main.version=$(git describe --always --long --dirty)" \
   -gcflags "all=-N -l" # turn off optimizations for debugging
 
-CMD [ \
+ENTRYPOINT [ \
   "/go/bin/dlv", \ 
   "--listen=:40000", \
+  "--accept-multiclient", \
   "--log=true", \
+  "--api-version=2", \
   "--headless=true", \ 
   "exec", \ 
   "/go/bin/api", \ 
-  "--", \
-  "-db", \ 
+  "--" \
+]
+
+CMD [ \
+  "-provider", \
+  "sqlite3", \ 
+  "-connection", \ 
   "/srv/scores/scores.db", \
   "-goauth", \
   "/srv/scores/client_secret.json" \

@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 	"github.com/raphi011/scores/volleynet"
@@ -215,7 +216,7 @@ func (c *ClientImpl) ComplementTournament(tournament volleynet.Tournament) (
 		return nil, errors.Wrapf(err, "loading tournament %d failed", tournament.ID)
 	}
 
-	t, err := parse.FullTournament(resp.Body, tournament)
+	t, err := parse.FullTournament(resp.Body, time.Now(), tournament)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)

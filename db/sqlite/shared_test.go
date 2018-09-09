@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"os"
+	"runtime"
 	"testing"
 
 	"github.com/raphi011/scores"
@@ -78,8 +79,9 @@ func execMultiple(db *sql.DB, statements ...string) error {
 }
 
 func setupMysql(t *testing.T, db *sql.DB) {
-	// TODO somehow make sure this a test database
-	// TODO prevent parallel tests
+	if runtime.GOMAXPROCS(0) > 1 {
+		t.Fatal("Mysql testing can not run in parallel")
+	}
 
 	err := execMultiple(
 		db,

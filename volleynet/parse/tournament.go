@@ -3,6 +3,7 @@ package parse
 import (
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
@@ -10,8 +11,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// FullTournament adds remaining details to the tournament (parsed by tournament_list)
 func FullTournament(
 	html io.Reader,
+	now time.Time,
 	tournament volleynet.Tournament) (*volleynet.FullTournament, error) {
 
 	doc, err := parseHTML(html)
@@ -31,11 +34,22 @@ func FullTournament(
 		return nil, errors.Wrap(err, "error parsing tournament teams")
 	}
 
-	if len(t.Teams) > 0 && t.Teams[0].Rank > 0 {
+	if len(t.Teams) == 0 && isDateAfter(now, t.End) ||
+		len(t.Teams) > 0 && t.Teams[0].Rank > 0 {
 		t.Status = volleynet.StatusDone
 	}
 
 	return t, nil
+}
+
+func getDate(d time.Time) time.Time {
+	date := time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
+	log.Print(date)
+	return date
+}
+
+func isDateAfter(tournament, current time.Time) bool {
+	return getDate(tournament).After(getDate(current))
 }
 
 func parseTournamentNotes(doc *goquery.Document, t *volleynet.FullTournament) {
@@ -59,6 +73,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		t.MaxTeams = findInt(t.Mode)
 	},
 	"Teiln. Qual.": func(value *goquery.Selection, t *volleynet.FullTournament) {
+		// TODO: not min teams but min teams for qualification, this is misleading
 		t.MinTeams = findInt(value.Text())
 	},
 	"Datum": func(value *goquery.Selection, t *volleynet.FullTournament) {
@@ -120,6 +135,7 @@ func parseTournamentDetails(doc *goquery.Document, t *volleynet.FullTournament) 
 
 func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.FullTournament) error {
 	tables := doc.Find("tbody")
+	t.Teams = []volleynet.TournamentTeam{}
 
 	for i := range tables.Nodes {
 		table := tables.Eq(i)

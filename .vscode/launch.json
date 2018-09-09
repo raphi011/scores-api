@@ -7,9 +7,14 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}/cmd/api",
-      "args": ["-provider", "mysql", "-connection", "root:test@/scores?charset=utf8mb4&parseTime=true"],
+      "args": [
+        "-provider",
+        "mysql",
+        "-connection",
+        "root:test@/scores?charset=utf8mb4&parseTime=true"
+      ],
       "showLog": true,
-      "cwd": "${workspaceRoot}",
+      "cwd": "${workspaceRoot}"
     },
     {
       "name": "Backend Docker",
@@ -17,6 +22,14 @@
       "request": "launch",
       "mode": "remote",
       "remotePath": "/go/src/github.com/raphi011/scores/cmd/api",
+      "useApiV1": false,
+      "dlvLoadConfig": {
+        "followPointers": true,
+        "maxVariableRecurse": 1,
+        "maxStringLen": 64,
+        "maxArrayValues": 64,
+        "maxStructFields": -1
+      },
       "port": 40000,
       "host": "localhost",
       "program": "${workspaceRoot}/cmd/api",
