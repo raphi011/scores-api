@@ -93,10 +93,10 @@ func TestSyncTournaments(t *testing.T) {
 	report, err := syncService.Tournaments("M", "AMATEUR LEAGUE", 2018)
 
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 
 	if len(report.Tournament.Update) != 1 {
-		t.Errorf("SyncService.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", len(report.Tournament.Update))
+		t.Fatalf("SyncService.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", len(report.Tournament.Update))
 	}
 }
