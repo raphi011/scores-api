@@ -3,6 +3,7 @@ package sync
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -59,7 +60,7 @@ func (s *SyncService) persistTeams(changes *TeamChanges) error {
 		err := s.VolleynetService.NewTeam(&new)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "persisting new tournamentteam failed")
 		}
 	}
 
@@ -67,7 +68,7 @@ func (s *SyncService) persistTeams(changes *TeamChanges) error {
 		err := s.VolleynetService.UpdateTournamentTeam(&update)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "persisting updated tournamentteam failed")
 		}
 	}
 
@@ -75,7 +76,7 @@ func (s *SyncService) persistTeams(changes *TeamChanges) error {
 		err := s.VolleynetService.DeleteTeam(&delete)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "persisting deleted tournamentteam failed")
 		}
 	}
 
@@ -86,7 +87,11 @@ func (s *SyncService) addMissingPlayers(teams []volleynet.TournamentTeam) error 
 	players := distinctPlayers(teams)
 
 	for _, p := range players {
-		s.addPlayerIfNeeded(p)
+		err := s.addPlayerIfNeeded(p)
+
+		if err != nil {
+			return errors.Wrap(err, "addMissingPlayers failed")
+		}
 	}
 
 	return nil

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/pkg/errors"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -110,7 +111,7 @@ func (s *SyncService) persistTournaments(changes *TournamentChanges) error {
 		err := s.VolleynetService.NewTournament(&new)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "persisting new tournament failed")
 		}
 	}
 
@@ -118,14 +119,9 @@ func (s *SyncService) persistTournaments(changes *TournamentChanges) error {
 		err := s.VolleynetService.UpdateTournament(&update)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "persisting updated tournament failed")
 		}
 	}
-
-	// TODO
-	// for _, delete := range changes.Delete {
-	// 	err := s.VolleynetService.Dele(&update)
-	// }
 
 	return nil
 }

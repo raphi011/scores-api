@@ -87,7 +87,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 
 	report.ScrapeDuration = time.Since(start) / time.Millisecond
 
-	return report, errors.Wrap(err, "persisting tournament scrape changes failed")
+	return report, errors.Wrap(err, "sync failed")
 }
 
 func (s *SyncService) persistChanges(report *Changes) error {
