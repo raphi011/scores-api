@@ -140,9 +140,6 @@ class Volleynet extends React.Component<Props, State> {
         case 1:
           ts = tournaments.past;
           break;
-        case 2:
-          ts = tournaments.played;
-          break;
         default: // this shouldn't happen
       }
       content = (
@@ -159,7 +156,6 @@ class Volleynet extends React.Component<Props, State> {
         <Tabs onChange={this.onTabClick} value={tabOpen} fullWidth>
           <Tab label="Upcoming" />
           <Tab label="Past" />
-          <Tab label="Played" />
         </Tabs>
         {content}
       </Layout>
