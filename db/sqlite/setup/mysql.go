@@ -23,7 +23,7 @@ CREATE TABLE players (
 	created_at datetime NOT NULL,
 	updated_at datetime,
 	deleted_at datetime,
-	name varchar(255) NOT NULL,
+	name varchar(255) CHARSET utf8mb4 NOT NULL,
 	user_id integer UNIQUE,
 	FOREIGN KEY(user_id) REFERENCES users(id),
 	INDEX(name)
@@ -35,7 +35,7 @@ CREATE TABLE groups (
 	updated_at datetime,
 	deleted_at datetime,
 	image_url varchar(255),
-	name varchar(255) NOT NULL,
+	name varchar(255) CHARSET utf8mb4 NOT NULL,
 	INDEX(name)
 );
 
@@ -50,7 +50,7 @@ CREATE TABLE group_players (
 
 CREATE TABLE teams (
 	created_at datetime NOT NULL,
-	name varchar(255),
+	name varchar(255) CHARSET utf8mb4,
 	player1_id integer NOT NULL,
 	player2_id integer NOT NULL,
 	FOREIGN KEY(player1_id) REFERENCES players(id),
@@ -151,7 +151,7 @@ CREATE TABLE volleynet_tournaments (
 	signedup_teams integer NOT NULL DEFAULT 0,
 	start datetime NOT NULL,
 	end datetime NOT NULL,
-	name varchar(255) NOT NULL,
+	name varchar(255) CHARSET utf8mb4 NOT NULL,
 	league varchar(255) NOT NULL,
 	link varchar(255) NOT NULL,
 	entry_link varchar(255) NOT NULL,
@@ -159,7 +159,7 @@ CREATE TABLE volleynet_tournaments (
 	registration_open integer NOT NULL,
 	location varchar(255) NOT NULL,
 	live_scoring_link varchar(255) NOT NULL,
-	html_notes text CHARACTER SET utf8mb4 NOT NULL,
+	html_notes text CHARSET utf8mb4 NOT NULL,
 	mode varchar(64) NOT NULL,
 	max_points integer NOT NULL,
 	min_teams integer NOT NULL,
@@ -184,8 +184,8 @@ CREATE TABLE volleynet_players (
 	id integer PRIMARY KEY,
 	created_at datetime NOT NULL,
 	updated_at datetime,
-	first_name varchar(255) NOT NULL,
-	last_name varchar(255) NOT NULL,
+	first_name varchar(255) CHARSET utf8mb4 NOT NULL,
+	last_name varchar(255) CHARSET utf8mb4 NOT NULL,
 	total_points integer NOT NULL,
 	rank integer NOT NULL,
 	country_union varchar(255) NOT NULL,
