@@ -86,6 +86,7 @@ func initRouter(app app) *gin.Engine {
 	auth.GET("/groups/:groupID", groupHandler.groupShow)
 
 	auth.POST("/volleynet/signup", volleynetHandler.signup)
+	auth.GET("/volleynet/ladder", volleynetHandler.ladder)
 	auth.GET("/volleynet/tournaments", volleynetHandler.allTournaments)
 	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.tournament)
 	auth.GET("/volleynet/players/search", volleynetHandler.searchPlayers)

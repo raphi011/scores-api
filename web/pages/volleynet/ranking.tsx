@@ -1,65 +1,66 @@
 import React from 'react';
-import Router from 'next/router';
+// import Router from 'next/router';
 
 import withAuth from '../../containers/AuthContainer';
-import CenteredLoading from '../../components/CenteredLoading';
+import Card from '@material-ui/core/Card';
+import PlayerList from '../../components/volleynet/PlayerList';
+// import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
-// import { loadPlayerAction } from '../../redux/actions/entities';
+import { loadLadderAction } from '../../redux/actions/entities';
+import { ladderVolleynetplayerSelector } from '../../redux/reducers/entities';
 
 import { Player } from '../../types';
 
 interface Props {
-  players: Player[];
-  loadPlayers: (
-    filters: { gender: string },
-  ) => void;
-  gender: string;
+  gender: "M" | "W";
+  ladder: Player[];
+  loadLadder: (gender: string) => void;
   classes: any;
 }
 
-const thisYear = new Date().getFullYear().toString();
+const genderList = ["M", "W"];
 
 class Ranking extends React.Component<Props> {
-//   static buildActions({ gender }: Props) {
-//     return [
-//       loadAction({
-//         gender,
-//       }),
-//     ];
-//   }
+  static buildActions({ gender }: Props) {
+    return [loadLadderAction(gender)];
+  }
 
   static mapDispatchToProps = {
-    // loadTournaments: loadTournamentsAction,
+    loadLadder: loadLadderAction,
   };
 
-//   static getParameters(query) {
-//     let { league = 'AMATEUR TOUR' } = query;
+  static getParameters(query) {
+    let { gender } = query;
 
-//     if (!leagues.includes(league)) {
-//       league = leagues[0];
-//     }
+    if (!genderList.includes(gender)) {
+      gender = "M"
+    }
 
-//     return { league };
-//   }
+    return { gender };
+  }
 
-//   static mapStateToProps(state, { league }: Props) {
-//     const tournaments = tournamentsByLeagueSelector(state, league);
+  static mapStateToProps(state, { gender }: Props) {
+    const ladder = ladderVolleynetplayerSelector(state, gender);
 
-//     return { tournaments };
-//   }
+    return { ladder };
+  }
 
-//   componentDidUpdate(prevProps) {
-//     const { loadTournaments, league } = this.props;
+  componentDidUpdate(prevProps) {
+    const { loadLadder, gender } = this.props;
 
-//     if (league !== prevProps.league) {
-//       loadTournaments({ gender: 'M', league, season: thisYear });
-//     }
-//   }
+    if (gender !== prevProps.gender) {
+      loadLadder(gender);
+    }
+  }
 
   render() {
+    const { ladder } = this.props;
+
     return (
       <Layout title={{ text: 'Rankings', href: '' }}>
-        TODO
+        <Card>
+          <PlayerList players={ladder} />
+        </Card>
       </Layout>
     );
   }

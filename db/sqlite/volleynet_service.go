@@ -28,6 +28,7 @@ type VolleynetService interface {
 	NewPlayer(p *volleynet.Player) error
 	Player(id int) (*volleynet.Player, error)
 	UpdatePlayer(p *volleynet.Player) error
+	Ladder(gender string) ([]volleynet.Player, error)
 }
 
 // VolleynetServiceImpl implements VolleynetService
@@ -575,6 +576,9 @@ const (
 	volleynetPlayerSelectSQL  = volleynetBasePlayersSelectSQL + " WHERE p.id = ?"
 	volleynetPlayersSelectSQL = volleynetBasePlayersSelectSQL
 
+	volleynetPlayerLadderSelectSQL = volleynetBasePlayersSelectSQL +
+		" WHERE p.rank > 0 AND p.gender = ? ORDER BY p.rank"
+
 	volleynetPlayersUpdateSQL = `
 		UPDATE volleynet_players SET
 			updated_at = CURRENT_TIMESTAMP,
@@ -668,6 +672,10 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 	}
 
 	return p, nil
+}
+
+func (s *VolleynetServiceImpl) Ladder(gender string) ([]volleynet.Player, error) {
+	return scanVolleynetPlayers(s.DB, volleynetPlayerLadderSelectSQL, gender)
 }
 
 func (s *VolleynetServiceImpl) AllPlayers() ([]volleynet.Player, error) {

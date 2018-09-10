@@ -40,7 +40,13 @@ export const initialEntitiesState = {
   team: { values: {} },
   match: { values: {}, all: [], byPlayer: {}, byGroup: {} },
   tournament: { values: {}, all: [], byLeague: {} },
-  volleynetplayer: { values: {}, all: [], search: [] },
+  volleynetplayer: {
+    values: {},
+    all: [],
+    search: [],
+    ladder: {},
+
+  },
   statistic: {
     values: {},
     all: [],
@@ -260,6 +266,16 @@ export const tournamentsByLeagueSelector = (state: Store, league: string) =>
 
 export const tournamentSelector = (state: Store, tournamentId: number) =>
   denorm('tournament', entityMapSelector(state), tournamentId);
+
+export const ladderVolleynetplayerSelector = (state: Store, gender: string) =>
+  (state.entities.volleynetplayer.ladder[gender] || []).length
+    ? denorm(
+        'volleynetplayer',
+        entityMapSelector(state),
+        state.entities.volleynetplayer.ladder[gender],
+      )
+    : [];
+
 
 export const searchVolleynetplayerSelector = (state: Store) =>
   (state.entities.volleynetplayer.search || []).length

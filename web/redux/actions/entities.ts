@@ -43,6 +43,7 @@ export const loadPlayerMatchesAction = (
   },
 });
 
+
 export const loadPlayerAction = (id: number): ApiAction => ({
   type: actionNames.API,
   method: 'GET',
@@ -222,6 +223,24 @@ export const loadTournamentsAction = (filters: {
         name: 'byLeague',
         key: filters.league,
         mode: 'replace',
+      },
+    },
+  },
+});
+
+export const loadLadderAction = (gender: "M" | "W"): ApiAction => ({
+  type: actionNames.API,
+  method: 'GET',
+  url: "volleynet/ladder",
+  params: { gender },
+  success: actionNames.RECEIVE_ENTITIES,
+  successParams: {
+    entityName: 'volleynetplayer',
+    listOptions: {
+      volleynetplayer: {
+        mode: 'replace',
+        key: gender,
+        name: 'ladder',
       },
     },
   },

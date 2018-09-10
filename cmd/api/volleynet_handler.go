@@ -22,6 +22,19 @@ type volleynetHandler struct {
 	userService      *sqlite.UserService
 }
 
+func (h *volleynetHandler) ladder(c *gin.Context) {
+	gender := c.DefaultQuery("gender", "M")
+
+	ladder, err := h.volleynetService.Ladder(gender)
+
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		return
+	}
+
+	jsonn(c, http.StatusOK, ladder, "")
+}
+
 func (h *volleynetHandler) allTournaments(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 	league := c.DefaultQuery("league", "AMATEUR TOUR")
