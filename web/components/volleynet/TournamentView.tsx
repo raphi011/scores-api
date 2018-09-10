@@ -116,6 +116,9 @@ class TournamentView extends React.Component<Props, State> {
 
     const showSignup = signedup || tournament.registrationOpen;
 
+    const registered = tournament.teams.filter(t => !t.deregistered);
+    const deregistered = tournament.teams.filter(t => t.deregistered);
+
     return (
       <div className={classes.container}>
         <div className={`${classes.title} ${classes.link}`}>
@@ -168,8 +171,18 @@ class TournamentView extends React.Component<Props, State> {
           Teams
         </Typography>
         <Card className={classes.card}>
-          <TeamList teams={tournament.teams} />
+          <TeamList emptyMessage="No teams are signed up." teams={registered} />
         </Card>
+        {deregistered.length ? (
+          <>
+            <Typography className={classes.title} variant="display1">
+              Deregistered
+            </Typography>
+            <Card className={classes.card}>
+              <TeamList teams={deregistered} />
+            </Card>
+          </>
+        ) : null}
       </div>
     );
   }

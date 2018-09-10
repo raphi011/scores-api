@@ -14,6 +14,7 @@ const styles = createStyles({
 
 interface Props {
   teams: VolleynetTeam[];
+  emptyMessage?: string;
   classes: any;
 }
 
@@ -21,10 +22,10 @@ const sortByRankOrSeed = (a, b) => (a.rank || a.seed) - (b.rank || b.seed);
 
 class TeamList extends React.PureComponent<Props> {
   render() {
-    const { teams = [], classes } = this.props;
+    const { teams = [], emptyMessage = "", classes } = this.props;
 
     if (!teams || !teams.length) {
-      return 'No teams are signed up yet.';
+      return emptyMessage;
     }
 
     return (
