@@ -28,11 +28,7 @@ const teamInsertSQL = `
 func (s *TeamService) Create(team *scores.Team) (*scores.Team, error) {
 	_, err := s.DB.Exec(teamInsertSQL, team.Name, team.Player1ID, team.Player2ID)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return team, nil
+	return team, err
 }
 
 const teamSelectSQL = `
@@ -43,21 +39,12 @@ const teamSelectSQL = `
 func (s *TeamService) ByPlayers(player1ID, player2ID uint) (*scores.Team, error) {
 	team := &scores.Team{}
 
-	var name sql.NullString
 	player1ID, player2ID = TeamPlayerOrder(player1ID, player2ID)
 
 	err := s.DB.QueryRow(teamSelectSQL, player1ID, player2ID).
-		Scan(&team.CreatedAt, &name, &team.Player1ID, &team.Player2ID)
+		Scan(&team.CreatedAt, &team.Name, &team.Player1ID, &team.Player2ID)
 
-	if err != nil {
-		return nil, err
-	}
-
-	if name.Valid {
-		team.Name = name.String
-	}
-
-	return team, nil
+	return team, err
 }
 
 func (s *TeamService) GetOrCreate(player1ID, player2ID uint) (*scores.Team, error) {

@@ -28,7 +28,11 @@ func (s *UserService) Create(user *scores.User) (*scores.User, error) {
 		return nil, err
 	}
 
-	ID, _ := result.LastInsertId()
+	ID, err := result.LastInsertId()
+
+	if err != nil {
+		return nil, err
+	}
 
 	user.ID = uint(ID)
 
@@ -57,7 +61,11 @@ func (s *UserService) UpdatePasswordAuthentication(
 		return err
 	}
 
-	rowsAffected, _ := result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
 
 	if rowsAffected != 1 {
 		return errors.New("User not found")
@@ -88,7 +96,12 @@ func (s *UserService) Update(user *scores.User) error {
 	if err != nil {
 		return err
 	}
-	rowsAffected, _ := result.RowsAffected()
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
 
 	if rowsAffected != 1 {
 		return errors.New("User not found")
@@ -98,7 +111,7 @@ func (s *UserService) Update(user *scores.User) error {
 }
 
 func scanUser(scanner scan) (*scores.User, error) {
-	u := scores.User{}
+	u := &scores.User{}
 
 	err := scanner.Scan(
 		&u.ID,
@@ -114,11 +127,7 @@ func scanUser(scanner scan) (*scores.User, error) {
 		&u.Role,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return &u, nil
+	return u, err
 }
 
 const (
@@ -171,23 +180,11 @@ func (s *UserService) Users() (scores.Users, error) {
 func (s *UserService) User(userID uint) (*scores.User, error) {
 	row := s.DB.QueryRow(userByIDSelectSQL, userID)
 
-	user, err := scanUser(row)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return scanUser(row)
 }
 
 func (s *UserService) ByEmail(email string) (*scores.User, error) {
 	row := s.DB.QueryRow(userByEmailSelectSQL, email)
 
-	user, err := scanUser(row)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return scanUser(row)
 }

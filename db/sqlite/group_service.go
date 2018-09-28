@@ -18,11 +18,7 @@ func scanGroup(scanner scan) (*scores.Group, error) {
 		&g.ImageURL,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return g, nil
+	return g, err
 }
 
 func scanGroups(db *sql.DB, query string, args ...interface{}) (scores.Groups, error) {
@@ -96,34 +92,25 @@ func (s *GroupService) Groups() (scores.Groups, error) {
 }
 
 func (s *GroupService) Group(groupID uint) (*scores.Group, error) {
-	p := &scores.Group{}
-
 	row := s.DB.QueryRow(groupSelectSQL, groupID)
 
-	p, err := scanGroup(row)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return p, nil
+	return scanGroup(row)
 }
 
 const (
 	groupsInsertSQL = `
-		INSERT INTO groups
-		(
-			created_at,
-			name,
-			image_url
-		)
-		VALUES
-		(
-			CURRENT_TIMESTAMP,
-			?,
-			?
-		)
-	`
+INSERT INTO groups
+(
+	created_at,
+	name,
+	image_url
+)
+VALUES
+(
+	CURRENT_TIMESTAMP,
+	?,
+	?
+)`
 )
 
 func (s *GroupService) Create(group *scores.Group) (*scores.Group, error) {
@@ -145,9 +132,9 @@ func (s *GroupService) Create(group *scores.Group) (*scores.Group, error) {
 
 const (
 	addPlayerToGroupSQL = `
-		INSERT INTO group_players (player_id, group_id, role)
-		VALUES (?, ?, ?)
-	`
+INSERT INTO group_players (player_id, group_id, role)
+VALUES (?, ?, ?)
+`
 )
 
 func (s *GroupService) AddPlayerToGroup(playerID, groupID uint, role string) error {

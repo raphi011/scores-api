@@ -41,11 +41,12 @@ func createServices(t *testing.T) *services {
 		t.Fatal("unable to open db")
 	}
 
-	if dbProvider == "sqlite3" {
+	switch dbProvider {
+	case "sqlite3":
 		setupSQLite(t, db)
-	} else if dbProvider == "mysql" {
+	case "mysql":
 		setupMysql(t, db)
-	} else {
+	default:
 		t.Fatal("Unsupported db provider")
 	}
 

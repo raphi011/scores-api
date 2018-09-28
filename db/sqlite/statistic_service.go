@@ -121,25 +121,13 @@ func scanPlayerStatistic(scanner scan) (*scores.PlayerStatistic, error) {
 func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, error) {
 	timeFilter := parseTimeFilter(filter)
 
-	statistics, err := scanPlayerStatistics(s.DB, playersStatisticSelectSQL, timeFilter)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return statistics, nil
+	return scanPlayerStatistics(s.DB, playersStatisticSelectSQL, timeFilter)
 }
 
 func (s *StatisticService) PlayersByGroup(groupID uint, filter string) (scores.PlayerStatistics, error) {
 	timeFilter := parseTimeFilter(filter)
 
-	statistics, err := scanPlayerStatistics(s.DB, groupPlayersStatisticSelectSQL, timeFilter, groupID)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return statistics, nil
+	return scanPlayerStatistics(s.DB, groupPlayersStatisticSelectSQL, timeFilter, groupID)
 }
 
 func (s *StatisticService) Player(playerID uint, filter string) (*scores.PlayerStatistic, error) {
@@ -147,13 +135,7 @@ func (s *StatisticService) Player(playerID uint, filter string) (*scores.PlayerS
 
 	row := s.DB.QueryRow(playerStatisticSelectSQL, timeFilter, playerID)
 
-	st, err := scanPlayerStatistic(row)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return st, nil
+	return scanPlayerStatistic(row)
 }
 
 const (
@@ -182,11 +164,5 @@ const (
 func (s *StatisticService) PlayerTeams(playerID uint, filter string) (scores.PlayerStatistics, error) {
 	timeFilter := parseTimeFilter(filter)
 
-	statistics, err := scanPlayerStatistics(s.DB, playerTeamsStatisticSelectSQL, playerID, timeFilter)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return statistics, nil
+	return scanPlayerStatistics(s.DB, playerTeamsStatisticSelectSQL, playerID, timeFilter)
 }

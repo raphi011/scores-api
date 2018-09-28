@@ -97,11 +97,9 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 
 	if err == sql.ErrNoRows {
 		return nil, nil
-	} else if err != nil {
-		return nil, err
 	}
 
-	return t, nil
+	return t, err
 }
 
 func (s *VolleynetServiceImpl) Tournament(tournamentID int) (*volleynet.FullTournament, error) {
@@ -120,145 +118,141 @@ func (s *VolleynetServiceImpl) SeasonTournaments(season int) ([]volleynet.FullTo
 
 const (
 	tournamentsBaseSelectSQL = `
-	SELECT
-		t.id,
-		t.created_at,
-		t.updated_at,
-		t.gender,
-		t.start,
-		t.end,
-		t.name,
-		t.league,
-		t.link,
-		t.entry_link,
-		t.status,
-		t.registration_open,
-		t.location,
-		t.html_notes,
-		t.mode,
-		t.max_points,
-		t.min_teams,
-		t.max_teams,
-		t.end_registration,
-		t.organiser,
-		t.phone,
-		t.email,
-		t.web,
-		t.current_points,
-		t.live_scoring_link,
-		t.loc_lat,
-		t.loc_lon,
-		t.season,
-		t.signedup_teams
-	FROM volleynet_tournaments t
-	`
+SELECT
+	t.id,
+	t.created_at,
+	t.updated_at,
+	t.gender,
+	t.start,
+	t.end,
+	t.name,
+	t.league,
+	t.link,
+	t.entry_link,
+	t.status,
+	t.registration_open,
+	t.location,
+	t.html_notes,
+	t.mode,
+	t.max_points,
+	t.min_teams,
+	t.max_teams,
+	t.end_registration,
+	t.organiser,
+	t.phone,
+	t.email,
+	t.web,
+	t.current_points,
+	t.live_scoring_link,
+	t.loc_lat,
+	t.loc_lon,
+	t.season,
+	t.signedup_teams
+FROM volleynet_tournaments t`
 
 	tournamentsSeasonSelectSQL = tournamentsBaseSelectSQL + " WHERE t.season = ?"
 
-	tournamentsFilterSelectSQL = tournamentsBaseSelectSQL + `
-	 WHERE t.gender = ? AND t.league = ? AND t.season = ?
-	`
+	tournamentsFilterSelectSQL = tournamentsBaseSelectSQL +
+		"WHERE t.gender = ? AND t.league = ? AND t.season = ?"
 
 	tournamentSelectSQL = tournamentsBaseSelectSQL + " WHERE t.id = ?"
 
 	tournamentsInsertSQL = `
-		INSERT INTO volleynet_tournaments
-		(
-			id,
-			created_at,
-			updated_at,
-			gender,
-			start,
-			end,
-			name,
-			league,
-			link,
-			entry_link,
-			status,
-			registration_open,
-			location,
-			html_notes,
-			mode,
-			max_points,
-			min_teams,
-			max_teams,
-			end_registration,
-			organiser,
-			phone,
-			email,
-			web,
-			current_points,
-			live_scoring_link,
-			loc_lat,
-			loc_lon,
-			season,
-			signedup_teams
-		)
-		VALUES
-		(
-			?,
-			CURRENT_TIMESTAMP,
-			CURRENT_TIMESTAMP,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?
-		)
-	`
+INSERT INTO volleynet_tournaments
+(
+	id,
+	created_at,
+	updated_at,
+	gender,
+	start,
+	end,
+	name,
+	league,
+	link,
+	entry_link,
+	status,
+	registration_open,
+	location,
+	html_notes,
+	mode,
+	max_points,
+	min_teams,
+	max_teams,
+	end_registration,
+	organiser,
+	phone,
+	email,
+	web,
+	current_points,
+	live_scoring_link,
+	loc_lat,
+	loc_lon,
+	season,
+	signedup_teams
+)
+VALUES
+(
+	?,
+	CURRENT_TIMESTAMP,
+	CURRENT_TIMESTAMP,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?
+)`
 
 	tournamentsUpdateSQL = `
-		UPDATE volleynet_tournaments SET
-			updated_at = CURRENT_TIMESTAMP,
-			gender = ?,
-			start = ?,
-			end = ?,
-			name = ?,
-			league = ?,
-			link = ?,
-			entry_link = ?,
-			status = ?,
-			registration_open = ?,
-			location = ?,
-			html_notes = ?,
-			mode = ?,
-			max_points = ?,
-			min_teams = ?,
-			max_teams = ?,	
-			end_registration = ?,
-			organiser = ?,
-			phone = ?,
-			email = ?,
-			web = ?,
-			current_points = ?,
-			live_scoring_link = ?,
-			loc_lat = ?,
-			loc_lon = ?,
-			season = ?,
-			signedup_teams = ?
-		WHERE id = ?
-	`
+UPDATE volleynet_tournaments SET
+	updated_at = CURRENT_TIMESTAMP,
+	gender = ?,
+	start = ?,
+	end = ?,
+	name = ?,
+	league = ?,
+	link = ?,
+	entry_link = ?,
+	status = ?,
+	registration_open = ?,
+	location = ?,
+	html_notes = ?,
+	mode = ?,
+	max_points = ?,
+	min_teams = ?,
+	max_teams = ?,	
+	end_registration = ?,
+	organiser = ?,
+	phone = ?,
+	email = ?,
+	web = ?,
+	current_points = ?,
+	live_scoring_link = ?,
+	loc_lat = ?,
+	loc_lon = ?,
+	season = ?,
+	signedup_teams = ?
+WHERE id = ?`
 )
 
 func (s *VolleynetServiceImpl) GetTournaments(gender, league string, season int) ([]volleynet.FullTournament, error) {
@@ -317,7 +311,11 @@ func (s *VolleynetServiceImpl) UpdateTournamentTeam(t *volleynet.TournamentTeam)
 		return err
 	}
 
-	rowsAffected, _ := result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
 
 	if rowsAffected != 1 {
 		return errors.New("Team not found")
@@ -361,7 +359,11 @@ func (s *VolleynetServiceImpl) UpdateTournament(t *volleynet.FullTournament) err
 		return err
 	}
 
-	rowsAffected, _ := result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
 
 	if rowsAffected != 1 {
 		return errors.New("Tournament not found")
@@ -372,80 +374,76 @@ func (s *VolleynetServiceImpl) UpdateTournament(t *volleynet.FullTournament) err
 
 const (
 	volleynetTeamsSelectSQL = `
-		SELECT
-			t.volleynet_tournament_id,
-			t.volleynet_player_1_id,
-			p1.first_name,
-			p1.last_name,
-			p1.total_points,
-			p1.country_union,
-			p1.birthday,
-			p1.license,
-			p1.gender,
-			t.volleynet_player_2_id,
-			p2.first_name,
-			p2.last_name,
-			p2.total_points,
-			p2.country_union,
-			p2.birthday,
-			p2.license,
-			p2.gender,
-			t.rank,
-			t.seed,
-			t.total_points,
-			t.won_points,
-			t.prize_money,
-			t.deregistered
-		FROM volleynet_tournament_teams t
-		JOIN volleynet_players p1 on p1.id = t.volleynet_player_1_id
-		JOIN volleynet_players p2 on p2.id = t.volleynet_player_2_id
-		WHERE t.volleynet_tournament_id = ?	
-	`
+SELECT
+	t.volleynet_tournament_id,
+	t.volleynet_player_1_id,
+	p1.first_name,
+	p1.last_name,
+	p1.total_points,
+	p1.country_union,
+	p1.birthday,
+	p1.license,
+	p1.gender,
+	t.volleynet_player_2_id,
+	p2.first_name,
+	p2.last_name,
+	p2.total_points,
+	p2.country_union,
+	p2.birthday,
+	p2.license,
+	p2.gender,
+	t.rank,
+	t.seed,
+	t.total_points,
+	t.won_points,
+	t.prize_money,
+	t.deregistered
+FROM volleynet_tournament_teams t
+JOIN volleynet_players p1 on p1.id = t.volleynet_player_1_id
+JOIN volleynet_players p2 on p2.id = t.volleynet_player_2_id
+WHERE t.volleynet_tournament_id = ?`
 
 	volleynetTeamsUpdateSQL = `
-		UPDATE volleynet_tournament_teams SET
-			rank = ?,
-			seed = ?,
-			total_points = ?,
-			won_points = ?,
-			prize_money = ?,
-			deregistered = ?
-		WHERE volleynet_tournament_id = ? AND volleynet_player_1_id = ? AND volleynet_player_2_id = ?
-	`
+UPDATE volleynet_tournament_teams SET
+	rank = ?,
+	seed = ?,
+	total_points = ?,
+	won_points = ?,
+	prize_money = ?,
+	deregistered = ?
+WHERE volleynet_tournament_id = ? AND volleynet_player_1_id = ? AND volleynet_player_2_id = ?`
 
 	volleynetTeamsDeleteSQL = `
-		DELETE FROM volleynet_tournament_teams
-		WHERE volleynet_tournament_id = ? 
-		  AND volleynet_player_1_id = ?
-		  AND volleynet_player_2_id = ?
-	`
+DELETE FROM volleynet_tournament_teams
+WHERE volleynet_tournament_id = ? 
+	AND volleynet_player_1_id = ?
+	AND volleynet_player_2_id = ?`
 
 	volleynetTeamsInsertSQL = `
-		INSERT INTO volleynet_tournament_teams
-		(
-			volleynet_tournament_id,
-			volleynet_player_1_id,
-			volleynet_player_2_id,
-			rank,
-			seed,
-			total_points,
-			won_points,
-			prize_money,
-            deregistered
-		)
-		VALUES
-		(
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?
-		)
-	`
+INSERT INTO volleynet_tournament_teams
+(
+	volleynet_tournament_id,
+	volleynet_player_1_id,
+	volleynet_player_2_id,
+	rank,
+	seed,
+	total_points,
+	won_points,
+	prize_money,
+	deregistered
+)
+VALUES
+(
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?
+)`
 )
 
 func (s *VolleynetServiceImpl) NewTeam(t *volleynet.TournamentTeam) error {
@@ -530,11 +528,7 @@ func scanTournamentTeam(scanner scan) (*volleynet.TournamentTeam, error) {
 		&t.Deregistered,
 	)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return t, nil
+	return t, err
 }
 
 func (s *VolleynetServiceImpl) UpdateTournamentTeams(teams []volleynet.TournamentTeam) error {
@@ -559,19 +553,18 @@ func (s *VolleynetServiceImpl) TournamentTeams(tournamentID int) ([]volleynet.To
 
 const (
 	volleynetBasePlayersSelectSQL = `
-		SELECT
-			p.id,
-			p.first_name,
-			p.last_name,
-			p.birthday,
-			p.gender,
-			p.total_points,
-			p.rank,
-			p.club,
-			p.country_union,
-			p.license
-		FROM volleynet_players p
-	`
+SELECT
+	p.id,
+	p.first_name,
+	p.last_name,
+	p.birthday,
+	p.gender,
+	p.total_points,
+	p.rank,
+	p.club,
+	p.country_union,
+	p.license
+FROM volleynet_players p`
 
 	volleynetPlayerSelectSQL  = volleynetBasePlayersSelectSQL + " WHERE p.id = ?"
 	volleynetPlayersSelectSQL = volleynetBasePlayersSelectSQL
@@ -580,52 +573,50 @@ const (
 		" WHERE p.rank > 0 AND p.gender = ? ORDER BY p.rank"
 
 	volleynetPlayersUpdateSQL = `
-		UPDATE volleynet_players SET
-			updated_at = CURRENT_TIMESTAMP,
-			first_name = ?,
-			last_name = ?,
-			birthday = ?,
-			gender = ?,
-			total_points = ?,
-			rank = ?,
-			club = ?,
-			country_union = ?,
-			license = ?
-		WHERE id = ?
-	`
+UPDATE volleynet_players SET
+	updated_at = CURRENT_TIMESTAMP,
+	first_name = ?,
+	last_name = ?,
+	birthday = ?,
+	gender = ?,
+	total_points = ?,
+	rank = ?,
+	club = ?,
+	country_union = ?,
+	license = ?
+WHERE id = ?`
 
 	volleynetPlayersInsertSQL = `
-		INSERT INTO volleynet_players
-		(
-			id,
-			created_at,
-			updated_at,
-			first_name,
-			last_name,
-			birthday,
-			gender,
-			total_points,
-			rank,
-			club,
-			country_union,
-			license
-		)
-		VALUES
-		(
-			?,
-			CURRENT_TIMESTAMP,
-			CURRENT_TIMESTAMP,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?
-		)
-	`
+INSERT INTO volleynet_players
+(
+	id,
+	created_at,
+	updated_at,
+	first_name,
+	last_name,
+	birthday,
+	gender,
+	total_points,
+	rank,
+	club,
+	country_union,
+	license
+)
+VALUES
+(
+	?,
+	CURRENT_TIMESTAMP,
+	CURRENT_TIMESTAMP,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?
+)`
 )
 
 func scanVolleynetPlayers(db *sql.DB, query string, args ...interface{}) ([]volleynet.Player, error) {
@@ -726,7 +717,11 @@ func (s *VolleynetServiceImpl) UpdatePlayer(p *volleynet.Player) error {
 		return err
 	}
 
-	rowsAffected, _ := result.RowsAffected()
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
 
 	if rowsAffected != 1 {
 		return errors.New("Player not found")

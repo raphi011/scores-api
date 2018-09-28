@@ -8,11 +8,11 @@ CREATE TABLE users (
 	created_at datetime NOT NULL,
 	updated_at datetime,
 	deleted_at datetime,
-	role varchar(32) NOT NULL DEFAULT "user",
+	role varchar(32) NOT NULL,
 	volleynet_login varchar(64),
 	volleynet_user_id integer,
 	email varchar(255) NOT NULL UNIQUE,
-	profile_image_url varchar(255),
+	profile_image_url varchar(255) NOT NULL,
 	salt blob,
 	hash blob,
 	iterations integer
@@ -33,7 +33,7 @@ CREATE TABLE groups (
 	created_at datetime NOT NULL,
 	updated_at datetime,
 	deleted_at datetime,
-	image_url varchar(255),
+	image_url varchar(255) NOT NULL,
 	name varchar(255) NOT NULL
 );
 
@@ -48,7 +48,7 @@ CREATE TABLE group_players (
 
 CREATE TABLE teams (
 	created_at datetime NOT NULL,
-	name varchar(255),
+	name varchar(255) NOT NULL,
 	player1_id integer NOT NULL,
 	player2_id integer NOT NULL,
 	FOREIGN KEY(player1_id) REFERENCES players(id),
@@ -145,7 +145,7 @@ CREATE TABLE volleynet_tournaments (
 	created_at datetime NOT NULL,
 	updated_at datetime NOT NULL,
 	gender varchar(1) NOT NULL,
-	signedup_teams integer NOT NULL DEFAULT 0,
+	signedup_teams integer NOT NULL,
 	start datetime NOT NULL,
 	end datetime NOT NULL,
 	name varchar(255) NOT NULL,
