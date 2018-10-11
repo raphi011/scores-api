@@ -19,7 +19,7 @@ COPY . .
 WORKDIR /go/src/github.com/raphi011/scores/cmd/api
 
 RUN go install \
-  -ldflags="-X main.version=$(git describe --always --long --dirty)" \
+  -ldflags="-X main.version=$(git describe --always --long)" \
   -gcflags "all=-N -l" # turn off optimizations for debugging
 
 ENTRYPOINT [ \

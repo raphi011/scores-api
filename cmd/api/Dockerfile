@@ -17,7 +17,7 @@ COPY . .
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/api
 
-RUN go install -ldflags="-X main.version=$(git describe --always --long --dirty)"
+RUN go install -ldflags="-X main.version=$(git describe --always --long)"
 
 ENTRYPOINT [ "/go/bin/api" ]
 CMD ["-provider", "sqlite3", "-connection", "/srv/scores/scores.db", "-goauth", "/srv/scores/client_secret.json"]
