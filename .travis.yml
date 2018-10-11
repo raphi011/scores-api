@@ -3,11 +3,7 @@ jobs:
     - stage: "Test"
       name: "go"
       language: go
-      go: "1.10"
-      before_install:
-        - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-      install:
-        - dep ensure -vendor-only
+      go: "1.11"
     - language: node_js
       node_js: node
       install: npm --prefix ./web install ./web
