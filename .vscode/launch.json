@@ -14,6 +14,7 @@
         "root:test@/scores?charset=utf8mb4&parseTime=true"
       ],
       "showLog": true,
+      "apiVersion": 2,
       "cwd": "${workspaceRoot}"
     },
     {
@@ -22,7 +23,7 @@
       "request": "launch",
       "mode": "remote",
       "remotePath": "/go/src/github.com/raphi011/scores/cmd/api",
-      "useApiV1": false,
+      "apiVersion": 2,
       "dlvLoadConfig": {
         "followPointers": true,
         "maxVariableRecurse": 1,
