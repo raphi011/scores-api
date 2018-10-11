@@ -2,12 +2,6 @@ FROM golang
 
 WORKDIR /go/src/github.com/raphi011/scores
 
-RUN go get -u github.com/golang/dep/...
-
-COPY Gopkg.lock .
-COPY Gopkg.toml .
-RUN dep ensure -vendor-only
-
 COPY . .
 
 WORKDIR /go/src/github.com/raphi011/scores/cmd/terminal

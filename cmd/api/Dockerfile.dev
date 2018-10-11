@@ -7,12 +7,7 @@ ENV BACKEND_URL $backend_url
 
 WORKDIR /go/src/github.com/raphi011/scores
 
-RUN go get -u github.com/golang/dep/...
 RUN go get -u github.com/derekparker/delve/cmd/dlv
-
-COPY Gopkg.lock .
-COPY Gopkg.toml .
-RUN dep ensure -vendor-only
 
 COPY . .
 
