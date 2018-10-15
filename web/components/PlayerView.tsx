@@ -6,28 +6,28 @@ import React from 'react';
 import { Player, PlayerStatistic } from '../types';
 
 const styles = createStyles({
+  avatar: {
+    fontSize: '50px',
+    height: 128,
+    margin: 10,
+    width: 128,
+  },
   profileHead: {
+    alignItems: 'center',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
     justify: 'center',
     marginTop: 20,
   },
-  avatar: {
-    margin: 10,
-    width: 128,
-    height: 128,
-    fontSize: '50px',
-  },
 });
 
-interface Props {
+interface IProps {
   statistic: PlayerStatistic;
   player: Player;
   classes: any;
 }
 
-function PlayerView({ player, statistic, classes }: Props) {
+function PlayerView({ player, statistic, classes }: IProps) {
   const avatar = statistic.player.profileImageUrl ? (
     <Avatar className={classes.avatar} src={statistic.player.profileImageUrl} />
   ) : (

@@ -4,18 +4,18 @@ import React from 'react';
 
 const styles = createStyles({
   container: {
-    height: '500px',
-    display: 'flex',
     alignItems: 'center',
+    display: 'flex',
+    height: '500px',
     justifyContent: 'center',
   },
 });
 
-interface Props {
+interface IProps {
   classes: any;
 }
 
-const CenteredLoading = ({ classes }: Props) => (
+const CenteredLoading = ({ classes }: IProps) => (
   <div className={classes.container}>
     <CircularProgress />
   </div>

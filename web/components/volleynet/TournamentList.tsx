@@ -12,13 +12,13 @@ const styles = createStyles({
   },
 });
 
-interface Props {
+interface IProps {
   tournaments: Tournament[];
   onTournamentClick: (t: Tournament) => void;
   classes: any;
 }
 
-class TournamentList extends React.PureComponent<Props> {
+class TournamentList extends React.PureComponent<IProps> {
   render() {
     const { tournaments = [], onTournamentClick, classes } = this.props;
 

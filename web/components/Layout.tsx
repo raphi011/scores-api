@@ -6,7 +6,7 @@ import Drawer from './Drawer';
 
 import { Player } from '../types';
 
-interface Props {
+interface IProps {
   title: { text: string; href: string };
   children: ReactNode;
   userPlayer: Player;
@@ -19,20 +19,20 @@ interface Props {
 const styles = (theme: Theme) =>
   createStyles({
     container: {
+      backgroundColor: theme.palette.background.default,
+      display: 'flex',
       flexGrow: 1,
-      zIndex: 1,
       overflowY: 'hidden',
       position: 'relative',
-      display: 'flex',
       width: '100%',
-      backgroundColor: theme.palette.background.default,
+      zIndex: 1,
     },
     content: {
+      '-webkit-overflow-scrolling': 'touch',
+      flexGrow: 1,
       maxHeight: 'calc(100vh - 56px)',
       overflowY: 'scroll',
       scrollBehavior: 'smooth',
-      '-webkit-overflow-scrolling': 'touch',
-      flexGrow: 1,
     },
   });
 
@@ -44,7 +44,7 @@ const Layout = ({
   onCloseDrawer,
   onOpenDrawer,
   classes,
-}: Props) => (
+}: IProps) => (
   <div>
     <AppBar onOpenMenu={onOpenDrawer} title={title} />
     <div className={classes.container}>

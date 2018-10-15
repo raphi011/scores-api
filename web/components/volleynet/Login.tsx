@@ -9,7 +9,7 @@ import LoadingButton from '../LoadingButton';
 
 const styles = createStyles({});
 
-interface Props {
+interface IProps {
   onLogin: (username: string, password: string, rememberMe: boolean) => void;
   classes: any;
   username?: string;
@@ -23,7 +23,7 @@ interface State {
   usernameValidation: string;
 }
 
-class Login extends React.Component<Props, State> {
+class Login extends React.Component<IProps, State> {
 
   loginRegex = /^[A-Z][a-z]+\.[A-Z]+$/;
   constructor(props) {

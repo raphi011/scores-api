@@ -5,7 +5,7 @@ import { tournamentDateString } from '../../utils/tournament';
 
 import { Tournament } from '../../types';
 
-interface Props {
+interface IProps {
   tournament: Tournament;
   onClick: (Tournament) => void;
 }
@@ -22,7 +22,7 @@ function buildSubtitle(tournament: Tournament) {
   return st;
 }
 
-const TournamentListItem = ({ tournament, onClick }: Props) => {
+const TournamentListItem = ({ tournament, onClick }: IProps) => {
   let primary: string | JSX.Element = tournament.name;
 
   if (tournament.status === 'canceled') {

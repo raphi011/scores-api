@@ -10,7 +10,7 @@ import { deleteMatchAction } from '../redux/actions/entities';
 
 import { Match } from '../types';
 
-interface Props {
+interface IProps {
   matches: Match[];
   deleteMatch: (Match) => void;
   onLoadMore: () => void;
@@ -24,7 +24,7 @@ interface State {
   dialogOpen: boolean;
 }
 
-class MatchListContainer extends React.PureComponent<Props, State> {
+class MatchListContainer extends React.PureComponent<IProps, State> {
   state = {
     selectedMatch: null,
     dialogOpen: false,

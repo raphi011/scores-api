@@ -7,13 +7,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { Player } from '../types';
 
-interface Props {
+interface IProps {
   onClick: (Event) => void;
   player: Player;
   playerNr: number;
 }
 
-function PlayerListItem({ player, onClick, playerNr }: Props) {
+function PlayerListItem({ player, onClick, playerNr }: IProps) {
   let color;
   let team;
 

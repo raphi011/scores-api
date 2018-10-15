@@ -7,8 +7,8 @@ import React from 'react';
 const styles = (theme: Theme) =>
   createStyles({
     close: {
-      width: theme.spacing.unit * 4,
       height: theme.spacing.unit * 4,
+      width: theme.spacing.unit * 4,
     },
   });
 
@@ -20,18 +20,18 @@ const handleRequestClose = onClose => (_, reason) => {
   onClose();
 };
 
-interface Props {
+interface IProps {
   onClose: () => void;
   status: string;
   open: boolean;
   classes: any;
 }
 
-const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
+const SimpleSnackbar = ({ classes, onClose, status, open }: IProps) => (
   <Snackbar
     anchorOrigin={{
-      vertical: 'bottom',
       horizontal: 'center',
+      vertical: 'bottom',
     }}
     open={open}
     autoHideDuration={6000}

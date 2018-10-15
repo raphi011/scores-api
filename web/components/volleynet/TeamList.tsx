@@ -12,7 +12,7 @@ const styles = createStyles({
   },
 });
 
-interface Props {
+interface IProps {
   teams: VolleynetTeam[];
   emptyMessage?: string;
   classes: any;
@@ -20,7 +20,7 @@ interface Props {
 
 const sortByRankOrSeed = (a, b) => (a.rank || a.seed) - (b.rank || b.seed);
 
-class TeamList extends React.PureComponent<Props> {
+class TeamList extends React.PureComponent<IProps> {
   render() {
     const { teams = [], emptyMessage = "", classes } = this.props;
 

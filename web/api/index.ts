@@ -1,8 +1,8 @@
-export interface Params {
+export interface IParams {
   [key: string]: string;
 }
 
-export function buildUrl(host: string, endpoint: string, params: Params = {}) {
+export function buildUrl(host: string, endpoint: string, params: IParams = {}) {
   let paramUrl = '';
 
   const paramList = Object.keys(params)
@@ -17,7 +17,7 @@ export function buildUrl(host: string, endpoint: string, params: Params = {}) {
 }
 
 export function isJson(response: {
-  headers: { get: (string) => string };
+  headers: { get: (key: string) => string };
 }): boolean {
   const contentType = response.headers.get('content-type');
 

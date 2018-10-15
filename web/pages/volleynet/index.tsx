@@ -20,7 +20,7 @@ interface State {
   tabOpen: number;
 }
 
-interface Props {
+interface IProps {
   tournaments: Tournament[];
   loadTournaments: (
     filters: { gender: string; league: string; season: string },
@@ -31,12 +31,12 @@ interface Props {
 
 const thisYear = new Date().getFullYear().toString();
 
-class Volleynet extends React.Component<Props, State> {
+class Volleynet extends React.Component<IProps, State> {
 
   static mapDispatchToProps = {
     loadTournaments: loadTournamentsAction,
   };
-  static buildActions({ league }: Props) {
+  static buildActions({ league }: IProps) {
     return [
       loadTournamentsAction({
         gender: 'M',
@@ -56,7 +56,7 @@ class Volleynet extends React.Component<Props, State> {
     return { league };
   }
 
-  static mapStateToProps(state, { league }: Props) {
+  static mapStateToProps(state, { league }: IProps) {
     const tournaments = tournamentsByLeagueSelector(state, league);
 
     return { tournaments };

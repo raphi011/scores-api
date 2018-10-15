@@ -8,15 +8,15 @@ import PlayerListItem from './PlayerListItem';
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
       background: theme.palette.background.paper,
+      width: '100%',
     },
   });
 
-interface Props {
+interface IProps {
   players: Player[];
-  onUnsetPlayer: (number) => void;
-  onSetPlayer: (number, Player, boolean) => void;
+  onUnsetPlayer: (playerId: number) => void;
+  onSetPlayer: (playerId: number, player: Player, complete: boolean) => void;
   player1: Player;
   player2: Player;
   player3: Player;
@@ -24,7 +24,7 @@ interface Props {
   classes: any;
 }
 
-class SelectPlayers extends React.Component<Props> {
+class SelectPlayers extends React.Component<IProps> {
   onSelectPlayer = (selected: Player) => {
     const { onUnsetPlayer, onSetPlayer } = this.props;
 
@@ -43,7 +43,9 @@ class SelectPlayers extends React.Component<Props> {
         unassigned = i;
       }
 
-      if (pId) { assignedCount += 1; }
+      if (pId) {
+        assignedCount += 1;
+      }
     }
 
     if (selectedNr) {
@@ -54,7 +56,9 @@ class SelectPlayers extends React.Component<Props> {
   };
 
   isSamePlayer = (p1, p2) => {
-    if (!p1 || !p2) { return false; }
+    if (!p1 || !p2) {
+      return false;
+    }
 
     return p1.id === p2.id;
   };
@@ -62,10 +66,15 @@ class SelectPlayers extends React.Component<Props> {
   playerNr = (player: Player): number => {
     const { player1, player2, player3, player4 } = this.props;
 
-    if (this.isSamePlayer(player, player1)) { return 1; }
-    else if (this.isSamePlayer(player, player2)) { return 2; }
-    else if (this.isSamePlayer(player, player3)) { return 3; }
-    else if (this.isSamePlayer(player, player4)) { return 4; }
+    if (this.isSamePlayer(player, player1)) {
+      return 1;
+    } else if (this.isSamePlayer(player, player2)) {
+      return 2;
+    } else if (this.isSamePlayer(player, player3)) {
+      return 3;
+    } else if (this.isSamePlayer(player, player4)) {
+      return 4;
+    }
 
     return 0;
   };

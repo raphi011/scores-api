@@ -29,7 +29,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface Props {
+interface IProps {
   tournamentId: number;
   tournament?: Tournament;
   user: User;
@@ -50,7 +50,7 @@ interface State {
   partner?: VolleynetPlayer;
 }
 
-class Signup extends React.Component<Props, State> {
+class Signup extends React.Component<IProps, State> {
 
   static mapDispatchToProps = {
     signup: tournamentSignupAction,

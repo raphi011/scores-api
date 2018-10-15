@@ -20,16 +20,16 @@ const styles = createStyles({
   },
 });
 
-interface Props {
+interface IProps {
   match: Match;
   onDelete: (Match) => void;
   onClose: (Event) => void;
-  onShowPlayer: (number) => void;
+  onShowPlayer: (playerId: number) => void;
   open: boolean;
   classes: any;
 }
 
-class MatchOptionsDialog extends React.Component<Props> {
+class MatchOptionsDialog extends React.Component<IProps> {
   shouldComponentUpdate(nextProps) {
     return this.props.open !== nextProps.open;
   }
@@ -49,24 +49,24 @@ class MatchOptionsDialog extends React.Component<Props> {
     const playerInfos = match
       ? [
           {
+            name: match.team1.player1.name,
             playerId: match.team1.player1.id,
             profileImageUrl: match.team1.player1.profileImageUrl,
-            name: match.team1.player1.name,
           },
           {
+            name: match.team1.player2.name,
             playerId: match.team1.player2.id,
             profileImageUrl: match.team1.player2.profileImageUrl,
-            name: match.team1.player2.name,
           },
           {
+            name: match.team2.player1.name,
             playerId: match.team2.player1.id,
             profileImageUrl: match.team2.player1.profileImageUrl,
-            name: match.team2.player1.name,
           },
           {
+            name: match.team2.player2.name,
             playerId: match.team2.player2.id,
             profileImageUrl: match.team2.player2.profileImageUrl,
-            name: match.team2.player2.name,
           },
         ]
       : [];

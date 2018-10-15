@@ -5,20 +5,20 @@ import { Team } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
-    normal: { padding: '2px 4px' },
     highlighted: {
       backgroundColor: theme.palette.primary.light,
       padding: '2px 4px',
     },
+    normal: { padding: '2px 4px' },
   });
 
-interface Props {
+interface IProps {
   team: Team;
   highlightPlayerId: number;
   classes: any;
 }
 
-const TeamName = ({ team, highlightPlayerId, classes }: Props) => {
+const TeamName = ({ team, highlightPlayerId, classes }: IProps) => {
   if (team.name) {
     const highlight =
       team.player1Id === highlightPlayerId ||

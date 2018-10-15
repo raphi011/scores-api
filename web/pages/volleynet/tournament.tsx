@@ -10,12 +10,12 @@ import { tournamentSelector } from '../../redux/reducers/entities';
 
 import { Tournament, User } from '../../types';
 
-interface Props {
+interface IProps {
   tournament?: Tournament;
   user: User;
 }
 
-class ShowTournament extends React.Component<Props> {
+class ShowTournament extends React.Component<IProps> {
   static getParameters(query) {
     const { id } = query;
 

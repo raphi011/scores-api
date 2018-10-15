@@ -6,7 +6,7 @@ import AppBar from '../components/AppBar';
 import { logoutAction } from '../redux/actions/auth';
 import { loginRouteSelector, userSelector } from '../redux/reducers/auth';
 
-interface Props {
+interface IProps {
   isLoggedIn: boolean;
   loginRoute: string;
   onOpenMenu: () => void;
@@ -14,7 +14,7 @@ interface Props {
   logout: () => void;
 }
 
-class AppBarContainer extends React.Component<Props> {
+class AppBarContainer extends React.Component<IProps> {
   onLogout = async () => {
     const { logout } = this.props;
 

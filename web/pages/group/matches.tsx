@@ -27,7 +27,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface Props {
+interface IProps {
   groupId: number;
   user: User;
   matches: Match[];
@@ -40,7 +40,7 @@ interface State {
   hasMore: boolean;
 }
 
-class Index extends React.Component<Props, State> {
+class Index extends React.Component<IProps, State> {
 
   static mapDispatchToProps = {
     loadMatches: loadMatchesAction,

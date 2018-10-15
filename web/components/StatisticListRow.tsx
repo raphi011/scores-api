@@ -12,14 +12,14 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface Props {
-  onPlayerClick: (number) => void;
+interface IProps {
+  onPlayerClick: (playerId: number) => void;
   statistic: PlayerStatistic;
   rank: number;
   classes: any;
 }
 
-class StatisticListRow extends React.PureComponent<Props> {
+class StatisticListRow extends React.PureComponent<IProps> {
   onPlayerClick = () => {
     const { onPlayerClick, statistic } = this.props;
 

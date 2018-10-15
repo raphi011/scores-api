@@ -21,14 +21,14 @@ function isSameDay(date1: Date, date2: Date): boolean {
   );
 }
 
-interface Props {
+interface IProps {
   matches: Match[];
   onMatchClick: (Match) => void;
   highlightPlayerId: number;
   classes: any;
 }
 
-class MatchList extends React.PureComponent<Props> {
+class MatchList extends React.PureComponent<IProps> {
   render() {
     const {
       matches = [],

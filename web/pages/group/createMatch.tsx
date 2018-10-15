@@ -57,7 +57,7 @@ function calcWinnerScore(loserScore: number, targetScore: number): number {
   return winnerScore;
 }
 
-interface Props {
+interface IProps {
   rematch?: Match;
   players: Player[];
   createNewMatch: (NewMatch) => Promise<any>;
@@ -84,7 +84,7 @@ interface State {
   errors: MatchValidation;
 }
 
-class CreateMatch extends React.Component<Props, State> {
+class CreateMatch extends React.Component<IProps, State> {
 
   static mapDispatchToProps = {
     createNewMatch: createNewMatchAction,
@@ -109,7 +109,7 @@ class CreateMatch extends React.Component<Props, State> {
     return actions;
   }
 
-  static mapStateToProps(state, ownProps: Props) {
+  static mapStateToProps(state, ownProps: IProps) {
     const { rematchId, groupId } = ownProps;
 
     const players = groupPlayersSelector(state, groupId);
@@ -189,7 +189,7 @@ class CreateMatch extends React.Component<Props, State> {
     this.setState({ match, teamsComplete: false });
   };
 
-  setRematch = (props: Props) => {
+  setRematch = (props: IProps) => {
     const { rematchId, rematch, players } = props;
 
     if (rematchId && !this.rematchPlayersSet) {

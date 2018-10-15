@@ -21,12 +21,12 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface Props {
+interface IProps {
   player: Player;
   classes: any;
 }
 
-class Home extends React.Component<Props> {
+class Home extends React.Component<IProps> {
   static getParameters(query) {
     const { id } = query;
 

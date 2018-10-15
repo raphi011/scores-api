@@ -25,7 +25,7 @@ import {
 } from '../redux/reducers/entities';
 import { Match, Player, PlayerStatistic, User } from '../types';
 
-interface Props {
+interface IProps {
   player: Player;
   user: User;
   statistic: PlayerStatistic;
@@ -41,7 +41,7 @@ interface State {
   hasMore: boolean;
 }
 
-class PlayerInfo extends React.Component<Props, State> {
+class PlayerInfo extends React.Component<IProps, State> {
 
   static mapDispatchToProps = {
     loadMatches: loadPlayerMatchesAction,

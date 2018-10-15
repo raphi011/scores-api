@@ -8,7 +8,7 @@ import { playerSelector } from '../redux/reducers/entities';
 
 import { Player } from '../types';
 
-interface Props {
+interface IProps {
   title: { text: string; href: string };
   children: ReactNode;
   userPlayer: Player;
@@ -19,7 +19,7 @@ interface State {
   groupOpen: { [key: number]: boolean };
 }
 
-class LayoutContainer extends React.Component<Props, State> {
+class LayoutContainer extends React.Component<IProps, State> {
   state = {
     drawerOpen: false,
     groupOpen: {},

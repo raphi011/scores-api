@@ -11,7 +11,7 @@ import { dispatchAction, dispatchActions } from '../redux/store';
 
 import { User } from '../types';
 
-interface Props {
+interface IProps {
   isLoggedIn: boolean;
   fromServer: boolean;
   user: User;
@@ -19,7 +19,7 @@ interface Props {
 }
 
 const withAuth = Component => {
-  class Auth extends React.Component<Props> {
+  class Auth extends React.Component<IProps> {
 
     static async getInitialProps(ctx) {
       try {

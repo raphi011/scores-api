@@ -15,30 +15,30 @@ import { MatchValidation } from '../validation/match';
 
 const styles = (theme: Theme) =>
   createStyles({
+    button: {
+      bottom: '24px',
+      margin: theme.spacing.unit,
+      position: 'fixed',
+      right: '24px',
+    },
     container: {
       display: 'flex',
       flexDirection: 'column',
     },
-    button: {
-      margin: theme.spacing.unit,
-      position: 'fixed',
-      right: '24px',
-      bottom: '24px',
-    },
     formControl: {
       marginBottom: '20px',
-    },
-    root: {
-      display: 'flex',
     },
     group: {
       display: 'flex',
       flexDirection: 'row',
     },
+    root: {
+      display: 'flex',
+    },
   });
 
-interface Props {
-  onChangeTargetScore: (Event, number) => void;
+interface IProps {
+  onChangeTargetScore: (event: Event, score: number) => void;
   onChangeScore: (teamNr: number, event: string) => void;
   onLoseFocus: (
     teamNr: number,
@@ -56,7 +56,7 @@ interface Props {
   classes: any;
 }
 
-class SetScores extends React.PureComponent<Props> {
+class SetScores extends React.PureComponent<IProps> {
   onChangeScoreTeam1 = e => {
     const { onChangeScore } = this.props;
     onChangeScore(1, e.target.value);

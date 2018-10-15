@@ -16,13 +16,13 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface Props {
+interface IProps {
   statistics: PlayerStatistic[];
-  onPlayerClick: (number) => void;
+  onPlayerClick: (playerId: number) => void;
   classes: any;
 }
 
-function StatisticList({ statistics, onPlayerClick, classes }: Props) {
+function StatisticList({ statistics, onPlayerClick, classes }: IProps) {
   return (
     <Table>
       <TableHead>

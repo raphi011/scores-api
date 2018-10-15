@@ -17,7 +17,7 @@ const styles = createStyles({
   },
 });
 
-interface Props {
+interface IProps {
   gender: Gender;
   onSelectPlayer: (VolleynetSearchPlayer) => void;
   searchVolleynetPlayers: (
@@ -34,7 +34,7 @@ interface State {
   searching: boolean;
 }
 
-class SearchPlayer extends React.Component<Props, State> {
+class SearchPlayer extends React.Component<IProps, State> {
   state = {
     firstName: '',
     lastName: '',

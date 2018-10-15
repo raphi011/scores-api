@@ -5,12 +5,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { VolleynetSearchPlayer } from '../../types';
 
-interface Props {
+interface IProps {
   player: VolleynetSearchPlayer;
   onClick: (VolleynetSearchPlayer) => void;
 }
 
-const PlayerListItem = ({ player, onClick }: Props) => (
+const PlayerListItem = ({ player, onClick }: IProps) => (
   <ListItem button onClick={() => onClick(player)}>
     <ListItemText
       primary={`${player.firstName} ${player.lastName}`}

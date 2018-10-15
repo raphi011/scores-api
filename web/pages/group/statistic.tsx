@@ -26,7 +26,7 @@ const styles = createStyles({
   },
 });
 
-interface Props {
+interface IProps {
   groupId: number;
   filter: StatisticFilter;
   statistics: PlayerStatistic[];
@@ -38,7 +38,7 @@ interface State {
   anchorEl?: HTMLElement;
 }
 
-class Statistics extends React.Component<Props, State> {
+class Statistics extends React.Component<IProps, State> {
   static getParameters(query) {
     let { filter = 'month', groupId } = query;
 

@@ -14,7 +14,7 @@ import Snackbar from '../containers/SnackbarContainer';
 import { loginWithPasswordAction } from '../redux/actions/auth';
 import { setStatusAction } from '../redux/actions/status';
 
-interface Props {
+interface IProps {
   r: string;
   loginRoute: string;
   fromServer: boolean;
@@ -32,7 +32,7 @@ interface State {
   loggingIn: boolean;
 }
 
-class Login extends React.Component<Props, State> {
+class Login extends React.Component<IProps, State> {
 
   static mapDispatchToProps = {
     loginWithPassword: loginWithPasswordAction,

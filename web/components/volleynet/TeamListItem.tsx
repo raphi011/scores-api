@@ -5,7 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { VolleynetTeam } from '../../types';
 
-interface Props {
+interface IProps {
   team: VolleynetTeam;
 }
 
@@ -25,7 +25,7 @@ function rankOrSeed(team: VolleynetTeam) {
   }
 }
 
-const TeamListItem = ({ team }: Props) => (
+const TeamListItem = ({ team }: IProps) => (
   <ListItem button>
     <ListItemText
       primary={

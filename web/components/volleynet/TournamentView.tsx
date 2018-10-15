@@ -46,7 +46,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface Props {
+interface IProps {
   tournament: Tournament;
   user: User;
   classes: any;
@@ -56,7 +56,7 @@ interface State {
   tabOpen: number;
 }
 
-class TournamentView extends React.Component<Props, State> {
+class TournamentView extends React.Component<IProps, State> {
   render() {
     const { user, tournament, classes } = this.props;
 

@@ -10,16 +10,16 @@ import { Match, Team } from '../types';
 
 const itemStyles = createStyles({
   listContainer: {
+    alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
     width: '100%',
   },
-  team: { flex: '1 1 0' },
   points: { fontWeight: 'lighter', flex: '2 2 0' },
+  team: { flex: '1 1 0' },
 });
 
-interface Props {
+interface IProps {
   match: Match;
   onMatchClick: (Match) => void;
   highlightPlayerId: number;
@@ -36,18 +36,18 @@ function WinnerAndLoser(
 } {
   if (match.scoreTeam1 > match.scoreTeam2) {
     return {
-      winner: match.team1,
       loser: match.team2,
-      winnerScore: match.scoreTeam1,
       loserScore: match.scoreTeam2,
+      winner: match.team1,
+      winnerScore: match.scoreTeam1,
     };
   }
 
   return {
-    winner: match.team2,
     loser: match.team1,
-    winnerScore: match.scoreTeam2,
     loserScore: match.scoreTeam1,
+    winner: match.team2,
+    winnerScore: match.scoreTeam2,
   };
 }
 
@@ -56,7 +56,7 @@ const MatchListItem = ({
   match,
   highlightPlayerId,
   classes,
-}: Props) => {
+}: IProps) => {
   const result = WinnerAndLoser(match);
 
   const winnerScore = result.winnerScore.toString(); /*.padStart(2, '0');*/

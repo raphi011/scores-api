@@ -26,7 +26,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface Props {
+interface IProps {
   groupId: number;
   loadMatches: (groupId: number, after?: string) => Promise<{ empty: boolean }>;
   user: User;
@@ -34,7 +34,7 @@ interface Props {
   classes: any;
 }
 
-class Home extends React.Component<Props> {
+class Home extends React.Component<IProps> {
 
   static mapDispatchToProps = {
     loadMatches: loadMatchesAction,

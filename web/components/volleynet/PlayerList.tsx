@@ -12,13 +12,13 @@ const styles = createStyles({
   },
 });
 
-interface Props {
+interface IProps {
   players: VolleynetSearchPlayer[];
   onPlayerClick: (VolleynetSearchPlayer) => void;
   classes: any;
 }
 
-class PlayerList extends React.PureComponent<Props> {
+class PlayerList extends React.PureComponent<IProps> {
   render() {
     const { players = [], onPlayerClick, classes } = this.props;
 

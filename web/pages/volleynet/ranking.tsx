@@ -11,7 +11,7 @@ import { ladderVolleynetplayerSelector } from '../../redux/reducers/entities';
 
 import { Player } from '../../types';
 
-interface Props {
+interface IProps {
   gender: "M" | "W";
   ladder: Player[];
   loadLadder: (gender: string) => void;
@@ -20,12 +20,12 @@ interface Props {
 
 const genderList = ["M", "W"];
 
-class Ranking extends React.Component<Props> {
+class Ranking extends React.Component<IProps> {
 
   static mapDispatchToProps = {
     loadLadder: loadLadderAction,
   };
-  static buildActions({ gender }: Props) {
+  static buildActions({ gender }: IProps) {
     return [loadLadderAction(gender)];
   }
 
@@ -39,7 +39,7 @@ class Ranking extends React.Component<Props> {
     return { gender };
   }
 
-  static mapStateToProps(state, { gender }: Props) {
+  static mapStateToProps(state, { gender }: IProps) {
     const ladder = ladderVolleynetplayerSelector(state, gender);
 
     return { ladder };

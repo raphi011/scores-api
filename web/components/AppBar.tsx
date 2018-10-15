@@ -10,24 +10,24 @@ import Link from 'next/link';
 import React from 'react';
 
 const styles = createStyles({
-  row: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  root: {
-    width: '100%',
-  },
   flex: {
-    flex: 1,
     cursor: 'pointer',
+    flex: 1,
   },
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
   },
+  root: {
+    width: '100%',
+  },
+  row: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
 });
 
-interface Props {
+interface IProps {
   onOpenMenu: () => void;
   title: { text: string; href: string };
   isLoggedIn: boolean;
@@ -41,7 +41,7 @@ function ButtonAppBar({
   isLoggedIn,
   onLogout,
   classes,
-}: Props) {
+}: IProps) {
   const button = isLoggedIn ? (
     <Button color="inherit" onClick={onLogout}>
       Logout
@@ -52,22 +52,18 @@ function ButtonAppBar({
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-        <Hidden mdUp>
-          <IconButton
-            color="inherit"
-            onClick={onOpenMenu}
-            className={classes.menuButton}
-            aria-label="Menu"
-          >
-            <MenuIcon />
-          </IconButton>
+          <Hidden mdUp>
+            <IconButton
+              color="inherit"
+              onClick={onOpenMenu}
+              className={classes.menuButton}
+              aria-label="Menu"
+            >
+              <MenuIcon />
+            </IconButton>
           </Hidden>
           <Link href={title.href}>
-            <Typography
-              variant="h6"
-              color="inherit"
-              className={classes.flex}
-            >
+            <Typography variant="h6" color="inherit" className={classes.flex}>
               {title.text}
             </Typography>
           </Link>

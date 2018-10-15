@@ -22,30 +22,30 @@ const drawerWidth = 300;
 
 const styles = (theme: Theme) =>
   createStyles({
-    list: {
-      background: theme.palette.background.paper,
-    },
-    listFull: {
-      width: 'auto',
-    },
-    header: {
-      marginTop: '25px',
-      marginBottom: '5px',
-      lineHeight: 'inherit',
-      textTransform: 'uppercase',
-    },
     drawerPaper: {
       width: drawerWidth,
       [theme.breakpoints.up('md')]: {
         position: 'relative',
       },
     },
+    header: {
+      marginBottom: '5px',
+      marginTop: '25px',
+      lineHeight: 'inherit',
+      textTransform: 'uppercase',
+    },
+    list: {
+      background: theme.palette.background.paper,
+    },
+    listFull: {
+      width: 'auto',
+    },
     nested: {
       paddingLeft: theme.spacing.unit * 4,
     },
   });
 
-interface Props {
+interface IProps {
   open: boolean;
   onOpen: (Event) => void;
   onClose: (Event) => void;
@@ -53,7 +53,7 @@ interface Props {
   classes: any;
 }
 
-function Drawer({ open, userPlayer, onClose, classes }: Props) {
+function Drawer({ open, userPlayer, onClose, classes }: IProps) {
   const { groups = [] } = userPlayer;
 
   const groupList = groups.map(g => (

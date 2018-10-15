@@ -8,18 +8,18 @@ const defaultLeagues = [
   { name: 'Pro Tour', key: 'PRO TOUR' },
 ];
 
-interface League {
+interface ILeague {
   name: string;
   key: string;
 }
 
-interface Props {
+interface IProps {
   selected: string;
-  onChange: (string) => void;
-  leagues?: League[];
+  onChange: (league: string) => void;
+  leagues?: ILeague[];
 }
 
-export default ({ selected, onChange, leagues = defaultLeagues }: Props) => (
+export default ({ selected, onChange, leagues = defaultLeagues }: IProps) => (
   <Select value={selected} onChange={onChange}>
     {leagues.map(l => (
       <MenuItem key={l.key} value={l.key}>

@@ -5,16 +5,16 @@ import React from 'react';
 
 const styles = (theme: Theme) =>
   createStyles({
+    buttonProgress: {
+      left: '50%',
+      marginLeft: -12,
+      marginTop: -12,
+      position: 'absolute',
+      top: '50%',
+    },
     wrapper: {
       margin: theme.spacing.unit,
       position: 'relative',
-    },
-    buttonProgress: {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      marginTop: -12,
-      marginLeft: -12,
     },
   });
 
