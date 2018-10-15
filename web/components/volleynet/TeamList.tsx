@@ -1,6 +1,6 @@
-import React from 'react';
-import { withStyles, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
+import { createStyles, withStyles } from '@material-ui/core/styles';
+import React from 'react';
 
 import TeamListItem from './TeamListItem';
 

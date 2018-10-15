@@ -1,6 +1,6 @@
+import { User } from '../../types';
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
-import { User } from '../../types';
 import { Store } from '../store';
 
 export const initialAuthState = {

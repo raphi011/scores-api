@@ -1,4 +1,4 @@
-import { normalize, denormalize, schema } from 'normalizr';
+import { denormalize, normalize, schema } from 'normalizr';
 
 import { EntityName } from './../types';
 
@@ -72,7 +72,7 @@ function getSchemaMap(entityName: string, isList: boolean) {
   const key = entityName + (isList ? 'List' : '');
   const entitySchema = entitySchemaMap[key];
 
-  if (!entitySchema) throw new Error(`Unknown schema: ${key}`);
+  if (!entitySchema) { throw new Error(`Unknown schema: ${key}`); }
 
   return entitySchema;
 }
@@ -83,7 +83,7 @@ function getArtificialId(): number {
   return id;
 }
 
-function assignArtificialId(entities: Array<any> | Object) {
+function assignArtificialId(entities: any[] | Object) {
   if (Array.isArray(entities)) {
     entities.forEach(e => {
       e.id = getArtificialId();
@@ -110,7 +110,7 @@ export function norm(entityName: EntityName, data, assignId: boolean) {
 export function denorm(
   entityName: EntityName,
   entities,
-  ids: Array<number> | number,
+  ids: number[] | number,
 ) {
   const isList = Array.isArray(ids);
 

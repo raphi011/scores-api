@@ -1,27 +1,27 @@
-import React, { SyntheticEvent } from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import MobileStepper from '@material-ui/core/MobileStepper';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
 import NextIcon from '@material-ui/icons/KeyboardArrowRight';
-import MobileStepper from '@material-ui/core/MobileStepper';
 import Router from 'next/router';
+import React, { SyntheticEvent } from 'react';
 
-import withAuth from '../../containers/AuthContainer';
-import { validateMatch, MatchValidation } from '../../validation/match';
-import Layout from '../../containers/LayoutContainer';
 import SelectPlayers from '../../components/SelectPlayers';
 import SetScores from '../../components/SetScores';
+import withAuth from '../../containers/AuthContainer';
+import Layout from '../../containers/LayoutContainer';
+import {
+  createNewMatchAction,
+  loadGroupAction,
+  loadMatchAction,
+} from '../../redux/actions/entities';
+import { setStatusAction } from '../../redux/actions/status';
 import {
   groupPlayersSelector,
   matchSelector,
 } from '../../redux/reducers/entities';
-import {
-  createNewMatchAction,
-  loadMatchAction,
-  loadGroupAction,
-} from '../../redux/actions/entities';
-import { setStatusAction } from '../../redux/actions/status';
-import { NewMatch, Match, Player } from '../../types';
+import { Match, NewMatch, Player } from '../../types';
+import { MatchValidation, validateMatch } from '../../validation/match';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -85,6 +85,11 @@ interface State {
 }
 
 class CreateMatch extends React.Component<Props, State> {
+
+  static mapDispatchToProps = {
+    createNewMatch: createNewMatchAction,
+    setStatus: setStatusAction,
+  };
   static getParameters(query) {
     let { rematchId, groupId } = query;
 
@@ -116,26 +121,6 @@ class CreateMatch extends React.Component<Props, State> {
     };
   }
 
-  static mapDispatchToProps = {
-    createNewMatch: createNewMatchAction,
-    setStatus: setStatusAction,
-  };
-
-  constructor(props) {
-    super(props);
-
-    const state = this.setRematch(props);
-
-    if (state) {
-      this.state = {
-        ...this.state,
-        ...state,
-      };
-    } else {
-      this.state.match.groupId = props.groupId;
-    }
-  }
-
   state = {
     activeStep: 0,
     teamsComplete: false,
@@ -153,6 +138,23 @@ class CreateMatch extends React.Component<Props, State> {
       valid: true,
     },
   };
+
+  rematchPlayersSet = false;
+
+  constructor(props) {
+    super(props);
+
+    const state = this.setRematch(props);
+
+    if (state) {
+      this.state = {
+        ...this.state,
+        ...state,
+      };
+    } else {
+      this.state.match.groupId = props.groupId;
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
     const state = this.setRematch(nextProps);
@@ -217,8 +219,6 @@ class CreateMatch extends React.Component<Props, State> {
 
     return null;
   };
-
-  rematchPlayersSet = false;
 
   onSetPlayer = (playerNr: number, player: Player, teamsComplete: boolean) => {
     const activeStep = teamsComplete ? 1 : 0;
@@ -300,13 +300,13 @@ class CreateMatch extends React.Component<Props, State> {
 
     switch (teamNr) {
       case 1: {
-        if (Number.isNaN(scoreTeam1) || Number.isInteger(scoreTeam2)) return;
+        if (Number.isNaN(scoreTeam1) || Number.isInteger(scoreTeam2)) { return; }
 
         match.scoreTeam2 = calcWinnerScore(scoreTeam1, targetScore).toString();
         break;
       }
       case 2: {
-        if (Number.isNaN(scoreTeam2) || Number.isInteger(scoreTeam1)) return;
+        if (Number.isNaN(scoreTeam2) || Number.isInteger(scoreTeam1)) { return; }
 
         match.scoreTeam1 = calcWinnerScore(scoreTeam2, targetScore).toString();
         break;

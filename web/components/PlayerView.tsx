@@ -1,9 +1,9 @@
-import React from 'react';
-import { withStyles, createStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Tooltip from '@material-ui/core/Tooltip';
 import Avatar from '@material-ui/core/Avatar';
-import { PlayerStatistic, Player } from '../types';
+import { createStyles, withStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
+import React from 'react';
+import { Player, PlayerStatistic } from '../types';
 
 const styles = createStyles({
   profileHead: {

@@ -1,6 +1,6 @@
-import React from 'react';
-import { withStyles, createStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { createStyles, withStyles } from '@material-ui/core/styles';
+import React from 'react';
 
 const styles = createStyles({
   container: {

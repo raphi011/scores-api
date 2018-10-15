@@ -1,8 +1,8 @@
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 
-import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import withAuth from '../containers/AuthContainer';
 
 import Layout from '../containers/LayoutContainer';

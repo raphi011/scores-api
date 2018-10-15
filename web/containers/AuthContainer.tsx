@@ -5,9 +5,9 @@ import React from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
 
-import { dispatchAction, dispatchActions } from '../redux/store';
-import { userSelector } from '../redux/reducers/auth';
 import { userOrLoginRouteAction } from '../redux/actions/auth';
+import { userSelector } from '../redux/reducers/auth';
+import { dispatchAction, dispatchActions } from '../redux/store';
 
 import { User } from '../types';
 
@@ -20,32 +20,6 @@ interface Props {
 
 const withAuth = Component => {
   class Auth extends React.Component<Props> {
-    async componentDidMount() {
-      const { fromServer, dispatch } = this.props;
-
-      if (!Component.buildActions || fromServer) {
-        return;
-      }
-
-      const actions = Component.buildActions(this.props);
-      await dispatchActions(dispatch, actions, false);
-    }
-
-    async componentWillUpdate(nextProps) {
-      if (
-        !Component.shouldComponentUpdate ||
-        !Component.buildActions ||
-        !Component.shouldComponentUpdate(this.props, nextProps)
-      ) {
-        return;
-      }
-
-      const { dispatch } = nextProps;
-
-      const actions = Component.buildActions(nextProps);
-
-      await dispatchActions(dispatch, actions, false);
-    }
 
     static async getInitialProps(ctx) {
       try {
@@ -137,6 +111,32 @@ const withAuth = Component => {
         console.log(e);
         return {};
       }
+    }
+    async componentDidMount() {
+      const { fromServer, dispatch } = this.props;
+
+      if (!Component.buildActions || fromServer) {
+        return;
+      }
+
+      const actions = Component.buildActions(this.props);
+      await dispatchActions(dispatch, actions, false);
+    }
+
+    async componentWillUpdate(nextProps) {
+      if (
+        !Component.shouldComponentUpdate ||
+        !Component.buildActions ||
+        !Component.shouldComponentUpdate(this.props, nextProps)
+      ) {
+        return;
+      }
+
+      const { dispatch } = nextProps;
+
+      const actions = Component.buildActions(nextProps);
+
+      await dispatchActions(dispatch, actions, false);
     }
 
     render() {

@@ -1,7 +1,7 @@
-import React from 'react';
 import Button from '@material-ui/core/Button';
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import React from 'react';
 
 const styles = (theme: Theme) =>
   createStyles({

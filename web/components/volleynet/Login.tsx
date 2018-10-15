@@ -1,8 +1,8 @@
-import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import { withStyles, createStyles } from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { createStyles, withStyles } from '@material-ui/core/styles';
+import Switch from '@material-ui/core/Switch';
+import TextField from '@material-ui/core/TextField';
+import React from 'react';
 
 import DoneIcon from '@material-ui/icons/Done';
 import LoadingButton from '../LoadingButton';
@@ -24,6 +24,8 @@ interface State {
 }
 
 class Login extends React.Component<Props, State> {
+
+  loginRegex = /^[A-Z][a-z]+\.[A-Z]+$/;
   constructor(props) {
     super(props);
 
@@ -35,8 +37,6 @@ class Login extends React.Component<Props, State> {
       loggingIn: false,
     };
   }
-
-  loginRegex = /^[A-Z][a-z]+\.[A-Z]+$/;
 
   onChangeUsername = event => {
     const username = event.target.value;

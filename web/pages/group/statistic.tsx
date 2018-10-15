@@ -1,17 +1,17 @@
-import React from 'react';
-import { withStyles, createStyles } from '@material-ui/core/styles';
-import DateRangeIcon from '@material-ui/icons/DateRange';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Toolbar from '@material-ui/core/Toolbar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
+import { createStyles, withStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import DateRangeIcon from '@material-ui/icons/DateRange';
 import Router from 'next/router';
+import React from 'react';
 
+import StatisticList from '../../components/StatisticList';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import StatisticList from '../../components/StatisticList';
 import { userOrLoginRouteAction } from '../../redux/actions/auth';
 import { loadGroupStatisticsAction } from '../../redux/actions/entities';
 import { statisticByGroupSelector } from '../../redux/reducers/entities';
@@ -106,7 +106,7 @@ class Statistics extends React.Component<Props, State> {
   timeFilter = () => {
     const { filter } = this.props;
 
-    if (filter === 'all') return 'Ranks';
+    if (filter === 'all') { return 'Ranks'; }
 
     return `Ranks by ${filter}`;
   };

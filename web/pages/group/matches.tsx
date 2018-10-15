@@ -1,19 +1,19 @@
-import React from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
+import AddIcon from '@material-ui/icons/Add';
 import Link from 'next/link';
+import React from 'react';
 
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import MatchList from '../../containers/MatchListContainer';
-import { matchesByGroupSelector } from '../../redux/reducers/entities';
 import {
   loadGroupAction,
   loadMatchesAction,
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
+import { matchesByGroupSelector } from '../../redux/reducers/entities';
 
 import { Match, User } from '../../types';
 
@@ -30,7 +30,7 @@ const styles = (theme: Theme) =>
 interface Props {
   groupId: number;
   user: User;
-  matches: Array<Match>;
+  matches: Match[];
   loadMatches: (groupId: number, after?: string) => Promise<{ empty: boolean }>;
   classes: any;
 }
@@ -41,6 +41,11 @@ interface State {
 }
 
 class Index extends React.Component<Props, State> {
+
+  static mapDispatchToProps = {
+    loadMatches: loadMatchesAction,
+    setStatus: setStatusAction,
+  };
   static getParameters(query) {
     let { groupId } = query;
 
@@ -61,11 +66,6 @@ class Index extends React.Component<Props, State> {
 
     return { matches };
   }
-
-  static mapDispatchToProps = {
-    loadMatches: loadMatchesAction,
-    setStatus: setStatusAction,
-  };
 
   state = {
     loading: false,

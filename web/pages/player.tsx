@@ -1,29 +1,29 @@
-import React from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 import Router from 'next/router';
+import React from 'react';
 
-import MatchList from '../containers/MatchListContainer';
-import withAuth from '../containers/AuthContainer';
 import StatisticList from '../components/StatisticList';
+import withAuth from '../containers/AuthContainer';
+import MatchList from '../containers/MatchListContainer';
 
-import Layout from '../containers/LayoutContainer';
-import {
-  loadPlayerTeamStatisticAction,
-  loadPlayerStatisticAction,
-  loadPlayerMatchesAction,
-} from '../redux/actions/entities';
-import { multiApiAction } from '../redux/actions/api';
-import { userSelector } from '../redux/reducers/auth';
 import PlayerView from '../components/PlayerView';
+import Layout from '../containers/LayoutContainer';
+import { multiApiAction } from '../redux/actions/api';
 import {
+  loadPlayerMatchesAction,
+  loadPlayerStatisticAction,
+  loadPlayerTeamStatisticAction,
+} from '../redux/actions/entities';
+import { userSelector } from '../redux/reducers/auth';
+import {
+  matchesByPlayerSelector,
   playerSelector,
   statisticByPlayerSelector,
   statisticByPlayerTeamSelector,
-  matchesByPlayerSelector,
 } from '../redux/reducers/entities';
-import { Player, PlayerStatistic, Match, User } from '../types';
+import { Match, Player, PlayerStatistic, User } from '../types';
 
 interface Props {
   player: Player;
@@ -42,6 +42,10 @@ interface State {
 }
 
 class PlayerInfo extends React.Component<Props, State> {
+
+  static mapDispatchToProps = {
+    loadMatches: loadPlayerMatchesAction,
+  };
   static getParameters(query) {
     const { id } = query;
 
@@ -90,10 +94,6 @@ class PlayerInfo extends React.Component<Props, State> {
       user,
     };
   }
-
-  static mapDispatchToProps = {
-    loadMatches: loadPlayerMatchesAction,
-  };
 
   state = {
     tabOpen: 0,

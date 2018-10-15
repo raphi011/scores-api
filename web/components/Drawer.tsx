@@ -1,22 +1,22 @@
-import React from 'react';
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
 import MDrawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import GroupIcon from '@material-ui/icons/Group';
-import Avatar from '@material-ui/core/Avatar';
-import TournamentIcon from '@material-ui/icons/Star';
-import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import HomeIcon from '@material-ui/icons/Home';
 import LadderIcon from '@material-ui/icons/LooksOne';
+import SettingsIcon from '@material-ui/icons/SettingsRounded';
+import TournamentIcon from '@material-ui/icons/Star';
 import Link from 'next/link';
+import React from 'react';
 
-import { Player } from '../types';
 import { Typography } from '@material-ui/core';
+import { Player } from '../types';
 
 const drawerWidth = 300;
 

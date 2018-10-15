@@ -1,21 +1,21 @@
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
 
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import PhoneIcon from '@material-ui/icons/Phone';
-import PeopleIcon from '@material-ui/icons/People';
-import LinkIcon from '@material-ui/icons/Link';
+import Card from '@material-ui/core/Card';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import EmailIcon from '@material-ui/icons/Email';
 import LocationIcon from '@material-ui/icons/GpsFixed';
-import { tournamentDateString, isSignedup } from '../../utils/tournament';
+import LinkIcon from '@material-ui/icons/Link';
+import PeopleIcon from '@material-ui/icons/People';
+import PhoneIcon from '@material-ui/icons/Phone';
 import { formatDateTime } from '../../utils/dateFormat';
+import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
-import TeamList from '../../components/volleynet/TeamList';
 import CenteredLoading from '../../components/CenteredLoading';
+import TeamList from '../../components/volleynet/TeamList';
 import { card, link, title } from '../../styles/shared';
 
 import { Tournament, User } from '../../types';

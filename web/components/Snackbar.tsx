@@ -1,8 +1,8 @@
-import React from 'react';
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
-import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
+import React from 'react';
 
 const styles = (theme: Theme) =>
   createStyles({

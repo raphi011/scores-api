@@ -1,6 +1,6 @@
-import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import React from 'react';
 import { tournamentDateString } from '../../utils/tournament';
 
 import { Tournament } from '../../types';

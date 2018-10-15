@@ -1,5 +1,5 @@
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 import { Team } from '../types';
 

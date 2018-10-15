@@ -1,14 +1,14 @@
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React, { SyntheticEvent } from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 
-import TextField from '@material-ui/core/TextField';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
 import Button from '@material-ui/core/Button';
-import DoneIcon from '@material-ui/icons/Done';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import TextField from '@material-ui/core/TextField';
+import DoneIcon from '@material-ui/icons/Done';
 
 import { Player } from '../types';
 import { MatchValidation } from '../validation/match';

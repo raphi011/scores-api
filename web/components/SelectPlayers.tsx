@@ -1,6 +1,6 @@
-import React from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import React from 'react';
 
 import { Player } from '../types';
 import PlayerListItem from './PlayerListItem';
@@ -43,7 +43,7 @@ class SelectPlayers extends React.Component<Props> {
         unassigned = i;
       }
 
-      if (pId) assignedCount += 1;
+      if (pId) { assignedCount += 1; }
     }
 
     if (selectedNr) {
@@ -54,7 +54,7 @@ class SelectPlayers extends React.Component<Props> {
   };
 
   isSamePlayer = (p1, p2) => {
-    if (!p1 || !p2) return false;
+    if (!p1 || !p2) { return false; }
 
     return p1.id === p2.id;
   };
@@ -62,10 +62,10 @@ class SelectPlayers extends React.Component<Props> {
   playerNr = (player: Player): number => {
     const { player1, player2, player3, player4 } = this.props;
 
-    if (this.isSamePlayer(player, player1)) return 1;
-    else if (this.isSamePlayer(player, player2)) return 2;
-    else if (this.isSamePlayer(player, player3)) return 3;
-    else if (this.isSamePlayer(player, player4)) return 4;
+    if (this.isSamePlayer(player, player1)) { return 1; }
+    else if (this.isSamePlayer(player, player2)) { return 2; }
+    else if (this.isSamePlayer(player, player3)) { return 3; }
+    else if (this.isSamePlayer(player, player4)) { return 4; }
 
     return 0;
   };

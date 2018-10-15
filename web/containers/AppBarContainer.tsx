@@ -1,10 +1,10 @@
+import Router from 'next/router';
 import React from 'react';
 import { connect } from 'react-redux';
-import Router from 'next/router';
 
-import { loginRouteSelector, userSelector } from '../redux/reducers/auth';
-import { logoutAction } from '../redux/actions/auth';
 import AppBar from '../components/AppBar';
+import { logoutAction } from '../redux/actions/auth';
+import { loginRouteSelector, userSelector } from '../redux/reducers/auth';
 
 interface Props {
   isLoggedIn: boolean;

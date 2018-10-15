@@ -1,18 +1,18 @@
-import React, { SyntheticEvent } from 'react';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
-import Router from 'next/router';
 import Red from '@material-ui/core/colors/red';
-import WarningIcon from '@material-ui/icons/Warning';
 import FormGroup from '@material-ui/core/FormGroup';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import WarningIcon from '@material-ui/icons/Warning';
+import Router from 'next/router';
+import React, { SyntheticEvent } from 'react';
 
+import LoadingButton from '../components/LoadingButton';
 import withAuth from '../containers/AuthContainer';
+import Snackbar from '../containers/SnackbarContainer';
 import { loginWithPasswordAction } from '../redux/actions/auth';
 import { setStatusAction } from '../redux/actions/status';
-import Snackbar from '../containers/SnackbarContainer';
-import LoadingButton from '../components/LoadingButton';
 
 interface Props {
   r: string;
@@ -33,16 +33,16 @@ interface State {
 }
 
 class Login extends React.Component<Props, State> {
-  static getParameters(query) {
-    const { error, r } = query;
-
-    return { error, r };
-  }
 
   static mapDispatchToProps = {
     loginWithPassword: loginWithPasswordAction,
     setStatus: setStatusAction,
   };
+  static getParameters(query) {
+    const { error, r } = query;
+
+    return { error, r };
+  }
 
   state = {
     email: '',

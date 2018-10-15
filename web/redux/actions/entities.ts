@@ -1,5 +1,5 @@
-import * as actionNames from '../actionNames';
 import { ApiAction, Match, NewMatch, StatisticFilter } from '../../types';
+import * as actionNames from '../actionNames';
 
 export const loadMatchesAction = (
   groupId: number,

@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import Layout from '../components/Layout';
 
-import { playerSelector } from '../redux/reducers/entities';
 import { userSelector } from '../redux/reducers/auth';
+import { playerSelector } from '../redux/reducers/entities';
 
 import { Player } from '../types';
 

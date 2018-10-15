@@ -1,22 +1,22 @@
-import React from 'react';
-import App, { Container } from 'next/app';
-import { MuiThemeProvider } from '@material-ui/core/styles';
-import {Provider} from 'react-redux'
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import withRedux from 'next-redux-wrapper'
-import initStore from '../redux/store'
+import App, { Container } from 'next/app';
+import React from 'react';
 import JssProvider from 'react-jss/lib/JssProvider';
+import {Provider} from 'react-redux'
+import initStore from '../redux/store'
 
-import getPageContext from '../getPageContext';
 import Snackbar from '../containers/SnackbarContainer';
+import getPageContext from '../getPageContext';
 
 class MyApp extends App {
+
+  pageContext = null;
   constructor(props) {
     super(props);
     this.pageContext = getPageContext();
   }
-
-  pageContext = null;
 
   componentDidMount() {
     // Remove the server-side injected CSS.

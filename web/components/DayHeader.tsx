@@ -1,5 +1,5 @@
-import ListItem from '@material-ui/core/ListItem';
 import Chip from '@material-ui/core/Chip';
+import ListItem from '@material-ui/core/ListItem';
 import { formatDate } from '../utils/dateFormat';
 
 interface Props {

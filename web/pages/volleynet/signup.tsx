@@ -1,23 +1,23 @@
 import React from 'react';
 
-import Link from 'next/link';
-import { withStyles, createStyles } from '@material-ui/core/styles';
+import { createStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import Link from 'next/link';
 
-import { userSelector } from '../../redux/reducers/auth';
+import Login from '../../components/volleynet/Login';
+import SearchPlayer from '../../components/volleynet/SearchPlayer';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import SearchPlayer from '../../components/volleynet/SearchPlayer';
-import Login from '../../components/volleynet/Login';
 import {
   loadTournamentAction,
   tournamentSignupAction,
 } from '../../redux/actions/entities';
+import { userSelector } from '../../redux/reducers/auth';
 import { tournamentSelector } from '../../redux/reducers/entities';
-import { title, link, card } from '../../styles/shared';
+import { card, link, title } from '../../styles/shared';
 
-import { Tournament, VolleynetPlayer, User } from '../../types';
 import { Card, Theme } from '@material-ui/core';
+import { Tournament, User, VolleynetPlayer } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -51,6 +51,10 @@ interface State {
 }
 
 class Signup extends React.Component<Props, State> {
+
+  static mapDispatchToProps = {
+    signup: tournamentSignupAction,
+  };
   static getParameters(query) {
     const { id } = query;
 
@@ -58,10 +62,6 @@ class Signup extends React.Component<Props, State> {
 
     return { tournamentId };
   }
-
-  state = {
-    partner: null,
-  };
 
   static buildActions({ tournamentId }) {
     return [loadTournamentAction(tournamentId)];
@@ -74,8 +74,8 @@ class Signup extends React.Component<Props, State> {
     return { tournament, user };
   }
 
-  static mapDispatchToProps = {
-    signup: tournamentSignupAction,
+  state = {
+    partner: null,
   };
 
   onSelectPlayer = partner => {

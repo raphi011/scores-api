@@ -1,8 +1,8 @@
-import { createStore, applyMiddleware } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import reducer, { initialState } from './reducers';
 import apiMiddleware, { serverAction } from './apiMiddleware';
+import reducer, { initialState } from './reducers';
 
 import { AuthStore } from './reducers/auth';
 import { EntityStore } from './reducers/entities';

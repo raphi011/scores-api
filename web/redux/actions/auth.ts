@@ -1,5 +1,5 @@
-import * as actionNames from '../actionNames';
 import { ApiAction } from '../../types';
+import * as actionNames from '../actionNames';
 
 export const userOrLoginRouteAction = (): ApiAction => ({
   type: actionNames.API,

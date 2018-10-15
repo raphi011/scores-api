@@ -1,12 +1,12 @@
 import React from 'react';
 
+import TournamentView from '../../components/volleynet/TournamentView';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import TournamentView from '../../components/volleynet/TournamentView';
 
 import { loadTournamentAction } from '../../redux/actions/entities';
-import { tournamentSelector } from '../../redux/reducers/entities';
 import { userSelector } from '../../redux/reducers/auth';
+import { tournamentSelector } from '../../redux/reducers/entities';
 
 import { Tournament, User } from '../../types';
 

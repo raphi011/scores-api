@@ -1,12 +1,12 @@
+import { createStyles, withStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import SearchIcon from '@material-ui/icons/Search';
 import React from 'react';
 import { connect } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
-import { withStyles, createStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
 
 import PlayerList from '../../components/volleynet/PlayerList';
-import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
 import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
+import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
 
 import { Gender, VolleynetSearchPlayer } from '../../types';
 import LoadingButton from '../LoadingButton';

@@ -1,8 +1,8 @@
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Router from 'next/router';
 import React from 'react';
 import { connect } from 'react-redux';
-import Router from 'next/router';
 import Waypoint from 'react-waypoint';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';
@@ -48,7 +48,7 @@ class MatchListContainer extends React.PureComponent<Props, State> {
     const { deleteMatch } = this.props;
     const { selectedMatch } = this.state;
 
-    if (!selectedMatch) return;
+    if (!selectedMatch) { return; }
 
     deleteMatch(selectedMatch);
 

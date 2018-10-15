@@ -1,16 +1,16 @@
-import React from 'react';
 import Router from 'next/router';
+import React from 'react';
 
-import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 
-import withAuth from '../../containers/AuthContainer';
-import TournamentList from '../../components/volleynet/TournamentList';
 import CenteredLoading from '../../components/CenteredLoading';
+import LeagueSelect from '../../components/LeagueSelect';
+import TournamentList from '../../components/volleynet/TournamentList';
+import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import { loadTournamentsAction } from '../../redux/actions/entities';
 import { tournamentsByLeagueSelector } from '../../redux/reducers/entities';
-import LeagueSelect from '../../components/LeagueSelect';
 
 import { Tournament } from '../../types';
 
@@ -32,6 +32,10 @@ interface Props {
 const thisYear = new Date().getFullYear().toString();
 
 class Volleynet extends React.Component<Props, State> {
+
+  static mapDispatchToProps = {
+    loadTournaments: loadTournamentsAction,
+  };
   static buildActions({ league }: Props) {
     return [
       loadTournamentsAction({
@@ -41,10 +45,6 @@ class Volleynet extends React.Component<Props, State> {
       }),
     ];
   }
-
-  static mapDispatchToProps = {
-    loadTournaments: loadTournamentsAction,
-  };
 
   static getParameters(query) {
     let { league = 'AMATEUR TOUR' } = query;
@@ -61,6 +61,12 @@ class Volleynet extends React.Component<Props, State> {
 
     return { tournaments };
   }
+
+  static sortAscending = (a, b) =>
+    new Date(a.start).getTime() - new Date(b.start).getTime();
+
+  static sortDescending = (a, b) =>
+    new Date(b.start).getTime() - new Date(a.start).getTime();
 
   state = {
     tabOpen: 0,
@@ -90,14 +96,8 @@ class Volleynet extends React.Component<Props, State> {
     this.setState({ tabOpen });
   };
 
-  static sortAscending = (a, b) =>
-    new Date(a.start).getTime() - new Date(b.start).getTime();
-
-  static sortDescending = (a, b) =>
-    new Date(b.start).getTime() - new Date(a.start).getTime();
-
   orderTournaments = () => {
-    let { tournaments } = this.props;
+    const { tournaments } = this.props;
 
     if (!tournaments) {
       return null;

@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-unfetch';
-import * as actionNames from './actionNames';
-import { ApiAction, ApiActions } from '../types';
 import { buildUrl, isJson } from '../api';
+import { ApiAction, ApiActions } from '../types';
+import * as actionNames from './actionNames';
 import { userSelector } from './reducers/auth';
 
 function getHost(req): string {

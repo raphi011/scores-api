@@ -1,7 +1,7 @@
-import React from 'react';
-import { withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import React from 'react';
 
 import { PlayerStatistic } from '../types';
 

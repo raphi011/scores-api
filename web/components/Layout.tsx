@@ -1,8 +1,8 @@
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React, { ReactNode } from 'react';
-import { withStyles, createStyles, Theme } from '@material-ui/core/styles';
 
-import Drawer from './Drawer';
 import AppBar from '../containers/AppBarContainer';
+import Drawer from './Drawer';
 
 import { Player } from '../types';
 

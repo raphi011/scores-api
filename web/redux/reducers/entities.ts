@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 
 import * as actionNames from '../actionNames';
-import { createReducer } from '../reduxHelper';
 import { denorm, norm } from '../entitySchemas';
+import { createReducer } from '../reduxHelper';
 
 import { EntityName, EntityType } from '../../types';
 import { Store } from '../store';
@@ -108,7 +108,7 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityAction) {
           ? (state[entityKey][options.name] || {})[options.key]
           : state[entityKey][options.name];
 
-        if (previousList) list = previousList;
+        if (previousList) { list = previousList; }
       }
 
       list = [...list, ...newIds];

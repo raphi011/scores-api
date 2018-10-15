@@ -1,9 +1,9 @@
 import React from 'react';
 // import Router from 'next/router';
 
-import withAuth from '../../containers/AuthContainer';
 import Card from '@material-ui/core/Card';
 import PlayerList from '../../components/volleynet/PlayerList';
+import withAuth from '../../containers/AuthContainer';
 // import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
 import { loadLadderAction } from '../../redux/actions/entities';
@@ -21,13 +21,13 @@ interface Props {
 const genderList = ["M", "W"];
 
 class Ranking extends React.Component<Props> {
-  static buildActions({ gender }: Props) {
-    return [loadLadderAction(gender)];
-  }
 
   static mapDispatchToProps = {
     loadLadder: loadLadderAction,
   };
+  static buildActions({ gender }: Props) {
+    return [loadLadderAction(gender)];
+  }
 
   static getParameters(query) {
     let { gender } = query;

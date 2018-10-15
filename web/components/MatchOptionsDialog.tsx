@@ -1,15 +1,15 @@
+import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
-import { withStyles, createStyles } from '@material-ui/core/styles';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import CopyIcon from '@material-ui/icons/FileCopy';
-import Divider from '@material-ui/core/Divider';
+import Avatar from '@material-ui/core/Avatar';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CopyIcon from '@material-ui/icons/FileCopy';
 import Link from 'next/link';
 
 import { Match } from '../types';
