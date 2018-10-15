@@ -9,7 +9,6 @@ class MyDocument extends Document {
     return (
       <html style={{ overflow: 'hidden' }} lang="en" dir="ltr">
         <Head>
-          <title>Scores</title>
           <meta charSet="utf-8" />
           {/* Use minimum-scale=1 to enable GPU rasterization */}
           <meta

@@ -127,13 +127,13 @@ class TournamentView extends React.Component<Props, State> {
             href={`${tournament.link}`}
             target="_blank"
           >
-            <Typography variant="display1">{tournament.name}</Typography>
+            <Typography variant="h1">{tournament.name}</Typography>
           </a>
         </div>
         <Card className={classes.card}>
           <div className={classes.infoContainer}>
             {infos.map((info, i) => (
-              <Typography key={i} variant="subheading">
+              <Typography key={i} variant="subtitle1">
                 {info.icon}{' '}
                 <span className={classes.infoElement}>{info.info}</span>
               </Typography>
@@ -162,12 +162,12 @@ class TournamentView extends React.Component<Props, State> {
           Last updated: {formatDateTime(tournament.updatedAt)}
         </Typography>
 
-        <Typography className={classes.title} variant="display1">
+        <Typography className={classes.title} variant="h4">
           Notes
         </Typography>
         <Card className={classes.card}>{infoText}</Card>
 
-        <Typography className={classes.title} variant="display1">
+        <Typography className={classes.title} variant="h4">
           Teams
         </Typography>
         <Card className={classes.card}>
@@ -175,7 +175,7 @@ class TournamentView extends React.Component<Props, State> {
         </Card>
         {deregistered.length ? (
           <>
-            <Typography className={classes.title} variant="display1">
+            <Typography className={classes.title} variant="h4">
               Deregistered
             </Typography>
             <Card className={classes.card}>

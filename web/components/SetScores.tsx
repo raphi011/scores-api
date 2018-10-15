@@ -11,7 +11,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import { Player } from '../types';
-import { MatchValidation } from 'validation/match';
+import { MatchValidation } from '../validation/match';
 
 const styles = (theme: Theme) =>
   createStyles({

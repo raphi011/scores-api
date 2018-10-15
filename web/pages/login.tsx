@@ -96,7 +96,7 @@ class Login extends React.Component<Props, State> {
   };
 
   render() {
-    const { loginRoute, error, classes } = this.props;
+    const { loginRoute, error } = this.props;
     const { email, password, loggingIn } = this.state;
 
     const errorBox = error ? (
@@ -125,7 +125,7 @@ class Login extends React.Component<Props, State> {
       >
         <Paper style={{ textAlign: 'center', padding: '30px' }}>
           <form onSubmit={this.loginWithPassword}>
-            <Typography variant="display2">Welcome</Typography>
+            <Typography variant="h3">Welcome</Typography>
             <br />
             <FormGroup>
               <TextField
@@ -151,7 +151,7 @@ class Login extends React.Component<Props, State> {
               color="primary"
               disabled={!loginRoute}
               fullWidth
-              variant="raised"
+              variant="contained"
               href={loginRoute}
             >
               Login with Google

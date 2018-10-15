@@ -58,17 +58,17 @@ class Home extends React.Component<Props> {
     return (
       <Layout title={{ text: 'Home', href: '' }}>
         <div className={classes.container}>
-          <Typography variant="headline">Home</Typography>
+          <Typography variant="h5">Home</Typography>
           <Paper className={classes.paper}>
-            <Typography variant="title">News</Typography>
+            <Typography variant="h6">News</Typography>
           </Paper>
           <Paper className={classes.paper}>
-            <Typography variant="title">Groups</Typography>
+            <Typography variant="h6">Groups</Typography>
           </Paper>
           <Paper className={classes.paper}>
-            <Typography variant="title">Volleynet</Typography>
-            <Typography variant="subheading">Upcoming tournaments</Typography>
-            <Typography variant="subheading">Past tournaments</Typography>
+            <Typography variant="h6">Volleynet</Typography>
+            <Typography variant="subtitle1">Upcoming tournaments</Typography>
+            <Typography variant="subtitle1">Past tournaments</Typography>
           </Paper>
         </div>
       </Layout>

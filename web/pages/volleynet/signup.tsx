@@ -114,7 +114,7 @@ class Signup extends React.Component<Props, State> {
     if (partner) {
       content = (
         <>
-          <Typography variant="title">{`Partner: ${partner.firstName} ${
+          <Typography variant="h6">{`Partner: ${partner.firstName} ${
             partner.lastName
           }`}</Typography>
           <Login onLogin={this.onSignup} username={user.volleynetLogin} />
@@ -140,7 +140,7 @@ class Signup extends React.Component<Props, State> {
           <div className={`${classes.title} ${classes.link}`}>
             <Link href={`/volleynet/tournament?id=${tournament.id}`}>
               <a className={classes.link}>
-                <Typography variant="display1">{tournament.name}</Typography>
+                <Typography variant="h4">{tournament.name}</Typography>
               </a>
             </Link>
           </div>
