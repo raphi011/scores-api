@@ -153,7 +153,7 @@ FROM volleynet_tournaments t`
 	tournamentsSeasonSelectSQL = tournamentsBaseSelectSQL + " WHERE t.season = ?"
 
 	tournamentsFilterSelectSQL = tournamentsBaseSelectSQL +
-		"WHERE t.gender = ? AND t.league = ? AND t.season = ?"
+		" WHERE t.gender = ? AND t.league = ? AND t.season = ?"
 
 	tournamentSelectSQL = tournamentsBaseSelectSQL + " WHERE t.id = ?"
 
