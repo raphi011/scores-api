@@ -3,6 +3,7 @@ import React from 'react';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import CalendarIcon from '@material-ui/icons/DateRange';
@@ -131,27 +132,29 @@ class TournamentView extends React.Component<IProps, IState> {
           </a>
         </div>
         <Card className={classes.card}>
-          <div className={classes.infoContainer}>
-            {infos.map((info, i) => (
-              <Typography key={i} variant="subtitle1">
-                {info.icon}{' '}
-                <span className={classes.infoElement}>{info.info}</span>
-              </Typography>
-            ))}
-          </div>
-          {!showSignup || (
-            <Link
-              prefetch
-              href={{
-                pathname: '/volleynet/signup',
-                query: { id: tournament.id },
-              }}
-            >
-              <Button variant="contained" color="primary" fullWidth>
-                {signedup ? 'You are signed up' : 'Signup'}
-              </Button>
-            </Link>
-          )}
+          <CardContent>
+            <div className={classes.infoContainer}>
+              {infos.map((info, i) => (
+                <Typography key={i} variant="subtitle1">
+                  {info.icon}{' '}
+                  <span className={classes.infoElement}>{info.info}</span>
+                </Typography>
+              ))}
+            </div>
+            {!showSignup || (
+              <Link
+                prefetch
+                href={{
+                  pathname: '/volleynet/signup',
+                  query: { id: tournament.id },
+                }}
+              >
+                <Button variant="contained" color="primary" fullWidth>
+                  {signedup ? 'You are signed up' : 'Signup'}
+                </Button>
+              </Link>
+            )}
+          </CardContent>
         </Card>
         <Typography
           className={classes.updatedAt}
@@ -165,13 +168,20 @@ class TournamentView extends React.Component<IProps, IState> {
         <Typography className={classes.title} variant="h4">
           Notes
         </Typography>
-        <Card className={classes.card}>{infoText}</Card>
+        <Card className={classes.card}>
+          <CardContent>{infoText}</CardContent>
+        </Card>
 
         <Typography className={classes.title} variant="h4">
           Teams
         </Typography>
         <Card className={classes.card}>
-          <TeamList emptyMessage="No teams are signed up." teams={registered} />
+          <CardContent>
+            <TeamList
+              emptyMessage="No teams are signed up."
+              teams={registered}
+            />
+          </CardContent>
         </Card>
         {deregistered.length ? (
           <>
@@ -179,7 +189,9 @@ class TournamentView extends React.Component<IProps, IState> {
               Deregistered
             </Typography>
             <Card className={classes.card}>
-              <TeamList teams={deregistered} />
+              <CardContent>
+                <TeamList teams={deregistered} />
+              </CardContent>
             </Card>
           </>
         ) : null}

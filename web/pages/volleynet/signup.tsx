@@ -16,7 +16,7 @@ import { userSelector } from '../../redux/reducers/auth';
 import { tournamentSelector } from '../../redux/reducers/entities';
 import { card, link, title } from '../../styles/shared';
 
-import { Card, Theme } from '@material-ui/core';
+import { Card, CardContent, Theme } from '@material-ui/core';
 import { Tournament, User, VolleynetPlayer } from '../../types';
 
 const styles = (theme: Theme) =>
@@ -143,7 +143,9 @@ class Signup extends React.Component<IProps, IState> {
               </a>
             </Link>
           </div>
-          <Card className={classes.card}>{content}</Card>
+          <Card className={classes.card}>
+            <CardContent>{content}</CardContent>
+          </Card>
         </div>
       </Layout>
     );
