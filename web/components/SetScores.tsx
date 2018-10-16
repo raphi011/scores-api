@@ -162,7 +162,7 @@ class SetScores extends React.PureComponent<IProps> {
           className={classes.submitButton}
           color="primary"
           type="submit"
-          variant="raised"
+          variant="contained"
         >
           <DoneIcon className={classes.leftIcon} />
           Submit

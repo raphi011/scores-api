@@ -23,7 +23,7 @@ const LoadingButton = ({ children, loading, classes }) => (
     <Button
       color="primary"
       fullWidth
-      variant="raised"
+      variant="contained"
       disabled={loading}
       type="submit"
     >

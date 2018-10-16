@@ -147,7 +147,7 @@ class TournamentView extends React.Component<IProps, IState> {
                 query: { id: tournament.id },
               }}
             >
-              <Button variant="raised" color="primary" fullWidth>
+              <Button variant="contained" color="primary" fullWidth>
                 {signedup ? 'You are signed up' : 'Signup'}
               </Button>
             </Link>

@@ -75,14 +75,10 @@ const MatchListItem = ({
                 highlightPlayerId={highlightPlayerId}
               />
             </Typography>
-            <Typography
-              className={classes.points}
-              variant="display2"
-              align="center"
-            >
+            <Typography className={classes.points} variant="h3" align="center">
               {score}
             </Typography>
-            <Typography className={classes.team} variant="body1" align="right">
+            <Typography className={classes.team} variant="body2" align="right">
               <TeamName
                 team={result.loser}
                 highlightPlayerId={highlightPlayerId}

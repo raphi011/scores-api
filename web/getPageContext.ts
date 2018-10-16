@@ -1,7 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 
 import { SheetsRegistry } from 'jss';
-import { createMuiTheme, createGenerateClassName } from '@material-ui/core/styles';
+import {
+  createMuiTheme,
+  createGenerateClassName,
+} from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 import teal from '@material-ui/core/colors/teal';
 
@@ -10,27 +13,30 @@ import teal from '@material-ui/core/colors/teal';
 const theme = createMuiTheme({
   palette: {
     primary: {
+      dark: blue[700],
       light: blue[300],
       main: blue[500],
-      dark: blue[700],
     },
     secondary: {
+      dark: teal[700],
       light: teal[300],
       main: teal[500],
-      dark: teal[700],
     },
+  },
+  typography: {
+    useNextVariants: true,
   },
 });
 
 function createPageContext() {
   return {
-    theme,
-    // This is needed in order to deduplicate the injection of CSS in the page.
-    sheetsManager: new Map(),
-    // This is needed in order to inject the critical CSS.
-    sheetsRegistry: new SheetsRegistry(),
     // The standard class name generator.
     generateClassName: createGenerateClassName(),
+    // This is needed in order to deduplicate the injection of CSS in the page.
+    sheetsManager: new Map(),
+    sheetsRegistry: new SheetsRegistry(),
+    theme,
+    // This is needed in order to inject the critical CSS.
   };
 }
 

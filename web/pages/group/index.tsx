@@ -109,7 +109,7 @@ class Home extends React.Component<IProps> {
           <Toolbar>
             <Button
               color="primary"
-              variant="raised"
+              variant="contained"
               size="small"
               onClick={this.onRefresh}
             >
