@@ -5,11 +5,11 @@ ARG backend_url
 ENV APP_ENV $app_env
 ENV BACKEND_URL $backend_url
 
-WORKDIR /go/src/github.com/raphi011/scores
+WORKDIR /code/scores
 
 COPY . .
 
-WORKDIR /go/src/github.com/raphi011/scores/cmd/api
+WORKDIR /code/scores/cmd/api
 
 RUN go install -ldflags="-X main.version=$(git describe --always --long)"
 

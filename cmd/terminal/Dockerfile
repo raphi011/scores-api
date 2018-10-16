@@ -1,10 +1,10 @@
 FROM golang
 
-WORKDIR /go/src/github.com/raphi011/scores
+WORKDIR /code/scores
 
 COPY . .
 
-WORKDIR /go/src/github.com/raphi011/scores/cmd/terminal
+WORKDIR /code/scores/cmd/terminal
 
 RUN go install -ldflags="-X main.version=$(git describe --always --long)"
 
