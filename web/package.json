@@ -1,8 +1,6 @@
 {
   "name": "scores",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
   "dependencies": {
     "@material-ui/core": "^3.2.1",
     "@material-ui/icons": "^3.0.1",
@@ -27,9 +25,7 @@
     "@types/react-dom": "^16.0.9",
     "@zeit/next-typescript": "^1.1.1",
     "babel-jest": "^23.6.0",
-    "husky": "^1.1.2",
     "jest": "^23.6.0",
-    "regenerator-runtime": "^0.12.1",
     "ts-jest": "^23.10.4",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
@@ -40,15 +36,7 @@
     "debug": "next --inspect",
     "build": "next build",
     "start": "next start",
-    "pretty": "prettier --write \"**/*.js\"",
-    "test": "NODE_ENV=test jest"
-  },
-  "lint-staged": {
-    "gitDir": "../",
-    "*.{ts,tsx}": [
-      "npm run pretty",
-      "git add"
-    ]
+    "test": "jest"
   },
   "author": "Raphael Gruber",
   "license": "MIT"
