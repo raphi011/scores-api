@@ -29,9 +29,9 @@ const styles = (theme: Theme) =>
       },
     },
     header: {
+      lineHeight: 'inherit',
       marginBottom: '5px',
       marginTop: '25px',
-      lineHeight: 'inherit',
       textTransform: 'uppercase',
     },
     list: {

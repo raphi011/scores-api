@@ -23,17 +23,16 @@ interface IProps {
   loginWithPassword: (
     credentials: { email: string; password: string },
   ) => Promise<any>;
-  setStatus: (string) => void;
+  setStatus: (status: string) => void;
 }
 
-interface State {
+interface IState {
   email: string;
   password: string;
   loggingIn: boolean;
 }
 
-class Login extends React.Component<IProps, State> {
-
+class Login extends React.Component<IProps, IState> {
   static mapDispatchToProps = {
     loginWithPassword: loginWithPasswordAction,
     setStatus: setStatusAction,
@@ -46,8 +45,8 @@ class Login extends React.Component<IProps, State> {
 
   state = {
     email: '',
-    password: '',
     loggingIn: false,
+    password: '',
   };
 
   componentDidMount() {
@@ -102,10 +101,10 @@ class Login extends React.Component<IProps, State> {
     const errorBox = error ? (
       <span
         style={{
-          display: 'flex',
-          fontWeight: 'bold',
-          flexDirection: 'row',
           alignItems: 'center',
+          display: 'flex',
+          flexDirection: 'row',
+          fontWeight: 'bold',
           justifyContent: 'center',
         }}
       >
@@ -117,10 +116,10 @@ class Login extends React.Component<IProps, State> {
     return (
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          height: '100%',
           alignItems: 'center',
+          display: 'flex',
+          height: '100%',
+          justifyContent: 'center',
         }}
       >
         <Paper style={{ textAlign: 'center', padding: '30px' }}>

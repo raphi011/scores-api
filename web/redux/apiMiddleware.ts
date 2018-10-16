@@ -16,9 +16,9 @@ function getHost(req): string {
 export function serverAction(action, req, res) {
   return {
     ...action,
+    isServer: true,
     req,
     res,
-    isServer: true,
   };
 }
 
@@ -46,10 +46,10 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
 
   try {
     const response = await fetch(endpoint, {
-      method,
-      headers,
       body,
       credentials: 'same-origin',
+      headers,
+      method,
     });
 
     responseCode = response.status;
@@ -57,8 +57,8 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
     if (responseCode === 401 && userSelector(getState()).isLoggedIn) {
       dispatch({ type: actionNames.LOGGEDOUT });
       dispatch({
-        type: actionNames.SET_STATUS,
         status: 'You have to be logged in for this action',
+        type: actionNames.SET_STATUS,
       });
       return Promise.reject();
     }
@@ -103,8 +103,8 @@ async function doAction(store, action: ApiAction, isServer = false, req, res) {
     // error ...
     if (responseCode === 504) {
       dispatch({
-        type: actionNames.SET_STATUS,
         status: 'Cannot connect to server, please try again',
+        type: actionNames.SET_STATUS,
       });
     } else {
       dispatch({ type: actionNames.SET_STATUS, status: statusMessage });

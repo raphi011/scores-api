@@ -39,8 +39,8 @@ const statistic = new schema.Entity('statistic');
 const statisticList = new schema.Array(statistic);
 
 const group = new schema.Entity('group', {
-  players: playerList,
   matches: matchList,
+  players: playerList,
 });
 
 const groupList = new schema.Array(group);
@@ -52,18 +52,18 @@ const volleynetplayerList = new schema.Array(volleynetplayer);
 const entitySchemaMap = {
   group,
   groupList,
-  user,
-  userList,
-  player,
-  playerList,
-  team,
-  teamList,
   match,
   matchList,
+  player,
+  playerList,
   statistic,
   statisticList,
+  team,
+  teamList,
   tournament,
   tournamentList,
+  user,
+  userList,
   volleynetplayer,
   volleynetplayerList,
 };
@@ -72,7 +72,9 @@ function getSchemaMap(entityName: string, isList: boolean) {
   const key = entityName + (isList ? 'List' : '');
   const entitySchema = entitySchemaMap[key];
 
-  if (!entitySchema) { throw new Error(`Unknown schema: ${key}`); }
+  if (!entitySchema) {
+    throw new Error(`Unknown schema: ${key}`);
+  }
 
   return entitySchema;
 }
@@ -83,7 +85,7 @@ function getArtificialId(): number {
   return id;
 }
 
-function assignArtificialId(entities: any[] | Object) {
+function assignArtificialId(entities: any[] | object) {
   if (Array.isArray(entities)) {
     entities.forEach(e => {
       e.id = getArtificialId();

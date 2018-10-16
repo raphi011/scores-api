@@ -22,27 +22,27 @@ import { Tournament, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
-    link,
-    title: title(theme),
     card,
-    updatedAt: {
-      marginTop: theme.spacing.unit,
-    },
     container: {
+      padding: theme.spacing.unit * 2,
+    },
+    descriptionContainer: {
       padding: theme.spacing.unit * 2,
     },
     headerContainer: {
       padding: theme.spacing.unit * 2,
     },
+    infoElement: {
+      fontSize: '1rem',
+      verticalAlign: 'middle',
+    },
+    link,
     tabContent: {
       background: theme.palette.background.paper,
     },
-    descriptionContainer: {
-      padding: theme.spacing.unit * 2,
-    },
-    infoElement: {
-      verticalAlign: 'middle',
-      fontSize: '1rem',
+    title: title(theme),
+    updatedAt: {
+      marginTop: theme.spacing.unit,
     },
   });
 
@@ -52,11 +52,11 @@ interface IProps {
   classes: any;
 }
 
-interface State {
+interface IState {
   tabOpen: number;
 }
 
-class TournamentView extends React.Component<IProps, State> {
+class TournamentView extends React.Component<IProps, IState> {
   render() {
     const { user, tournament, classes } = this.props;
 

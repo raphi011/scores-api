@@ -27,18 +27,18 @@ interface IProps {
   classes: any;
 }
 
-interface State {
+interface IState {
   firstName: string;
   lastName: string;
   birthday: string;
   searching: boolean;
 }
 
-class SearchPlayer extends React.Component<IProps, State> {
+class SearchPlayer extends React.Component<IProps, IState> {
   state = {
+    birthday: '',
     firstName: '',
     lastName: '',
-    birthday: '',
     searching: false,
   };
 

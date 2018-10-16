@@ -5,7 +5,6 @@ import AddIcon from '@material-ui/icons/Add';
 import Link from 'next/link';
 import React from 'react';
 
-import { Match, User } from 'types';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import MatchList from '../../containers/MatchListContainer';
@@ -15,14 +14,15 @@ import {
 } from '../../redux/actions/entities';
 import { setStatusAction } from '../../redux/actions/status';
 import { matchesByGroupSelector } from '../../redux/reducers/entities';
+import { Match, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
     button: {
+      bottom: '24px',
       margin: theme.spacing.unit,
       position: 'fixed',
       right: '24px',
-      bottom: '24px',
     },
   });
 
@@ -35,7 +35,6 @@ interface IProps {
 }
 
 class Home extends React.Component<IProps> {
-
   static mapDispatchToProps = {
     loadMatches: loadMatchesAction,
     setStatus: setStatusAction,
@@ -62,8 +61,8 @@ class Home extends React.Component<IProps> {
   }
 
   state = {
-    loading: false,
     hasMore: true,
+    loading: false,
   };
 
   onRefresh = async () => {
@@ -86,8 +85,8 @@ class Home extends React.Component<IProps> {
     const after = lastElement ? lastElement.createdAt : '';
 
     const newState = {
-      loading: false,
       hasMore: true,
+      loading: false,
     };
 
     try {

@@ -33,12 +33,12 @@ interface IProps {
   classes: any;
 }
 
-interface State {
+interface IState {
   filterMenuOpen: boolean;
   anchorEl?: HTMLElement;
 }
 
-class Statistics extends React.Component<IProps, State> {
+class Statistics extends React.Component<IProps, IState> {
   static getParameters(query) {
     let { filter = 'month', groupId } = query;
 
@@ -72,8 +72,8 @@ class Statistics extends React.Component<IProps, State> {
   }
 
   state = {
-    filterMenuOpen: false,
     anchorEl: null,
+    filterMenuOpen: false,
   };
 
   onOpenFilterMenu = event => {
@@ -106,7 +106,9 @@ class Statistics extends React.Component<IProps, State> {
   timeFilter = () => {
     const { filter } = this.props;
 
-    if (filter === 'all') { return 'Ranks'; }
+    if (filter === 'all') {
+      return 'Ranks';
+    }
 
     return `Ranks by ${filter}`;
   };

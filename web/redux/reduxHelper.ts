@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 export function createReducer(
-  initialState: Object,
-  handlers: { [key: string]: (any, Object) => any },
+  initialState: object,
+  handlers: { [actionType: string]: (state: any, action: object) => any },
 ) {
   return function reducer(state = initialState, action) {
     if (handlers.hasOwnProperty(action.type)) {

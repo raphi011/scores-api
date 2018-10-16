@@ -20,10 +20,10 @@ import { Match, User } from '../../types';
 const styles = (theme: Theme) =>
   createStyles({
     button: {
+      bottom: '24px',
       margin: theme.spacing.unit,
       position: 'fixed',
       right: '24px',
-      bottom: '24px',
     },
   });
 
@@ -35,13 +35,12 @@ interface IProps {
   classes: any;
 }
 
-interface State {
+interface IState {
   loading: boolean;
   hasMore: boolean;
 }
 
-class Index extends React.Component<IProps, State> {
-
+class Index extends React.Component<IProps, IState> {
   static mapDispatchToProps = {
     loadMatches: loadMatchesAction,
     setStatus: setStatusAction,
@@ -68,8 +67,8 @@ class Index extends React.Component<IProps, State> {
   }
 
   state = {
-    loading: false,
     hasMore: true,
+    loading: false,
   };
 
   onRefresh = async () => {
@@ -92,8 +91,8 @@ class Index extends React.Component<IProps, State> {
     const after = lastElement ? lastElement.createdAt : '';
 
     const newState = {
-      loading: false,
       hasMore: true,
+      loading: false,
     };
 
     try {

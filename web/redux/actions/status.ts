@@ -1,8 +1,8 @@
 import * as actionNames from '../actionNames';
 
 export const setStatusAction = (status: string) => ({
-  type: actionNames.SET_STATUS,
   status,
+  type: actionNames.SET_STATUS,
 });
 
 export const clearStatusAction = () => ({

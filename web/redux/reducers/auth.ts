@@ -1,19 +1,19 @@
 import { User } from '../../types';
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
-import { Store } from '../store';
+import { IStore } from '../store';
 
 export const initialAuthState = {
-  user: null,
   loginRoute: null,
+  user: null,
 };
 
-export interface AuthStore {
+export interface IAuthStore {
   user?: User;
   loginRoute?: string;
 }
 
-function loggedOut(state: AuthStore, action): AuthStore {
+function loggedOut(state: IAuthStore, action): IAuthStore {
   // todo
   let loginRoute = '';
 
@@ -28,7 +28,7 @@ function loggedOut(state: AuthStore, action): AuthStore {
   };
 }
 
-function setUserOrLoginroute(state: AuthStore, action): AuthStore {
+function setUserOrLoginroute(state: IAuthStore, action): IAuthStore {
   const { user, loginRoute } = action.payload;
   return {
     ...state,
@@ -44,8 +44,8 @@ const reducer = createReducer(initialAuthState, {
 
 export default reducer;
 
-export const loginRouteSelector = (state: Store) => state.auth.loginRoute;
-export const userSelector = (state: Store) => ({
+export const loginRouteSelector = (state: IStore) => state.auth.loginRoute;
+export const userSelector = (state: IStore) => ({
   isLoggedIn: !!state.auth.user,
   user: state.auth.user,
 });

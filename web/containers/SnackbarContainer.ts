@@ -7,8 +7,8 @@ function mapStateToProps(state) {
   const status = statusSelector(state);
 
   return {
-    status,
     open: !!status,
+    status,
   };
 }
 

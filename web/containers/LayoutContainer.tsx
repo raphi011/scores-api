@@ -14,12 +14,12 @@ interface IProps {
   userPlayer: Player;
 }
 
-interface State {
+interface IState {
   drawerOpen: boolean;
   groupOpen: { [key: number]: boolean };
 }
 
-class LayoutContainer extends React.Component<IProps, State> {
+class LayoutContainer extends React.Component<IProps, IState> {
   state = {
     drawerOpen: false,
     groupOpen: {},

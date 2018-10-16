@@ -19,15 +19,15 @@ interface IProps {
   hasMore: boolean;
 }
 
-interface State {
+interface IState {
   selectedMatch?: Match;
   dialogOpen: boolean;
 }
 
-class MatchListContainer extends React.PureComponent<IProps, State> {
+class MatchListContainer extends React.PureComponent<IProps, IState> {
   state = {
-    selectedMatch: null,
     dialogOpen: false,
+    selectedMatch: null,
   };
 
   onCloseDialog = () => {
@@ -48,7 +48,9 @@ class MatchListContainer extends React.PureComponent<IProps, State> {
     const { deleteMatch } = this.props;
     const { selectedMatch } = this.state;
 
-    if (!selectedMatch) { return; }
+    if (!selectedMatch) {
+      return;
+    }
 
     deleteMatch(selectedMatch);
 

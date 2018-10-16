@@ -35,14 +35,13 @@ interface IProps {
   loadMatches: (playerId: number, after?: string) => Promise<any>;
 }
 
-interface State {
+interface IState {
   tabOpen: number;
   loading: boolean;
   hasMore: boolean;
 }
 
-class PlayerInfo extends React.Component<IProps, State> {
-
+class PlayerInfo extends React.Component<IProps, IState> {
   static mapDispatchToProps = {
     loadMatches: loadPlayerMatchesAction,
   };
@@ -87,18 +86,18 @@ class PlayerInfo extends React.Component<IProps, State> {
     const teamStatistic = statisticByPlayerTeamSelector(state, playerId);
 
     return {
+      matches,
       player,
       statistic,
-      matches,
       teamStatistic,
       user,
     };
   }
 
   state = {
-    tabOpen: 0,
-    loading: false,
     hasMore: true,
+    loading: false,
+    tabOpen: 0,
   };
 
   onLoadMore = async () => {
@@ -112,8 +111,8 @@ class PlayerInfo extends React.Component<IProps, State> {
     const after = lastElement ? lastElement.createdAt : '';
 
     const newState = {
-      loading: false,
       hasMore: true,
+      loading: false,
     };
 
     try {

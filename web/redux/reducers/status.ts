@@ -1,22 +1,22 @@
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
-import { Store } from '../store';
+import { IStore } from '../store';
 
 export const initialStatusState = {
   status: '',
 };
 
-export interface StatusStore {
+export interface IStatusStore {
   status: string;
 }
 
-function setStatus(state: StatusStore, action): StatusStore {
+function setStatus(state: IStatusStore, action): IStatusStore {
   return {
     status: action.status,
   };
 }
 
-function clearStatus(): StatusStore {
+function clearStatus(): IStatusStore {
   return {
     status: '',
   };
@@ -29,4 +29,4 @@ const reducer = createReducer(initialStatusState, {
 
 export default reducer;
 
-export const statusSelector = (state: Store) => state.status.status;
+export const statusSelector = (state: IStore) => state.status.status;

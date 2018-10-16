@@ -1,6 +1,6 @@
 import { NewMatch } from '../types';
 
-export interface MatchValidation {
+export interface IMatchValidation {
   scoreTeam1?: string;
   scoreTeam2?: string;
   all?: string;
@@ -16,8 +16,8 @@ export function validateMatch({
   scoreTeam1,
   scoreTeam2,
   targetScore,
-}: NewMatch): MatchValidation {
-  const errors: MatchValidation = { valid: true };
+}: NewMatch): IMatchValidation {
+  const errors: IMatchValidation = { valid: true };
 
   let higherScore = scoreTeam1;
   let lowerScore = scoreTeam2;

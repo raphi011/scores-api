@@ -21,12 +21,12 @@ import { Tournament, User, VolleynetPlayer } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
-    title: title(theme),
-    link,
     card,
     container: {
       padding: theme.spacing.unit * 2,
     },
+    link,
+    title: title(theme),
   });
 
 interface IProps {
@@ -46,12 +46,11 @@ interface IProps {
   classes: any;
 }
 
-interface State {
+interface IState {
   partner?: VolleynetPlayer;
 }
 
-class Signup extends React.Component<IProps, State> {
-
+class Signup extends React.Component<IProps, IState> {
   static mapDispatchToProps = {
     signup: tournamentSignupAction,
   };
@@ -90,12 +89,12 @@ class Signup extends React.Component<IProps, State> {
     const partnerName = partner && partner.login;
 
     const body = {
-      username,
-      password,
       partnerId,
-      tournamentId,
       partnerName,
+      password,
       rememberMe,
+      tournamentId,
+      username,
     };
 
     signup(body);
@@ -132,8 +131,8 @@ class Signup extends React.Component<IProps, State> {
     return (
       <Layout
         title={{
-          text: 'Signup',
           href: `/volleynet/tournament?id=${tournament.id}`,
+          text: 'Signup',
         }}
       >
         <div className={classes.container}>

@@ -4,14 +4,14 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import apiMiddleware, { serverAction } from './apiMiddleware';
 import reducer, { initialState } from './reducers';
 
-import { AuthStore } from './reducers/auth';
-import { EntityStore } from './reducers/entities';
-import { StatusStore } from './reducers/status';
+import { IAuthStore } from './reducers/auth';
+import { IEntityStore } from './reducers/entities';
+import { IStatusStore } from './reducers/status';
 
-export interface Store {
-  auth: AuthStore;
-  entities: EntityStore;
-  status: StatusStore;
+export interface IStore {
+  auth: IAuthStore;
+  entities: IEntityStore;
+  status: IStatusStore;
 }
 
 export async function dispatchAction(dispatch, action, isServer, req, res) {
@@ -28,22 +28,19 @@ export async function dispatchActions(
   req?: object,
   res?: object,
 ) {
-  for (let i = 0; i < actions.length; i += 1) {
-    const action = isServer ? serverAction(actions[i], req, res) : actions[i];
+  for (const a of actions) {
+    const action = isServer ? serverAction(a, req, res) : a;
 
     await dispatch(action);
   }
 }
 
-const middleware = process.env.NODE_ENV === 'development'
- ? composeWithDevTools(applyMiddleware(apiMiddleware))
- : applyMiddleware(apiMiddleware);
+const middleware =
+  process.env.NODE_ENV === 'development'
+    ? composeWithDevTools(applyMiddleware(apiMiddleware))
+    : applyMiddleware(apiMiddleware);
 
-const initStore = (state: Store = initialState) =>
-  createStore(
-    reducer,
-    state,
-    middleware,
-  );
+const initStore = (state: IStore = initialState) =>
+  createStore(reducer, state, middleware);
 
 export default initStore;

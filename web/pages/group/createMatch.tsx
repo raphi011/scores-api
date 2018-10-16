@@ -21,32 +21,32 @@ import {
   matchSelector,
 } from '../../redux/reducers/entities';
 import { Match, NewMatch, Player } from '../../types';
-import { MatchValidation, validateMatch } from '../../validation/match';
+import { IMatchValidation, validateMatch } from '../../validation/match';
 
 const styles = (theme: Theme) =>
   createStyles({
-    root: {
-      width: '90%',
-    },
-    submitButton: {
-      marginRight: theme.spacing.unit,
-      width: '100%',
-    },
-    stepContainer: {
-      padding: '0 20px',
-    },
     actionsContainer: {
       marginTop: theme.spacing.unit,
+    },
+    button: {
+      margin: theme.spacing.unit,
     },
     resetContainer: {
       marginTop: 0,
       padding: theme.spacing.unit * 3,
     },
+    root: {
+      width: '90%',
+    },
+    stepContainer: {
+      padding: '0 20px',
+    },
+    submitButton: {
+      marginRight: theme.spacing.unit,
+      width: '100%',
+    },
     transition: {
       paddingBottom: 4,
-    },
-    button: {
-      margin: theme.spacing.unit,
     },
   });
 
@@ -61,14 +61,14 @@ interface IProps {
   rematch?: Match;
   players: Player[];
   createNewMatch: (NewMatch) => Promise<any>;
-  setStatus: (string) => void;
+  setStatus: (status: string) => void;
   /* eslint-disable react/no-unused-prop-types */
   groupId: number;
   rematchId: number;
   classes: any;
 }
 
-interface State {
+interface IState {
   activeStep: number;
   teamsComplete: boolean;
   match: {
@@ -81,11 +81,10 @@ interface State {
     scoreTeam2: string;
     targetScore: string;
   };
-  errors: MatchValidation;
+  errors: IMatchValidation;
 }
 
-class CreateMatch extends React.Component<IProps, State> {
-
+class CreateMatch extends React.Component<IProps, IState> {
   static mapDispatchToProps = {
     createNewMatch: createNewMatchAction,
     setStatus: setStatusAction,
@@ -123,7 +122,9 @@ class CreateMatch extends React.Component<IProps, State> {
 
   state = {
     activeStep: 0,
-    teamsComplete: false,
+    errors: {
+      valid: true,
+    },
     match: {
       groupId: 0,
       player1: null,
@@ -134,9 +135,7 @@ class CreateMatch extends React.Component<IProps, State> {
       scoreTeam2: '',
       targetScore: '15',
     },
-    errors: {
-      valid: true,
-    },
+    teamsComplete: false,
   };
 
   rematchPlayersSet = false;
@@ -199,7 +198,6 @@ class CreateMatch extends React.Component<IProps, State> {
 
       const newState = {
         activeStep: 1,
-        teamsComplete: true,
         match: {
           groupId: rematch.groupId,
           player1: rematch.team1.player1,
@@ -210,6 +208,7 @@ class CreateMatch extends React.Component<IProps, State> {
           scoreTeam2: '',
           targetScore: '15',
         },
+        teamsComplete: true,
       };
 
       this.rematchPlayersSet = true;
@@ -300,13 +299,17 @@ class CreateMatch extends React.Component<IProps, State> {
 
     switch (teamNr) {
       case 1: {
-        if (Number.isNaN(scoreTeam1) || Number.isInteger(scoreTeam2)) { return; }
+        if (Number.isNaN(scoreTeam1) || Number.isInteger(scoreTeam2)) {
+          return;
+        }
 
         match.scoreTeam2 = calcWinnerScore(scoreTeam1, targetScore).toString();
         break;
       }
       case 2: {
-        if (Number.isNaN(scoreTeam2) || Number.isInteger(scoreTeam1)) { return; }
+        if (Number.isNaN(scoreTeam2) || Number.isInteger(scoreTeam1)) {
+          return;
+        }
 
         match.scoreTeam1 = calcWinnerScore(scoreTeam2, targetScore).toString();
         break;

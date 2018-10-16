@@ -20,7 +20,6 @@ interface IProps {
 
 const withAuth = Component => {
   class Auth extends React.Component<IProps> {
-
     static async getInitialProps(ctx) {
       try {
         const { isServer, store, res, req, query } = ctx;
@@ -54,11 +53,11 @@ const withAuth = Component => {
         }
 
         let props = {
-          user,
+          dispatch,
+          fromServer: isServer,
           isLoggedIn,
           loginRoute: '',
-          fromServer: isServer,
-          dispatch,
+          user,
         };
 
         if (!isLoggedIn) {
@@ -108,7 +107,6 @@ const withAuth = Component => {
 
         return props;
       } catch (e) {
-        console.log(e);
         return {};
       }
     }

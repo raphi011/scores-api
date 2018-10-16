@@ -11,7 +11,7 @@ import TextField from '@material-ui/core/TextField';
 import DoneIcon from '@material-ui/icons/Done';
 
 import { Player } from '../types';
-import { MatchValidation } from '../validation/match';
+import { IMatchValidation } from '../validation/match';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -52,7 +52,7 @@ interface IProps {
   scoreTeam2: string;
   targetScore: string;
   onCreateMatch: (Event) => void;
-  errors: MatchValidation;
+  errors: IMatchValidation;
   classes: any;
 }
 

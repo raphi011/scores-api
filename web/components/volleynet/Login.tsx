@@ -15,7 +15,7 @@ interface IProps {
   username?: string;
 }
 
-interface State {
+interface IState {
   loggingIn: boolean;
   username: string;
   password: string;
@@ -23,18 +23,17 @@ interface State {
   usernameValidation: string;
 }
 
-class Login extends React.Component<IProps, State> {
-
+class Login extends React.Component<IProps, IState> {
   loginRegex = /^[A-Z][a-z]+\.[A-Z]+$/;
   constructor(props) {
     super(props);
 
     this.state = {
-      username: props.username || '',
+      loggingIn: false,
       password: '',
       rememberMe: true,
+      username: props.username || '',
       usernameValidation: '',
-      loggingIn: false,
     };
   }
 

@@ -16,7 +16,7 @@ import { Tournament } from '../../types';
 
 const leagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TEAM'];
 
-interface State {
+interface IState {
   tabOpen: number;
 }
 
@@ -31,7 +31,7 @@ interface IProps {
 
 const thisYear = new Date().getFullYear().toString();
 
-class Volleynet extends React.Component<IProps, State> {
+class Volleynet extends React.Component<IProps, IState> {
 
   static mapDispatchToProps = {
     loadTournaments: loadTournamentsAction,
