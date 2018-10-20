@@ -9,6 +9,11 @@ WORKDIR /code/scores
 
 RUN go get -u github.com/derekparker/delve/cmd/dlv
 
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
 COPY . .
 
 WORKDIR /code/scores/cmd/api

@@ -7,6 +7,11 @@ ENV BACKEND_URL $backend_url
 
 WORKDIR /code/scores
 
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+
 COPY . .
 
 WORKDIR /code/scores/cmd/api

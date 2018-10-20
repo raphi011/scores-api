@@ -1,3 +1,9 @@
 .vscode
+.next
+
+nginx-config
 node_modules
 data
+playground
+
+secrets.tar.enc
