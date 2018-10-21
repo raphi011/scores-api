@@ -1,44 +1,50 @@
-version: '3.6'
+version: "3.6"
 
 services:
-
   frontend:
     build:
       context: .
       dockerfile: ./web/Dockerfile.dev
     volumes:
-      - '.:/scores'
+      - ".:/scores"
 
   backend:
     command:
-      - '-connection'
-      - 'root:test@tcp(db)/scores?charset=utf8mb4&parseTime=true'
-      - '-provider'
-      - 'mysql'
-      - '-goauth'
-      - '/srv/scores/client_secret.json'
+      - "-connection"
+      - "root:test@tcp(db)/scores?charset=utf8mb4&parseTime=true"
+      - "-provider"
+      - "mysql"
+      - "-goauth"
+      - "/srv/scores/client_secret.json"
     ports:
-      - '127.0.0.1:40000:40000'
+      - "127.0.0.1:40000:40000"
     environment:
       - GIN_MODE=debug
       - BACKEND_URL=http://localhost
       - APP_ENV=debug
-    
+
     build:
       dockerfile: ./cmd/api/Dockerfile.dev
     volumes:
-      - './data/scores:/srv/scores'
+      - "./data/scores:/srv/scores"
     security_opt:
       - seccomp:unconfined
 
   nginx:
-    image: 'nginx:latest'
+    image: "nginx:latest"
     ports:
-      - '80:80'
+      - "80:80"
     volumes:
-      - './nginx-config:/etc/nginx/conf.d:ro'
+      - "./nginx-config:/etc/nginx/conf.d:ro"
     logging:
       driver: none
+
+  portainer:
+    image: "portainer/portainer"
+    ports:
+      - "9000:9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
 
   db:
     image: mariadb:latest
