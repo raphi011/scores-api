@@ -1,4 +1,4 @@
-FROM golang
+FROM golang:1.11.1
 
 ARG app_env
 ARG backend_url
