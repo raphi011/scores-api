@@ -11,6 +11,13 @@ services:
 
   backend:
     image: raphi011/scores-backend
+    command:
+      - "-connection"
+      - "root:test@tcp(db)/scores?charset=utf8mb4&parseTime=true"
+      - "-provider"
+      - "mysql"
+      - "-goauth"
+      - "/srv/scores/client_secret.json"
     build:
       context: .
       dockerfile: ./cmd/api/Dockerfile
@@ -18,7 +25,6 @@ services:
       - GIN_MODE=release
       - BACKEND_URL=https://scores.network
       - APP_ENV=production
-
     ports:
       - "127.0.0.1:8080:8080"
     volumes:
