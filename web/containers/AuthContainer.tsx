@@ -1,5 +1,6 @@
 /* eslint-disable prefer-destructuring */
 
+import Error from 'next/error';
 import React from 'react';
 
 import Router from 'next/router';
@@ -107,9 +108,10 @@ const withAuth = Component => {
 
         return props;
       } catch (e) {
-        return {};
+        return { error: e };
       }
     }
+
     async componentDidMount() {
       const { fromServer, dispatch } = this.props;
 
@@ -138,7 +140,12 @@ const withAuth = Component => {
     }
 
     render() {
-      return <Component {...this.props} />;
+      const { error, ...props } = this.props;
+
+      if (error) {
+        return <Error statusCode={error.responseCode} />;
+      }
+      return <Component {...props} />;
     }
   }
 

@@ -40,7 +40,11 @@ class Home extends React.Component<IProps> {
   }
 
   static mapStateToProps(state) {
-    const { user } = userSelector(state);
+    const { user, isLoggedIn } = userSelector(state);
+
+    if (!isLoggedIn) {
+      return {};
+    }
 
     const { playerId } = user;
 
