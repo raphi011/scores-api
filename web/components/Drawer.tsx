@@ -56,11 +56,15 @@ interface IProps {
 function Drawer({ open, userPlayer, onClose, classes }: IProps) {
   const { groups = [] } = userPlayer;
 
+  if (!groups) {
+    return null;
+  }
+
   const groupList = groups.map(g => (
     <Link
       prefetch
       key={g.id}
-      href={{ pathname: '/group/statistic', query: { groupId: g.id } }}
+      href={{ pathname: '/group', query: { groupId: g.id } }}
     >
       <ListItem button>
         <ListItemIcon>

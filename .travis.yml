@@ -29,5 +29,5 @@ jobs:
       script:
         - travis_wait 40 docker-compose build
         - docker-compose down
-        - docker-compose up -d --force-recreate
+        - docker-compose up -d --force-recreate --remove-orphans
         - rm -rf $DOCKER_CERT_PATH
