@@ -10,7 +10,7 @@ const tournament = new schema.Entity('tournament');
 
 const tournamentList = new schema.Array(tournament);
 
-const user = new schema.Entity('user', { player });
+const user = new schema.Entity('user');
 
 const userList = new schema.Array(user);
 

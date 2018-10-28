@@ -178,6 +178,9 @@ export const allPlayersSelector = (state: IStore) =>
     ? denorm('player', entityMapSelector(state), state.entities.player.all)
     : [];
 
+export const groupSelector = (state: IStore, groupId: number) =>
+  denorm('group', entityMapSelector(state), groupId);
+
 export const groupPlayersSelector = (state: IStore, groupId: number) =>
   (state.entities.player.byGroup[groupId] || []).length
     ? denorm(

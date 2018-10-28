@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import Layout from '../components/Layout';
 
 import { userSelector } from '../redux/reducers/auth';
-import { playerSelector } from '../redux/reducers/entities';
 
 import { Player } from '../types';
 
@@ -64,10 +63,11 @@ class LayoutContainer extends React.Component<IProps, IState> {
 }
 
 function mapStateToProps(state) {
-  const auth = userSelector(state);
-  const userPlayer = playerSelector(state, auth.user.playerId);
+  const {
+    user: { player },
+  } = userSelector(state);
 
-  return { userPlayer };
+  return { userPlayer: player };
 }
 
 export default connect(mapStateToProps)(LayoutContainer);

@@ -51,6 +51,7 @@ export interface User {
   email: string;
   profileImageUrl?: string;
   playerId: number;
+  player: Player;
   volleynetUserId: number;
   volleynetLogin: string;
 }

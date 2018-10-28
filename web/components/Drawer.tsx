@@ -56,10 +56,6 @@ interface IProps {
 function Drawer({ open, userPlayer, onClose, classes }: IProps) {
   const { groups = [] } = userPlayer;
 
-  if (!groups) {
-    return null;
-  }
-
   const groupList = groups.map(g => (
     <Link
       prefetch

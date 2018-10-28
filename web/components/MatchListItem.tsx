@@ -69,7 +69,7 @@ const MatchListItem = ({
       <ListItemText
         primary={
           <div className={classes.listContainer}>
-            <Typography className={classes.team} variant="body1">
+            <Typography className={classes.team} variant="body2">
               <TeamName
                 team={result.winner}
                 highlightPlayerId={highlightPlayerId}
