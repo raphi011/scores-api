@@ -8,6 +8,7 @@ ENV BACKEND_URL $backend_url
 WORKDIR /code/scores
 
 RUN go get -u github.com/derekparker/delve/cmd/dlv
+RUN go get -u github.com/gobuffalo/packr/packr
 
 COPY go.mod .
 COPY go.sum .
@@ -18,9 +19,10 @@ COPY . .
 
 WORKDIR /code/scores/cmd/api
 
+RUN packr
 RUN go install \
   -ldflags="-X main.version=$(git describe --always --long)" \
-  -gcflags "all=-N -l" # turn off optimizations for debugging
+  -gcflags="all=-N -l" # turn off optimizations for debugging
 
 ENTRYPOINT [ \
   "/go/bin/dlv", \ 

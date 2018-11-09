@@ -5,6 +5,8 @@ ARG backend_url
 ENV APP_ENV $app_env
 ENV BACKEND_URL $backend_url
 
+RUN go get -u github.com/gobuffalo/packr/packr
+
 WORKDIR /code/scores
 
 COPY go.mod .
@@ -16,6 +18,7 @@ COPY . .
 
 WORKDIR /code/scores/cmd/api
 
+RUN packr
 RUN go install -ldflags="-X main.version=$(git describe --always --long)"
 
 ENTRYPOINT [ "/go/bin/api" ]
