@@ -10,23 +10,23 @@ import (
 	"github.com/raphi011/scores/volleynet/parse"
 )
 
-func syncMock() (*mocks.ClientMock, *mocks.VolleynetServiceMock, *SyncService) {
+func syncMock() (*mocks.ClientMock, *mocks.VolleynetRepositoryMock, *SyncRepository) {
 	clientMock := new(mocks.ClientMock)
-	volleynetMock := new(mocks.VolleynetServiceMock)
+	volleynetMock := new(mocks.VolleynetRepositoryMock)
 
-	syncService := &SyncService{
+	syncRepository := &SyncRepository{
 		Client:           clientMock,
-		VolleynetService: volleynetMock,
+		VolleynetRepository: volleynetMock,
 	}
 
-	return clientMock, volleynetMock, syncService
+	return clientMock, volleynetMock, syncRepository
 }
 
 func TestSyncLadder(t *testing.T) {
 	persistedPlayers := []volleynet.Player{volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1}, TotalPoints: 100, Rank: 96}}
 	clientPlayers := []volleynet.Player{volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1}, TotalPoints: 125, Rank: 60}}
 
-	clientMock, volleynetMock, syncService := syncMock()
+	clientMock, volleynetMock, syncRepository := syncMock()
 
 	clientMock.On("Ladder", "M").Return(clientPlayers, nil)
 	volleynetMock.On("AllPlayers").Return(persistedPlayers, nil)
@@ -36,14 +36,14 @@ func TestSyncLadder(t *testing.T) {
 		Rank:        60,
 	}).Return(nil)
 
-	report, err := syncService.Ladder("M")
+	report, err := syncRepository.Ladder("M")
 
 	if err != nil {
 		t.Error(err)
 	}
 
 	if report.UpdatedPlayers != 1 {
-		t.Errorf("SyncService.Ladder(\"M\") want: .UpdatedPlayers = 1, got: %d", report.UpdatedPlayers)
+		t.Errorf("SyncRepository.Ladder(\"M\") want: .UpdatedPlayers = 1, got: %d", report.UpdatedPlayers)
 	}
 }
 
@@ -54,7 +54,7 @@ func TestSyncTournamentInformation(t *testing.T) {
 	syncInfos := SyncTournaments(tournament, &volleynet.Tournament{ID: 22231, Status: volleynet.StatusUpcoming})
 
 	if syncInfos.Type != SyncTournamentUpcoming {
-		t.Fatalf("SyncService.SyncTournaments() want: %s, got: %s", SyncTournamentUpcoming, syncInfos.Type)
+		t.Fatalf("SyncRepository.SyncTournaments() want: %s, got: %s", SyncTournamentUpcoming, syncInfos.Type)
 	}
 }
 
@@ -77,7 +77,7 @@ func TestSyncTournaments(t *testing.T) {
 		},
 	}
 
-	clientMock, volleynetMock, syncService := syncMock()
+	clientMock, volleynetMock, syncRepository := syncMock()
 
 	gender := "M"
 	league := "AMATEUR LEAGUE"
@@ -90,13 +90,13 @@ func TestSyncTournaments(t *testing.T) {
 	volleynetMock.On("TournamentTeams", 1).Return([]volleynet.TournamentTeam{}, nil)
 	volleynetMock.On("AllPlayers").Return([]volleynet.Player{}, nil)
 
-	report, err := syncService.Tournaments("M", "AMATEUR LEAGUE", 2018)
+	report, err := syncRepository.Tournaments("M", "AMATEUR LEAGUE", 2018)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if len(report.Tournament.Update) != 1 {
-		t.Fatalf("SyncService.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", len(report.Tournament.Update))
+		t.Fatalf("SyncRepository.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", len(report.Tournament.Update))
 	}
 }

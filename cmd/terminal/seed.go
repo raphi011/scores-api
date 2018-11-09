@@ -15,7 +15,7 @@ func seedDb() {
 		return
 	}
 
-	ps := sqlite.PlayerService{DB: db}
+	ps := sqlite.PlayerRepository{DB: db}
 
 	ps.Create(&scores.Player{Name: "Raphi"})
 	ps.Create(&scores.Player{Name: "Richie"})

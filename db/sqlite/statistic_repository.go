@@ -7,9 +7,9 @@ import (
 	"github.com/raphi011/scores"
 )
 
-var _ scores.StatisticService = &StatisticService{}
+var _ scores.StatisticRepository = &StatisticRepository{}
 
-type StatisticService struct {
+type StatisticRepository struct {
 	DB *sql.DB
 }
 
@@ -118,19 +118,19 @@ func scanPlayerStatistic(scanner scan) (*scores.PlayerStatistic, error) {
 	return s, nil
 }
 
-func (s *StatisticService) Players(filter string) (scores.PlayerStatistics, error) {
+func (s *StatisticRepository) Players(filter string) (scores.PlayerStatistics, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, playersStatisticSelectSQL, timeFilter)
 }
 
-func (s *StatisticService) PlayersByGroup(groupID uint, filter string) (scores.PlayerStatistics, error) {
+func (s *StatisticRepository) PlayersByGroup(groupID uint, filter string) (scores.PlayerStatistics, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, groupPlayersStatisticSelectSQL, timeFilter, groupID)
 }
 
-func (s *StatisticService) Player(playerID uint, filter string) (*scores.PlayerStatistic, error) {
+func (s *StatisticRepository) Player(playerID uint, filter string) (*scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	row := s.DB.QueryRow(playerStatisticSelectSQL, timeFilter, playerID)
@@ -161,7 +161,7 @@ const (
 	`
 )
 
-func (s *StatisticService) PlayerTeams(playerID uint, filter string) (scores.PlayerStatistics, error) {
+func (s *StatisticRepository) PlayerTeams(playerID uint, filter string) (scores.PlayerStatistics, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, playerTeamsStatisticSelectSQL, playerID, timeFilter)

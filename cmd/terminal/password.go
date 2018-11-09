@@ -7,7 +7,7 @@ import (
 	"github.com/raphi011/scores/db/sqlite"
 )
 
-func getUser(us sqlite.UserService) *scores.User {
+func getUser(us sqlite.UserRepository) *scores.User {
 	fmt.Print("Enter the users email: ")
 	for scanner.Scan() {
 		email := scanner.Text()
@@ -39,7 +39,7 @@ func setNewPassword() {
 		return
 	}
 
-	us := sqlite.UserService{DB: db, PW: &scores.PBKDF2PasswordService{
+	us := sqlite.UserRepository{DB: db, PW: &scores.PBKDF2PasswordRepository{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}}

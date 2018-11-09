@@ -8,11 +8,11 @@ import (
 	"github.com/raphi011/scores"
 )
 
-var _ scores.UserService = &UserService{}
+var _ scores.UserRepository = &UserRepository{}
 
-type UserService struct {
+type UserRepository struct {
 	DB *sql.DB
-	PW scores.PasswordService
+	PW scores.PasswordRepository
 }
 
 const userInsertSQL = `
@@ -21,7 +21,7 @@ const userInsertSQL = `
 `
 
 // Create creates persists user and assigns a new id
-func (s *UserService) Create(user *scores.User) (*scores.User, error) {
+func (s *UserRepository) Create(user *scores.User) (*scores.User, error) {
 	result, err := s.DB.Exec(userInsertSQL, user.Email, user.ProfileImageURL, user.VolleynetUserId, user.VolleynetLogin, user.Role)
 
 	if err != nil {
@@ -46,7 +46,7 @@ const userPasswordUpdateSQL = `
 
 `
 
-func (s *UserService) UpdatePasswordAuthentication(
+func (s *UserRepository) UpdatePasswordAuthentication(
 	userID uint,
 	auth *scores.PasswordInfo,
 ) error {
@@ -80,7 +80,7 @@ const userUpdateSQL = `
 	WHERE id = ?
 `
 
-func (s *UserService) Update(user *scores.User) error {
+func (s *UserRepository) Update(user *scores.User) error {
 	if user == nil || user.ID == 0 {
 		return errors.New("User must exist")
 	}
@@ -153,7 +153,7 @@ const (
 	userByEmailSelectSQL = usersSelectSQL + " and u.email = ?"
 )
 
-func (s *UserService) Users() (scores.Users, error) {
+func (s *UserRepository) Users() (scores.Users, error) {
 	users := scores.Users{}
 
 	rows, err := s.DB.Query(usersSelectSQL)
@@ -177,13 +177,13 @@ func (s *UserService) Users() (scores.Users, error) {
 	return users, nil
 }
 
-func (s *UserService) User(userID uint) (*scores.User, error) {
+func (s *UserRepository) User(userID uint) (*scores.User, error) {
 	row := s.DB.QueryRow(userByIDSelectSQL, userID)
 
 	return scanUser(row)
 }
 
-func (s *UserService) ByEmail(email string) (*scores.User, error) {
+func (s *UserRepository) ByEmail(email string) (*scores.User, error) {
 	row := s.DB.QueryRow(userByEmailSelectSQL, email)
 
 	return scanUser(row)

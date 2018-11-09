@@ -12,7 +12,7 @@ type LadderSyncReport struct {
 	UpdatedPlayers int
 }
 
-func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
+func (s *SyncRepository) Ladder(gender string) (*LadderSyncReport, error) {
 	ranks, err := s.Client.Ladder(gender)
 	report := &LadderSyncReport{}
 
@@ -20,7 +20,7 @@ func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 		return nil, errors.Wrap(err, "loading the ladder failed")
 	}
 
-	persisted, err := s.VolleynetService.AllPlayers()
+	persisted, err := s.VolleynetRepository.AllPlayers()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "loading persisted players failed")
@@ -35,7 +35,7 @@ func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 				info.NewPlayer.FirstName,
 				info.NewPlayer.LastName)
 
-			err = s.VolleynetService.NewPlayer(info.NewPlayer)
+			err = s.VolleynetRepository.NewPlayer(info.NewPlayer)
 			report.NewPlayers++
 
 		} else {
@@ -46,7 +46,7 @@ func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 				merged.FirstName,
 				merged.LastName)
 
-			err = s.VolleynetService.UpdatePlayer(merged)
+			err = s.VolleynetRepository.UpdatePlayer(merged)
 			report.UpdatedPlayers++
 
 		}

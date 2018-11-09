@@ -10,7 +10,7 @@ type Player struct {
 
 type Players []Player
 
-type PlayerService interface {
+type PlayerRepository interface {
 	Player(playerID uint) (*Player, error)
 	Players() (Players, error)
 	ByGroup(groupID uint) (Players, error)

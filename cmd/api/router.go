@@ -24,40 +24,40 @@ func initRouter(app app) *gin.Engine {
 		router.Use(gin.Recovery())
 	}
 
-	teamService := &sqlite.TeamService{DB: app.db}
-	userService := &sqlite.UserService{DB: app.db, PW: &scores.PBKDF2PasswordService{
+	teamRepository := &sqlite.TeamRepository{DB: app.db}
+	userRepository := &sqlite.UserRepository{DB: app.db, PW: &scores.PBKDF2PasswordRepository{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}}
-	matchService := &sqlite.MatchService{DB: app.db}
-	playerService := &sqlite.PlayerService{DB: app.db}
-	statisticService := &sqlite.StatisticService{DB: app.db}
-	groupService := &sqlite.GroupService{DB: app.db}
-	volleynetService := &sqlite.VolleynetServiceImpl{DB: app.db}
+	matchRepository := &sqlite.MatchRepository{DB: app.db}
+	playerRepository := &sqlite.PlayerRepository{DB: app.db}
+	statisticRepository := &sqlite.StatisticRepository{DB: app.db}
+	groupRepository := &sqlite.GroupRepository{DB: app.db}
+	volleynetRepository := &sqlite.VolleynetRepositoryImpl{DB: app.db}
 
-	authHandler := authHandler{playerService: playerService, userService: userService, conf: app.conf}
-	playerHandler := playerHandler{playerService: playerService}
+	authHandler := authHandler{playerRepository: playerRepository, userRepository: userRepository, conf: app.conf}
+	playerHandler := playerHandler{playerRepository: playerRepository}
 	matchHandler := matchHandler{
-		matchService:  matchService,
-		userService:   userService,
-		playerService: playerService,
-		teamService:   teamService,
-		groupService:  groupService,
+		matchRepository:  matchRepository,
+		userRepository:   userRepository,
+		playerRepository: playerRepository,
+		teamRepository:   teamRepository,
+		groupRepository:  groupRepository,
 	}
-	statisticHandler := statisticHandler{statisticService: statisticService}
+	statisticHandler := statisticHandler{statisticRepository: statisticRepository}
 	groupHandler := groupHandler{
-		playerService:    playerService,
-		groupService:     groupService,
-		statisticService: statisticService,
-		matchService:     matchService,
+		playerRepository:    playerRepository,
+		groupRepository:     groupRepository,
+		statisticRepository: statisticRepository,
+		matchRepository:     matchRepository,
 	}
 	volleynetHandler := volleynetHandler{
-		volleynetService: volleynetService,
-		userService:      userService,
+		volleynetRepository: volleynetRepository,
+		userRepository:      userRepository,
 	}
 	volleynetScrapeHandler := volleynetScrapeHandler{
-		volleynetService: volleynetService,
-		userService:      userService,
+		volleynetRepository: volleynetRepository,
+		userRepository:      userRepository,
 	}
 	infoHandler := infoHandler{}
 

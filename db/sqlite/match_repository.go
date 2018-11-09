@@ -7,13 +7,13 @@ import (
 	"github.com/raphi011/scores"
 )
 
-var _ scores.MatchService = &MatchService{}
+var _ scores.MatchRepository = &MatchRepository{}
 
-type MatchService struct {
+type MatchRepository struct {
 	DB *sql.DB
 }
 
-func (s *MatchService) Delete(matchID uint) error {
+func (s *MatchRepository) Delete(matchID uint) error {
 	_, err := s.DB.Exec("UPDATE matches SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", matchID)
 
 	return err
@@ -48,7 +48,7 @@ const (
 	`
 )
 
-func (s *MatchService) Create(match *scores.Match) (*scores.Match, error) {
+func (s *MatchRepository) Create(match *scores.Match) (*scores.Match, error) {
 	result, err := s.DB.Exec(matchesInsertSQL,
 		match.Group.ID,
 		match.Team1.Player1ID,
@@ -198,20 +198,20 @@ func scanMatch(scanner scan) (*scores.Match, error) {
 	return m, nil
 }
 
-func (s *MatchService) Match(ID uint) (*scores.Match, error) {
+func (s *MatchRepository) Match(ID uint) (*scores.Match, error) {
 	row := s.DB.QueryRow(matchSelectSQL, ID)
 
 	return scanMatch(row)
 }
 
-func (s *MatchService) Matches(after time.Time, count uint) (scores.Matches, error) {
+func (s *MatchRepository) Matches(after time.Time, count uint) (scores.Matches, error) {
 	return scanMatches(s.DB, matchesSelectSQL, after, count)
 }
 
-func (s *MatchService) GroupMatches(groupID uint, after time.Time, count uint) (scores.Matches, error) {
+func (s *MatchRepository) GroupMatches(groupID uint, after time.Time, count uint) (scores.Matches, error) {
 	return scanMatches(s.DB, matchesByGroupSelectSQL, groupID, after, count)
 }
 
-func (s *MatchService) PlayerMatches(playerID uint, after time.Time, count uint) (scores.Matches, error) {
+func (s *MatchRepository) PlayerMatches(playerID uint, after time.Time, count uint) (scores.Matches, error) {
 	return scanMatches(s.DB, matchesByPlayerSelectSQL, playerID, after, count)
 }

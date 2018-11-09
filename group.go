@@ -12,7 +12,7 @@ type Group struct {
 
 type Groups []Group
 
-type GroupService interface {
+type GroupRepository interface {
 	GroupsByPlayer(playerID uint) (Groups, error)
 	Groups() (Groups, error)
 	Group(groupID uint) (*Group, error)

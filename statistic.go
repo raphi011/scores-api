@@ -26,7 +26,7 @@ type Statistic struct {
 type TeamStatistics []TeamStatistic
 type PlayerStatistics []PlayerStatistic
 
-type StatisticService interface {
+type StatisticRepository interface {
 	Player(playerID uint, filter string) (*PlayerStatistic, error)
 	Players(filter string) (PlayerStatistics, error)
 	PlayersByGroup(groupID uint, filter string) (PlayerStatistics, error)

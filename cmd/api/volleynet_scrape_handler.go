@@ -14,8 +14,8 @@ import (
 )
 
 type volleynetScrapeHandler struct {
-	volleynetService sqlite.VolleynetService
-	userService      *sqlite.UserService
+	volleynetRepository sqlite.VolleynetRepository
+	userRepository      *sqlite.UserRepository
 
 	mux msync.Mutex
 }
@@ -27,9 +27,9 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 	vnClient := client.Default()
 
-	sync := sync.SyncService{
+	sync := sync.SyncRepository{
 		Client:           vnClient,
-		VolleynetService: h.volleynetService,
+		VolleynetRepository: h.volleynetRepository,
 	}
 
 	report, err := sync.Ladder(gender)
@@ -58,9 +58,9 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 
 	vnClient := client.Default()
 
-	sync := sync.SyncService{
+	sync := sync.SyncRepository{
 		Client:           vnClient,
-		VolleynetService: h.volleynetService,
+		VolleynetRepository: h.volleynetRepository,
 	}
 
 	report, err := sync.Tournaments(gender, league, seasonInt)

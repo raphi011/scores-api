@@ -8,9 +8,9 @@ import (
 	"github.com/raphi011/scores"
 )
 
-var _ scores.PlayerService = &PlayerService{}
+var _ scores.PlayerRepository = &PlayerRepository{}
 
-type PlayerService struct {
+type PlayerRepository struct {
 	DB *sql.DB
 }
 
@@ -78,16 +78,16 @@ func scanPlayers(db *sql.DB, query string, args ...interface{}) (scores.Players,
 	return players, nil
 }
 
-func (s *PlayerService) ByGroup(groupID uint) (scores.Players, error) {
+func (s *PlayerRepository) ByGroup(groupID uint) (scores.Players, error) {
 	return scanPlayers(s.DB, playersByGroupSQL, groupID)
 }
 
-func (s *PlayerService) Players() (scores.Players, error) {
+func (s *PlayerRepository) Players() (scores.Players, error) {
 	return scanPlayers(s.DB, playersSelectSQL)
 }
 
-func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
-	groupService := GroupService{DB: s.DB}
+func (s *PlayerRepository) Player(ID uint) (*scores.Player, error) {
+	groupRepository := GroupRepository{DB: s.DB}
 
 	p := &scores.Player{}
 
@@ -99,7 +99,7 @@ func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
 		return nil, err
 	}
 
-	groups, err := groupService.GroupsByPlayer(p.ID)
+	groups, err := groupRepository.GroupsByPlayer(p.ID)
 
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (s *PlayerService) Player(ID uint) (*scores.Player, error) {
 	return p, nil
 }
 
-func (s *PlayerService) Create(player *scores.Player) (*scores.Player, error) {
+func (s *PlayerRepository) Create(player *scores.Player) (*scores.Player, error) {
 	result, err := s.DB.Exec("INSERT INTO players (created_at, name) VALUES (CURRENT_TIMESTAMP, ?)", player.Name)
 
 	if err != nil {
@@ -124,7 +124,7 @@ func (s *PlayerService) Create(player *scores.Player) (*scores.Player, error) {
 	return player, nil
 }
 
-func (s *PlayerService) Delete(ID uint) error {
+func (s *PlayerRepository) Delete(ID uint) error {
 	result, err := s.DB.Exec("UPDATE players SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", ID)
 
 	if err != nil {

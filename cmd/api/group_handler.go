@@ -11,10 +11,10 @@ import (
 )
 
 type groupHandler struct {
-	playerService    scores.PlayerService
-	groupService     scores.GroupService
-	matchService     scores.MatchService
-	statisticService scores.StatisticService
+	playerRepository    scores.PlayerRepository
+	groupRepository     scores.GroupRepository
+	matchRepository     scores.MatchRepository
+	statisticRepository scores.StatisticRepository
 }
 
 func (h *groupHandler) index(c *gin.Context) {
@@ -29,7 +29,7 @@ func (h *groupHandler) groupShow(c *gin.Context) {
 		return
 	}
 
-	group, err := h.groupService.Group(uint(groupID))
+	group, err := h.groupRepository.Group(uint(groupID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Group not found")
@@ -38,8 +38,8 @@ func (h *groupHandler) groupShow(c *gin.Context) {
 
 	var pErr, mErr error
 
-	group.Players, pErr = h.playerService.ByGroup(group.ID)
-	group.Matches, mErr = h.matchService.GroupMatches(group.ID, time.Now(), 25)
+	group.Players, pErr = h.playerRepository.ByGroup(group.ID)
+	group.Matches, mErr = h.matchRepository.GroupMatches(group.ID, time.Now(), 25)
 
 	if pErr != nil || mErr != nil {
 		jsonn(c, http.StatusNotFound, nil, "Group not found")

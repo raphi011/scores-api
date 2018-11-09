@@ -29,11 +29,11 @@ type matchQueryDto struct {
 }
 
 type matchHandler struct {
-	playerService scores.PlayerService
-	groupService  scores.GroupService
-	matchService  scores.MatchService
-	teamService   scores.TeamService
-	userService   scores.UserService
+	playerRepository scores.PlayerRepository
+	groupRepository  scores.GroupRepository
+	matchRepository  scores.MatchRepository
+	teamRepository   scores.TeamRepository
+	userRepository   scores.UserRepository
 }
 
 func (h *matchHandler) index(c *gin.Context) {
@@ -56,7 +56,7 @@ func (h *matchHandler) index(c *gin.Context) {
 		}
 	}
 
-	matches, err := h.matchService.GroupMatches(uint(groupID), after, count)
+	matches, err := h.matchRepository.GroupMatches(uint(groupID), after, count)
 
 	if err != nil {
 		jsonn(c, http.StatusInternalServerError, nil, "Unknown error")
@@ -87,14 +87,14 @@ func (h *matchHandler) byPlayer(c *gin.Context) {
 		return
 	}
 
-	_, err = h.playerService.Player(uint(playerID))
+	_, err = h.playerRepository.Player(uint(playerID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Player not found")
 		return
 	}
 
-	matches, err := h.matchService.PlayerMatches(uint(playerID), after, count)
+	matches, err := h.matchRepository.PlayerMatches(uint(playerID), after, count)
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Match not found")
@@ -113,20 +113,20 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 		return
 	}
 
-	group, gErr1 := h.groupService.Group(newMatch.GroupID)
-	_, pErr1 := h.playerService.Player(newMatch.Player1ID)
-	_, pErr2 := h.playerService.Player(newMatch.Player2ID)
-	_, pErr3 := h.playerService.Player(newMatch.Player3ID)
-	_, pErr4 := h.playerService.Player(newMatch.Player4ID)
-	user, uErr := h.userService.ByEmail(userEmail)
+	group, gErr1 := h.groupRepository.Group(newMatch.GroupID)
+	_, pErr1 := h.playerRepository.Player(newMatch.Player1ID)
+	_, pErr2 := h.playerRepository.Player(newMatch.Player2ID)
+	_, pErr3 := h.playerRepository.Player(newMatch.Player3ID)
+	_, pErr4 := h.playerRepository.Player(newMatch.Player4ID)
+	user, uErr := h.userRepository.ByEmail(userEmail)
 
 	if gErr1 != nil || pErr1 != nil || pErr2 != nil || pErr3 != nil || pErr4 != nil || uErr != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
 		return
 	}
 
-	team1, tErr1 := h.teamService.GetOrCreate(newMatch.Player1ID, newMatch.Player2ID)
-	team2, tErr2 := h.teamService.GetOrCreate(newMatch.Player3ID, newMatch.Player4ID)
+	team1, tErr1 := h.teamRepository.GetOrCreate(newMatch.Player1ID, newMatch.Player2ID)
+	team2, tErr2 := h.teamRepository.GetOrCreate(newMatch.Player3ID, newMatch.Player4ID)
 
 	if tErr1 != nil || tErr2 != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
@@ -134,7 +134,7 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 	}
 
 	// TODO: additional score validation
-	match, err := h.matchService.Create(&scores.Match{
+	match, err := h.matchRepository.Create(&scores.Match{
 		Group:       group,
 		Team1:       team1,
 		Team2:       team2,
@@ -160,7 +160,7 @@ func (h *matchHandler) matchShow(c *gin.Context) {
 		return
 	}
 
-	match, err := h.matchService.Match(uint(matchID))
+	match, err := h.matchRepository.Match(uint(matchID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Match not found")
@@ -179,14 +179,14 @@ func (h *matchHandler) matchDelete(c *gin.Context) {
 		return
 	}
 
-	match, err := h.matchService.Match(uint(matchID))
+	match, err := h.matchRepository.Match(uint(matchID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Match not found")
 		return
 	}
 
-	user, err := h.userService.ByEmail(userID)
+	user, err := h.userRepository.ByEmail(userID)
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "User not found")
@@ -198,7 +198,7 @@ func (h *matchHandler) matchDelete(c *gin.Context) {
 		return
 	}
 
-	h.matchService.Delete(match.ID)
+	h.matchRepository.Delete(match.ID)
 
 	jsonn(c, http.StatusOK, match, "")
 }

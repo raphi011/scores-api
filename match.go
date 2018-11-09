@@ -18,7 +18,7 @@ type Match struct {
 
 type Matches []Match
 
-type MatchService interface {
+type MatchRepository interface {
 	GroupMatches(groupID uint, after time.Time, count uint) (Matches, error)
 	Match(matchID uint) (*Match, error)
 	PlayerMatches(playerID uint, after time.Time, count uint) (Matches, error)

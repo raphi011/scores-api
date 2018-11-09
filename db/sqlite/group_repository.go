@@ -6,7 +6,7 @@ import (
 	"github.com/raphi011/scores"
 )
 
-var _ scores.GroupService = &GroupService{}
+var _ scores.GroupRepository = &GroupRepository{}
 
 func scanGroup(scanner scan) (*scores.Group, error) {
 	g := &scores.Group{}
@@ -64,12 +64,12 @@ const (
 	groupSelectSQL  = groupsSelectSQL + " AND g.id = ?"
 )
 
-type GroupService struct {
+type GroupRepository struct {
 	DB *sql.DB
 }
 
-func (s *GroupService) GroupsByPlayer(playerID uint) (scores.Groups, error) {
-	playerService := PlayerService{DB: s.DB}
+func (s *GroupRepository) GroupsByPlayer(playerID uint) (scores.Groups, error) {
+	playerRepository := PlayerRepository{DB: s.DB}
 	groups, err := scanGroups(s.DB, groupsByPlayerSelectSQL, playerID)
 
 	if err != nil {
@@ -77,7 +77,7 @@ func (s *GroupService) GroupsByPlayer(playerID uint) (scores.Groups, error) {
 	}
 
 	for _, g := range groups {
-		g.Players, err = playerService.ByGroup(g.ID)
+		g.Players, err = playerRepository.ByGroup(g.ID)
 
 		if err != nil {
 			return nil, err
@@ -87,11 +87,11 @@ func (s *GroupService) GroupsByPlayer(playerID uint) (scores.Groups, error) {
 	return groups, nil
 }
 
-func (s *GroupService) Groups() (scores.Groups, error) {
+func (s *GroupRepository) Groups() (scores.Groups, error) {
 	return scanGroups(s.DB, groupsSelectSQL)
 }
 
-func (s *GroupService) Group(groupID uint) (*scores.Group, error) {
+func (s *GroupRepository) Group(groupID uint) (*scores.Group, error) {
 	row := s.DB.QueryRow(groupSelectSQL, groupID)
 
 	return scanGroup(row)
@@ -113,7 +113,7 @@ VALUES
 )`
 )
 
-func (s *GroupService) Create(group *scores.Group) (*scores.Group, error) {
+func (s *GroupRepository) Create(group *scores.Group) (*scores.Group, error) {
 	result, err := s.DB.Exec(groupsInsertSQL,
 		group.Name,
 		group.ImageURL,
@@ -137,7 +137,7 @@ VALUES (?, ?, ?)
 `
 )
 
-func (s *GroupService) AddPlayerToGroup(playerID, groupID uint, role string) error {
+func (s *GroupRepository) AddPlayerToGroup(playerID, groupID uint, role string) error {
 	_, err := s.DB.Exec(addPlayerToGroupSQL, playerID, groupID, role)
 
 	return err

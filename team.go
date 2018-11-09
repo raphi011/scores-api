@@ -13,7 +13,7 @@ type Team struct {
 
 type Teams []Team
 
-type TeamService interface {
+type TeamRepository interface {
 	ByPlayers(player1ID, player2ID uint) (*Team, error)
 	GetOrCreate(player1ID, player2ID uint) (*Team, error)
 	Create(team *Team) (*Team, error)

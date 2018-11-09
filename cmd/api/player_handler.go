@@ -16,7 +16,7 @@ type createPlayerDto struct {
 }
 
 type playerHandler struct {
-	playerService scores.PlayerService
+	playerRepository scores.PlayerRepository
 }
 
 func (h *playerHandler) playerCreate(c *gin.Context) {
@@ -25,7 +25,7 @@ func (h *playerHandler) playerCreate(c *gin.Context) {
 	if err := c.ShouldBindWith(&newPlayer, binding.JSON); err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
 	} else {
-		player, err := h.playerService.Create(&scores.Player{Name: newPlayer.Name})
+		player, err := h.playerRepository.Create(&scores.Player{Name: newPlayer.Name})
 
 		if err != nil {
 			jsonn(c, http.StatusBadRequest, nil, "Bad request")
@@ -39,7 +39,7 @@ func (h *playerHandler) playerCreate(c *gin.Context) {
 func (h *playerHandler) playerIndex(c *gin.Context) {
 	groupID, err := strconv.Atoi(c.Param("groupID"))
 
-	players, err := h.playerService.ByGroup(uint(groupID))
+	players, err := h.playerRepository.ByGroup(uint(groupID))
 
 	if err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
@@ -57,7 +57,7 @@ func (h *playerHandler) playerShow(c *gin.Context) {
 		return
 	}
 
-	player, err := h.playerService.Player(uint(playerID))
+	player, err := h.playerRepository.Player(uint(playerID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Player not found")

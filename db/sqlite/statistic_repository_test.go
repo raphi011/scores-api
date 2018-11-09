@@ -62,34 +62,34 @@ func TestPlayerStatistic(t *testing.T) {
 			},
 		},
 	}
-	s := createServices(t)
+	s := createRepositories(t)
 
 	m := newMatch(s)
-	m, _ = s.matchService.Create(m)
+	m, _ = s.matchRepository.Create(m)
 
 	filter := "all"
-	st, err := s.statisticService.Players(filter)
+	st, err := s.statisticRepository.Players(filter)
 
 	if err != nil {
-		t.Fatalf("StatisticService.Players() err: %s", err)
+		t.Fatalf("StatisticRepository.Players() err: %s", err)
 	}
 
 	if !cmp.Equal(st, expect) {
-		t.Fatalf("StatisticService.Players()\n%s", cmp.Diff(st, expect))
+		t.Fatalf("StatisticRepository.Players()\n%s", cmp.Diff(st, expect))
 	}
 
 	len := len(st)
 	if len != 4 {
-		t.Fatalf("StatisticService.Players() want len(p): 4, got %d ", len)
+		t.Fatalf("StatisticRepository.Players() want len(p): 4, got %d ", len)
 	}
 
-	ps, err := s.statisticService.Player(m.Team1.Player1ID, filter)
+	ps, err := s.statisticRepository.Player(m.Team1.Player1ID, filter)
 
 	if err != nil {
-		t.Fatalf("StatisticService.Player() err: %s", err)
+		t.Fatalf("StatisticRepository.Player() err: %s", err)
 	}
 
 	if !cmp.Equal(ps, &expect[0]) {
-		t.Fatalf("StatisticService.Player()\n%s", cmp.Diff(ps, &expect[0]))
+		t.Fatalf("StatisticRepository.Player()\n%s", cmp.Diff(ps, &expect[0]))
 	}
 }

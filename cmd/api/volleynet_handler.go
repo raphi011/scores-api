@@ -18,14 +18,14 @@ import (
 )
 
 type volleynetHandler struct {
-	volleynetService sqlite.VolleynetService
-	userService      *sqlite.UserService
+	volleynetRepository sqlite.VolleynetRepository
+	userRepository      *sqlite.UserRepository
 }
 
 func (h *volleynetHandler) ladder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 
-	ladder, err := h.volleynetService.Ladder(gender)
+	ladder, err := h.volleynetRepository.Ladder(gender)
 
 	if err != nil {
 		c.Status(http.StatusBadRequest)
@@ -47,7 +47,7 @@ func (h *volleynetHandler) allTournaments(c *gin.Context) {
 		return
 	}
 
-	tournaments, err := h.volleynetService.GetTournaments(gender, league, seasonNumber)
+	tournaments, err := h.volleynetRepository.GetTournaments(gender, league, seasonNumber)
 
 	if err != nil {
 		log.Print(err)
@@ -55,7 +55,7 @@ func (h *volleynetHandler) allTournaments(c *gin.Context) {
 	}
 
 	for _, t := range tournaments {
-		t.Teams, _ = h.volleynetService.TournamentTeams(t.ID)
+		t.Teams, _ = h.volleynetRepository.TournamentTeams(t.ID)
 	}
 
 	jsonn(c, http.StatusOK, tournaments, "")
@@ -78,14 +78,14 @@ func (h *volleynetHandler) tournament(c *gin.Context) {
 		return
 	}
 
-	tournament, err := h.volleynetService.Tournament(tournamentID)
+	tournament, err := h.volleynetRepository.Tournament(tournamentID)
 
 	if err == scores.ErrorNotFound {
 		c.AbortWithError(http.StatusNotFound, err)
 	} else if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 	} else {
-		tournament.Teams, err = h.volleynetService.TournamentTeams(tournament.ID)
+		tournament.Teams, err = h.volleynetRepository.TournamentTeams(tournament.ID)
 
 		if err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)
@@ -123,7 +123,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 	if su.RememberMe {
 		session := sessions.Default(c)
 		userID := session.Get("user-id")
-		user, err := h.userService.ByEmail(userID.(string))
+		user, err := h.userRepository.ByEmail(userID.(string))
 
 		if err != nil {
 			log.Warnf("loading user by email: %s failed", userID.(string))
@@ -135,7 +135,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 			user.VolleynetLogin = su.Username
 			user.VolleynetUserId = loginData.ID
 
-			err = h.userService.Update(user)
+			err = h.userRepository.Update(user)
 
 			if err != nil {
 				log.Warnf("updating volleynet user information failed for userID: %d", user.ID)

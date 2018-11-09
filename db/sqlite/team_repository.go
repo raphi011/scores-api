@@ -6,9 +6,9 @@ import (
 	"github.com/raphi011/scores"
 )
 
-var _ scores.TeamService = &TeamService{}
+var _ scores.TeamRepository = &TeamRepository{}
 
-type TeamService struct {
+type TeamRepository struct {
 	DB *sql.DB
 }
 
@@ -25,7 +25,7 @@ const teamInsertSQL = `
 	VALUES (CURRENT_TIMESTAMP, ?, ?, ?)
 `
 
-func (s *TeamService) Create(team *scores.Team) (*scores.Team, error) {
+func (s *TeamRepository) Create(team *scores.Team) (*scores.Team, error) {
 	_, err := s.DB.Exec(teamInsertSQL, team.Name, team.Player1ID, team.Player2ID)
 
 	return team, err
@@ -36,7 +36,7 @@ const teamSelectSQL = `
 	WHERE player1_id = ? and player2_id = ?
 `
 
-func (s *TeamService) ByPlayers(player1ID, player2ID uint) (*scores.Team, error) {
+func (s *TeamRepository) ByPlayers(player1ID, player2ID uint) (*scores.Team, error) {
 	team := &scores.Team{}
 
 	player1ID, player2ID = TeamPlayerOrder(player1ID, player2ID)
@@ -47,7 +47,7 @@ func (s *TeamService) ByPlayers(player1ID, player2ID uint) (*scores.Team, error)
 	return team, err
 }
 
-func (s *TeamService) GetOrCreate(player1ID, player2ID uint) (*scores.Team, error) {
+func (s *TeamRepository) GetOrCreate(player1ID, player2ID uint) (*scores.Team, error) {
 	player1ID, player2ID = TeamPlayerOrder(player1ID, player2ID)
 
 	t, err := s.ByPlayers(player1ID, player2ID)

@@ -10,7 +10,7 @@ import (
 )
 
 type statisticHandler struct {
-	statisticService scores.StatisticService
+	statisticRepository scores.StatisticRepository
 }
 
 func (h *statisticHandler) playerTeams(c *gin.Context) {
@@ -22,7 +22,7 @@ func (h *statisticHandler) playerTeams(c *gin.Context) {
 		return
 	}
 
-	statistics, err := h.statisticService.PlayerTeams(uint(playerID), filter)
+	statistics, err := h.statisticRepository.PlayerTeams(uint(playerID), filter)
 
 	if err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
@@ -36,7 +36,7 @@ func (h *statisticHandler) players(c *gin.Context) {
 	groupID, err := strconv.Atoi(c.Param("groupID"))
 	filter := c.DefaultQuery("filter", "all")
 
-	statistics, err := h.statisticService.PlayersByGroup(uint(groupID), filter)
+	statistics, err := h.statisticRepository.PlayersByGroup(uint(groupID), filter)
 
 	if err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
@@ -55,7 +55,7 @@ func (h *statisticHandler) player(c *gin.Context) {
 		return
 	}
 
-	statistic, err := h.statisticService.Player(uint(playerID), filter)
+	statistic, err := h.statisticRepository.Player(uint(playerID), filter)
 
 	if err != nil {
 		// TODO: check if not found or other error

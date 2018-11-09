@@ -58,9 +58,9 @@ func randToken() string {
 }
 
 type authHandler struct {
-	userService   *sqlite.UserService
-	playerService *sqlite.PlayerService
-	groupService  *sqlite.GroupService
+	userRepository   *sqlite.UserRepository
+	playerRepository *sqlite.PlayerRepository
+	groupRepository  *sqlite.GroupRepository
 	conf          *oauth2.Config
 }
 
@@ -80,7 +80,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
-	if !a.userService.PW.ComparePassword([]byte(credentials.Password), &user.PasswordInfo) {
+	if !a.userRepository.PW.ComparePassword([]byte(credentials.Password), &user.PasswordInfo) {
 		jsonn(c, http.StatusUnauthorized, nil, "")
 		return
 	}
@@ -139,7 +139,7 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 	} else {
 		if user.ProfileImageURL != googleUser.Picture {
 			user.ProfileImageURL = googleUser.Picture
-			err := a.userService.Update(user)
+			err := a.userRepository.Update(user)
 			if err != nil {
 				log.Printf("Error updating user profile image, id: %d", user.ID)
 			}
@@ -151,7 +151,7 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 }
 
 func (a *authHandler) getUser(email string) (*scores.User, error) {
-	user, err := a.userService.ByEmail(email)
+	user, err := a.userRepository.ByEmail(email)
 
 	if err != nil {
 		return nil, err
@@ -159,7 +159,7 @@ func (a *authHandler) getUser(email string) (*scores.User, error) {
 
 	if user.PlayerID > 0 {
 		var player *scores.Player
-		player, err = a.playerService.Player(user.PlayerID)
+		player, err = a.playerRepository.Player(user.PlayerID)
 
 		if err != nil {
 			return nil, err

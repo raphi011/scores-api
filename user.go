@@ -14,7 +14,7 @@ type User struct {
 
 type Users []User
 
-type UserService interface {
+type UserRepository interface {
 	UpdatePasswordAuthentication(uint, *PasswordInfo) error
 	Create(*User) (*User, error)
 	User(userID uint) (*User, error)

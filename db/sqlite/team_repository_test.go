@@ -26,12 +26,12 @@ func TestTeamPlayerOrder(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	s := createServices(t)
+	s := createRepositories(t)
 
-	player1, _ := s.playerService.Create(&scores.Player{Name: "Player1"})
-	player2, _ := s.playerService.Create(&scores.Player{Name: "Player2"})
+	player1, _ := s.playerRepository.Create(&scores.Player{Name: "Player1"})
+	player2, _ := s.playerRepository.Create(&scores.Player{Name: "Player2"})
 
-	_, err := s.teamService.Create(&scores.Team{
+	_, err := s.teamRepository.Create(&scores.Team{
 		Name:      "Team1",
 		Player1ID: player1.ID,
 		Player2ID: player2.ID,
@@ -41,12 +41,12 @@ func TestCreate(t *testing.T) {
 		t.Error("Can't create team")
 	}
 
-	newTeam, err := s.teamService.ByPlayers(player1.ID, player2.ID)
+	newTeam, err := s.teamRepository.ByPlayers(player1.ID, player2.ID)
 
 	if err != nil {
-		t.Errorf("TeamService.ByPlayers() err: %s", err)
+		t.Errorf("TeamRepository.ByPlayers() err: %s", err)
 	}
 	if newTeam.Player1ID != player1.ID || newTeam.Player2ID != player2.ID {
-		t.Error("TeamService.Create(), team not created")
+		t.Error("TeamRepository.Create(), team not created")
 	}
 }

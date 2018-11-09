@@ -7,8 +7,8 @@ import (
 )
 
 type adminHandler struct {
-	userService  *sqlite.UserService
-	groupService *sqlite.GroupService
+	userRepository  *sqlite.UserRepository
+	groupRepository *sqlite.GroupRepository
 	conf         *oauth2.Config
 }
 

@@ -10,18 +10,18 @@ import (
 	"github.com/raphi011/scores/db/sqlite/setup"
 )
 
-type services struct {
-	db               *sql.DB
-	groupService     *GroupService
-	playerService    *PlayerService
-	userService      *UserService
-	teamService      *TeamService
-	matchService     *MatchService
-	statisticService *StatisticService
-	pwService        scores.PasswordService
+type repositories struct {
+	db                  *sql.DB
+	groupRepository     *GroupRepository
+	playerRepository    *PlayerRepository
+	userRepository      *UserRepository
+	teamRepository      *TeamRepository
+	matchRepository     *MatchRepository
+	statisticRepository *StatisticRepository
+	pwRepository        scores.PasswordRepository
 }
 
-func createServices(t *testing.T) *services {
+func createRepositories(t *testing.T) *repositories {
 	dbProvider := "sqlite3"
 	connectionString := "file::memory:?_busy_timeout=5000&mode=memory"
 
@@ -50,15 +50,15 @@ func createServices(t *testing.T) *services {
 		t.Fatal("Unsupported db provider")
 	}
 
-	s := &services{
-		groupService:     &GroupService{DB: db},
-		playerService:    &PlayerService{DB: db},
-		userService:      &UserService{DB: db},
-		teamService:      &TeamService{DB: db},
-		matchService:     &MatchService{DB: db},
-		statisticService: &StatisticService{DB: db},
-		db:               db,
-		pwService: &scores.PBKDF2PasswordService{
+	s := &repositories{
+		groupRepository:     &GroupRepository{DB: db},
+		playerRepository:    &PlayerRepository{DB: db},
+		userRepository:      &UserRepository{DB: db},
+		teamRepository:      &TeamRepository{DB: db},
+		matchRepository:     &MatchRepository{DB: db},
+		statisticRepository: &StatisticRepository{DB: db},
+		db:                  db,
+		pwRepository: &scores.PBKDF2PasswordRepository{
 			SaltBytes:  16,
 			Iterations: 10000,
 		},
@@ -111,15 +111,15 @@ func setupSQLite(t *testing.T, db *sql.DB) {
 	}
 }
 
-func newMatch(s *services) *scores.Match {
-	g, _ := s.groupService.Create(&scores.Group{Name: "TestGroup"})
-	u, _ := s.userService.Create(&scores.User{Email: "test@test.at"})
-	p1, _ := s.playerService.Create(&scores.Player{Name: "p1"})
-	p2, _ := s.playerService.Create(&scores.Player{Name: "p2"})
-	p3, _ := s.playerService.Create(&scores.Player{Name: "p3"})
-	p4, _ := s.playerService.Create(&scores.Player{Name: "p4"})
-	t1, _ := s.teamService.Create(&scores.Team{Name: "", Player1ID: p1.ID, Player2ID: p2.ID})
-	t2, _ := s.teamService.Create(&scores.Team{Name: "", Player1ID: p3.ID, Player2ID: p4.ID})
+func newMatch(s *repositories) *scores.Match {
+	g, _ := s.groupRepository.Create(&scores.Group{Name: "TestGroup"})
+	u, _ := s.userRepository.Create(&scores.User{Email: "test@test.at"})
+	p1, _ := s.playerRepository.Create(&scores.Player{Name: "p1"})
+	p2, _ := s.playerRepository.Create(&scores.Player{Name: "p2"})
+	p3, _ := s.playerRepository.Create(&scores.Player{Name: "p3"})
+	p4, _ := s.playerRepository.Create(&scores.Player{Name: "p4"})
+	t1, _ := s.teamRepository.Create(&scores.Team{Name: "", Player1ID: p1.ID, Player2ID: p2.ID})
+	t2, _ := s.teamRepository.Create(&scores.Team{Name: "", Player1ID: p3.ID, Player2ID: p4.ID})
 
 	return &scores.Match{
 		Group:      g,

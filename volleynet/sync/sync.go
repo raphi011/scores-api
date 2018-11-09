@@ -8,8 +8,8 @@ import (
 	"github.com/raphi011/scores/volleynet/client"
 )
 
-// PersistanceService is a way to persist and retrieve tournaments
-type PersistanceService interface {
+// PersistanceRepository is a way to persist and retrieve tournaments
+type PersistanceRepository interface {
 	Tournament(tournamentID int) (*volleynet.FullTournament, error)
 	UpdateTournament(t *volleynet.FullTournament) error
 	NewTournament(t *volleynet.FullTournament) error
@@ -33,12 +33,12 @@ type Changes struct {
 	Success        bool
 }
 
-type SyncService struct {
-	VolleynetService PersistanceService
+type SyncRepository struct {
+	VolleynetRepository PersistanceRepository
 	Client           client.Client
 }
 
-func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, error) {
+func (s *SyncRepository) Tournaments(gender, league string, season int) (*Changes, error) {
 	report := &Changes{Tournament: &TournamentChanges{}, Team: &TeamChanges{}}
 
 	start := time.Now()
@@ -52,7 +52,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 	toDownload := []volleynet.Tournament{}
 
 	for _, t := range current {
-		persisted, err := s.VolleynetService.Tournament(t.ID)
+		persisted, err := s.VolleynetRepository.Tournament(t.ID)
 
 		if err != nil {
 			return report, errors.Wrap(err, "loading the persisted tournament failed")
@@ -63,7 +63,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 		if syncInfo.Type == SyncTournamentNoUpdate {
 			continue
 		} else if syncInfo.Type != SyncTournamentNew {
-			persisted.Teams, err = s.VolleynetService.TournamentTeams(t.ID)
+			persisted.Teams, err = s.VolleynetRepository.TournamentTeams(t.ID)
 
 			if err != nil {
 				return report, errors.Wrap(err, "loading the persisted tournament teams failed")
@@ -90,7 +90,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 	return report, errors.Wrap(err, "sync failed")
 }
 
-func (s *SyncService) persistChanges(report *Changes) error {
+func (s *SyncRepository) persistChanges(report *Changes) error {
 	err := s.addMissingPlayers(report.Team.New)
 
 	if err != nil {

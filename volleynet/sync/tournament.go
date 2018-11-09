@@ -31,7 +31,7 @@ const (
 	SyncTournamentNew                = "SyncTournamentNew"
 )
 
-func (s *SyncService) syncTournaments(changes *Changes, oldTournaments, newTournaments []volleynet.FullTournament) {
+func (s *SyncRepository) syncTournaments(changes *Changes, oldTournaments, newTournaments []volleynet.FullTournament) {
 	oldTournamentMap := createTournamentMap(oldTournaments)
 	newTournamentMap := createTournamentMap(newTournaments)
 
@@ -106,9 +106,9 @@ func SyncTournaments(persisted *volleynet.FullTournament, current *volleynet.Tou
 	}
 }
 
-func (s *SyncService) persistTournaments(changes *TournamentChanges) error {
+func (s *SyncRepository) persistTournaments(changes *TournamentChanges) error {
 	for _, new := range changes.New {
-		err := s.VolleynetService.NewTournament(&new)
+		err := s.VolleynetRepository.NewTournament(&new)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting new tournament failed")
@@ -116,7 +116,7 @@ func (s *SyncService) persistTournaments(changes *TournamentChanges) error {
 	}
 
 	for _, update := range changes.Update {
-		err := s.VolleynetService.UpdateTournament(&update)
+		err := s.VolleynetRepository.UpdateTournament(&update)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting updated tournament failed")
