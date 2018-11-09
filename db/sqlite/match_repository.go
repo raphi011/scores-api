@@ -14,42 +14,13 @@ type MatchRepository struct {
 }
 
 func (s *MatchRepository) Delete(matchID uint) error {
-	_, err := s.DB.Exec("UPDATE matches SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", matchID)
+	_, err := s.DB.Exec(query("match/update-delete"), matchID)
 
 	return err
 }
 
-const (
-	matchesInsertSQL = `
-		INSERT INTO matches
-		(
-			created_at,
-			group_id,
-			team1_player1_id,
-			team1_player2_id,
-			team2_player1_id,
-			team2_player2_id,
-			score_team1,
-			score_team2,
-			created_by_user_id
-		)
-		VALUES
-		(
-			CURRENT_TIMESTAMP,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?,
-			?
-		)
-	`
-)
-
 func (s *MatchRepository) Create(match *scores.Match) (*scores.Match, error) {
-	result, err := s.DB.Exec(matchesInsertSQL,
+	result, err := s.DB.Exec(query("match/insert"),
 		match.Group.ID,
 		match.Team1.Player1ID,
 		match.Team1.Player2ID,
@@ -73,61 +44,23 @@ func (s *MatchRepository) Create(match *scores.Match) (*scores.Match, error) {
 	return s.Match(uint(ID))
 }
 
-const (
-	matchesBaseSelectSQL = `
-SELECT
-	m.id,
-	m.created_at,
-	m.team1_player1_id,
-	p1.name as team1_player1_name,
-	COALESCE(u1.profile_image_url, "") as team1_player1_image_url,
-	m.team1_player2_id,
-	p2.name as team1_player2_name,
-	COALESCE(u2.profile_image_url, "") as team1_player2_image_url,
-	m.team2_player1_id,
-	p3.name as team2_player1_name,
-	COALESCE(u3.profile_image_url, "") as team2_player1_image_url,
-	m.team2_player2_id,
-	p4.name as team2_player2_name,
-	COALESCE(u4.profile_image_url, "") as team2_player2_image_url,
-	m.score_team1,
-	m.score_team2,
-	m.created_by_user_id,
-	COALESCE(m.group_id, 0) as group_id
-FROM matches m
-JOIN players p1 on m.team1_player1_id = p1.id
-JOIN players p2 on m.team1_player2_id = p2.id
-JOIN players p3 on m.team2_player1_id = p3.id
-JOIN players p4 on m.team2_player2_id = p4.id
-LEFT JOIN users u1 on p1.user_id = u1.id
-LEFT JOIN users u2 on p2.user_id = u2.id
-LEFT JOIN users u3 on p3.user_id = u3.id
-LEFT JOIN users u4 on p4.user_id = u4.id
-WHERE m.deleted_at is null
-`
+func (s *MatchRepository) Match(ID uint) (*scores.Match, error) {
+	row := s.DB.QueryRow(query("match/select-by-id"), ID)
 
-	matchesSelectSQL = matchesBaseSelectSQL +
-		"AND m.created_at < ?" +
-		matchesOrderBySQL +
-		" LIMIT ?"
+	return scanMatch(row)
+}
 
-	matchesOrderBySQL = " ORDER BY m.created_at DESC"
+func (s *MatchRepository) MatchesAfter(after time.Time, count uint) (scores.Matches, error) {
+	return scanMatches(s.DB, query("match/select-after"), after, count)
+}
 
-	matchesByGroupSelectSQL = matchesBaseSelectSQL +
-		"AND m.group_id = ? AND m.created_at < ?" + matchesOrderBySQL +
-		" LIMIT ?"
+func (s *MatchRepository) GroupMatches(groupID uint, after time.Time, count uint) (scores.Matches, error) {
+	return scanMatches(s.DB, query("match/select-group-matches"), groupID, after, count)
+}
 
-	matchesByPlayerSelectSQL = matchesBaseSelectSQL + `
-AND (m.team1_player1_id = ? OR 
-	m.team1_player2_id = ? OR 
-	m.team2_player1_id = ? OR 
-	m.team2_player2_id = ?)` +
-		" AND m.created_at < ?" +
-		matchesOrderBySQL +
-		" LIMIT ?"
-
-	matchSelectSQL = matchesBaseSelectSQL + " and m.id = ?"
-)
+func (s *MatchRepository) PlayerMatches(playerID uint, after time.Time, count uint) (scores.Matches, error) {
+	return scanMatches(s.DB, query("match/select-player-matches"), playerID, after, count)
+}
 
 func scanMatches(db *sql.DB, query string, args ...interface{}) (scores.Matches, error) {
 	matches := scores.Matches{}
@@ -196,22 +129,4 @@ func scanMatch(scanner scan) (*scores.Match, error) {
 	m.Team2.Player2ID = m.Team2.Player2.ID
 
 	return m, nil
-}
-
-func (s *MatchRepository) Match(ID uint) (*scores.Match, error) {
-	row := s.DB.QueryRow(matchSelectSQL, ID)
-
-	return scanMatch(row)
-}
-
-func (s *MatchRepository) Matches(after time.Time, count uint) (scores.Matches, error) {
-	return scanMatches(s.DB, matchesSelectSQL, after, count)
-}
-
-func (s *MatchRepository) GroupMatches(groupID uint, after time.Time, count uint) (scores.Matches, error) {
-	return scanMatches(s.DB, matchesByGroupSelectSQL, groupID, after, count)
-}
-
-func (s *MatchRepository) PlayerMatches(playerID uint, after time.Time, count uint) (scores.Matches, error) {
-	return scanMatches(s.DB, matchesByPlayerSelectSQL, playerID, after, count)
 }

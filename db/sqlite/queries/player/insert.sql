@@ -1,0 +1,1 @@
+INSERT INTO players (created_at, name) VALUES (CURRENT_TIMESTAMP, ?)

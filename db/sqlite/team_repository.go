@@ -20,28 +20,18 @@ func TeamPlayerOrder(player1ID, player2ID uint) (uint, uint) {
 	return player1ID, player2ID
 }
 
-const teamInsertSQL = `
-	INSERT INTO teams (created_at, name, player1_id, player2_id)
-	VALUES (CURRENT_TIMESTAMP, ?, ?, ?)
-`
-
 func (s *TeamRepository) Create(team *scores.Team) (*scores.Team, error) {
-	_, err := s.DB.Exec(teamInsertSQL, team.Name, team.Player1ID, team.Player2ID)
+	_, err := s.DB.Exec(query("team/insert"), team.Name, team.Player1ID, team.Player2ID)
 
 	return team, err
 }
-
-const teamSelectSQL = `
-	SELECT created_at, name, player1_id, player2_id FROM teams
-	WHERE player1_id = ? and player2_id = ?
-`
 
 func (s *TeamRepository) ByPlayers(player1ID, player2ID uint) (*scores.Team, error) {
 	team := &scores.Team{}
 
 	player1ID, player2ID = TeamPlayerOrder(player1ID, player2ID)
 
-	err := s.DB.QueryRow(teamSelectSQL, player1ID, player2ID).
+	err := s.DB.QueryRow(query("team/select-by-player-ids"), player1ID, player2ID).
 		Scan(&team.CreatedAt, &team.Name, &team.Player1ID, &team.Player2ID)
 
 	return team, err

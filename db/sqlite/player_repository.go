@@ -35,6 +35,65 @@ const (
 	playerSelectSQL = playersBaseSelectSQL + playersWhereSQL + " and p.id = ?"
 )
 
+func (s *PlayerRepository) ByGroup(groupID uint) (scores.Players, error) {
+	return scanPlayers(s.DB, query("player/select-by-group"), groupID)
+}
+
+func (s *PlayerRepository) Players() (scores.Players, error) {
+	return scanPlayers(s.DB, query("player/select-all"))
+}
+
+func (s *PlayerRepository) Player(ID uint) (*scores.Player, error) {
+	groupRepository := GroupRepository{DB: s.DB}
+
+	p := &scores.Player{}
+
+	row := s.DB.QueryRow(query("player/select-by-id"), ID)
+
+	p, err := scanPlayer(row)
+
+	if err != nil {
+		return nil, err
+	}
+
+	groups, err := groupRepository.GroupsByPlayer(p.ID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	p.Groups = groups
+
+	return p, nil
+}
+
+func (s *PlayerRepository) Create(player *scores.Player) (*scores.Player, error) {
+	result, err := s.DB.Exec(query("player/insert"), player.Name)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "creating player failed")
+	}
+
+	ID, _ := result.LastInsertId()
+
+	player.ID = uint(ID)
+
+	return player, nil
+}
+
+func (s *PlayerRepository) Delete(ID uint) error {
+	result, err := s.DB.Exec(query("player/update-delete"), ID)
+
+	if err != nil {
+		return errors.Wrap(err, "deleting player failed")
+	}
+
+	if affected, _ := result.RowsAffected(); affected == 0 {
+		return errors.New("Player not found")
+	}
+	return nil
+}
+
 func scanPlayer(scanner scan) (*scores.Player, error) {
 	var userID sql.NullInt64
 	var profileImageURL sql.NullString
@@ -76,63 +135,4 @@ func scanPlayers(db *sql.DB, query string, args ...interface{}) (scores.Players,
 	}
 
 	return players, nil
-}
-
-func (s *PlayerRepository) ByGroup(groupID uint) (scores.Players, error) {
-	return scanPlayers(s.DB, playersByGroupSQL, groupID)
-}
-
-func (s *PlayerRepository) Players() (scores.Players, error) {
-	return scanPlayers(s.DB, playersSelectSQL)
-}
-
-func (s *PlayerRepository) Player(ID uint) (*scores.Player, error) {
-	groupRepository := GroupRepository{DB: s.DB}
-
-	p := &scores.Player{}
-
-	row := s.DB.QueryRow(playerSelectSQL, ID)
-
-	p, err := scanPlayer(row)
-
-	if err != nil {
-		return nil, err
-	}
-
-	groups, err := groupRepository.GroupsByPlayer(p.ID)
-
-	if err != nil {
-		return nil, err
-	}
-
-	p.Groups = groups
-
-	return p, nil
-}
-
-func (s *PlayerRepository) Create(player *scores.Player) (*scores.Player, error) {
-	result, err := s.DB.Exec("INSERT INTO players (created_at, name) VALUES (CURRENT_TIMESTAMP, ?)", player.Name)
-
-	if err != nil {
-		return nil, errors.Wrap(err, "creating player failed")
-	}
-
-	ID, _ := result.LastInsertId()
-
-	player.ID = uint(ID)
-
-	return player, nil
-}
-
-func (s *PlayerRepository) Delete(ID uint) error {
-	result, err := s.DB.Exec("UPDATE players SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?", ID)
-
-	if err != nil {
-		return errors.Wrap(err, "deleting player failed")
-	}
-
-	if affected, _ := result.RowsAffected(); affected == 0 {
-		return errors.New("Player not found")
-	}
-	return nil
 }

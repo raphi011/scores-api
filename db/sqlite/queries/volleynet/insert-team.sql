@@ -1,0 +1,24 @@
+INSERT INTO volleynet_tournament_teams
+(
+	volleynet_tournament_id,
+	volleynet_player_1_id,
+	volleynet_player_2_id,
+	rank,
+	seed,
+	total_points,
+	won_points,
+	prize_money,
+	deregistered
+)
+VALUES
+(
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?
+)

@@ -1,0 +1,24 @@
+INSERT INTO matches
+(
+    created_at,
+    group_id,
+    team1_player1_id,
+    team1_player2_id,
+    team2_player1_id,
+    team2_player2_id,
+    score_team1,
+    score_team2,
+    created_by_user_id
+)
+VALUES
+(
+    CURRENT_TIMESTAMP,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?
+)

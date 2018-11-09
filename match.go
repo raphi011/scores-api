@@ -22,7 +22,7 @@ type MatchRepository interface {
 	GroupMatches(groupID uint, after time.Time, count uint) (Matches, error)
 	Match(matchID uint) (*Match, error)
 	PlayerMatches(playerID uint, after time.Time, count uint) (Matches, error)
-	Matches(after time.Time, count uint) (Matches, error)
+	MatchesAfter(after time.Time, count uint) (Matches, error)
 	Create(*Match) (*Match, error)
 	Delete(matchID uint) error
 }

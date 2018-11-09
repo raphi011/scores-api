@@ -1,0 +1,30 @@
+INSERT INTO volleynet_players
+(
+	id,
+	created_at,
+	updated_at,
+	first_name,
+	last_name,
+	birthday,
+	gender,
+	total_points,
+	rank,
+	club,
+	country_union,
+	license
+)
+VALUES
+(
+	?,
+	CURRENT_TIMESTAMP,
+	CURRENT_TIMESTAMP,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?,
+	?
+)

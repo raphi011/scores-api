@@ -15,14 +15,15 @@ type UserRepository struct {
 	PW scores.PasswordRepository
 }
 
-const userInsertSQL = `
-	INSERT INTO users (created_at, email, profile_image_url, volleynet_user_id, volleynet_login, role)
-	VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)
-`
-
 // Create creates persists user and assigns a new id
 func (s *UserRepository) Create(user *scores.User) (*scores.User, error) {
-	result, err := s.DB.Exec(userInsertSQL, user.Email, user.ProfileImageURL, user.VolleynetUserId, user.VolleynetLogin, user.Role)
+	result, err := s.DB.Exec(query("user/insert"),
+		user.Email,
+		user.ProfileImageURL,
+		user.VolleynetUserId,
+		user.VolleynetLogin,
+		user.Role,
+	)
 
 	if err != nil {
 		return nil, err
@@ -39,19 +40,12 @@ func (s *UserRepository) Create(user *scores.User) (*scores.User, error) {
 	return user, nil
 }
 
-const userPasswordUpdateSQL = `
-	UPDATE users
-	SET salt = ?, hash = ?, iterations = ?
-	WHERE id = ?
-
-`
-
 func (s *UserRepository) UpdatePasswordAuthentication(
 	userID uint,
 	auth *scores.PasswordInfo,
 ) error {
 	result, err := s.DB.Exec(
-		userPasswordUpdateSQL,
+		query("user/update-password"),
 		auth.Salt,
 		auth.Hash,
 		auth.Iterations,
@@ -74,18 +68,12 @@ func (s *UserRepository) UpdatePasswordAuthentication(
 	return nil
 }
 
-const userUpdateSQL = `
-	UPDATE users
-	SET profile_image_url = ?, email = ?, volleynet_user_id = ?, volleynet_login = ?, role = ?
-	WHERE id = ?
-`
-
 func (s *UserRepository) Update(user *scores.User) error {
 	if user == nil || user.ID == 0 {
 		return errors.New("User must exist")
 	}
 
-	result, err := s.DB.Exec(userUpdateSQL,
+	result, err := s.DB.Exec(query("user/update"),
 		user.ProfileImageURL,
 		user.Email,
 		user.VolleynetUserId,
@@ -110,53 +98,10 @@ func (s *UserRepository) Update(user *scores.User) error {
 	return nil
 }
 
-func scanUser(scanner scan) (*scores.User, error) {
-	u := &scores.User{}
-
-	err := scanner.Scan(
-		&u.ID,
-		&u.Email,
-		&u.ProfileImageURL,
-		&u.PlayerID,
-		&u.CreatedAt,
-		&u.PasswordInfo.Salt,
-		&u.PasswordInfo.Hash,
-		&u.PasswordInfo.Iterations,
-		&u.VolleynetUserId,
-		&u.VolleynetLogin,
-		&u.Role,
-	)
-
-	return u, err
-}
-
-const (
-	usersSelectSQL = `
-		SELECT
-			u.id,
-			u.email,
-			COALESCE(u.profile_image_url, "") as profile_image_url,
-			COALESCE(p.id, 0) as player_id,
-			u.created_at,
-			u.salt,
-			u.hash,
-			COALESCE(u.iterations, 0) as iterations,
-			u.volleynet_user_id,
-			u.volleynet_login,
-			u.role
-		FROM users u
-		LEFT JOIN players p on u.id = p.user_id
-		WHERE u.deleted_at is null
-	`
-
-	userByIDSelectSQL    = usersSelectSQL + " and u.id = ?"
-	userByEmailSelectSQL = usersSelectSQL + " and u.email = ?"
-)
-
 func (s *UserRepository) Users() (scores.Users, error) {
 	users := scores.Users{}
 
-	rows, err := s.DB.Query(usersSelectSQL)
+	rows, err := s.DB.Query(query("user/select-all"))
 
 	if err != nil {
 		return nil, err
@@ -178,13 +123,33 @@ func (s *UserRepository) Users() (scores.Users, error) {
 }
 
 func (s *UserRepository) User(userID uint) (*scores.User, error) {
-	row := s.DB.QueryRow(userByIDSelectSQL, userID)
+	row := s.DB.QueryRow(query("user/select-by-id"), userID)
 
 	return scanUser(row)
 }
 
 func (s *UserRepository) ByEmail(email string) (*scores.User, error) {
-	row := s.DB.QueryRow(userByEmailSelectSQL, email)
+	row := s.DB.QueryRow(query("user/select-by-email"), email)
 
 	return scanUser(row)
+}
+
+func scanUser(scanner scan) (*scores.User, error) {
+	u := &scores.User{}
+
+	err := scanner.Scan(
+		&u.ID,
+		&u.Email,
+		&u.ProfileImageURL,
+		&u.PlayerID,
+		&u.CreatedAt,
+		&u.PasswordInfo.Salt,
+		&u.PasswordInfo.Hash,
+		&u.PasswordInfo.Iterations,
+		&u.VolleynetUserId,
+		&u.VolleynetLogin,
+		&u.Role,
+	)
+
+	return u, err
 }

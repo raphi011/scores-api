@@ -8,6 +8,45 @@ import (
 
 var _ scores.GroupRepository = &GroupRepository{}
 
+type GroupRepository struct {
+	DB *sql.DB
+}
+
+func (s *GroupRepository) GroupsByPlayer(playerID uint) (scores.Groups, error) {
+	return scanGroups(s.DB, query("group/select-by-player"), playerID)
+}
+
+func (s *GroupRepository) Groups() (scores.Groups, error) {
+	return scanGroups(s.DB, query("group/select-all-groups"))
+}
+
+func (s *GroupRepository) Group(groupID uint) (*scores.Group, error) {
+	return scanGroup(s.DB.QueryRow(query("group/select-by-id"), groupID))
+}
+
+func (s *GroupRepository) Create(group *scores.Group) (*scores.Group, error) {
+	result, err := s.DB.Exec(query("group/insert"),
+		group.Name,
+		group.ImageURL,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ID, _ := result.LastInsertId()
+
+	group.ID = uint(ID)
+
+	return group, nil
+}
+
+func (s *GroupRepository) AddPlayerToGroup(playerID, groupID uint, role string) error {
+	_, err := s.DB.Exec(query("group/insert-group-players"), playerID, groupID, role)
+
+	return err
+}
+
 func scanGroup(scanner scan) (*scores.Group, error) {
 	g := &scores.Group{}
 
@@ -41,104 +80,4 @@ func scanGroups(db *sql.DB, query string, args ...interface{}) (scores.Groups, e
 	}
 
 	return groups, nil
-}
-
-const (
-	groupsBaseSelectSQL = `
-	SELECT
-		g.id,
-		g.created_at,	
-		g.name,
-		COALESCE(g.image_url, "") as image_url
-	FROM groups g
-	`
-
-	groupsWhereSQL = " WHERE g.deleted_at is null "
-
-	groupsByPlayerSelectSQL = groupsBaseSelectSQL + `
-		JOIN group_players gp on g.id = gp.group_id ` +
-		groupsWhereSQL +
-		" AND gp.player_id = ? "
-
-	groupsSelectSQL = groupsBaseSelectSQL + groupsWhereSQL
-	groupSelectSQL  = groupsSelectSQL + " AND g.id = ?"
-)
-
-type GroupRepository struct {
-	DB *sql.DB
-}
-
-func (s *GroupRepository) GroupsByPlayer(playerID uint) (scores.Groups, error) {
-	playerRepository := PlayerRepository{DB: s.DB}
-	groups, err := scanGroups(s.DB, groupsByPlayerSelectSQL, playerID)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, g := range groups {
-		g.Players, err = playerRepository.ByGroup(g.ID)
-
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return groups, nil
-}
-
-func (s *GroupRepository) Groups() (scores.Groups, error) {
-	return scanGroups(s.DB, groupsSelectSQL)
-}
-
-func (s *GroupRepository) Group(groupID uint) (*scores.Group, error) {
-	row := s.DB.QueryRow(groupSelectSQL, groupID)
-
-	return scanGroup(row)
-}
-
-const (
-	groupsInsertSQL = `
-INSERT INTO groups
-(
-	created_at,
-	name,
-	image_url
-)
-VALUES
-(
-	CURRENT_TIMESTAMP,
-	?,
-	?
-)`
-)
-
-func (s *GroupRepository) Create(group *scores.Group) (*scores.Group, error) {
-	result, err := s.DB.Exec(groupsInsertSQL,
-		group.Name,
-		group.ImageURL,
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	ID, _ := result.LastInsertId()
-
-	group.ID = uint(ID)
-
-	return group, nil
-}
-
-const (
-	addPlayerToGroupSQL = `
-INSERT INTO group_players (player_id, group_id, role)
-VALUES (?, ?, ?)
-`
-)
-
-func (s *GroupRepository) AddPlayerToGroup(playerID, groupID uint, role string) error {
-	_, err := s.DB.Exec(addPlayerToGroupSQL, playerID, groupID, role)
-
-	return err
 }
