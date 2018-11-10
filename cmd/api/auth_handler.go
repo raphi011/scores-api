@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/db/sqlite"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -58,10 +57,11 @@ func randToken() string {
 }
 
 type authHandler struct {
-	userRepository   *sqlite.UserRepository
-	playerRepository *sqlite.PlayerRepository
-	groupRepository  *sqlite.GroupRepository
-	conf          *oauth2.Config
+	userRepository   scores.UserRepository
+	playerRepository scores.PlayerRepository
+	groupRepository  scores.GroupRepository
+	conf             *oauth2.Config
+	passwordService  scores.PasswordService
 }
 
 func (a *authHandler) passwordAuthenticate(c *gin.Context) {
@@ -80,7 +80,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
-	if !a.userRepository.PW.ComparePassword([]byte(credentials.Password), &user.PasswordInfo) {
+	if !a.passwordService.ComparePassword([]byte(credentials.Password), &user.PasswordInfo) {
 		jsonn(c, http.StatusUnauthorized, nil, "")
 		return
 	}

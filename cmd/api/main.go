@@ -1,24 +1,22 @@
 package main
 
 import (
-	"database/sql"
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	log "github.com/sirupsen/logrus"
 
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 
-	"github.com/raphi011/scores/db/sqlite"
+	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/repo/sqlite"
 )
 
 type app struct {
-	db         *sql.DB
 	conf       *oauth2.Config
+	services   *scores.Services
 	production bool
 }
 
@@ -38,21 +36,13 @@ func main() {
 		host = "http://localhost:3000"
 	}
 
-	db, err := sqlite.Open(*dbProvider, *connectionString)
+	services, repoClose, err := createServices(*dbProvider, *connectionString)
 
 	if err != nil {
-		panic(fmt.Sprintf("Could not open DB: %v\n", err))
+		log.Fatal("Could not initialize services: %s", err)
 	}
 
-	defer db.Close()
-
-	if *dbProvider == "sqlite3" {
-		err = sqlite.Migrate(db)
-
-		if err != nil {
-			panic(fmt.Sprintf("Error migrating %v", err))
-		}
-	}
+	defer repoClose()
 
 	googleOAuth, err := googleOAuthConfig(*gSecret, host)
 
@@ -62,39 +52,56 @@ func main() {
 
 	app := app{
 		production: production,
+		services:   services,
 		conf:       googleOAuth,
-		db:         db,
 	}
 
 	router := initRouter(app)
 	router.Run()
 }
 
-type credentials struct {
-	ClientID    string `json:"client_id"`
-	CientSecret string `json:"client_secret"`
-}
+func createServices(provider string, connectionString string) (*scores.Services, func(), error) {
+	var repos *repo.Repositories
+	var services *scores.Services
+	var closerFunc func()
+	var err error
 
-func googleOAuthConfig(configPath, host string) (*oauth2.Config, error) {
-	var credentials credentials
-	file, err := ioutil.ReadFile(configPath)
+	switch provider {
+	case "sqlite3":
+		fallthrough
+	case "mysql":
+		repos, closerFunc, err = sqlite.Create(provider, connectionString)
+	default:
+		return nil, nil, fmt.Errorf("invalid repo provider %q", provider)
+	}
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	redirectURL := host + "/api/auth"
-
-	json.Unmarshal(file, &credentials)
-	config := &oauth2.Config{
-		ClientID:     credentials.ClientID,
-		ClientSecret: credentials.CientSecret,
-		RedirectURL:  redirectURL,
-		Scopes: []string{
-			"https://www.googleapis.com/auth/userinfo.email",
-		},
-		Endpoint: google.Endpoint,
+	passwordService := &scores.PBKDF2PasswordService{
+		SaltBytes:  16,
+		Iterations: 10000,
 	}
 
-	return config, nil
+	groupService := scores.NewGroupService(
+		repos.Group,
+		repos.Match,
+		repos.Player,
+		repos.Statistic,
+	)
+
+	services = &scores.Services{
+		Group:    groupService,
+		Password: passwordService,
+
+		Match:     repos.Match,
+		User:      repos.User,
+		Statistic: repos.Statistic,
+		Team:      repos.Team,
+		Player:    repos.Player,
+		Volleynet: repos.Volleynet,
+	}
+
+	return services, closerFunc, nil
 }

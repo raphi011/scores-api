@@ -7,21 +7,10 @@ import (
 	"testing"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/db/sqlite/setup"
+	"github.com/raphi011/scores/repo"
 )
 
-type repositories struct {
-	db                  *sql.DB
-	groupRepository     *GroupRepository
-	playerRepository    *PlayerRepository
-	userRepository      *UserRepository
-	teamRepository      *TeamRepository
-	matchRepository     *MatchRepository
-	statisticRepository *StatisticRepository
-	pwRepository        scores.PasswordRepository
-}
-
-func createRepositories(t *testing.T) *repositories {
+func createRepositories(t *testing.T) *repo.Repositories {
 	dbProvider := "sqlite3"
 	connectionString := "file::memory:?_busy_timeout=5000&mode=memory"
 
@@ -35,7 +24,7 @@ func createRepositories(t *testing.T) *repositories {
 
 	t.Helper()
 
-	db, err := Open(dbProvider, connectionString)
+	repos, _, err := Create(dbProvider, connectionString)
 
 	if err != nil {
 		t.Fatal("unable to open db")
@@ -50,7 +39,7 @@ func createRepositories(t *testing.T) *repositories {
 		t.Fatal("Unsupported db provider")
 	}
 
-	s := &repositories{
+	s := &scores.Repositories{
 		groupRepository:     &GroupRepository{DB: db},
 		playerRepository:    &PlayerRepository{DB: db},
 		userRepository:      &UserRepository{DB: db},
@@ -58,7 +47,7 @@ func createRepositories(t *testing.T) *repositories {
 		matchRepository:     &MatchRepository{DB: db},
 		statisticRepository: &StatisticRepository{DB: db},
 		db:                  db,
-		pwRepository: &scores.PBKDF2PasswordRepository{
+		pwRepository: &scores.PBKDF2PasswordService{
 			SaltBytes:  16,
 			Iterations: 10000,
 		},
@@ -86,16 +75,7 @@ func setupMysql(t *testing.T, db *sql.DB) {
 
 	err := execMultiple(
 		db,
-		"DELETE FROM volleynet_tournament_teams",
-		"DELETE FROM volleynet_players",
-		"DELETE FROM volleynet_tournaments",
-		"DELETE FROM matches",
-		"DELETE FROM teams",
-		"DELETE FROM group_players",
-		"DELETE FROM groups",
-		"DELETE FROM players",
-		"DELETE FROM users",
-		"DELETE FROM db_version",
+		query("test/delete-all"),
 	)
 
 	if err != nil {
@@ -104,14 +84,14 @@ func setupMysql(t *testing.T, db *sql.DB) {
 }
 
 func setupSQLite(t *testing.T, db *sql.DB) {
-	_, err := db.Exec(setup.SQLITE)
+	_, err := db.Exec(query("ddl/sqlite"))
 
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func newMatch(s *repositories) *scores.Match {
+func newMatch(s *repo.Repositories) *scores.Match {
 	g, _ := s.groupRepository.Create(&scores.Group{Name: "TestGroup"})
 	u, _ := s.userRepository.Create(&scores.User{Email: "test@test.at"})
 	p1, _ := s.playerRepository.Create(&scores.Player{Name: "p1"})

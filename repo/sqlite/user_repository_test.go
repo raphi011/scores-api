@@ -33,7 +33,7 @@ func TestSetPassword(t *testing.T) {
 	}
 
 	if !s.pwRepository.ComparePassword(pw, &user.PasswordInfo) {
-		t.Error("PasswordRepository.ComparePassword(), want true, got false")
+		t.Error("PasswordService.ComparePassword(), want true, got false")
 	}
 }
 

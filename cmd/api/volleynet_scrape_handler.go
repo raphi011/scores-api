@@ -8,14 +8,14 @@ import (
 	msync "sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores/db/sqlite"
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet/client"
 	"github.com/raphi011/scores/volleynet/sync"
 )
 
 type volleynetScrapeHandler struct {
-	volleynetRepository sqlite.VolleynetRepository
-	userRepository      *sqlite.UserRepository
+	volleynetRepository scores.VolleynetRepository
+	userRepository      scores.UserRepository
 
 	mux msync.Mutex
 }
@@ -28,7 +28,7 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	vnClient := client.Default()
 
 	sync := sync.SyncRepository{
-		Client:           vnClient,
+		Client:              vnClient,
 		VolleynetRepository: h.volleynetRepository,
 	}
 
@@ -59,7 +59,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	vnClient := client.Default()
 
 	sync := sync.SyncRepository{
-		Client:           vnClient,
+		Client:              vnClient,
 		VolleynetRepository: h.volleynetRepository,
 	}
 

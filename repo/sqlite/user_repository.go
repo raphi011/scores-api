@@ -12,7 +12,6 @@ var _ scores.UserRepository = &UserRepository{}
 
 type UserRepository struct {
 	DB *sql.DB
-	PW scores.PasswordRepository
 }
 
 // Create creates persists user and assigns a new id

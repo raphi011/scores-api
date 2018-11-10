@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 )
 
-var _ PasswordRepository = &PBKDF2PasswordRepository{}
+var _ PasswordService = &PBKDF2PasswordService{}
 
 type PasswordInfo struct {
 	Salt       []byte
@@ -17,17 +17,17 @@ type PasswordInfo struct {
 	Iterations int
 }
 
-type PasswordRepository interface {
+type PasswordService interface {
 	ComparePassword([]byte, *PasswordInfo) bool
 	HashPassword(password []byte) (*PasswordInfo, error)
 }
 
-type PBKDF2PasswordRepository struct {
+type PBKDF2PasswordService struct {
 	SaltBytes  int
 	Iterations int
 }
 
-func (s *PBKDF2PasswordRepository) newSalt() ([]byte, error) {
+func (s *PBKDF2PasswordService) newSalt() ([]byte, error) {
 	salt := make([]byte, s.SaltBytes)
 	_, err := io.ReadFull(rand.Reader, salt)
 
@@ -38,13 +38,13 @@ func (s *PBKDF2PasswordRepository) newSalt() ([]byte, error) {
 	return salt, nil
 }
 
-func (s *PBKDF2PasswordRepository) ComparePassword(password []byte, info *PasswordInfo) bool {
+func (s *PBKDF2PasswordService) ComparePassword(password []byte, info *PasswordInfo) bool {
 	hash := s.hashPassword(password, info.Salt, info.Iterations)
 
 	return bytes.Compare(hash, info.Hash) == 0
 }
 
-func (s *PBKDF2PasswordRepository) HashPassword(password []byte) (*PasswordInfo, error) {
+func (s *PBKDF2PasswordService) HashPassword(password []byte) (*PasswordInfo, error) {
 	salt, err := s.newSalt()
 
 	if err != nil {
@@ -60,7 +60,7 @@ func (s *PBKDF2PasswordRepository) HashPassword(password []byte) (*PasswordInfo,
 	}, nil
 }
 
-func (s *PBKDF2PasswordRepository) hashPassword(password, salt []byte, iterations int) []byte {
+func (s *PBKDF2PasswordService) hashPassword(password, salt []byte, iterations int) []byte {
 	hash := pbkdf2.Key(password, salt, iterations, 32, sha256.New)
 
 	return hash

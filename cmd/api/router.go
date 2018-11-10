@@ -4,9 +4,6 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/db/sqlite"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -24,40 +21,37 @@ func initRouter(app app) *gin.Engine {
 		router.Use(gin.Recovery())
 	}
 
-	teamRepository := &sqlite.TeamRepository{DB: app.db}
-	userRepository := &sqlite.UserRepository{DB: app.db, PW: &scores.PBKDF2PasswordRepository{
-		SaltBytes:  16,
-		Iterations: 10000,
-	}}
-	matchRepository := &sqlite.MatchRepository{DB: app.db}
-	playerRepository := &sqlite.PlayerRepository{DB: app.db}
-	statisticRepository := &sqlite.StatisticRepository{DB: app.db}
-	groupRepository := &sqlite.GroupRepository{DB: app.db}
-	volleynetRepository := &sqlite.VolleynetRepositoryImpl{DB: app.db}
+	authHandler := authHandler{
+		playerRepository: app.services.Player,
+		userRepository:   app.services.User,
+		conf:             app.conf,
+	}
 
-	authHandler := authHandler{playerRepository: playerRepository, userRepository: userRepository, conf: app.conf}
-	playerHandler := playerHandler{playerRepository: playerRepository}
+	playerHandler := playerHandler{playerRepository: app.services.Player}
+
 	matchHandler := matchHandler{
-		matchRepository:  matchRepository,
-		userRepository:   userRepository,
-		playerRepository: playerRepository,
-		teamRepository:   teamRepository,
-		groupRepository:  groupRepository,
+		matchRepository:  app.services.Match,
+		userRepository:   app.services.User,
+		playerRepository: app.services.Player,
+		teamRepository:   app.services.Team,
+		groupService:     app.services.Group,
 	}
-	statisticHandler := statisticHandler{statisticRepository: statisticRepository}
+
+	statisticHandler := statisticHandler{
+		statisticRepository: app.services.Statistic,
+	}
+
 	groupHandler := groupHandler{
-		playerRepository:    playerRepository,
-		groupRepository:     groupRepository,
-		statisticRepository: statisticRepository,
-		matchRepository:     matchRepository,
+		service: app.services.Group,
 	}
+
 	volleynetHandler := volleynetHandler{
-		volleynetRepository: volleynetRepository,
-		userRepository:      userRepository,
+		volleynetRepository: app.services.Volleynet,
+		userRepository:      app.services.User,
 	}
 	volleynetScrapeHandler := volleynetScrapeHandler{
-		volleynetRepository: volleynetRepository,
-		userRepository:      userRepository,
+		volleynetRepository: app.services.Volleynet,
+		userRepository:      app.services.User,
 	}
 	infoHandler := infoHandler{}
 
@@ -77,7 +71,7 @@ func initRouter(app app) *gin.Engine {
 	auth.Use(authRequired())
 	auth.POST("/logout", authHandler.logout)
 
-	auth.GET("/groups", groupHandler.index)
+	// auth.GET("/groups", groupHandler.index)
 	auth.GET("/groups/:groupID/matches", matchHandler.index)
 	auth.POST("/groups/:groupID/matches", matchHandler.matchCreate)
 	auth.GET("/groups/:groupID/players", playerHandler.playerIndex)

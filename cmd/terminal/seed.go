@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/db/sqlite"
+	"github.com/raphi011/scores/repo/sqlite"
 )
 
 func seedDb() {

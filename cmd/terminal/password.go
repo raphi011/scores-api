@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/db/sqlite"
+	"github.com/raphi011/scores/repo/sqlite"
 )
 
 func getUser(us sqlite.UserRepository) *scores.User {
@@ -39,7 +39,7 @@ func setNewPassword() {
 		return
 	}
 
-	us := sqlite.UserRepository{DB: db, PW: &scores.PBKDF2PasswordRepository{
+	us := sqlite.UserRepository{DB: db, PW: &scores.PBKDF2PasswordService{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}}

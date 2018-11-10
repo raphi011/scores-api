@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores/db/sqlite"
+	"github.com/raphi011/scores/repo/sqlite"
 	"golang.org/x/oauth2"
 )
 

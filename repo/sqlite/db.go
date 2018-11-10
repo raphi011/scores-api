@@ -7,25 +7,34 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores/db/sqlite/migrations"
 	"github.com/raphi011/scores/migrate"
+	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/repo/sqlite/migrations"
 )
 
 type scan interface {
 	Scan(src ...interface{}) error
 }
 
-func Open(provider, connectionString string) (*sql.DB, error) {
+func Create(provider, connectionString string) (*repo.Repositories, func(), error) {
 	db, err := sql.Open(provider, connectionString)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "open db provider: %s conncetion: %s failed",
+		return nil, nil, errors.Wrapf(err, "open db provider: %s conncetion: %s failed",
 			provider,
 			connectionString,
 		)
 	}
 
-	return db, nil
+	return &repo.Repositories{
+		Group:     &GroupRepository{DB: db},
+		Match:     &MatchRepository{DB: db},
+		Player:    &PlayerRepository{DB: db},
+		Statistic: &StatisticRepository{DB: db},
+		Team:      &TeamRepository{DB: db},
+		User:      &UserRepository{DB: db},
+		Volleynet: &VolleynetRepository{DB: db},
+	}, func() { db.Close() }, nil
 }
 
 func Migrate(db *sql.DB) error {

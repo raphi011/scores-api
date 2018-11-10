@@ -30,10 +30,10 @@ type matchQueryDto struct {
 
 type matchHandler struct {
 	playerRepository scores.PlayerRepository
-	groupRepository  scores.GroupRepository
 	matchRepository  scores.MatchRepository
 	teamRepository   scores.TeamRepository
 	userRepository   scores.UserRepository
+	groupService     *scores.GroupService
 }
 
 func (h *matchHandler) index(c *gin.Context) {
@@ -113,7 +113,7 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 		return
 	}
 
-	group, gErr1 := h.groupRepository.Group(newMatch.GroupID)
+	group, gErr1 := h.groupService.Group(newMatch.GroupID)
 	_, pErr1 := h.playerRepository.Player(newMatch.Player1ID)
 	_, pErr2 := h.playerRepository.Player(newMatch.Player2ID)
 	_, pErr3 := h.playerRepository.Player(newMatch.Player3ID)

@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/raphi011/scores"
 
@@ -11,14 +10,7 @@ import (
 )
 
 type groupHandler struct {
-	playerRepository    scores.PlayerRepository
-	groupRepository     scores.GroupRepository
-	matchRepository     scores.MatchRepository
-	statisticRepository scores.StatisticRepository
-}
-
-func (h *groupHandler) index(c *gin.Context) {
-
+	service *scores.GroupService
 }
 
 func (h *groupHandler) groupShow(c *gin.Context) {
@@ -29,19 +21,9 @@ func (h *groupHandler) groupShow(c *gin.Context) {
 		return
 	}
 
-	group, err := h.groupRepository.Group(uint(groupID))
+	group, err := h.service.Group(uint(groupID))
 
 	if err != nil {
-		jsonn(c, http.StatusNotFound, nil, "Group not found")
-		return
-	}
-
-	var pErr, mErr error
-
-	group.Players, pErr = h.playerRepository.ByGroup(group.ID)
-	group.Matches, mErr = h.matchRepository.GroupMatches(group.ID, time.Now(), 25)
-
-	if pErr != nil || mErr != nil {
 		jsonn(c, http.StatusNotFound, nil, "Group not found")
 		return
 	}
