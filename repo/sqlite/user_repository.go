@@ -4,24 +4,27 @@ import (
 	"database/sql"
 
 	"github.com/pkg/errors"
-
 	"github.com/raphi011/scores"
 )
 
 var _ scores.UserRepository = &UserRepository{}
 
+// UserRepository stores users
 type UserRepository struct {
 	DB *sql.DB
 }
 
-// Create creates persists user and assigns a new id
-func (s *UserRepository) Create(user *scores.User) (*scores.User, error) {
+// New persists a user and assigns a new id
+func (s *UserRepository) New(user *scores.User) (*scores.User, error) {
 	result, err := s.DB.Exec(query("user/insert"),
 		user.Email,
 		user.ProfileImageURL,
-		user.VolleynetUserId,
+		user.VolleynetUserID,
 		user.VolleynetLogin,
 		user.Role,
+		user.PasswordInfo.Salt,
+		user.PasswordInfo.Hash,
+		user.PasswordInfo.Iterations,
 	)
 
 	if err != nil {
@@ -39,34 +42,7 @@ func (s *UserRepository) Create(user *scores.User) (*scores.User, error) {
 	return user, nil
 }
 
-func (s *UserRepository) UpdatePasswordAuthentication(
-	userID uint,
-	auth *scores.PasswordInfo,
-) error {
-	result, err := s.DB.Exec(
-		query("user/update-password"),
-		auth.Salt,
-		auth.Hash,
-		auth.Iterations,
-		userID)
-
-	if err != nil {
-		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-
-	if err != nil {
-		return err
-	}
-
-	if rowsAffected != 1 {
-		return errors.New("User not found")
-	}
-
-	return nil
-}
-
+// Update updates a user
 func (s *UserRepository) Update(user *scores.User) error {
 	if user == nil || user.ID == 0 {
 		return errors.New("User must exist")
@@ -75,9 +51,12 @@ func (s *UserRepository) Update(user *scores.User) error {
 	result, err := s.DB.Exec(query("user/update"),
 		user.ProfileImageURL,
 		user.Email,
-		user.VolleynetUserId,
+		user.VolleynetUserID,
 		user.VolleynetLogin,
 		user.Role,
+		user.PasswordInfo.Salt,
+		user.PasswordInfo.Hash,
+		user.PasswordInfo.Iterations,
 		user.ID)
 
 	if err != nil {
@@ -97,7 +76,8 @@ func (s *UserRepository) Update(user *scores.User) error {
 	return nil
 }
 
-func (s *UserRepository) Users() (scores.Users, error) {
+// All returns all user's, this is used mainly for testing
+func (s *UserRepository) All() (scores.Users, error) {
 	users := scores.Users{}
 
 	rows, err := s.DB.Query(query("user/select-all"))
@@ -121,7 +101,7 @@ func (s *UserRepository) Users() (scores.Users, error) {
 	return users, nil
 }
 
-func (s *UserRepository) User(userID uint) (*scores.User, error) {
+func (s *UserRepository) ByID(userID uint) (*scores.User, error) {
 	row := s.DB.QueryRow(query("user/select-by-id"), userID)
 
 	return scanUser(row)
@@ -145,7 +125,7 @@ func scanUser(scanner scan) (*scores.User, error) {
 		&u.PasswordInfo.Salt,
 		&u.PasswordInfo.Hash,
 		&u.PasswordInfo.Iterations,
-		&u.VolleynetUserId,
+		&u.VolleynetUserID,
 		&u.VolleynetLogin,
 		&u.Role,
 	)

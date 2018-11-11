@@ -28,10 +28,10 @@ func TestTeamPlayerOrder(t *testing.T) {
 func TestCreate(t *testing.T) {
 	s := createRepositories(t)
 
-	player1, _ := s.playerRepository.Create(&scores.Player{Name: "Player1"})
-	player2, _ := s.playerRepository.Create(&scores.Player{Name: "Player2"})
+	player1, _ := s.Player.Create(&scores.Player{Name: "Player1"})
+	player2, _ := s.Player.Create(&scores.Player{Name: "Player2"})
 
-	_, err := s.teamRepository.Create(&scores.Team{
+	_, err := s.Team.Create(&scores.Team{
 		Name:      "Team1",
 		Player1ID: player1.ID,
 		Player2ID: player2.ID,
@@ -41,7 +41,7 @@ func TestCreate(t *testing.T) {
 		t.Error("Can't create team")
 	}
 
-	newTeam, err := s.teamRepository.ByPlayers(player1.ID, player2.ID)
+	newTeam, err := s.Team.ByPlayers(player1.ID, player2.ID)
 
 	if err != nil {
 		t.Errorf("TeamRepository.ByPlayers() err: %s", err)

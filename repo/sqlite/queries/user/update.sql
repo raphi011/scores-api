@@ -4,5 +4,8 @@ SET
     email = ?,
     volleynet_user_id = ?,
     volleynet_login = ?,
-    role = ?
+    role = ?,
+    salt = ?,
+    hash = ?,
+    iterations = ?
 WHERE id = ?

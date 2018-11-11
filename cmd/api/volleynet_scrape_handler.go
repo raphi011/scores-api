@@ -15,7 +15,7 @@ import (
 
 type volleynetScrapeHandler struct {
 	volleynetRepository scores.VolleynetRepository
-	userRepository      scores.UserRepository
+	userService      *scores.UserService
 
 	mux msync.Mutex
 }

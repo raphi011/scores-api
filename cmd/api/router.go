@@ -23,7 +23,7 @@ func initRouter(app app) *gin.Engine {
 
 	authHandler := authHandler{
 		playerRepository: app.services.Player,
-		userRepository:   app.services.User,
+		userService:      app.services.User,
 		conf:             app.conf,
 	}
 
@@ -31,7 +31,7 @@ func initRouter(app app) *gin.Engine {
 
 	matchHandler := matchHandler{
 		matchRepository:  app.services.Match,
-		userRepository:   app.services.User,
+		userService:      app.services.User,
 		playerRepository: app.services.Player,
 		teamRepository:   app.services.Team,
 		groupService:     app.services.Group,
@@ -47,11 +47,11 @@ func initRouter(app app) *gin.Engine {
 
 	volleynetHandler := volleynetHandler{
 		volleynetRepository: app.services.Volleynet,
-		userRepository:      app.services.User,
+		userService:         app.services.User,
 	}
 	volleynetScrapeHandler := volleynetScrapeHandler{
 		volleynetRepository: app.services.Volleynet,
-		userRepository:      app.services.User,
+		userService:         app.services.User,
 	}
 	infoHandler := infoHandler{}
 

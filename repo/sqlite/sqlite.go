@@ -8,7 +8,7 @@ import (
 var queries packr.Box
 
 func init() {
-	queries = packr.NewBox("queries")
+	queries = packr.NewBox("./queries")
 }
 
 func query(name string) string {

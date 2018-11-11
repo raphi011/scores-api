@@ -1,12 +1,6 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/repo/sqlite"
-)
-
+/*
 func getUser(us sqlite.UserRepository) *scores.User {
 	fmt.Print("Enter the users email: ")
 	for scanner.Scan() {
@@ -52,7 +46,7 @@ func setNewPassword() {
 
 	password := getPassword()
 
-	hashedPassword, err := us.PW.HashPassword([]byte(password))
+	hashedPassword, err := us.PW.Hash([]byte(password))
 
 	if err != nil {
 		fmt.Printf("Error hashing password %v", err)
@@ -67,3 +61,4 @@ func setNewPassword() {
 		fmt.Printf("Password has been updated")
 	}
 }
+*/

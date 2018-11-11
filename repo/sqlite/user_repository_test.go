@@ -11,29 +11,29 @@ func TestSetPassword(t *testing.T) {
 
 	email := "test@test.com"
 
-	user, err := s.userRepository.Create(&scores.User{
+	user, err := s.User.Create(&scores.User{
 		Email:           email,
 		ProfileImageURL: "image.url",
 	})
 
 	pw := []byte("password")
 
-	info, _ := s.pwRepository.HashPassword(pw)
+	info, _ := s.pwRepository.Hash(pw)
 
-	err = s.userRepository.UpdatePasswordAuthentication(user.ID, info)
+	err = s.User.UpdatePasswordAuthentication(user.ID, info)
 
 	if err != nil {
 		t.Errorf("userRepository.UpdatePasswordAuthentication(), err: %s", err)
 	}
 
-	user, err = s.userRepository.User(user.ID)
+	user, err = s.User.User(user.ID)
 
 	if err != nil {
 		t.Errorf("userRepository.User(), err: %s", err)
 	}
 
-	if !s.pwRepository.ComparePassword(pw, &user.PasswordInfo) {
-		t.Error("PasswordService.ComparePassword(), want true, got false")
+	if !s.pwRepository.Compare(pw, &user.PasswordInfo) {
+		t.Error("PasswordService.Compare(), want true, got false")
 	}
 }
 
@@ -42,7 +42,7 @@ func TestCreateUser(t *testing.T) {
 
 	email := "test@test.com"
 
-	user, err := s.userRepository.Create(&scores.User{
+	user, err := s.User.Create(&scores.User{
 		Email:           email,
 		ProfileImageURL: "image.url",
 	})
@@ -57,7 +57,7 @@ func TestCreateUser(t *testing.T) {
 
 	userID := user.ID
 
-	user, _ = s.userRepository.ByEmail(email)
+	user, _ = s.User.ByEmail(email)
 
 	if user.ID != userID {
 		t.Errorf("userRepository.Create(), user not persisted")
@@ -67,16 +67,16 @@ func TestCreateUser(t *testing.T) {
 func TestUsers(t *testing.T) {
 	s := createRepositories(t)
 
-	_, err := s.userRepository.Create(&scores.User{
+	_, err := s.User.Create(&scores.User{
 		Email: "test@test.at",
 	})
 
-	_, err = s.userRepository.Create(&scores.User{
+	_, err = s.User.Create(&scores.User{
 		Email:           "test2@test.at",
 		ProfileImageURL: "image.url",
 	})
 
-	users, err := s.userRepository.Users()
+	users, err := s.User.Users()
 
 	if err != nil {
 		t.Errorf("UserRepository.Users() err: %s", err)
@@ -94,20 +94,20 @@ func TestUpdateUser(t *testing.T) {
 	email := "test@test.com"
 	newEmail := "test2@test.com"
 
-	user, _ := s.userRepository.Create(&scores.User{
+	user, _ := s.User.Create(&scores.User{
 		Email:           email,
 		ProfileImageURL: "image.url",
 	})
 
 	user.Email = newEmail
 
-	err := s.userRepository.Update(user)
+	err := s.User.Update(user)
 
 	if err != nil {
 		t.Errorf("UserRepository.Update() err: %s", err)
 	}
 
-	user, err = s.userRepository.ByEmail(newEmail)
+	user, err = s.User.ByEmail(newEmail)
 
 	if err != nil || user.Email != newEmail {
 		t.Error("UserRepository.Update(), user not updated")

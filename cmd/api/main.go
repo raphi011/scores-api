@@ -91,12 +91,17 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		repos.Statistic,
 	)
 
+	userService := &scores.UserService{
+		Repository: repos.User,
+		Password:   passwordService,
+	}
+
 	services = &scores.Services{
 		Group:    groupService,
 		Password: passwordService,
+		User:     userService,
 
 		Match:     repos.Match,
-		User:      repos.User,
 		Statistic: repos.Statistic,
 		Team:      repos.Team,
 		Player:    repos.Player,

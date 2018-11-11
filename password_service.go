@@ -18,8 +18,8 @@ type PasswordInfo struct {
 }
 
 type PasswordService interface {
-	ComparePassword([]byte, *PasswordInfo) bool
-	HashPassword(password []byte) (*PasswordInfo, error)
+	Compare([]byte, *PasswordInfo) bool
+	Hash(password []byte) (*PasswordInfo, error)
 }
 
 type PBKDF2PasswordService struct {
@@ -38,20 +38,23 @@ func (s *PBKDF2PasswordService) newSalt() ([]byte, error) {
 	return salt, nil
 }
 
-func (s *PBKDF2PasswordService) ComparePassword(password []byte, info *PasswordInfo) bool {
-	hash := s.hashPassword(password, info.Salt, info.Iterations)
+// Compare takes a password and compares it to the hashed version and returns true
+// if they are equal
+func (s *PBKDF2PasswordService) Compare(password []byte, info *PasswordInfo) bool {
+	hash := s.hash(password, info.Salt, info.Iterations)
 
 	return bytes.Compare(hash, info.Hash) == 0
 }
 
-func (s *PBKDF2PasswordService) HashPassword(password []byte) (*PasswordInfo, error) {
+// Hash generates and new salt and hashes the passed password with it
+func (s *PBKDF2PasswordService) Hash(password []byte) (*PasswordInfo, error) {
 	salt, err := s.newSalt()
 
 	if err != nil {
 		return nil, err
 	}
 
-	hash := s.hashPassword(password, salt, s.Iterations)
+	hash := s.hash(password, salt, s.Iterations)
 
 	return &PasswordInfo{
 		Salt:       salt,
@@ -60,7 +63,7 @@ func (s *PBKDF2PasswordService) HashPassword(password []byte) (*PasswordInfo, er
 	}, nil
 }
 
-func (s *PBKDF2PasswordService) hashPassword(password, salt []byte, iterations int) []byte {
+func (s *PBKDF2PasswordService) hash(password, salt []byte, iterations int) []byte {
 	hash := pbkdf2.Key(password, salt, iterations, 32, sha256.New)
 
 	return hash

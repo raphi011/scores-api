@@ -65,10 +65,10 @@ func TestPlayerStatistic(t *testing.T) {
 	s := createRepositories(t)
 
 	m := newMatch(s)
-	m, _ = s.matchRepository.Create(m)
+	m, _ = s.Match.Create(m)
 
 	filter := "all"
-	st, err := s.statisticRepository.Players(filter)
+	st, err := s.Statistic.Players(filter)
 
 	if err != nil {
 		t.Fatalf("StatisticRepository.Players() err: %s", err)
@@ -83,7 +83,7 @@ func TestPlayerStatistic(t *testing.T) {
 		t.Fatalf("StatisticRepository.Players() want len(p): 4, got %d ", len)
 	}
 
-	ps, err := s.statisticRepository.Player(m.Team1.Player1ID, filter)
+	ps, err := s.Statistic.Player(m.Team1.Player1ID, filter)
 
 	if err != nil {
 		t.Fatalf("StatisticRepository.Player() err: %s", err)

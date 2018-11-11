@@ -3,9 +3,9 @@ package scores
 type Services struct {
 	Group    *GroupService
 	Password *PBKDF2PasswordService
+	User     *UserService
 
 	Match     MatchRepository
-	User      UserRepository
 	Statistic StatisticRepository
 	Team      TeamRepository
 	Player    PlayerRepository

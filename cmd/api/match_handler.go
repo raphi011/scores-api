@@ -32,7 +32,7 @@ type matchHandler struct {
 	playerRepository scores.PlayerRepository
 	matchRepository  scores.MatchRepository
 	teamRepository   scores.TeamRepository
-	userRepository   scores.UserRepository
+	userService      *scores.UserService
 	groupService     *scores.GroupService
 }
 
@@ -118,7 +118,7 @@ func (h *matchHandler) matchCreate(c *gin.Context) {
 	_, pErr2 := h.playerRepository.Player(newMatch.Player2ID)
 	_, pErr3 := h.playerRepository.Player(newMatch.Player3ID)
 	_, pErr4 := h.playerRepository.Player(newMatch.Player4ID)
-	user, uErr := h.userRepository.ByEmail(userEmail)
+	user, uErr := h.userService.ByEmail(userEmail)
 
 	if gErr1 != nil || pErr1 != nil || pErr2 != nil || pErr3 != nil || pErr4 != nil || uErr != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
@@ -186,7 +186,7 @@ func (h *matchHandler) matchDelete(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userRepository.ByEmail(userID)
+	user, err := h.userService.ByEmail(userID)
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "User not found")

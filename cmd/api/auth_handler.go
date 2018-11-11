@@ -36,20 +36,6 @@ type credentialsDto struct {
 	Password string `json:"password"`
 }
 
-type oauthUser struct {
-	Sub           string `json:"sub"`
-	Name          string `json:"name"`
-	GivenName     string `json:"given_name"`
-	FamilyName    string `json:"family_name"`
-	Profile       string `json:"profile"`
-	Picture       string `json:"picture"`
-	Email         string `json:"email"`
-	EmailVerified bool   `json:"email_verified"`
-	Gender        string `json:"gender"`
-}
-
-var state string
-
 func randToken() string {
 	b := make([]byte, 32)
 	rand.Read(b)
@@ -57,7 +43,7 @@ func randToken() string {
 }
 
 type authHandler struct {
-	userRepository   scores.UserRepository
+	userService   	 *scores.UserService
 	playerRepository scores.PlayerRepository
 	groupRepository  scores.GroupRepository
 	conf             *oauth2.Config
@@ -80,7 +66,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
-	if !a.passwordService.ComparePassword([]byte(credentials.Password), &user.PasswordInfo) {
+	if !a.passwordService.Compare([]byte(credentials.Password), &user.PasswordInfo) {
 		jsonn(c, http.StatusUnauthorized, nil, "")
 		return
 	}
@@ -98,6 +84,7 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 		jsonn(c, http.StatusNotImplemented, nil, "")
 		return
 	}
+
 	// Handle the exchange code to initiate a transport.
 	session := sessions.Default(c)
 	retrievedState := session.Get("state")
@@ -138,20 +125,20 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 		c.Redirect(http.StatusFound, "/login?error=USER_NOT_FOUND")
 	} else {
 		if user.ProfileImageURL != googleUser.Picture {
-			user.ProfileImageURL = googleUser.Picture
-			err := a.userRepository.Update(user)
+			err := a.userService.SetProfileImage(user.ID, googleUser.Picture)
 			if err != nil {
-				log.Printf("Error updating user profile image, id: %d", user.ID)
+				log.Error(err)
 			}
 		}
 
 		successfullLogin(c, session, user.Email)
+
 		c.Redirect(http.StatusFound, "/")
 	}
 }
 
 func (a *authHandler) getUser(email string) (*scores.User, error) {
-	user, err := a.userRepository.ByEmail(email)
+	user, err := a.userService.ByEmail(email)
 
 	if err != nil {
 		return nil, err
@@ -192,7 +179,7 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 		}
 	}
 
-	state = randToken()
+	state := randToken()
 	session.Set("state", state)
 	session.Save()
 
@@ -205,7 +192,7 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 
 func (a *authHandler) logout(c *gin.Context) {
 	response := loginRouteOrUserDto{}
-	state = randToken()
+	state := randToken()
 	session := sessions.Default(c)
 	session.Delete("user-id")
 	session.Set("state", state)

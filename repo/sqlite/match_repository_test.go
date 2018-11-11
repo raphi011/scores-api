@@ -9,7 +9,7 @@ func TestCreateMatch(t *testing.T) {
 
 	match := newMatch(s)
 
-	match, err := s.matchRepository.Create(match)
+	match, err := s.Match.Create(match)
 
 	if err != nil {
 		t.Error("Can't create match", err)
@@ -22,15 +22,15 @@ func TestDeleteMatch(t *testing.T) {
 	s := createRepositories(t)
 
 	match := newMatch(s)
-	match, _ = s.matchRepository.Create(match)
+	match, _ = s.Match.Create(match)
 
-	err := s.matchRepository.Delete(match.ID)
+	err := s.Match.Delete(match.ID)
 
 	if err != nil {
 		t.Errorf("MatchRepository.Delete() err: %s", err)
 	}
 
-	match, err = s.matchRepository.Match(match.ID)
+	match, err = s.Match.Match(match.ID)
 
 	if err == nil {
 		t.Errorf("MatchRepository.Delete() err: %s", err)

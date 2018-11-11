@@ -4,6 +4,9 @@ INSERT INTO users (
     profile_image_url,
     volleynet_user_id,
     volleynet_login,
-    role
+    role,
+    salt,
+    hash,
+    iterations
 )
-VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)
+VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)

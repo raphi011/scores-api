@@ -9,16 +9,16 @@ import (
 func TestGetPlayersByGroup(t *testing.T) {
 	s := createRepositories(t)
 
-	g, _ := s.groupRepository.Create(&scores.Group{Name: "Testgroup"})
+	g, _ := s.Group.Create(&scores.Group{Name: "Testgroup"})
 
-	p1, _ := s.playerRepository.Create(&scores.Player{Name: "Test1"})
-	p2, _ := s.playerRepository.Create(&scores.Player{Name: "Test2"})
-	s.playerRepository.Create(&scores.Player{Name: "Test3"})
+	p1, _ := s.Player.Create(&scores.Player{Name: "Test1"})
+	p2, _ := s.Player.Create(&scores.Player{Name: "Test2"})
+	s.Player.Create(&scores.Player{Name: "Test3"})
 
-	s.groupRepository.AddPlayerToGroup(p1.ID, g.ID, "user")
-	s.groupRepository.AddPlayerToGroup(p2.ID, g.ID, "user")
+	s.Group.AddPlayerToGroup(p1.ID, g.ID, "user")
+	s.Group.AddPlayerToGroup(p2.ID, g.ID, "user")
 
-	players, err := s.playerRepository.ByGroup(g.ID)
+	players, err := s.Player.ByGroup(g.ID)
 
 	if err != nil {
 		t.Errorf("PlayerRepository.ByGroup() err: %s", err)
@@ -30,9 +30,9 @@ func TestGetPlayersByGroup(t *testing.T) {
 func TestGetPlayers(t *testing.T) {
 	s := createRepositories(t)
 
-	s.playerRepository.Create(&scores.Player{Name: "Test1"})
-	s.playerRepository.Create(&scores.Player{Name: "Test2"})
-	players, err := s.playerRepository.Players()
+	s.Player.Create(&scores.Player{Name: "Test1"})
+	s.Player.Create(&scores.Player{Name: "Test2"})
+	players, err := s.Player.Players()
 
 	if err != nil {
 		t.Errorf("PlayerRepository.Players() err: %s", err)
@@ -44,7 +44,7 @@ func TestGetPlayers(t *testing.T) {
 func TestCreatePlayer(t *testing.T) {
 	s := createRepositories(t)
 
-	player, err := s.playerRepository.Create(&scores.Player{Name: "Test"})
+	player, err := s.Player.Create(&scores.Player{Name: "Test"})
 
 	if err != nil {
 		t.Error("Can't create player")
@@ -55,7 +55,7 @@ func TestCreatePlayer(t *testing.T) {
 
 	playerID := player.ID
 
-	player, err = s.playerRepository.Player(playerID)
+	player, err = s.Player.Player(playerID)
 
 	if err != nil {
 		t.Errorf("PlayerRepository.Player() err: %s", err)
@@ -68,16 +68,16 @@ func TestCreatePlayer(t *testing.T) {
 func TestDeletePlayer(t *testing.T) {
 	s := createRepositories(t)
 
-	player, _ := s.playerRepository.Create(&scores.Player{Name: "Test"})
-	s.playerRepository.Create(&scores.Player{Name: "Test2"})
+	player, _ := s.Player.Create(&scores.Player{Name: "Test"})
+	s.Player.Create(&scores.Player{Name: "Test2"})
 
-	err := s.playerRepository.Delete(player.ID)
+	err := s.Player.Delete(player.ID)
 
 	if err != nil {
 		t.Errorf("PlayerRepository.Delete() err: %s", err)
 	}
 
-	players, _ := s.playerRepository.Players()
+	players, _ := s.Player.Players()
 	playerCount := len(players)
 
 	if playerCount != 1 {

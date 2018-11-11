@@ -18,7 +18,7 @@ import (
 
 type volleynetHandler struct {
 	volleynetRepository scores.VolleynetRepository
-	userRepository      scores.UserRepository
+	userService      *scores.UserService
 }
 
 func (h *volleynetHandler) ladder(c *gin.Context) {
@@ -60,14 +60,6 @@ func (h *volleynetHandler) allTournaments(c *gin.Context) {
 	jsonn(c, http.StatusOK, tournaments, "")
 }
 
-type signupForm struct {
-	Username     string `json:"username"`
-	Password     string `json:"password"`
-	PartnerID    int    `json:"partnerId"`
-	PartnerName  string `json:"partnerName"`
-	TournamentID int    `json:"tournamentId"`
-	RememberMe   bool   `json:"rememberMe"`
-}
 
 func (h *volleynetHandler) tournament(c *gin.Context) {
 	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
@@ -93,6 +85,15 @@ func (h *volleynetHandler) tournament(c *gin.Context) {
 
 		jsonn(c, http.StatusOK, tournament, "")
 	}
+}
+
+type signupForm struct {
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	PartnerID    int    `json:"partnerId"`
+	PartnerName  string `json:"partnerName"`
+	TournamentID int    `json:"tournamentId"`
+	RememberMe   bool   `json:"rememberMe"`
 }
 
 func (h *volleynetHandler) signup(c *gin.Context) {
@@ -122,19 +123,16 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 	if su.RememberMe {
 		session := sessions.Default(c)
 		userID := session.Get("user-id")
-		user, err := h.userRepository.ByEmail(userID.(string))
+		user, err := h.userService.ByEmail(userID.(string))
 
 		if err != nil {
 			log.Warnf("loading user by email: %s failed", userID.(string))
 		}
 
 		if user.VolleynetLogin != su.Username ||
-			user.VolleynetUserId != loginData.ID {
+			user.VolleynetUserID != loginData.ID {
 
-			user.VolleynetLogin = su.Username
-			user.VolleynetUserId = loginData.ID
-
-			err = h.userRepository.Update(user)
+			err = h.userService.SetVolleynetLogin(su.Username, loginData.ID)
 
 			if err != nil {
 				log.Warnf("updating volleynet user information failed for userID: %d", user.ID)
