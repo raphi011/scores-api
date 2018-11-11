@@ -24,7 +24,7 @@ func createRepositories(t *testing.T) *repo.Repositories {
 
 	t.Helper()
 
-	repos, _, err := Create(dbProvider, connectionString)
+	repos, db, err := CreateTest(dbProvider, connectionString)
 
 	if err != nil {
 		t.Fatal("unable to open db")
@@ -39,7 +39,7 @@ func createRepositories(t *testing.T) *repo.Repositories {
 		t.Fatal("Unsupported db provider")
 	}
 
-	return s
+	return repos
 }
 
 func execMultiple(db *sql.DB, statements ...string) error {
@@ -79,7 +79,7 @@ func setupSQLite(t *testing.T, db *sql.DB) {
 
 func newMatch(s *repo.Repositories) *scores.Match {
 	g, _ := s.Group.Create(&scores.Group{Name: "TestGroup"})
-	u, _ := s.User.Create(&scores.User{Email: "test@test.at"})
+	u, _ := s.User.New(&scores.User{Email: "test@test.at"})
 	p1, _ := s.Player.Create(&scores.Player{Name: "p1"})
 	p2, _ := s.Player.Create(&scores.Player{Name: "p2"})
 	p3, _ := s.Player.Create(&scores.Player{Name: "p3"})

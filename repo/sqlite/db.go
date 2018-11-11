@@ -16,7 +16,17 @@ type scan interface {
 	Scan(src ...interface{}) error
 }
 
+func CreateTest(provider, connectionString string) (*repo.Repositories, *sql.DB, error) {
+	return create(provider, connectionString)
+}
+
 func Create(provider, connectionString string) (*repo.Repositories, func(), error) {
+	repo, db, err := create(provider, connectionString)
+
+	return repo, func() { db.Close() }, err
+}
+
+func create(provider, connectionString string) (*repo.Repositories, *sql.DB, error) {
 	db, err := sql.Open(provider, connectionString)
 
 	if err != nil {
@@ -34,7 +44,7 @@ func Create(provider, connectionString string) (*repo.Repositories, func(), erro
 		Team:      &TeamRepository{DB: db},
 		User:      &UserRepository{DB: db},
 		Volleynet: &VolleynetRepository{DB: db},
-	}, func() { db.Close() }, nil
+	}, db, nil
 }
 
 func Migrate(db *sql.DB) error {

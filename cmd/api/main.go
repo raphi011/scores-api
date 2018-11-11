@@ -39,7 +39,7 @@ func main() {
 	services, repoClose, err := createServices(*dbProvider, *connectionString)
 
 	if err != nil {
-		log.Fatal("Could not initialize services: %s", err)
+		log.Fatalf("Could not initialize services: %s", err)
 	}
 
 	defer repoClose()

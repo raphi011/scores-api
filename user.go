@@ -19,4 +19,5 @@ type UserRepository interface {
 	ByID(userID uint) (*User, error)
 	ByEmail(email string) (*User, error)
 	Update(*User) error
+	All() (Users, error)
 }

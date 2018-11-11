@@ -1,22 +1,16 @@
 package main
 
-import (
-	"fmt"
+// func migrate() {
+// 	db, err := sqlite.Open(*dbPath, "")
 
-	"github.com/raphi011/scores/repo/sqlite"
-)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
 
-func migrate() {
-	db, err := sqlite.Open(*dbPath, "")
+// 	err = sqlite.Migrate(db)
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	err = sqlite.Migrate(db)
-
-	if err != nil {
-		fmt.Printf("Error migrating %v", err)
-	}
-}
+// 	if err != nil {
+// 		fmt.Printf("Error migrating %v", err)
+// 	}
+// }

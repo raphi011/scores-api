@@ -1,24 +1,17 @@
 package main
 
-import (
-	"fmt"
+// func seedDb() {
+// 	db, err := sqlite.Open(*dbPath, "")
 
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/repo/sqlite"
-)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return
+// 	}
 
-func seedDb() {
-	db, err := sqlite.Open(*dbPath, "")
+// 	ps := sqlite.PlayerRepository{DB: db}
 
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	ps := sqlite.PlayerRepository{DB: db}
-
-	ps.Create(&scores.Player{Name: "Raphi"})
-	ps.Create(&scores.Player{Name: "Richie"})
-	ps.Create(&scores.Player{Name: "Dominik"})
-	ps.Create(&scores.Player{Name: "Lukas"})
-}
+// 	ps.Create(&scores.Player{Name: "Raphi"})
+// 	ps.Create(&scores.Player{Name: "Richie"})
+// 	ps.Create(&scores.Player{Name: "Dominik"})
+// 	ps.Create(&scores.Player{Name: "Lukas"})
+// }

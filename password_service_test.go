@@ -5,20 +5,20 @@ import (
 )
 
 func TestPasswordHash(t *testing.T) {
-	pwRepository := &PBKDF2PasswordService{
+	passwordService := &PBKDF2PasswordService{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}
 
 	pw := []byte("password")
 
-	info, err := pwRepository.HashPassword(pw)
+	info, err := passwordService.Hash(pw)
 
 	if err != nil {
-		t.Errorf("PBKDF2PasswordService.HashPassword(\"password\"), err : %s", err)
+		t.Errorf("PBKDF2PasswordService.Hash(\"password\"), err : %s", err)
 	}
 
-	if !pwRepository.ComparePassword(pw, info) {
-		t.Error("PBKDF2PasswordService.ComparePassword(), want true, got false")
+	if !passwordService.Compare(pw, info) {
+		t.Error("PBKDF2PasswordService.Compare(), want true, got false")
 	}
 }

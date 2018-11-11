@@ -28,12 +28,12 @@ func main() {
 	switch cmd {
 	case "scrape":
 		scrape()
-	case "migrate":
-		migrate()
-	case "seed":
-		seedDb()
-	case "set-pw":
-		setNewPassword()
+	// case "migrate":
+	// 	migrate()
+	// case "seed":
+	// 	seedDb()
+	// case "set-pw":
+	// 	setNewPassword()
 	default:
 		flag.PrintDefaults()
 	}
