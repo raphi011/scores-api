@@ -15,8 +15,8 @@ func TestGetPlayersByGroup(t *testing.T) {
 	p2, _ := s.Player.Create(&scores.Player{Name: "Test2"})
 	s.Player.Create(&scores.Player{Name: "Test3"})
 
-	s.Group.AddPlayerToGroup(p1.ID, g.ID, "user")
-	s.Group.AddPlayerToGroup(p2.ID, g.ID, "user")
+	s.Group.AddPlayer(p1.ID, g.ID, "user")
+	s.Group.AddPlayer(p2.ID, g.ID, "user")
 
 	players, err := s.Player.ByGroup(g.ID)
 
@@ -32,12 +32,12 @@ func TestGetPlayers(t *testing.T) {
 
 	s.Player.Create(&scores.Player{Name: "Test1"})
 	s.Player.Create(&scores.Player{Name: "Test2"})
-	players, err := s.Player.Players()
+	players, err := s.Player.All()
 
 	if err != nil {
-		t.Errorf("PlayerRepository.Players() err: %s", err)
+		t.Errorf("PlayerRepository.All() err: %s", err)
 	} else if len(players) != 2 {
-		t.Errorf("PlayerRepository.Players(), want 2 players, got %d ", len(players))
+		t.Errorf("PlayerRepository.All(), want 2 players, got %d ", len(players))
 	}
 }
 
@@ -55,13 +55,13 @@ func TestCreatePlayer(t *testing.T) {
 
 	playerID := player.ID
 
-	player, err = s.Player.Player(playerID)
+	player, err = s.Player.Get(playerID)
 
 	if err != nil {
-		t.Errorf("PlayerRepository.Player() err: %s", err)
+		t.Errorf("PlayerRepository.Get() err: %s", err)
 	}
 	if player.ID != playerID {
-		t.Errorf("PlayerRepository.Player(), want ID %d, got %d", playerID, player.ID)
+		t.Errorf("PlayerRepository.Get(), want ID %d, got %d", playerID, player.ID)
 	}
 }
 
@@ -77,11 +77,11 @@ func TestDeletePlayer(t *testing.T) {
 		t.Errorf("PlayerRepository.Delete() err: %s", err)
 	}
 
-	players, _ := s.Player.Players()
+	players, _ := s.Player.All()
 	playerCount := len(players)
 
 	if playerCount != 1 {
-		t.Errorf("len(PlayerRepository.Players()), want 1, got %d", playerCount)
+		t.Errorf("len(PlayerRepository.All()), want 1, got %d", playerCount)
 	}
 
 }

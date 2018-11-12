@@ -8,7 +8,7 @@ import (
 	"github.com/raphi011/scores/volleynet/client"
 )
 
-// PersistanceRepository is a way to persist and retrieve tournaments
+// PersistanceRepository persists and retrieve tournaments
 type PersistanceRepository interface {
 	Tournament(tournamentID int) (*volleynet.FullTournament, error)
 	UpdateTournament(t *volleynet.FullTournament) error
@@ -35,7 +35,7 @@ type Changes struct {
 
 type SyncRepository struct {
 	VolleynetRepository PersistanceRepository
-	Client           client.Client
+	Client              client.Client
 }
 
 func (s *SyncRepository) Tournaments(gender, league string, season int) (*Changes, error) {

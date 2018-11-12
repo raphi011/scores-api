@@ -1,13 +1,12 @@
 package scores
 
 type Services struct {
-	Group    *GroupService
-	Password *PBKDF2PasswordService
-	User     *UserService
-
-	Match     MatchRepository
-	Statistic StatisticRepository
-	Team      TeamRepository
-	Player    PlayerRepository
+	Group     *GroupService
+	Password  *PBKDF2Password
+	User      *UserService
+	Match     *MatchService
+	Statistic *StatisticService
+	Team      *TeamService
+	Player    *PlayerService
 	Volleynet VolleynetRepository
 }

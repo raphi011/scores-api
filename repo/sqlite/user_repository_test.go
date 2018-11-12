@@ -33,7 +33,7 @@ import (
 // 	}
 
 // 	if !s.pwRepository.Compare(pw, &user.PasswordInfo) {
-// 		t.Error("PasswordService.Compare(), want true, got false")
+// 		t.Error("Password.Compare(), want true, got false")
 // 	}
 // }
 

@@ -9,16 +9,19 @@ import (
 
 var _ scores.MatchRepository = &MatchRepository{}
 
+// MatchRepository stores matches
 type MatchRepository struct {
 	DB *sql.DB
 }
 
+// Delete deletes a match
 func (s *MatchRepository) Delete(matchID uint) error {
 	_, err := s.DB.Exec(query("match/update-delete"), matchID)
 
 	return err
 }
 
+// Create creates a new match
 func (s *MatchRepository) Create(match *scores.Match) (*scores.Match, error) {
 	result, err := s.DB.Exec(query("match/insert"),
 		match.Group.ID,
@@ -28,7 +31,7 @@ func (s *MatchRepository) Create(match *scores.Match) (*scores.Match, error) {
 		match.Team2.Player2ID,
 		match.ScoreTeam1,
 		match.ScoreTeam2,
-		match.CreatedBy.ID,
+		match.CreatedByUserID,
 	)
 
 	if err != nil {
@@ -41,29 +44,30 @@ func (s *MatchRepository) Create(match *scores.Match) (*scores.Match, error) {
 		return nil, err
 	}
 
-	return s.Match(uint(ID))
+	return s.Get(uint(ID))
 }
 
-func (s *MatchRepository) Match(ID uint) (*scores.Match, error) {
+// Get retrieves a Match by its ID
+func (s *MatchRepository) Get(ID uint) (*scores.Match, error) {
 	row := s.DB.QueryRow(query("match/select-by-id"), ID)
 
 	return scanMatch(row)
 }
 
-func (s *MatchRepository) MatchesAfter(after time.Time, count uint) (scores.Matches, error) {
+func (s *MatchRepository) After(after time.Time, count uint) ([]scores.Match, error) {
 	return scanMatches(s.DB, query("match/select-after"), after, count)
 }
 
-func (s *MatchRepository) GroupMatches(groupID uint, after time.Time, count uint) (scores.Matches, error) {
+func (s *MatchRepository) ByGroup(groupID uint, after time.Time, count uint) ([]scores.Match, error) {
 	return scanMatches(s.DB, query("match/select-group-matches"), groupID, after, count)
 }
 
-func (s *MatchRepository) PlayerMatches(playerID uint, after time.Time, count uint) (scores.Matches, error) {
+func (s *MatchRepository) ByPlayer(playerID uint, after time.Time, count uint) ([]scores.Match, error) {
 	return scanMatches(s.DB, query("match/select-player-matches"), playerID, after, count)
 }
 
-func scanMatches(db *sql.DB, query string, args ...interface{}) (scores.Matches, error) {
-	matches := scores.Matches{}
+func scanMatches(db *sql.DB, query string, args ...interface{}) ([]scores.Match, error) {
+	matches := []scores.Match{}
 	rows, err := db.Query(query, args...)
 
 	if err != nil {
@@ -95,7 +99,6 @@ func scanMatch(scanner scan) (*scores.Match, error) {
 			Player1: &scores.Player{},
 			Player2: &scores.Player{},
 		},
-		CreatedBy: &scores.User{},
 	}
 
 	err := scanner.Scan(
@@ -115,7 +118,7 @@ func scanMatch(scanner scan) (*scores.Match, error) {
 		&m.Team2.Player2.ProfileImageURL,
 		&m.ScoreTeam1,
 		&m.ScoreTeam2,
-		&m.CreatedBy.ID,
+		&m.CreatedByUserID,
 		&m.GroupID,
 	)
 

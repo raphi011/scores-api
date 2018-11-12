@@ -35,15 +35,16 @@ const (
 	playerSelectSQL = playersBaseSelectSQL + playersWhereSQL + " and p.id = ?"
 )
 
-func (s *PlayerRepository) ByGroup(groupID uint) (scores.Players, error) {
+func (s *PlayerRepository) ByGroup(groupID uint) ([]scores.Player, error) {
 	return scanPlayers(s.DB, query("player/select-by-group"), groupID)
 }
 
-func (s *PlayerRepository) Players() (scores.Players, error) {
+func (s *PlayerRepository) All() ([]scores.Player, error) {
 	return scanPlayers(s.DB, query("player/select-all"))
 }
 
-func (s *PlayerRepository) Player(ID uint) (*scores.Player, error) {
+// Get retrieves a player by an ID
+func (s *PlayerRepository) Get(ID uint) (*scores.Player, error) {
 	groupRepository := GroupRepository{DB: s.DB}
 
 	p := &scores.Player{}
@@ -56,7 +57,7 @@ func (s *PlayerRepository) Player(ID uint) (*scores.Player, error) {
 		return nil, err
 	}
 
-	groups, err := groupRepository.GroupsByPlayer(p.ID)
+	groups, err := groupRepository.ByPlayer(p.ID)
 
 	if err != nil {
 		return nil, err
@@ -115,8 +116,8 @@ func scanPlayer(scanner scan) (*scores.Player, error) {
 	return p, nil
 }
 
-func scanPlayers(db *sql.DB, query string, args ...interface{}) (scores.Players, error) {
-	players := scores.Players{}
+func scanPlayers(db *sql.DB, query string, args ...interface{}) ([]scores.Player, error) {
+	players := []scores.Player{}
 	rows, err := db.Query(query, args...)
 
 	if err != nil {

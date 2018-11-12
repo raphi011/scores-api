@@ -23,14 +23,11 @@ type Statistic struct {
 	Rank          string  `json:"rank"`
 }
 
-type TeamStatistics []TeamStatistic
-type PlayerStatistics []PlayerStatistic
-
 type StatisticRepository interface {
 	Player(playerID uint, filter string) (*PlayerStatistic, error)
-	Players(filter string) (PlayerStatistics, error)
-	PlayersByGroup(groupID uint, filter string) (PlayerStatistics, error)
-	PlayerTeams(playerID uint, filter string) (PlayerStatistics, error)
+	Players(filter string) ([]PlayerStatistic, error)
+	PlayersByGroup(groupID uint, filter string) ([]PlayerStatistic, error)
+	PlayerTeams(playerID uint, filter string) ([]PlayerStatistic, error)
 }
 
 func CalculateRank(percentage int) string {

@@ -1,19 +1,19 @@
 package scores
 
+// Player represents a player
 type Player struct {
 	Model
-	Name            string `json:"name"`
-	UserID          uint   `json:"userId"`
-	ProfileImageURL string `json:"profileImageUrl"`
-	Groups          Groups `json:"groups"`
+	Name            string  `json:"name"`
+	UserID          uint    `json:"userId"`
+	ProfileImageURL string  `json:"profileImageUrl"`
+	Groups          []Group `json:"groups"`
 }
 
-type Players []Player
-
+// PlayerRepository persists and retrieves Players
 type PlayerRepository interface {
-	Player(playerID uint) (*Player, error)
-	Players() (Players, error)
-	ByGroup(groupID uint) (Players, error)
+	Get(playerID uint) (*Player, error)
+	All() ([]Player, error)
+	ByGroup(groupID uint) ([]Player, error)
 	Create(*Player) (*Player, error)
 	Delete(playerID uint) error
 }

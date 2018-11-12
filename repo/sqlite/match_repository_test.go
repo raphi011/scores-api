@@ -30,7 +30,7 @@ func TestDeleteMatch(t *testing.T) {
 		t.Errorf("MatchRepository.Delete() err: %s", err)
 	}
 
-	match, err = s.Match.Match(match.ID)
+	match, err = s.Match.Get(match.ID)
 
 	if err == nil {
 		t.Errorf("MatchRepository.Delete() err: %s", err)

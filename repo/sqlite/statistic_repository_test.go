@@ -8,7 +8,7 @@ import (
 )
 
 func TestPlayerStatistic(t *testing.T) {
-	expect := scores.PlayerStatistics{
+	expect := []scores.PlayerStatistic{
 		scores.PlayerStatistic{
 			Player:   &scores.Player{Name: "p1", Model: scores.Model{ID: 1}},
 			PlayerID: 1,

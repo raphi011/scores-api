@@ -34,13 +34,13 @@ func parseTimeFilter(filter string) time.Time {
 	return timeFilter
 }
 
-func (s *StatisticRepository) Players(filter string) (scores.PlayerStatistics, error) {
+func (s *StatisticRepository) Players(filter string) ([]scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, query("statistic/select-by-players"), timeFilter)
 }
 
-func (s *StatisticRepository) PlayersByGroup(groupID uint, filter string) (scores.PlayerStatistics, error) {
+func (s *StatisticRepository) PlayersByGroup(groupID uint, filter string) ([]scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, query("statistic/select-by-group-player"), timeFilter, groupID)
@@ -54,14 +54,14 @@ func (s *StatisticRepository) Player(playerID uint, filter string) (*scores.Play
 	return scanPlayerStatistic(row)
 }
 
-func (s *StatisticRepository) PlayerTeams(playerID uint, filter string) (scores.PlayerStatistics, error) {
+func (s *StatisticRepository) PlayerTeams(playerID uint, filter string) ([]scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, query("statistic/select-by-team"), playerID, timeFilter)
 }
 
-func scanPlayerStatistics(db *sql.DB, query string, args ...interface{}) (scores.PlayerStatistics, error) {
-	statistics := scores.PlayerStatistics{}
+func scanPlayerStatistics(db *sql.DB, query string, args ...interface{}) ([]scores.PlayerStatistic, error) {
+	statistics := []scores.PlayerStatistic{}
 	rows, err := db.Query(query, args...)
 
 	if err != nil {

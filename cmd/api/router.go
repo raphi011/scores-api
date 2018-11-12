@@ -22,42 +22,45 @@ func initRouter(app app) *gin.Engine {
 	}
 
 	authHandler := authHandler{
-		playerRepository: app.services.Player,
-		userService:      app.services.User,
-		conf:             app.conf,
+		userService: app.services.User,
+		password:    app.services.Password,
+		conf:        app.conf,
 	}
 
-	playerHandler := playerHandler{playerRepository: app.services.Player}
+	playerHandler := playerHandler{
+		playerService:    app.services.Player,
+		statisticService: app.services.Statistic,
+		matchService:     app.services.Match,
+	}
 
 	matchHandler := matchHandler{
-		matchRepository:  app.services.Match,
-		userService:      app.services.User,
-		playerRepository: app.services.Player,
-		teamRepository:   app.services.Team,
-		groupService:     app.services.Group,
-	}
-
-	statisticHandler := statisticHandler{
-		statisticRepository: app.services.Statistic,
+		matchService: app.services.Match,
+		userService:  app.services.User,
 	}
 
 	groupHandler := groupHandler{
-		service: app.services.Group,
+		service:          app.services.Group,
+		playerService:    app.services.Player,
+		matchService:     app.services.Match,
+		statisticService: app.services.Statistic,
 	}
 
 	volleynetHandler := volleynetHandler{
 		volleynetRepository: app.services.Volleynet,
 		userService:         app.services.User,
 	}
+
 	volleynetScrapeHandler := volleynetScrapeHandler{
 		volleynetRepository: app.services.Volleynet,
 		userService:         app.services.User,
 	}
+
 	infoHandler := infoHandler{}
 
-	router.Use(sessions.Sessions("goquestsession", store))
+	router.Use(sessions.Sessions("session", store))
 
 	router.GET("/version", infoHandler.version)
+
 	router.GET("/userOrLoginRoute", authHandler.loginRouteOrUser)
 	router.GET("/auth", authHandler.googleAuthenticate)
 	router.POST("/pwAuth", authHandler.passwordAuthenticate)
@@ -71,27 +74,26 @@ func initRouter(app app) *gin.Engine {
 	auth.Use(authRequired())
 	auth.POST("/logout", authHandler.logout)
 
-	// auth.GET("/groups", groupHandler.index)
-	auth.GET("/groups/:groupID/matches", matchHandler.index)
-	auth.POST("/groups/:groupID/matches", matchHandler.matchCreate)
-	auth.GET("/groups/:groupID/players", playerHandler.playerIndex)
-	auth.GET("/groups/:groupID/playerStatistics", statisticHandler.players)
-	auth.GET("/groups/:groupID/teamStatistics", statisticHandler.players)
-	auth.GET("/groups/:groupID", groupHandler.groupShow)
+	auth.GET("/groups/:groupID/matches", groupHandler.getMatches)
+	auth.GET("/groups/:groupID", groupHandler.getGroup)
+	auth.GET("/groups/:groupID/players", groupHandler.getPlayers)
+	auth.GET("/groups/:groupID/playerStatistics", groupHandler.getPlayerStatistics)
+	auth.POST("/groups/:groupID/matches", groupHandler.postMatch)
 
-	auth.POST("/volleynet/signup", volleynetHandler.signup)
-	auth.GET("/volleynet/ladder", volleynetHandler.ladder)
-	auth.GET("/volleynet/tournaments", volleynetHandler.allTournaments)
-	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.tournament)
-	auth.GET("/volleynet/players/search", volleynetHandler.searchPlayers)
+	auth.GET("/volleynet/ladder", volleynetHandler.getLadder)
+	auth.GET("/volleynet/tournaments", volleynetHandler.getAllTournaments)
+	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.getTournament)
+	auth.GET("/volleynet/players/search", volleynetHandler.getSearchPlayers)
+	auth.POST("/volleynet/signup", volleynetHandler.postSignup)
 
-	auth.GET("/matches/:matchID", matchHandler.matchShow)
-	auth.DELETE("/matches/:matchID", matchHandler.matchDelete)
+	auth.GET("/matches/:matchID", matchHandler.getMatch)
+	auth.DELETE("/matches/:matchID", matchHandler.deleteMatch)
 
-	auth.POST("/players", playerHandler.playerCreate)
-	auth.GET("/players/:playerID/playerStatistics", statisticHandler.player)
-	auth.GET("/players/:playerID/matches", matchHandler.byPlayer)
-	auth.GET("/players/:playerID/teamStatistics", statisticHandler.playerTeams)
+	auth.GET("/players/:playerID", playerHandler.getPlayer)
+	auth.GET("/players/:playerID/statistics", playerHandler.getStatistics)
+	auth.GET("/players/:playerID/teamStatistics", playerHandler.getTeamStatistics)
+	auth.GET("/players/:playerID/matches", playerHandler.getMatches)
+	auth.POST("/players", playerHandler.postPlayer)
 
 	return router
 }

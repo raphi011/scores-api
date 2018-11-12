@@ -79,7 +79,7 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		return nil, nil, err
 	}
 
-	passwordService := &scores.PBKDF2PasswordService{
+	password := &scores.PBKDF2Password{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}
@@ -93,18 +93,34 @@ func createServices(provider string, connectionString string) (*scores.Services,
 
 	userService := &scores.UserService{
 		Repository: repos.User,
-		Password:   passwordService,
+		Password:   password,
+	}
+
+	matchService := &scores.MatchService{
+		Repository: repos.Match,
+	}
+
+	statisticService := &scores.StatisticService{
+		Repository: repos.Statistic,
+	}
+
+	teamService := &scores.TeamService{
+		Repository: repos.Team,
+	}
+
+	playerService := &scores.PlayerService{
+		Repository: repos.Player,
 	}
 
 	services = &scores.Services{
-		Group:    groupService,
-		Password: passwordService,
-		User:     userService,
+		Group:     groupService,
+		Password:  password,
+		User:      userService,
+		Match:     matchService,
+		Statistic: statisticService,
+		Team:      teamService,
+		Player:    playerService,
 
-		Match:     repos.Match,
-		Statistic: repos.Statistic,
-		Team:      repos.Team,
-		Player:    repos.Player,
 		Volleynet: repos.Volleynet,
 	}
 

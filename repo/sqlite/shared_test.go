@@ -88,11 +88,11 @@ func newMatch(s *repo.Repositories) *scores.Match {
 	t2, _ := s.Team.Create(&scores.Team{Name: "", Player1ID: p3.ID, Player2ID: p4.ID})
 
 	return &scores.Match{
-		Group:      g,
-		Team1:      t1,
-		Team2:      t2,
-		ScoreTeam1: 15,
-		ScoreTeam2: 13,
-		CreatedBy:  u,
+		Group:           g,
+		Team1:           t1,
+		Team2:           t2,
+		ScoreTeam1:      15,
+		ScoreTeam2:      13,
+		CreatedByUserID: u.ID,
 	}
 }

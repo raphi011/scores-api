@@ -20,7 +20,7 @@ func authRequired() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("userID", userID)
+		c.Set("user-id", userID)
 		c.Next()
 	}
 }

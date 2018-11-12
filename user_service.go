@@ -5,8 +5,9 @@ import (
 )
 
 type UserService struct {
-	Repository UserRepository
-	Password   PasswordService
+	Repository       UserRepository
+	PlayerRepository PlayerRepository
+	Password         Password
 }
 
 // SetPassword sets a new password for a user
@@ -35,7 +36,36 @@ func (s *UserService) SetPassword(
 
 // ByEmail retrieves a user by email
 func (s *UserService) ByEmail(email string) (*User, error) {
-	return s.Repository.ByEmail(email)
+	user, err := s.Repository.ByEmail(email)
+
+	if err != nil {
+		return nil, errors.Wrapf(err, "could not load user by email %s", email)
+	}
+
+	return s.complementUser(user)
+}
+
+// ByID retrieves a user by ID
+func (s *UserService) ByID(userID uint) (*User, error) {
+	user, err := s.Repository.ByID(userID)
+
+	if err != nil {
+		return nil, errors.Wrapf(err, "could not load user by ID %d", userID)
+	}
+
+	return s.complementUser(user)
+}
+
+func (s *UserService) complementUser(user *User) (*User, error) {
+	var err error
+
+	if user.PlayerID == 0 {
+		return user, nil
+	}
+
+	user.Player, err = s.PlayerRepository.Get(user.PlayerID)
+
+	return user, errors.Wrapf(err, "could not load user player %d", user.PlayerID)
 }
 
 // SetProfileImage updates a users profile image

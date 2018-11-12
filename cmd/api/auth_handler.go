@@ -43,11 +43,10 @@ func randToken() string {
 }
 
 type authHandler struct {
-	userService   	 *scores.UserService
-	playerRepository scores.PlayerRepository
-	groupRepository  scores.GroupRepository
-	conf             *oauth2.Config
-	passwordService  scores.PasswordService
+	userService  *scores.UserService
+
+	conf     *oauth2.Config
+	password scores.Password
 }
 
 func (a *authHandler) passwordAuthenticate(c *gin.Context) {
@@ -59,21 +58,21 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
-	user, err := a.getUser(credentials.Email)
+	user, err := a.userService.ByEmail(credentials.Email)
 
 	if err != nil {
 		jsonn(c, http.StatusUnauthorized, nil, "")
 		return
 	}
 
-	if !a.passwordService.Compare([]byte(credentials.Password), &user.PasswordInfo) {
+	if !a.password.Compare([]byte(credentials.Password), &user.PasswordInfo) {
 		jsonn(c, http.StatusUnauthorized, nil, "")
 		return
 	}
 
 	response := loginRouteOrUserDto{User: user}
 
-	successfullLogin(c, session, user.Email)
+	successfullLogin(c, session, user)
 	jsonn(c, http.StatusOK, response, "")
 }
 
@@ -119,7 +118,7 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 		return
 	}
 
-	user, err := a.getUser(googleUser.Email)
+	user, err := a.userService.ByEmail(googleUser.Email)
 
 	if err != nil {
 		c.Redirect(http.StatusFound, "/login?error=USER_NOT_FOUND")
@@ -131,35 +130,14 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 			}
 		}
 
-		successfullLogin(c, session, user.Email)
+		successfullLogin(c, session, user)
 
 		c.Redirect(http.StatusFound, "/")
 	}
 }
 
-func (a *authHandler) getUser(email string) (*scores.User, error) {
-	user, err := a.userService.ByEmail(email)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if user.PlayerID > 0 {
-		var player *scores.Player
-		player, err = a.playerRepository.Player(user.PlayerID)
-
-		if err != nil {
-			return nil, err
-		}
-
-		user.Player = player
-	}
-
-	return user, nil
-}
-
-func successfullLogin(c *gin.Context, session sessions.Session, email string) {
-	session.Set("user-id", email)
+func successfullLogin(c *gin.Context, session sessions.Session, user *scores.User) {
+	session.Set("user-id", user.ID)
 	session.Save()
 }
 
@@ -168,7 +146,7 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
 	if userID := session.Get("user-id"); userID != nil {
-		user, err := a.getUser(userID.(string))
+		user, err := a.userService.ByID(userID.(uint))
 
 		if err != nil {
 			session.Delete("user-id")

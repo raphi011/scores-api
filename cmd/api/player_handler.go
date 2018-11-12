@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin/binding"
 
@@ -16,16 +17,18 @@ type createPlayerDto struct {
 }
 
 type playerHandler struct {
-	playerRepository scores.PlayerRepository
+	playerService    *scores.PlayerService
+	statisticService *scores.StatisticService
+	matchService     *scores.MatchService
 }
 
-func (h *playerHandler) playerCreate(c *gin.Context) {
+func (h *playerHandler) postPlayer(c *gin.Context) {
 	var newPlayer createPlayerDto
 
 	if err := c.ShouldBindWith(&newPlayer, binding.JSON); err != nil {
 		jsonn(c, http.StatusBadRequest, nil, "Bad request")
 	} else {
-		player, err := h.playerRepository.Create(&scores.Player{Name: newPlayer.Name})
+		player, err := h.playerService.Create(&scores.Player{Name: newPlayer.Name})
 
 		if err != nil {
 			jsonn(c, http.StatusBadRequest, nil, "Bad request")
@@ -36,20 +39,8 @@ func (h *playerHandler) playerCreate(c *gin.Context) {
 	}
 }
 
-func (h *playerHandler) playerIndex(c *gin.Context) {
-	groupID, err := strconv.Atoi(c.Param("groupID"))
-
-	players, err := h.playerRepository.ByGroup(uint(groupID))
-
-	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad request")
-		return
-	}
-
-	jsonn(c, http.StatusOK, players, "")
-}
-
-func (h *playerHandler) playerShow(c *gin.Context) {
+func (h *playerHandler) getStatistics(c *gin.Context) {
+	filter := c.DefaultQuery("filter", "all")
 	playerID, err := strconv.Atoi(c.Param("playerID"))
 
 	if err != nil {
@@ -57,7 +48,83 @@ func (h *playerHandler) playerShow(c *gin.Context) {
 		return
 	}
 
-	player, err := h.playerRepository.Player(uint(playerID))
+	statistic, err := h.statisticService.Player(uint(playerID), filter)
+
+	if err != nil {
+		// TODO: check if not found or other error
+		jsonn(c, http.StatusNotFound, nil, "Statistic not found")
+		return
+	}
+
+	jsonn(c, http.StatusOK, statistic, "")
+}
+
+func (h *playerHandler) getTeamStatistics(c *gin.Context) {
+	filter := c.DefaultQuery("filter", "all")
+	playerID, err := strconv.Atoi(c.Param("playerID"))
+
+	if err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	statistics, err := h.statisticService.PlayerTeams(uint(playerID), filter)
+
+	if err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	jsonn(c, http.StatusOK, statistics, "")
+}
+
+func (h *playerHandler) getMatches(c *gin.Context) {
+	var err error
+	after := time.Now()
+	count := uint(25)
+
+	if afterParam := c.Query("after"); afterParam != "" {
+		after, err = time.Parse(time.RFC3339, afterParam)
+
+		if err != nil {
+			jsonn(c, http.StatusBadRequest, nil, "Bad request")
+			return
+		}
+	}
+
+	playerID, err := strconv.Atoi(c.Param("playerID"))
+
+	if err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	_, err = h.playerService.Get(uint(playerID))
+
+	if err != nil {
+		jsonn(c, http.StatusNotFound, nil, "Player not found")
+		return
+	}
+
+	matches, err := h.matchService.ByPlayer(uint(playerID), after, count)
+
+	if err != nil {
+		jsonn(c, http.StatusNotFound, nil, "Match not found")
+		return
+	}
+
+	jsonn(c, http.StatusOK, matches, "")
+}
+
+func (h *playerHandler) getPlayer(c *gin.Context) {
+	playerID, err := strconv.Atoi(c.Param("playerID"))
+
+	if err != nil {
+		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		return
+	}
+
+	player, err := h.playerService.Get(uint(playerID))
 
 	if err != nil {
 		jsonn(c, http.StatusNotFound, nil, "Player not found")

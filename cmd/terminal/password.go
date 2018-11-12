@@ -33,7 +33,7 @@ func setNewPassword() {
 		return
 	}
 
-	us := sqlite.UserRepository{DB: db, PW: &scores.PBKDF2PasswordService{
+	us := sqlite.UserRepository{DB: db, PW: &scores.PBKDF2Password{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}}

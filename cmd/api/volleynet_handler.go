@@ -18,10 +18,10 @@ import (
 
 type volleynetHandler struct {
 	volleynetRepository scores.VolleynetRepository
-	userService      *scores.UserService
+	userService         *scores.UserService
 }
 
-func (h *volleynetHandler) ladder(c *gin.Context) {
+func (h *volleynetHandler) getLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 
 	ladder, err := h.volleynetRepository.Ladder(gender)
@@ -34,7 +34,7 @@ func (h *volleynetHandler) ladder(c *gin.Context) {
 	jsonn(c, http.StatusOK, ladder, "")
 }
 
-func (h *volleynetHandler) allTournaments(c *gin.Context) {
+func (h *volleynetHandler) getAllTournaments(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 	league := c.DefaultQuery("league", "AMATEUR TOUR")
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
@@ -60,8 +60,7 @@ func (h *volleynetHandler) allTournaments(c *gin.Context) {
 	jsonn(c, http.StatusOK, tournaments, "")
 }
 
-
-func (h *volleynetHandler) tournament(c *gin.Context) {
+func (h *volleynetHandler) getTournament(c *gin.Context) {
 	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
 
 	if err != nil {
@@ -96,7 +95,7 @@ type signupForm struct {
 	RememberMe   bool   `json:"rememberMe"`
 }
 
-func (h *volleynetHandler) signup(c *gin.Context) {
+func (h *volleynetHandler) postSignup(c *gin.Context) {
 	su := signupForm{}
 	if err := c.ShouldBindWith(&su, binding.JSON); err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -151,7 +150,7 @@ func (h *volleynetHandler) signup(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (h *volleynetHandler) searchPlayers(c *gin.Context) {
+func (h *volleynetHandler) getSearchPlayers(c *gin.Context) {
 	vnClient := client.Default()
 	firstName := c.Query("fname")
 	lastName := c.Query("lname")
