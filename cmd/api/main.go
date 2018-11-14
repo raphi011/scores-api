@@ -92,13 +92,19 @@ func createServices(provider string, connectionString string) (*scores.Services,
 	)
 
 	userService := &scores.UserService{
-		Repository: repos.User,
-		Password:   password,
+		Repository:       repos.User,
+		PlayerRepository: repos.Player,
+		Password:         password,
 	}
 
 	matchService := &scores.MatchService{
 		Repository: repos.Match,
+		PlayerRepository: repos.Player,
+		GroupRepository: repos.Group,
+		UserRepository: repos.User,
+		TeamRepository: repos.Team,
 	}
+
 
 	statisticService := &scores.StatisticService{
 		Repository: repos.Statistic,

@@ -4,23 +4,47 @@ import (
 	"net"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
-func authRequired() gin.HandlerFunc {
+func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		log := logger(c)
 		session := sessions.Default(c)
 		userID := session.Get("user-id")
 
 		if userID == nil {
+			log.Print("unauthorized")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		c.Set("user-id", userID)
+
+		log = log.WithFields(logrus.Fields{"user-id": userID})
+
+		c.Set("log", log)
+
+		c.Next()
+	}
+}
+
+func loggerMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		log := logrus.WithFields(logrus.Fields{
+			"method":     c.Request.Method,
+			"url":        c.Request.URL.String(),
+			"ip":         c.Request.RemoteAddr,
+			"user-agent": c.Request.UserAgent(),
+			"request-id": uuid.New().String(),
+		})
+
+		c.Set("log", log)
+
 		c.Next()
 	}
 }
@@ -35,12 +59,12 @@ func privateIP(ip net.IP) bool {
 	return private
 }
 
-func localAuth() gin.HandlerFunc {
+func localhostOnlyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		host, _, err := net.SplitHostPort(c.Request.RemoteAddr)
 
 		if err != nil {
-			log.Print(err)
+			// this really should not happen
 		}
 
 		ip := net.ParseIP(host)

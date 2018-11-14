@@ -57,7 +57,7 @@ func initRouter(app app) *gin.Engine {
 
 	infoHandler := infoHandler{}
 
-	router.Use(sessions.Sessions("session", store))
+	router.Use(sessions.Sessions("session", store), loggerMiddleware())
 
 	router.GET("/version", infoHandler.version)
 
@@ -66,12 +66,12 @@ func initRouter(app app) *gin.Engine {
 	router.POST("/pwAuth", authHandler.passwordAuthenticate)
 
 	localhost := router.Group("/")
-	localhost.Use(localAuth())
+	localhost.Use(localhostOnlyMiddleware())
 	localhost.GET("/volleynet/scrape/tournaments", volleynetScrapeHandler.scrapeTournaments)
 	localhost.GET("/volleynet/scrape/ladder", volleynetScrapeHandler.scrapeLadder)
 
 	auth := router.Group("/")
-	auth.Use(authRequired())
+	auth.Use(authMiddleware())
 	auth.POST("/logout", authHandler.logout)
 
 	auth.GET("/groups/:groupID/matches", groupHandler.getMatches)
@@ -99,7 +99,6 @@ func initRouter(app app) *gin.Engine {
 }
 
 func jsonn(c *gin.Context, code int, data interface{}, message string) {
-
 	out, _ := json.Marshal(gin.H{
 		"status":  code,
 		"message": message,

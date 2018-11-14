@@ -12,6 +12,7 @@ require (
 	github.com/gobuffalo/packr v1.19.0
 	github.com/golang/protobuf v1.0.0
 	github.com/google/go-cmp v0.2.0
+	github.com/google/uuid v1.0.0
 	github.com/gorilla/context v0.0.0-20160226214623-1ea25387ff6f
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v0.0.0-20160922145804-ca9ada445741

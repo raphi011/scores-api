@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"time"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin/binding"
 
@@ -49,7 +47,7 @@ func (h *volleynetHandler) getAllTournaments(c *gin.Context) {
 	tournaments, err := h.volleynetRepository.GetTournaments(gender, league, seasonNumber)
 
 	if err != nil {
-		log.Print(err)
+		logger(c).Print(err)
 		c.AbortWithError(http.StatusBadRequest, err)
 	}
 
@@ -125,7 +123,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 		user, err := h.userService.ByEmail(userID.(string))
 
 		if err != nil {
-			log.Warnf("loading user by email: %s failed", userID.(string))
+			logger(c).Warnf("loading user by email: %s failed", userID.(string))
 		}
 
 		if user.VolleynetLogin != su.Username ||
@@ -134,7 +132,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 			err = h.userService.SetVolleynetLogin(su.Username, loginData.ID)
 
 			if err != nil {
-				log.Warnf("updating volleynet user information failed for userID: %d", user.ID)
+				logger(c).Warnf("updating volleynet user information failed for userID: %d", user.ID)
 			}
 		}
 	}
@@ -142,7 +140,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 	err = vnClient.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
 
 	if err != nil {
-		log.Printf("entry to tournamentID %v with partnerID %v did not work: %s", su.TournamentID, su.PartnerID, err)
+		logger(c).Printf("entry to tournamentID %v with partnerID %v did not work: %s", su.TournamentID, su.PartnerID, err)
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}

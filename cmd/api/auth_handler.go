@@ -7,8 +7,6 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores"
@@ -72,6 +70,8 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 
 	response := loginRouteOrUserDto{User: user}
 
+	logger(c).Infof("user %q authenticated via password", user.Email)
+
 	successfullLogin(c, session, user)
 	jsonn(c, http.StatusOK, response, "")
 }
@@ -126,9 +126,11 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 		if user.ProfileImageURL != googleUser.Picture {
 			err := a.userService.SetProfileImage(user.ID, googleUser.Picture)
 			if err != nil {
-				log.Error(err)
+				logger(c).Errorf("error setting profile image %q", err)
 			}
 		}
+
+		logger(c).Infof("user %q authenticated via google", googleUser.Email)
 
 		successfullLogin(c, session, user)
 
