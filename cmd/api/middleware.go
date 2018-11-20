@@ -33,9 +33,9 @@ func authMiddleware() gin.HandlerFunc {
 	}
 }
 
-func loggerMiddleware() gin.HandlerFunc {
+func loggerMiddleware(log logrus.FieldLogger) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log := logrus.WithFields(logrus.Fields{
+		log = log.WithFields(logrus.Fields{
 			"method":     c.Request.Method,
 			"url":        c.Request.URL.String(),
 			"ip":         c.Request.RemoteAddr,

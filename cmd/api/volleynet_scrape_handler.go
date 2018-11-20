@@ -27,7 +27,7 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 	vnClient := client.Default()
 
-	sync := sync.SyncRepository{
+	sync := sync.SyncService{
 		Client:              vnClient,
 		VolleynetRepository: h.volleynetRepository,
 	}
@@ -58,7 +58,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 
 	vnClient := client.Default()
 
-	sync := sync.SyncRepository{
+	sync := sync.SyncService{
 		Client:              vnClient,
 		VolleynetRepository: h.volleynetRepository,
 	}

@@ -1,9 +1,16 @@
 .vscode
 .next
 
+conf
+data
 nginx-config
 node_modules
-data
 playground
 
 secrets.tar.enc
+README.md
+docker-compose.dev.yml
+docker-compose.yml
+
+.travis.yml
+.env

@@ -31,7 +31,7 @@ const (
 	SyncTournamentNew                = "SyncTournamentNew"
 )
 
-func (s *SyncRepository) syncTournaments(changes *Changes, oldTournaments, newTournaments []volleynet.FullTournament) {
+func (s *SyncService) syncTournaments(changes *Changes, oldTournaments, newTournaments []volleynet.FullTournament) {
 	oldTournamentMap := createTournamentMap(oldTournaments)
 	newTournamentMap := createTournamentMap(newTournaments)
 

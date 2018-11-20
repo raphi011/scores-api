@@ -47,7 +47,7 @@ func (h *volleynetHandler) getAllTournaments(c *gin.Context) {
 	tournaments, err := h.volleynetRepository.GetTournaments(gender, league, seasonNumber)
 
 	if err != nil {
-		logger(c).Print(err)
+		logger(c).Error(err)
 		c.AbortWithError(http.StatusBadRequest, err)
 	}
 
@@ -140,7 +140,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 	err = vnClient.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
 
 	if err != nil {
-		logger(c).Printf("entry to tournamentID %v with partnerID %v did not work: %s", su.TournamentID, su.PartnerID, err)
+		logger(c).Warnf("entry to tournamentID %v with partnerID %v did not work: %s", su.TournamentID, su.PartnerID, err)
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}

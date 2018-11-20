@@ -182,5 +182,7 @@ func (a *authHandler) logout(c *gin.Context) {
 		response.LoginRoute = a.conf.AuthCodeURL(state)
 	}
 
+	logger(c).Info("User logged out")
+
 	jsonn(c, http.StatusOK, response, "")
 }

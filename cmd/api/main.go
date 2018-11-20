@@ -3,20 +3,23 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net"
 	"os"
-
-	log "github.com/sirupsen/logrus"
 
 	"golang.org/x/oauth2"
 
+	"github.com/bshuster-repo/logrus-logstash-hook"
+	"github.com/cenkalti/backoff"
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sqlite"
+	"github.com/sirupsen/logrus"
 )
 
 type app struct {
 	conf       *oauth2.Config
 	services   *scores.Services
+	log        logrus.FieldLogger
 	production bool
 }
 
@@ -28,6 +31,8 @@ func main() {
 	gSecret := flag.String("goauth", "./client_secret.json", "Path to google oauth secret")
 
 	flag.Parse()
+
+	log := setupLogger()
 
 	production := os.Getenv("APP_ENV") == "production"
 	host := os.Getenv("BACKEND_URL")
@@ -54,10 +59,47 @@ func main() {
 		production: production,
 		services:   services,
 		conf:       googleOAuth,
+		log:        log,
 	}
 
 	router := initRouter(app)
 	router.Run()
+}
+
+func setupLogger() logrus.FieldLogger {
+	log := logrus.New()
+
+	var con net.Conn
+
+	err := backoff.Retry(func() error {
+		var err error
+
+		con, err = net.Dial("tcp", "logstash:5000")
+
+		if err != nil {
+			log.Printf("Retrying connection to logstash: %s", err)
+		}
+
+		return err
+	}, backoff.NewExponentialBackOff())
+
+	if err != nil {
+		log.Warnf("unable to setup logstash hook: %s", err)
+		return log
+	}
+
+	log.Print("Successfully connected to logstash")
+
+	hook, err := logrustash.NewHookWithConn(con, "scores")
+
+	if err != nil {
+		log.Warnf("unable to setup logstash hook: %s", err)
+		return log
+	}
+
+	log.Hooks.Add(hook)
+
+	return log
 }
 
 func createServices(provider string, connectionString string) (*scores.Services, func(), error) {
@@ -98,13 +140,12 @@ func createServices(provider string, connectionString string) (*scores.Services,
 	}
 
 	matchService := &scores.MatchService{
-		Repository: repos.Match,
+		Repository:       repos.Match,
 		PlayerRepository: repos.Player,
-		GroupRepository: repos.Group,
-		UserRepository: repos.User,
-		TeamRepository: repos.Team,
+		GroupRepository:  repos.Group,
+		UserRepository:   repos.User,
+		TeamRepository:   repos.Team,
 	}
-
 
 	statisticService := &scores.StatisticService{
 		Repository: repos.Statistic,

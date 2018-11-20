@@ -4,6 +4,8 @@ require (
 	cloud.google.com/go v0.19.0
 	github.com/PuerkitoBio/goquery v1.4.0
 	github.com/andybalholm/cascadia v1.0.0
+	github.com/bshuster-repo/logrus-logstash-hook v0.4.1
+	github.com/cenkalti/backoff v2.0.0+incompatible
 	github.com/davecgh/go-spew v1.1.1
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7

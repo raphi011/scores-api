@@ -28,7 +28,7 @@ func createTeamMap(teams []volleynet.TournamentTeam) map[string]volleynet.Tourna
 	return teamMap
 }
 
-func (s *SyncRepository) syncTournamentTeams(changes *TeamChanges, oldTeams, newTeams []volleynet.TournamentTeam) {
+func (s *SyncService) syncTournamentTeams(changes *TeamChanges, oldTeams, newTeams []volleynet.TournamentTeam) {
 	oldTeamMap := createTeamMap(oldTeams)
 	newTeamMap := createTeamMap(newTeams)
 
@@ -55,7 +55,7 @@ func hasTeamChanged(old, new volleynet.TournamentTeam) bool {
 	return new != old
 }
 
-func (s *SyncRepository) persistTeams(changes *TeamChanges) error {
+func (s *SyncService) persistTeams(changes *TeamChanges) error {
 	for _, new := range changes.New {
 		err := s.VolleynetRepository.NewTeam(&new)
 
@@ -83,7 +83,7 @@ func (s *SyncRepository) persistTeams(changes *TeamChanges) error {
 	return nil
 }
 
-func (s *SyncRepository) addMissingPlayers(teams []volleynet.TournamentTeam) error {
+func (s *SyncService) addMissingPlayers(teams []volleynet.TournamentTeam) error {
 	players := distinctPlayers(teams)
 
 	for _, p := range players {
@@ -117,7 +117,7 @@ func distinctPlayers(teams []volleynet.TournamentTeam) []*volleynet.Player {
 	return distinct
 }
 
-func (s *SyncRepository) addPlayerIfNeeded(player *volleynet.Player) error {
+func (s *SyncService) addPlayerIfNeeded(player *volleynet.Player) error {
 	if p, _ := s.VolleynetRepository.Player(player.ID); p == nil {
 		err := s.VolleynetRepository.NewPlayer(player)
 

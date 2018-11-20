@@ -57,7 +57,7 @@ func initRouter(app app) *gin.Engine {
 
 	infoHandler := infoHandler{}
 
-	router.Use(sessions.Sessions("session", store), loggerMiddleware())
+	router.Use(sessions.Sessions("session", store), loggerMiddleware(app.log))
 
 	router.GET("/version", infoHandler.version)
 

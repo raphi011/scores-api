@@ -38,7 +38,52 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
 
+  ### DB ###
+
   db:
     image: mariadb:latest
     volumes:
       - "./data/mariadb:/var/lib/mysql"
+
+  ### ELK Stack ###
+
+  elasticsearch:
+    build:
+      context: conf/elasticsearch/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ./conf/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  logstash:
+    build:
+      context: conf/logstash/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ./conf/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./conf/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build:
+      context: conf/kibana/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    volumes:
+      - ./conf/kibana/config/:/usr/share/kibana/config:ro
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch

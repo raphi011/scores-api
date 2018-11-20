@@ -12,7 +12,7 @@ type LadderSyncReport struct {
 	UpdatedPlayers int
 }
 
-func (s *SyncRepository) Ladder(gender string) (*LadderSyncReport, error) {
+func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 	ranks, err := s.Client.Ladder(gender)
 	report := &LadderSyncReport{}
 

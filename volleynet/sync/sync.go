@@ -33,12 +33,12 @@ type Changes struct {
 	Success        bool
 }
 
-type SyncRepository struct {
+type SyncService struct {
 	VolleynetRepository PersistanceRepository
 	Client              client.Client
 }
 
-func (s *SyncRepository) Tournaments(gender, league string, season int) (*Changes, error) {
+func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, error) {
 	report := &Changes{Tournament: &TournamentChanges{}, Team: &TeamChanges{}}
 
 	start := time.Now()
@@ -90,7 +90,7 @@ func (s *SyncRepository) Tournaments(gender, league string, season int) (*Change
 	return report, errors.Wrap(err, "sync failed")
 }
 
-func (s *SyncRepository) persistChanges(report *Changes) error {
+func (s *SyncService) persistChanges(report *Changes) error {
 	err := s.addMissingPlayers(report.Team.New)
 
 	if err != nil {

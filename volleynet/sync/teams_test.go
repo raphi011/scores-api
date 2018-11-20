@@ -41,7 +41,7 @@ func TestDistinctPlayers(t *testing.T) {
 }
 
 func TestAddMissingPlayers(t *testing.T) {
-	_, volleynetMock, syncRepository := syncMock()
+	_, volleynetMock, SyncService := syncMock()
 
 	teams := []volleynet.TournamentTeam{
 		volleynet.TournamentTeam{
@@ -61,7 +61,7 @@ func TestAddMissingPlayers(t *testing.T) {
 
 	volleynetMock.On("NewPlayer", teams[0].Player1).Return(nil)
 
-	err := syncRepository.addMissingPlayers(teams)
+	err := SyncService.addMissingPlayers(teams)
 
 	if err != nil {
 		t.Fatal(err)
@@ -71,7 +71,7 @@ func TestAddMissingPlayers(t *testing.T) {
 }
 
 func TestSyncTournamentTeams(t *testing.T) {
-	_, _, syncRepository := syncMock()
+	_, _, SyncService := syncMock()
 
 	changes := &TeamChanges{}
 	tournamentID := 1
@@ -122,15 +122,15 @@ func TestSyncTournamentTeams(t *testing.T) {
 		teamNew,
 	}
 
-	syncRepository.syncTournamentTeams(changes, old, new)
+	SyncService.syncTournamentTeams(changes, old, new)
 
 	if len(changes.New) != 1 {
-		t.Errorf("SyncRepository.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d", len(changes.New))
+		t.Errorf("SyncService.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d", len(changes.New))
 	}
 	if len(changes.Update) != 1 {
-		t.Errorf("SyncRepository.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update))
+		t.Errorf("SyncService.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update))
 	}
 	if len(changes.Delete) != 1 {
-		t.Errorf("SyncRepository.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete))
+		t.Errorf("SyncService.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete))
 	}
 }
