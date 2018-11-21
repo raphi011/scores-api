@@ -30,14 +30,6 @@ services:
     volumes:
       - "~/data/api:/srv/scores"
 
-  scrape:
-    image: raphi011/scores-scrape
-    depends_on:
-      - "backend"
-    build:
-      context: .
-      dockerfile: ./cmd/terminal/Dockerfile
-
   db:
     image: mariadb:latest
     volumes:
