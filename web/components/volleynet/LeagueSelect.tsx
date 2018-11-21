@@ -1,5 +1,5 @@
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import React from 'react';
 
 const defaultLeagues = [
@@ -14,17 +14,17 @@ interface ILeague {
 }
 
 interface IProps {
-  selected: string;
-  onChange: (league: string) => void;
+  selected: string[];
+  onChange: (event, league: string[]) => void;
   leagues?: ILeague[];
 }
 
 export default ({ selected, onChange, leagues = defaultLeagues }: IProps) => (
-  <Select value={selected} onChange={onChange}>
+  <ToggleButtonGroup value={selected} onChange={onChange}>
     {leagues.map(l => (
-      <MenuItem key={l.key} value={l.key}>
+      <ToggleButton key={l.key} value={l.key}>
         {l.name}
-      </MenuItem>
+      </ToggleButton>
     ))}
-  </Select>
+  </ToggleButtonGroup>
 );

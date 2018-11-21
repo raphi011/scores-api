@@ -1,7 +1,6 @@
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import React from 'react';
-import { tournamentDateString } from '../../utils/tournament';
 
 import { Tournament } from '../../types';
 
@@ -11,13 +10,13 @@ interface IProps {
 }
 
 function buildSubtitle(tournament: Tournament) {
-  let st = tournamentDateString(tournament);
+  let st = tournament.signedupTeams.toString();
 
   if (tournament.maxTeams >= 0) {
-    st += ` • ${tournament.signedupTeams} / ${tournament.maxTeams} teams • ${
-      tournament.league
-    }`;
+    st += ` / ${tournament.maxTeams} teams`;
   }
+
+  st += ` • ${tournament.league}`;
 
   return st;
 }

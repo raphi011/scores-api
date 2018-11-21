@@ -128,7 +128,7 @@ class TournamentView extends React.Component<IProps, IState> {
             href={`${tournament.link}`}
             target="_blank"
           >
-            <Typography variant="h1">{tournament.name}</Typography>
+            <Typography variant="h3">{tournament.name}</Typography>
           </a>
         </div>
         <Card className={classes.card}>

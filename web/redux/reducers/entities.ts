@@ -262,14 +262,22 @@ export const statisticByPlayerSelector = (state: IStore, playerId: number) =>
       )
     : null;
 
-export const tournamentsByLeagueSelector = (state: IStore, league: string) =>
-  (state.entities.tournament.byLeague[league] || []).length
-    ? denorm(
-        'tournament',
-        entityMapSelector(state),
-        state.entities.tournament.byLeague[league],
-      )
-    : null;
+export const tournamentsByLeagueSelector = (
+  state: IStore,
+  leagues: string[],
+) => {
+  leagues
+    .map(league =>
+      (state.entities.tournament.byLeague[league] || []).length
+        ? denorm(
+            'tournament',
+            entityMapSelector(state),
+            state.entities.tournament.byLeague[league],
+          )
+        : [],
+    )
+    .flat();
+};
 
 export const tournamentSelector = (state: IStore, tournamentId: number) =>
   denorm('tournament', entityMapSelector(state), tournamentId);

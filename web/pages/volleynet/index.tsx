@@ -1,11 +1,10 @@
 import Router from 'next/router';
 import React from 'react';
 
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
-
 import CenteredLoading from '../../components/CenteredLoading';
-import LeagueSelect from '../../components/LeagueSelect';
+import DayHeader from '../../components/DayHeader';
+import GroupedList from '../../components/GroupedList';
+import LeagueSelect from '../../components/volleynet/LeagueSelect';
 import TournamentList from '../../components/volleynet/TournamentList';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
@@ -14,69 +13,99 @@ import { tournamentsByLeagueSelector } from '../../redux/reducers/entities';
 
 import { Tournament } from '../../types';
 
-const leagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TEAM'];
-
-interface IState {
-  tabOpen: number;
-}
+const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TEAM'];
 
 interface IProps {
   tournaments: Tournament[];
   loadTournaments: (
-    filters: { gender: string; league: string; season: string },
+    filters: { gender: string; leagues: string[]; season: string },
   ) => void;
-  league: string;
+  leagues: string[];
   classes: any;
 }
 
 const thisYear = new Date().getFullYear().toString();
 
-class Volleynet extends React.Component<IProps, IState> {
+function sortDescending(a, b) {
+  return new Date(b.start).getTime() - new Date(a.start).getTime();
+}
 
+function sameDay(d1: Date, d2: Date): boolean {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDay() === d2.getDay()
+  );
+}
+
+function groupTournaments(tournaments: Tournament[]) {
+  const grouped = [];
+
+  let previous = null;
+
+  tournaments.forEach(t => {
+    if (!previous || !sameDay(new Date(previous.start), new Date(t.start))) {
+      grouped.push([t]);
+    } else {
+      grouped[grouped.length - 1].push(t);
+    }
+
+    previous = t;
+  });
+
+  return grouped;
+}
+
+function renderHeader(tournaments: Tournament[]) {
+  return <DayHeader date={new Date(tournaments[0].start)} />;
+}
+
+class Volleynet extends React.Component<IProps> {
   static mapDispatchToProps = {
     loadTournaments: loadTournamentsAction,
   };
-  static buildActions({ league }: IProps) {
+  static buildActions({ leagues }: IProps) {
     return [
       loadTournamentsAction({
         gender: 'M',
-        league,
+        leagues,
         season: thisYear,
       }),
     ];
   }
 
   static getParameters(query) {
-    let { league = 'AMATEUR TOUR' } = query;
+    let { leagues = ['AMATEUR TOUR'] } = query;
 
-    if (!leagues.includes(league)) {
-      league = leagues[0];
+    if (!leagues.length) {
+      leagues = [leagues];
     }
 
-    return { league };
+    leagues = leagues.filter(l => defaultLeagues.includes(l));
+
+    return { leagues };
   }
 
-  static mapStateToProps(state, { league }: IProps) {
-    const tournaments = tournamentsByLeagueSelector(state, league);
+  static mapStateToProps(state, { leagues }: IProps) {
+    const tournaments = tournamentsByLeagueSelector(state, leagues);
 
     return { tournaments };
   }
 
-  static sortAscending = (a, b) =>
-    new Date(a.start).getTime() - new Date(b.start).getTime();
-
-  static sortDescending = (a, b) =>
-    new Date(b.start).getTime() - new Date(a.start).getTime();
-
-  state = {
-    tabOpen: 0,
+  renderList = (tournaments: Tournament[]) => {
+    return (
+      <TournamentList
+        tournaments={tournaments}
+        onTournamentClick={this.onTournamentClick}
+      />
+    );
   };
 
   componentDidUpdate(prevProps) {
-    const { loadTournaments, league } = this.props;
+    const { loadTournaments, leagues } = this.props;
 
-    if (league !== prevProps.league) {
-      loadTournaments({ gender: 'M', league, season: thisYear });
+    if (leagues !== prevProps.league) {
+      loadTournaments({ gender: 'M', leagues, season: thisYear });
     }
   }
 
@@ -84,79 +113,32 @@ class Volleynet extends React.Component<IProps, IState> {
     Router.push({ pathname: '/volleynet/tournament', query: { id: t.id } });
   };
 
-  onLeagueChange = event => {
-    const league = event.target.value;
+  onLeagueChange = (_, selectedLeagues) => {
     Router.push({
       pathname: '/volleynet',
-      query: { league },
+      query: { leagues: selectedLeagues },
     });
   };
 
-  onTabClick = (_, tabOpen) => {
-    this.setState({ tabOpen });
-  };
-
-  orderTournaments = () => {
-    const { tournaments } = this.props;
-
-    if (!tournaments) {
-      return null;
-    }
-
-    return {
-      upcoming: tournaments
-        .filter(
-          t =>
-            t.status === 'upcoming' ||
-            (t.status === 'canceled' && new Date(t.end) >= new Date()),
-        )
-        .sort(Volleynet.sortAscending),
-
-      past: tournaments
-        .filter(
-          t =>
-            t.status === 'done' ||
-            (t.status === 'canceled' && new Date(t.end) < new Date()),
-        )
-        .sort(Volleynet.sortDescending),
-      played: [],
-    };
-  };
-
   render() {
-    const { tabOpen } = this.state;
-    const { league } = this.props;
-
-    const tournaments = this.orderTournaments();
+    const { leagues, tournaments } = this.props;
 
     let content = <CenteredLoading />;
-    let ts = [];
 
     if (tournaments) {
-      switch (tabOpen) {
-        case 0:
-          ts = tournaments.upcoming;
-          break;
-        case 1:
-          ts = tournaments.past;
-          break;
-        default: // this shouldn't happen
-      }
       content = (
-        <TournamentList
-          tournaments={ts}
-          onTournamentClick={this.onTournamentClick}
+        <GroupedList<Tournament>
+          groupItems={groupTournaments}
+          items={tournaments.sort(sortDescending)}
+          renderHeader={renderHeader}
+          renderList={this.renderList}
         />
       );
     }
 
     return (
       <Layout title={{ text: 'Volleynet', href: '' }}>
-        <LeagueSelect selected={league} onChange={this.onLeagueChange} />
-        <Tabs onChange={this.onTabClick} value={tabOpen} fullWidth>
-          <Tab label="Upcoming" />
-          <Tab label="Past" />
-        </Tabs>
+        <LeagueSelect selected={leagues} onChange={this.onLeagueChange} />
         {content}
       </Layout>
     );
