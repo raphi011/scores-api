@@ -4,7 +4,9 @@ jobs:
       name: "go"
       language: go
       go: "1.11"
-      script: env GO111MODULE=on go test
+      script: go test
+      env:
+        - GO111MODULE=on
     - language: node_js
       node_js: node
       install: npm --prefix ./web install ./web
