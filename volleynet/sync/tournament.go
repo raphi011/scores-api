@@ -106,7 +106,7 @@ func SyncTournaments(persisted *volleynet.FullTournament, current *volleynet.Tou
 	}
 }
 
-func (s *SyncRepository) persistTournaments(changes *TournamentChanges) error {
+func (s *SyncService) persistTournaments(changes *TournamentChanges) error {
 	for _, new := range changes.New {
 		err := s.VolleynetRepository.NewTournament(&new)
 

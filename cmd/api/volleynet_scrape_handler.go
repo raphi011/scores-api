@@ -9,13 +9,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/volleynet/client"
 	"github.com/raphi011/scores/volleynet/sync"
 )
 
 type volleynetScrapeHandler struct {
 	volleynetRepository scores.VolleynetRepository
-	userService      *scores.UserService
+	userService         *scores.UserService
+	syncService         *sync.SyncService
 
 	mux msync.Mutex
 }
@@ -25,14 +25,8 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	defer h.mux.Unlock()
 
 	gender := c.DefaultQuery("gender", "M")
-	vnClient := client.Default()
 
-	sync := sync.SyncService{
-		Client:              vnClient,
-		VolleynetRepository: h.volleynetRepository,
-	}
-
-	report, err := sync.Ladder(gender)
+	report, err := h.syncService.Ladder(gender)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadGateway, err)
@@ -56,14 +50,7 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 		return
 	}
 
-	vnClient := client.Default()
-
-	sync := sync.SyncService{
-		Client:              vnClient,
-		VolleynetRepository: h.volleynetRepository,
-	}
-
-	report, err := sync.Tournaments(gender, league, seasonInt)
+	report, err := h.syncService.Tournaments(gender, league, seasonInt)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadGateway, err)

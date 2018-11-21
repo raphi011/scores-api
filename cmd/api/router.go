@@ -46,13 +46,13 @@ func initRouter(app app) *gin.Engine {
 	}
 
 	volleynetHandler := volleynetHandler{
-		volleynetRepository: app.services.Volleynet,
-		userService:         app.services.User,
+		volleynetService: app.services.Volleynet,
+		userService:      app.services.User,
 	}
 
 	volleynetScrapeHandler := volleynetScrapeHandler{
-		volleynetRepository: app.services.Volleynet,
-		userService:         app.services.User,
+		syncService: app.services.VolleynetScrape,
+		userService: app.services.User,
 	}
 
 	infoHandler := infoHandler{}

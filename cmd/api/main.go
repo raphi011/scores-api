@@ -13,6 +13,8 @@ import (
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sqlite"
+	"github.com/raphi011/scores/volleynet/sync"
+	"github.com/raphi011/scores/volleynet/client"
 	"github.com/sirupsen/logrus"
 )
 
@@ -159,7 +161,18 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		Repository: repos.Player,
 	}
 
+	scrapeService := &sync.SyncService{
+		Client: client.Default(),
+		VolleynetRepository: repos.Volleynet,
+	}
+
+	volleynetService := &scores.VolleynetService{
+		Repository: repos.Volleynet,
+	}
+
 	services = &scores.Services{
+		VolleynetScrape: scrapeService,
+		Volleynet: volleynetService,
 		Group:     groupService,
 		Password:  password,
 		User:      userService,
@@ -168,7 +181,7 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		Team:      teamService,
 		Player:    playerService,
 
-		Volleynet: repos.Volleynet,
+
 	}
 
 	return services, closerFunc, nil

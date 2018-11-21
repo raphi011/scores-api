@@ -15,14 +15,14 @@ import (
 )
 
 type volleynetHandler struct {
-	volleynetRepository scores.VolleynetRepository
+	volleynetService *scores.VolleynetService
 	userService         *scores.UserService
 }
 
 func (h *volleynetHandler) getLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 
-	ladder, err := h.volleynetRepository.Ladder(gender)
+	ladder, err := h.volleynetService.Ladder(gender)
 
 	if err != nil {
 		c.Status(http.StatusBadRequest)
@@ -44,15 +44,11 @@ func (h *volleynetHandler) getAllTournaments(c *gin.Context) {
 		return
 	}
 
-	tournaments, err := h.volleynetRepository.GetTournaments(gender, league, seasonNumber)
+	tournaments, err := h.volleynetService.GetTournaments(gender, league, seasonNumber)
 
 	if err != nil {
 		logger(c).Error(err)
 		c.AbortWithError(http.StatusBadRequest, err)
-	}
-
-	for _, t := range tournaments {
-		t.Teams, _ = h.volleynetRepository.TournamentTeams(t.ID)
 	}
 
 	jsonn(c, http.StatusOK, tournaments, "")
@@ -66,22 +62,15 @@ func (h *volleynetHandler) getTournament(c *gin.Context) {
 		return
 	}
 
-	tournament, err := h.volleynetRepository.Tournament(tournamentID)
+	tournament, err := h.volleynetService.Tournament(tournamentID)
 
 	if err == scores.ErrorNotFound {
 		c.AbortWithError(http.StatusNotFound, err)
 	} else if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-	} else {
-		tournament.Teams, err = h.volleynetRepository.TournamentTeams(tournament.ID)
-
-		if err != nil {
-			c.AbortWithStatus(http.StatusInternalServerError)
-			return
-		}
-
-		jsonn(c, http.StatusOK, tournament, "")
+		c.AbortWithError(http.StatusInternalServerError, err)
 	}
+
+	jsonn(c, http.StatusOK, tournament, "")
 }
 
 type signupForm struct {
