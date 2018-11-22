@@ -266,17 +266,22 @@ export const tournamentsByLeagueSelector = (
   state: IStore,
   leagues: string[],
 ) => {
-  leagues
-    .map(league =>
-      (state.entities.tournament.byLeague[league] || []).length
+  let tournaments = [];
+
+  leagues.forEach(league => {
+    tournaments = [
+      ...tournaments,
+      ...((state.entities.tournament.byLeague[league] || []).length
         ? denorm(
             'tournament',
             entityMapSelector(state),
             state.entities.tournament.byLeague[league],
           )
-        : [],
-    )
-    .flat();
+        : []),
+    ];
+  });
+
+  return tournaments;
 };
 
 export const tournamentSelector = (state: IStore, tournamentId: number) =>

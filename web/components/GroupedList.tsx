@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 interface IProps<T> {
   groupItems: (items: T[]) => T[][];

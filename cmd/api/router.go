@@ -57,7 +57,7 @@ func initRouter(app app) *gin.Engine {
 
 	infoHandler := infoHandler{}
 
-	router.Use(sessions.Sessions("session", store), loggerMiddleware(app.log))
+	router.Use(sessions.Sessions("session", store), loggerMiddleware(app.log), metricMiddleware())
 
 	router.GET("/version", infoHandler.version)
 
@@ -81,7 +81,7 @@ func initRouter(app app) *gin.Engine {
 	auth.POST("/groups/:groupID/matches", groupHandler.postMatch)
 
 	auth.GET("/volleynet/ladder", volleynetHandler.getLadder)
-	auth.GET("/volleynet/tournaments", volleynetHandler.getAllTournaments)
+	auth.GET("/volleynet/tournaments", volleynetHandler.getTournaments)
 	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.getTournament)
 	auth.GET("/volleynet/players/search", volleynetHandler.getSearchPlayers)
 	auth.POST("/volleynet/signup", volleynetHandler.postSignup)

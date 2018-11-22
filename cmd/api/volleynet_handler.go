@@ -16,7 +16,7 @@ import (
 
 type volleynetHandler struct {
 	volleynetService *scores.VolleynetService
-	userService         *scores.UserService
+	userService      *scores.UserService
 }
 
 func (h *volleynetHandler) getLadder(c *gin.Context) {
@@ -32,7 +32,7 @@ func (h *volleynetHandler) getLadder(c *gin.Context) {
 	jsonn(c, http.StatusOK, ladder, "")
 }
 
-func (h *volleynetHandler) getAllTournaments(c *gin.Context) {
+func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 	league := c.DefaultQuery("league", "AMATEUR TOUR")
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))

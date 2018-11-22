@@ -10,15 +10,16 @@ import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import { loadTournamentsAction } from '../../redux/actions/entities';
 import { tournamentsByLeagueSelector } from '../../redux/reducers/entities';
+import * as ArrayUtils from '../../utils/array';
 
 import { Tournament } from '../../types';
 
-const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TEAM'];
+const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TOUR'];
 
 interface IProps {
   tournaments: Tournament[];
   loadTournaments: (
-    filters: { gender: string; leagues: string[]; season: string },
+    filters: { gender: string; league: string; season: string },
   ) => void;
   leagues: string[];
   classes: any;
@@ -64,23 +65,24 @@ class Volleynet extends React.Component<IProps> {
   static mapDispatchToProps = {
     loadTournaments: loadTournamentsAction,
   };
-  static buildActions({ leagues }: IProps) {
-    return [
+  static buildActions({ leagues = [] }: IProps) {
+    return leagues.map(league =>
       loadTournamentsAction({
         gender: 'M',
-        leagues,
+        league,
         season: thisYear,
       }),
-    ];
+    );
   }
 
   static getParameters(query) {
     let { leagues = ['AMATEUR TOUR'] } = query;
 
-    if (!leagues.length) {
+    if (!Array.isArray(leagues)) {
       leagues = [leagues];
     }
 
+    // TODO: remove uniques
     leagues = leagues.filter(l => defaultLeagues.includes(l));
 
     return { leagues };
@@ -104,8 +106,10 @@ class Volleynet extends React.Component<IProps> {
   componentDidUpdate(prevProps) {
     const { loadTournaments, leagues } = this.props;
 
-    if (leagues !== prevProps.league) {
-      loadTournaments({ gender: 'M', leagues, season: thisYear });
+    if (!ArrayUtils.equals(leagues, prevProps.leagues) && leagues) {
+      leagues.forEach(league => {
+        loadTournaments({ gender: 'M', league, season: thisYear });
+      });
     }
   }
 

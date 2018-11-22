@@ -13,72 +13,6 @@ type VolleynetRepository struct {
 	DB *sql.DB
 }
 
-func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]volleynet.FullTournament, error) {
-	tournaments := []volleynet.FullTournament{}
-	rows, err := db.Query(query, args...)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		tournament, err := scanTournament(rows)
-
-		if err != nil {
-			return nil, err
-		}
-
-		tournaments = append(tournaments, *tournament)
-	}
-
-	return tournaments, nil
-}
-
-func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
-	t := &volleynet.FullTournament{}
-	t.Teams = []volleynet.TournamentTeam{}
-
-	err := scanner.Scan(
-		&t.ID,
-		&t.CreatedAt,
-		&t.UpdatedAt,
-		&t.Gender,
-		&t.Start,
-		&t.End,
-		&t.Name,
-		&t.League,
-		&t.Link,
-		&t.EntryLink,
-		&t.Status,
-		&t.RegistrationOpen,
-		&t.Location,
-		&t.HTMLNotes,
-		&t.Mode,
-		&t.MaxPoints,
-		&t.MinTeams,
-		&t.MaxTeams,
-		&t.EndRegistration,
-		&t.Organiser,
-		&t.Phone,
-		&t.Email,
-		&t.Web,
-		&t.CurrentPoints,
-		&t.LivescoringLink,
-		&t.Latitude,
-		&t.Longitude,
-		&t.Season,
-		&t.SignedupTeams,
-	)
-
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-
-	return t, err
-}
-
 func (s *VolleynetRepository) Tournament(tournamentID int) (*volleynet.FullTournament, error) {
 	row := s.DB.QueryRow(query("volleynet/select-tournament-by-id"), tournamentID)
 
@@ -430,4 +364,70 @@ func (s *VolleynetRepository) UpdatePlayer(p *volleynet.Player) error {
 
 func (s *VolleynetRepository) SearchPlayers() ([]volleynet.Player, error) {
 	return nil, nil
+}
+
+func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]volleynet.FullTournament, error) {
+	tournaments := []volleynet.FullTournament{}
+	rows, err := db.Query(query, args...)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		tournament, err := scanTournament(rows)
+
+		if err != nil {
+			return nil, err
+		}
+
+		tournaments = append(tournaments, *tournament)
+	}
+
+	return tournaments, nil
+}
+
+func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
+	t := &volleynet.FullTournament{}
+	t.Teams = []volleynet.TournamentTeam{}
+
+	err := scanner.Scan(
+		&t.ID,
+		&t.CreatedAt,
+		&t.UpdatedAt,
+		&t.Gender,
+		&t.Start,
+		&t.End,
+		&t.Name,
+		&t.League,
+		&t.Link,
+		&t.EntryLink,
+		&t.Status,
+		&t.RegistrationOpen,
+		&t.Location,
+		&t.HTMLNotes,
+		&t.Mode,
+		&t.MaxPoints,
+		&t.MinTeams,
+		&t.MaxTeams,
+		&t.EndRegistration,
+		&t.Organiser,
+		&t.Phone,
+		&t.Email,
+		&t.Web,
+		&t.CurrentPoints,
+		&t.LivescoringLink,
+		&t.Latitude,
+		&t.Longitude,
+		&t.Season,
+		&t.SignedupTeams,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+
+	return t, err
 }

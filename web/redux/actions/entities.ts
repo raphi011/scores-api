@@ -207,7 +207,7 @@ export const loadTournamentAction = (tournamentId: string): ApiAction => ({
 
 export const loadTournamentsAction = (filters: {
   gender: string;
-  leagues: string[];
+  league: string;
   season: string;
 }): ApiAction => ({
   method: 'GET',
@@ -217,7 +217,7 @@ export const loadTournamentsAction = (filters: {
     entityName: 'tournament',
     listOptions: {
       tournament: {
-        key: filters.leagues,
+        key: filters.league,
         mode: 'replace',
         name: 'byLeague',
       },

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"net"
 	"net/http"
+	"time"
 
 	"github.com/sirupsen/logrus"
 
@@ -10,6 +12,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
+
+func metricMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+		c.Next()
+		fmt.Printf("Request %s took %s", c.Request.URL.String(), time.Since(start))
+	}
+}
 
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
