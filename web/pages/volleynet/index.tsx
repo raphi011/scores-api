@@ -1,6 +1,7 @@
 import Router from 'next/router';
 import React from 'react';
 
+import { createStyles, withStyles } from '@material-ui/core/styles';
 import CenteredLoading from '../../components/CenteredLoading';
 import DayHeader from '../../components/DayHeader';
 import GroupedList from '../../components/GroupedList';
@@ -15,6 +16,12 @@ import * as ArrayUtils from '../../utils/array';
 import { Tournament } from '../../types';
 
 const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TOUR'];
+
+const styles = createStyles({
+  root: {
+    margin: '0 10px',
+  },
+});
 
 interface IProps {
   tournaments: Tournament[];
@@ -58,7 +65,12 @@ function groupTournaments(tournaments: Tournament[]) {
 }
 
 function renderHeader(tournaments: Tournament[]) {
-  return <DayHeader date={new Date(tournaments[0].start)} />;
+  return (
+    <DayHeader
+      appendix={`(${tournaments.length})`}
+      date={new Date(tournaments[0].start)}
+    />
+  );
 }
 
 class Volleynet extends React.Component<IProps> {
@@ -95,11 +107,15 @@ class Volleynet extends React.Component<IProps> {
   }
 
   renderList = (tournaments: Tournament[]) => {
+    const { classes } = this.props;
+
     return (
-      <TournamentList
-        tournaments={tournaments}
-        onTournamentClick={this.onTournamentClick}
-      />
+      <div className={classes.root}>
+        <TournamentList
+          tournaments={tournaments}
+          onTournamentClick={this.onTournamentClick}
+        />
+      </div>
     );
   };
 
@@ -149,4 +165,4 @@ class Volleynet extends React.Component<IProps> {
   }
 }
 
-export default withAuth(Volleynet);
+export default withStyles(styles)(withAuth(Volleynet));

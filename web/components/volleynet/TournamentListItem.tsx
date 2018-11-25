@@ -1,12 +1,20 @@
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
 import { Tournament } from '../../types';
 
+const styles = createStyles({
+  item: {
+    borderBottom: '1px solid rgba(0, 0, 0, 0.075)',
+  },
+});
+
 interface IProps {
   tournament: Tournament;
   onClick: (Tournament) => void;
+  classes: any;
 }
 
 function buildSubtitle(tournament: Tournament) {
@@ -21,7 +29,7 @@ function buildSubtitle(tournament: Tournament) {
   return st;
 }
 
-const TournamentListItem = ({ tournament, onClick }: IProps) => {
+const TournamentListItem = ({ tournament, classes, onClick }: IProps) => {
   let primary: string | JSX.Element = tournament.name;
 
   if (tournament.status === 'canceled') {
@@ -34,10 +42,14 @@ const TournamentListItem = ({ tournament, onClick }: IProps) => {
   }
 
   return (
-    <ListItem button onClick={() => onClick(tournament)}>
+    <ListItem
+      className={classes.item}
+      button
+      onClick={() => onClick(tournament)}
+    >
       <ListItemText primary={primary} secondary={buildSubtitle(tournament)} />
     </ListItem>
   );
 };
 
-export default TournamentListItem;
+export default withStyles(styles)(TournamentListItem);

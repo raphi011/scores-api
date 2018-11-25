@@ -1,3 +1,4 @@
+import Card from '@material-ui/core/Card';
 import List from '@material-ui/core/List';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
@@ -8,6 +9,7 @@ import { Tournament } from '../../types';
 
 const styles = createStyles({
   root: {
+    padding: '0',
     width: '100%',
   },
 });
@@ -23,15 +25,17 @@ class TournamentList extends React.PureComponent<IProps> {
     const { tournaments = [], onTournamentClick, classes } = this.props;
 
     return (
-      <List className={classes.root}>
-        {tournaments.map(t => (
-          <TournamentListItem
-            key={t.id}
-            onClick={onTournamentClick}
-            tournament={t}
-          />
-        ))}
-      </List>
+      <Card>
+        <List className={classes.root}>
+          {tournaments.map(t => (
+            <TournamentListItem
+              key={t.id}
+              onClick={onTournamentClick}
+              tournament={t}
+            />
+          ))}
+        </List>
+      </Card>
     );
   }
 }
