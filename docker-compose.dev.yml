@@ -28,8 +28,6 @@ services:
       - "80:80"
     volumes:
       - "./nginx-config:/etc/nginx/conf.d:ro"
-    logging:
-      driver: none
 
   ### DB ###
 
