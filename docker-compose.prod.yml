@@ -2,41 +2,42 @@ version: "3.6"
 
 services:
   frontend:
+    image: raphi011/scores-frontend
     build:
       context: .
-      dockerfile: ./web/Dockerfile.dev
-    volumes:
-      - ".:/scores"
+      dockerfile: ./web/Dockerfile
+    ports:
+      - "127.0.0.1:3000:3000"
 
   backend:
-    ports:
-      - "127.0.0.1:40000:40000"
-    environment:
-      - GIN_MODE=debug
-      - BACKEND_URL=http://localhost
-      - APP_ENV=debug
+    image: raphi011/scores-backend
+    command:
+      - "-connection"
+      - "root:test@tcp(db)/scores?charset=utf8mb4&parseTime=true"
+      - "-provider"
+      - "mysql"
+      - "-goauth"
+      - "/srv/scores/client_secret.json"
     build:
-      dockerfile: ./cmd/api/Dockerfile.dev
-    volumes:
-      - "./data/scores:/srv/scores"
-    security_opt:
-      - seccomp:unconfined
-
-  nginx:
-    image: "nginx:latest"
+      context: .
+      dockerfile: ./cmd/api/Dockerfile
+    environment:
+      - GIN_MODE=release
+      - BACKEND_URL=https://scores.network
+      - APP_ENV=production
     ports:
-      - "80:80"
+      - "127.0.0.1:8080:8080"
     volumes:
-      - "./nginx-config:/etc/nginx/conf.d:ro"
-
-  ### DB ###
+      - "~/data/api:/srv/scores"
 
   db:
     image: mariadb:latest
     volumes:
-      - "./data/mariadb:/var/lib/mysql"
-
-  ### ELK Stack ###
+      - "~/data/mariadb:/var/lib/mysql"
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
 
   elasticsearch:
     build:
@@ -45,9 +46,7 @@ services:
         ELK_VERSION: $ELK_VERSION
     volumes:
       - ./conf/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+      - ~/data/elasticsearch:/usr/share/elasticsearch/data
     environment:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
 
@@ -59,9 +58,6 @@ services:
     volumes:
       - ./conf/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./conf/logstash/pipeline:/usr/share/logstash/pipeline:ro
-    ports:
-      - "5000:5000"
-      - "9600:9600"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     depends_on:

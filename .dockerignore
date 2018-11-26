@@ -1,7 +1,6 @@
 .vscode
 .next
 
-conf
 data
 nginx-config
 node_modules

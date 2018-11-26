@@ -2,39 +2,63 @@ version: "3.6"
 
 services:
   frontend:
-    image: raphi011/scores-frontend
     build:
+      dockerfile: ./dockerfiles/dev/frontend
       context: .
-      dockerfile: ./web/Dockerfile
-    ports:
-      - "127.0.0.1:3000:3000"
+    volumes:
+      - ".:/scores"
 
   backend:
-    image: raphi011/scores-backend
+    build:
+      dockerfile: ./dockerfiles/dev/backend
+      context: .
+    volumes:
+      - "./data/backend:/srv/scores"
     command:
       - "-connection"
-      - "root:test@tcp(db)/scores?charset=utf8mb4&parseTime=true"
+      - "root:test@tcp(mariadb)/scores?charset=utf8mb4&parseTime=true"
       - "-provider"
       - "mysql"
       - "-goauth"
       - "/srv/scores/client_secret.json"
-    build:
-      context: .
-      dockerfile: ./cmd/api/Dockerfile
     environment:
-      - GIN_MODE=release
-      - BACKEND_URL=https://scores.network
-      - APP_ENV=production
+      - GIN_MODE=debug
+      - BACKEND_URL=http://localhost
+      - APP_ENV=debug
+    security_opt:
+      - seccomp:unconfined
     ports:
-      - "127.0.0.1:8080:8080"
-    volumes:
-      - "~/data/api:/srv/scores"
+      - "127.0.0.1:40000:40000"
 
-  db:
-    image: mariadb:latest
-    volumes:
-      - "~/data/mariadb:/var/lib/mysql"
+  envoy:
+    build:
+      dockerfile: "./dockerfiles/deploy/envoy"
+      context: .
     ports:
-      - "127.0.0.1:3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=test
+      - "80:80"
+
+  mariadb:
+    image: "mariadb:latest"
+    volumes:
+      - "./data/mariadb:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+  # elasticsearch:
+  #   build:
+  #     dockerfile: "./dockerfiles/deploy/elasticsearch"
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   environment:
+  #     ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+  # kibana:
+  #   build:
+  #     dockerfile: "./dockerfiles/deploy/kibana"
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elasticsearch
