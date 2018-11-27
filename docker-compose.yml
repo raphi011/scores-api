@@ -5,8 +5,8 @@ services:
     build:
       dockerfile: ./dockerfiles/dev/frontend
       context: .
-    volumes:
-      - ".:/scores"
+    # volumes:
+    #  - ".:/scores"
 
   backend:
     build:
