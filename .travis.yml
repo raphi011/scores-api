@@ -31,6 +31,7 @@ jobs:
       deploy:
         provider: script
         script: bash ./scripts/deploy.sh
+        skip_cleanup: true # don't remove the cert/ folder
         on:
           all_branches: true
       env:
