@@ -2,75 +2,29 @@ version: "3.6"
 
 services:
   frontend:
-    image: raphi011/scores-frontend
     build:
+      dockerfile: ./dockerfiles/prod/frontend
       context: .
-      dockerfile: ./web/Dockerfile
-    ports:
-      - "127.0.0.1:3000:3000"
 
   backend:
-    image: raphi011/scores-backend
-    command:
-      - "-connection"
-      - "root:test@tcp(db)/scores?charset=utf8mb4&parseTime=true"
-      - "-provider"
-      - "mysql"
-      - "-goauth"
-      - "/srv/scores/client_secret.json"
     build:
+      dockerfile: ./dockerfiles/prod/backend
       context: .
-      dockerfile: ./cmd/api/Dockerfile
+    volumes:
+      - "~/data/api:/srv/scores"
     environment:
       - GIN_MODE=release
       - BACKEND_URL=https://scores.network
       - APP_ENV=production
-    ports:
-      - "127.0.0.1:8080:8080"
-    volumes:
-      - "~/data/api:/srv/scores"
 
-  db:
+  mariadb:
     image: mariadb:latest
     volumes:
       - "~/data/mariadb:/var/lib/mysql"
-    ports:
-      - "127.0.0.1:3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=test
 
   elasticsearch:
-    build:
-      context: conf/elasticsearch/
-      args:
-        ELK_VERSION: $ELK_VERSION
     volumes:
-      - ./conf/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-      - ~/data/elasticsearch:/usr/share/elasticsearch/data
-    environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      - "~/data/elasticsearch:/usr/share/elasticsearch/data
 
-  logstash:
-    build:
-      context: conf/logstash/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - ./conf/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./conf/logstash/pipeline:/usr/share/logstash/pipeline:ro
-    environment:
-      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-    depends_on:
-      - elasticsearch
-
-  kibana:
-    build:
-      context: conf/kibana/
-      args:
-        ELK_VERSION: $ELK_VERSION
-    volumes:
-      - ./conf/kibana/config/:/usr/share/kibana/config:ro
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
