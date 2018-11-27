@@ -7,20 +7,18 @@ jobs:
       script: go test
       env:
         - GO111MODULE=on
+
     - language: node_js
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
       name: "nextjs"
+
     - stage: "Deploy"
-      name: "deploy to server"
-      if: branch IN (master, development)
-      env:
-        - DOCKER_COMPOSE_VERSION=1.21.2
-        - DOCKER_TLS_VERIFY=1
-        - DOCKER_HOST=tcp://scores.network:2376
-        - DOCKER_CERT_PATH=certs
-      before_install:
+      script: skip
+      language: generic
+      if: tag IS present and branch IN (master, development)        
+      before_deploy:
         - openssl aes-256-cbc -K $encrypted_531129a75a03_key -iv $encrypted_531129a75a03_iv -in secrets.tar.enc -out secrets.tar -d
         - mkdir $DOCKER_CERT_PATH
         - tar xvf secrets.tar -C $DOCKER_CERT_PATH
@@ -28,8 +26,15 @@ jobs:
         - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
         - chmod +x docker-compose
         - sudo mv docker-compose /usr/local/bin
-      script:
-        - travis_wait 40 docker-compose build
-        - docker-compose down
-        - docker-compose up -d --force-recreate --remove-orphans
-        - rm -rf $DOCKER_CERT_PATH
+      deploy:
+        provider: script
+        script:
+          - docker-compose -f docker-compose.yml -f docker-compose.prod.yml build
+          - docker-compose -f docker-compose.yml -f docker-compose.prod.yml down
+          - docker-compose -f docker-compose.yml -f docker-compose.prod.yml -d --force-recreate --remove-orphans up
+          - rm -rf $DOCKER_CERT_PATH
+      env:
+        - DOCKER_COMPOSE_VERSION=1.21.2
+        - DOCKER_TLS_VERIFY=1
+        - DOCKER_HOST=tcp://scores.network:2376
+        - DOCKER_CERT_PATH=certs
