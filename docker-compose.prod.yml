@@ -26,5 +26,4 @@ services:
 
   elasticsearch:
     volumes:
-      - "~/data/elasticsearch:/usr/share/elasticsearch/data
-
+      - "~/data/elasticsearch:/usr/share/elasticsearch/data"
