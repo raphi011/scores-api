@@ -42,23 +42,39 @@ services:
     volumes:
       - "./data/mariadb:/var/lib/mysql"
     ports:
-      - "3306:3306"
-  # elasticsearch:
-  #   build:
-  #     dockerfile: "./dockerfiles/deploy/elasticsearch"
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   environment:
-  #     ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-  # kibana:
-  #   build:
-  #     dockerfile: "./dockerfiles/deploy/kibana"
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   ports:
-  #     - "5601:5601"
-  #   depends_on:
-  #     - elasticsearch
+      - "127.0.0.1:3306:3306"
+
+  elasticsearch:
+    build:
+      dockerfile: "./dockerfiles/deploy/elasticsearch"
+      context: .
+      args:
+        ELK_VERSION: $ELK_VERSION
+    # ports:
+    #   - "127.0.0.1:9200:9200"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+
+  kibana:
+    build:
+      dockerfile: "./dockerfiles/deploy/kibana"
+      context: .
+      args:
+        ELK_VERSION: $ELK_VERSION
+    ports:
+      - "127.0.0.1:5601:5601"
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    build:
+      dockerfile: "./dockerfiles/deploy/logstash"
+      context: .
+      args:
+        ELK_VERSION: $ELK_VERSION
+    # ports:
+    #   - "127.0.0.1:5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch

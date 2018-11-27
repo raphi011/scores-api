@@ -70,7 +70,6 @@ func main() {
 
 func setupLogger() logrus.FieldLogger {
 	log := logrus.New()
-	return log
 
 	var con net.Conn
 

@@ -1,0 +1,7 @@
+ARG ELK_VERSION
+ # https://github.com/elastic/logstash-docker
+
+FROM docker.elastic.co/logstash/logstash-oss:${ELK_VERSION}
+
+COPY ./conf/logstash.yml /usr/share/logstash/config/logstash.yml
+COPY ./conf/logstash-pipeline.conf /usr/share/logstash/pipeline
