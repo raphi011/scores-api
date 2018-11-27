@@ -31,6 +31,8 @@ jobs:
       deploy:
         provider: script
         script: bash ./scripts/deploy.sh
+        on:
+          all_branches: true
       env:
         - DOCKER_COMPOSE_VERSION=1.21.2
         - DOCKER_TLS_VERIFY=1
