@@ -3,12 +3,12 @@ version: "3.6"
 services:
   frontend:
     build:
-      dockerfile: ./dockerfiles/prod/frontend
+      dockerfile: ./dockerfiles/deploy/frontend
       context: .
 
   backend:
     build:
-      dockerfile: ./dockerfiles/prod/backend
+      dockerfile: ./dockerfiles/deploy/backend
       context: .
     volumes:
       - "~/data/api:/srv/scores"
