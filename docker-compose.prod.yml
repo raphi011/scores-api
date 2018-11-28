@@ -19,7 +19,7 @@ services:
 
   envoy:
     build:
-      dockerfile: ./dockerfiles/deploy/frontend
+      dockerfile: ./dockerfiles/deploy/envoy
       context: .
     volumes:
       - "/etc/letsencrypt/live/scores.network:/certs"
