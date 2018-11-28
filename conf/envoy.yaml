@@ -10,6 +10,12 @@ static_resources:
               config:
                 codec_type: auto
                 stat_prefix: ingress_http
+                http_filters:
+                  - name: envoy.gzip
+                    config:
+                      memory_level: 9
+                      compression_level: BEST
+                  - name: envoy.router
                 route_config:
                   name: local_route
                   virtual_hosts:
@@ -26,9 +32,6 @@ static_resources:
                             prefix: "/"
                           route:
                             cluster: frontend
-                http_filters:
-                  - name: envoy.router
-                    config: {}
   clusters:
     - name: frontend
       connect_timeout: 0.25s
@@ -46,6 +49,7 @@ static_resources:
         - socket_address:
             address: backend
             port_value: 8080
+
 admin:
   access_log_path: "/dev/null"
   address:
