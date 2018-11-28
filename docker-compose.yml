@@ -32,7 +32,7 @@ services:
 
   envoy:
     build:
-      dockerfile: "./dockerfiles/deploy/envoy"
+      dockerfile: "./dockerfiles/dev/envoy"
       context: .
     ports:
       - "80:80"

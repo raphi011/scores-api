@@ -17,6 +17,13 @@ services:
       - BACKEND_URL=https://scores.network
       - APP_ENV=production
 
+  envoy:
+    build:
+      dockerfile: ./dockerfiles/deploy/frontend
+      context: .
+    volumes:
+      - "/etc/letsencrypt/live/scores.network:/certs"
+
   mariadb:
     image: mariadb:latest
     volumes:

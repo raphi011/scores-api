@@ -17,7 +17,7 @@ func metricMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		c.Next()
-		fmt.Printf("Request %s took %s", c.Request.URL.String(), time.Since(start))
+		fmt.Printf("Request %s took %s\n", c.Request.URL.String(), time.Since(start))
 	}
 }
 
