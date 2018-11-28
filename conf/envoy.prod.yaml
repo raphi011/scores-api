@@ -59,7 +59,7 @@ static_resources:
           common_tls_context:
             tls_certificates:
               - certificate_chain:
-                  filename: "/etc/letsencrypt/live/scores.network/fullchain.pem"
+                  filename: "/etc/letsencrypt/live/scores.network/chain.pem"
                 private_key:
                   filename: "/etc/letsencrypt/live/scores.network/privkey.pem"
   clusters:
