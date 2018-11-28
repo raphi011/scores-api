@@ -59,9 +59,9 @@ static_resources:
           common_tls_context:
             tls_certificates:
               - certificate_chain:
-                  filename: "/etc/letsencrypt/live/scores.network/chain.pem"
+                  filename: "/usr/share/letsencrypt/scores.network/fullchain.pem"
                 private_key:
-                  filename: "/etc/letsencrypt/live/scores.network/privkey.pem"
+                  filename: "/usr/share/letsencrypt/scores.network/privkey.pem"
   clusters:
     - name: frontend
       connect_timeout: 0.25s

@@ -22,7 +22,7 @@ services:
       dockerfile: ./dockerfiles/deploy/envoy
       context: .
     volumes:
-      - "/etc/letsencrypt/live/scores.network:/etc/letsencrypt/live/scores.network"
+      - "~/data/letsencrypt:/usr/share/letsencrypt/scores.network"
 
   mariadb:
     image: mariadb:latest
