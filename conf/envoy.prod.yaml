@@ -43,7 +43,7 @@ static_resources:
                 virtual_hosts:
                   - name: site
                     domains:
-                      - "*"
+                      - "scores.network"
                     routes:
                       - match:
                           prefix: "/api/"
