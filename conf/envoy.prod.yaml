@@ -14,7 +14,7 @@ static_resources:
                   virtual_hosts:
                     - name: site
                       domains:
-                        - "*"
+                        - "scores.network"
                       routes:
                         - match:
                             prefix: "/"
@@ -55,12 +55,12 @@ static_resources:
                         route:
                           cluster: frontend
               http_filters:
+                - name: envoy.router
+                  config: {}
                 - name: envoy.gzip
                   config:
                     memory_level: 9
                     compression_level: BEST
-                - name: envoy.router
-                  config: {}
         tls_context:
           common_tls_context:
             tls_certificates:
