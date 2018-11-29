@@ -39,6 +39,8 @@ static_resources:
                   config:
                     path: "/dev/stdout"
               http_filters:
+                - name: envoy.router
+                  config: {}
                 - name: envoy.gzip
                   config:
                     memory_level: 9
