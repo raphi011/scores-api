@@ -23,6 +23,8 @@ services:
       context: .
     volumes:
       - "~/data/letsencrypt:/usr/share/letsencrypt/scores.network"
+    ports:
+      - "443:443"
 
   mariadb:
     image: mariadb:latest
