@@ -59,6 +59,8 @@ static_resources:
                   config:
                     memory_level: 9
                     compression_level: BEST
+                - name: envoy.router
+                  config: {}
         tls_context:
           common_tls_context:
             tls_certificates:
