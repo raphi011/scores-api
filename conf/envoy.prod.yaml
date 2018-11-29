@@ -38,6 +38,11 @@ static_resources:
                 - name: envoy.file_access_log
                   config:
                     path: "/dev/stdout"
+              http_filters:
+                - name: envoy.gzip
+                  config:
+                    memory_level: 9
+                    compression_level: BEST
               route_config:
                 name: local_route
                 virtual_hosts:
@@ -54,13 +59,6 @@ static_resources:
                           prefix: "/"
                         route:
                           cluster: frontend
-              http_filters:
-                - name: envoy.router
-                  config: {}
-                - name: envoy.gzip
-                  config:
-                    memory_level: 9
-                    compression_level: BEST
         tls_context:
           common_tls_context:
             tls_certificates:
