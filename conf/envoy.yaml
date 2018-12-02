@@ -10,27 +10,64 @@ static_resources:
               config:
                 codec_type: auto
                 stat_prefix: ingress_http
-                http_filters:
-                  - name: envoy.gzip
-                    config:
-                      memory_level: 9
-                      compression_level: BEST
                 route_config:
-                  name: local_route
                   virtual_hosts:
                     - name: site
                       domains:
-                        - "*"
+                        - "localhost"
                       routes:
                         - match:
-                            prefix: "/api/"
-                          route:
-                            prefix_rewrite: "/"
-                            cluster: backend
-                        - match:
                             prefix: "/"
-                          route:
-                            cluster: frontend
+                          redirect:
+                            path_redirect: "/"
+                            https_redirect: true
+                http_filters:
+                  - name: envoy.router
+                    config: {}
+    - address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 443
+      filter_chains:
+        filters:
+          - name: envoy.http_connection_manager
+            config:
+              codec_type: auto
+              stat_prefix: ingress_http
+              access_log:
+                - name: envoy.file_access_log
+                  config:
+                    path: "/dev/stdout"
+              http_filters:
+                - name: envoy.router
+                  config: {}
+                - name: envoy.gzip
+                  config:
+                    memory_level: 9
+                    compression_level: BEST
+              route_config:
+                name: local_route
+                virtual_hosts:
+                  - name: site
+                    domains:
+                      - "localhost"
+                    routes:
+                      - match:
+                          prefix: "/api/"
+                        route:
+                          prefix_rewrite: "/"
+                          cluster: backend
+                      - match:
+                          prefix: "/"
+                        route:
+                          cluster: frontend
+        tls_context:
+          common_tls_context:
+            tls_certificates:
+              - certificate_chain:
+                  filename: "/usr/share/letsencrypt/scores.network/server.crt"
+                private_key:
+                  filename: "/usr/share/letsencrypt/scores.network/server.key"
   clusters:
     - name: frontend
       connect_timeout: 0.25s
