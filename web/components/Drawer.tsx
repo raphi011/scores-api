@@ -7,7 +7,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import GroupIcon from '@material-ui/icons/Group';
+// import GroupIcon from '@material-ui/icons/Group';
 import HomeIcon from '@material-ui/icons/Home';
 import LadderIcon from '@material-ui/icons/LooksOne';
 import SettingsIcon from '@material-ui/icons/SettingsRounded';
@@ -19,6 +19,9 @@ import { Typography } from '@material-ui/core';
 import { Player } from '../types';
 
 const drawerWidth = 300;
+
+// global variable which is inserted by webpack.DefinePlugin()
+declare var VERSION: string;
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -54,22 +57,22 @@ interface IProps {
 }
 
 function Drawer({ open, userPlayer, onClose, classes }: IProps) {
-  const { groups = [] } = userPlayer;
+  // const { groups = [] } = userPlayer;
 
-  const groupList = groups.map(g => (
-    <Link
-      prefetch
-      key={g.id}
-      href={{ pathname: '/group', query: { groupId: g.id } }}
-    >
-      <ListItem button>
-        <ListItemIcon>
-          <GroupIcon />
-        </ListItemIcon>
-        <ListItemText primary={g.name} />
-      </ListItem>
-    </Link>
-  ));
+  // const groupList = groups.map(g => (
+  //   <Link
+  //     prefetch
+  //     key={g.id}
+  //     href={{ pathname: '/group', query: { groupId: g.id } }}
+  //   >
+  //     <ListItem button>
+  //       <ListItemIcon>
+  //         <GroupIcon />
+  //       </ListItemIcon>
+  //       <ListItemText primary={g.name} />
+  //     </ListItem>
+  //   </Link>
+  // ));
 
   const sideList = (
     <div className={classes.list}>
@@ -115,12 +118,12 @@ function Drawer({ open, userPlayer, onClose, classes }: IProps) {
             <ListItemText inset primary="Rankings" />
           </ListItem>
         </Link>
-        <ListSubheader className={classes.header}>My groups</ListSubheader>
+        {/* <ListSubheader className={classes.header}>My groups</ListSubheader>
         {groupList}
         <ListSubheader className={classes.header}>Other groups</ListSubheader>
         <ListItem button>
           <ListItemText primary="-" />
-        </ListItem>
+        </ListItem> */}
       </List>
     </div>
   );

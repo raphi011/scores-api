@@ -66,9 +66,9 @@ class Home extends React.Component<IProps> {
           <Paper className={classes.paper}>
             <Typography variant="h6">News</Typography>
           </Paper>
-          <Paper className={classes.paper}>
+          {/* <Paper className={classes.paper}>
             <Typography variant="h6">Groups</Typography>
-          </Paper>
+          </Paper> */}
           <Paper className={classes.paper}>
             <Typography variant="h6">Volleynet</Typography>
             <Typography variant="subtitle1">Upcoming tournaments</Typography>
