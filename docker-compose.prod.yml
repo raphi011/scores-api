@@ -12,6 +12,13 @@ services:
       context: .
     volumes:
       - "~/data/api:/srv/scores"
+    command:
+      - "-connection"
+      - "root:test@tcp(mariadb)/scores?charset=utf8mb4&parseTime=true"
+      - "-provider"
+      - "mysql"
+      - "-goauth"
+      - "/srv/scores/client_secret.json"
     environment:
       - GIN_MODE=release
       - BACKEND_URL=https://scores.network
@@ -23,6 +30,10 @@ services:
       context: .
     volumes:
       - "~/data/letsencrypt:/usr/share/letsencrypt/scores.network"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:8001:8001"
 
   mariadb:
     image: mariadb:latest
@@ -30,7 +41,38 @@ services:
       - "~/data/mariadb:/var/lib/mysql"
     environment:
       - MYSQL_ROOT_PASSWORD=test
+    ports:
+      - "127.0.0.1:3306:3306"
 
   elasticsearch:
+    build:
+      dockerfile: "./dockerfiles/deploy/elasticsearch"
+      context: .
+      args:
+        ELK_VERSION: $ELK_VERSION
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
     volumes:
       - "~/data/elasticsearch:/usr/share/elasticsearch/data"
+
+  kibana:
+    build:
+      dockerfile: "./dockerfiles/deploy/kibana"
+      context: .
+      args:
+        ELK_VERSION: $ELK_VERSION
+    ports:
+      - "127.0.0.1:5601:5601"
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    build:
+      dockerfile: "./dockerfiles/deploy/logstash"
+      context: .
+      args:
+        ELK_VERSION: $ELK_VERSION
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
