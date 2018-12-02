@@ -18,6 +18,7 @@ type Job struct {
 	errors       []error
 	runs         uint
 	canceled     bool
+	running      bool
 
 	MaxRuns     uint          // limit the # of runs, no limit if 0
 	Name        string        // name of the job, useful in logs
@@ -53,11 +54,13 @@ func do(job *Job, output chan *Job, quit chan int) {
 	}
 
 	if !job.canceled {
+		job.running = true
 		job.start = time.Now()
 		job.lastErr = job.Do()
 		job.end = time.Now()
 		job.lastDuration = job.end.Sub(job.start)
 		log.Printf("job '%v' ended after %s", job.Name, formatDuration(job.lastDuration))
+		job.running = false
 
 		job.runs++
 

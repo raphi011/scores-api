@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"time"
 
-	msync "sync"
-
 	"github.com/gin-gonic/gin"
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet/sync"
@@ -16,8 +14,6 @@ type volleynetScrapeHandler struct {
 	volleynetRepository scores.VolleynetRepository
 	userService         *scores.UserService
 	syncService         *sync.SyncService
-
-	mux msync.Mutex
 }
 
 func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
@@ -36,6 +32,24 @@ func (h *volleynetScrapeHandler) scrapeLadder(c *gin.Context) {
 	jsonn(c, http.StatusOK, report, "")
 }
 
+func (h *volleynetScrapeHandler) runJob(c *gin.Context) {
+
+}
+
+func (h *volleynetScrapeHandler) pauseJob(c *gin.Context) {
+
+}
+func (h *volleynetScrapeHandler) start(c *gin.Context) {
+
+}
+func (h *volleynetScrapeHandler) stop(c *gin.Context) {
+
+}
+
+func (h *volleynetScrapeHandler) report(c *gin.Context) {
+
+}
+
 func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 	h.mux.Lock()
 	defer h.mux.Unlock()
@@ -49,8 +63,6 @@ func (h *volleynetScrapeHandler) scrapeTournaments(c *gin.Context) {
 		c.AbortWithError(http.StatusBadGateway, err)
 		return
 	}
-
-	report, err := h.syncService.Tournaments(gender, league, seasonInt)
 
 	if err != nil {
 		c.AbortWithError(http.StatusBadGateway, err)
