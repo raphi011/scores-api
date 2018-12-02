@@ -84,7 +84,7 @@ class TournamentView extends React.Component<IProps, IState> {
       },
       {
         icon: <PeopleIcon className={classes.infoElement} />,
-        info: `${(tournament.teams || []).length} / ${tournament.maxTeams}`,
+        info: `${tournament.signedupTeams} / ${tournament.maxTeams}`,
         show: tournament.maxTeams !== -1,
       },
       {

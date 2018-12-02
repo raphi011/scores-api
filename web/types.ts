@@ -1,4 +1,5 @@
 import { IParams } from './api';
+
 export type EntityName =
   | 'player'
   | 'team'
