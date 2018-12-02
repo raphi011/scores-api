@@ -34,8 +34,11 @@ services:
     build:
       dockerfile: "./dockerfiles/dev/envoy"
       context: .
+    volumes:
+      - "./certs:/usr/share/letsencrypt/scores.network"
     ports:
       - "80:80"
+      - "443:443"
       - "127.0.0.1:8001:8001"
 
   mariadb:

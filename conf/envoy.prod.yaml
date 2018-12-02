@@ -39,12 +39,12 @@ static_resources:
                   config:
                     path: "/dev/stdout"
               http_filters:
-                - name: envoy.router
-                  config: {}
                 - name: envoy.gzip
                   config:
                     memory_level: 9
                     compression_level: BEST
+                - name: envoy.router
+                  config: {}
               route_config:
                 name: local_route
                 virtual_hosts:
