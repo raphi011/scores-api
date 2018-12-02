@@ -38,4 +38,4 @@ jobs:
         - DOCKER_COMPOSE_VERSION=1.21.2
         - DOCKER_TLS_VERIFY=1
         - DOCKER_HOST=tcp://scores.network:2376
-        - DOCKER_CERT_PATH=certs
+        - DOCKER_CERT_PATH=docker-certs
