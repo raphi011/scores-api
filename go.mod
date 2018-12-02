@@ -9,7 +9,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7
-	github.com/gin-gonic/gin v0.0.0-20170702092826-d459835d2b07
+	github.com/gin-gonic/gin v1.3.0
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/gobuffalo/packr v1.19.0
 	github.com/golang/protobuf v1.0.0
