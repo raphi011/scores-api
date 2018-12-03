@@ -11,6 +11,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/raphi011/scores"
 )
 
 func metricMiddleware() gin.HandlerFunc {
@@ -38,6 +39,22 @@ func authMiddleware() gin.HandlerFunc {
 		log = log.WithFields(logrus.Fields{"user-id": userID})
 
 		c.Set("log", log)
+
+		c.Next()
+	}
+}
+
+func adminMiddlware(userService *scores.UserService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		log := logger(c)
+		session := sessions.Default(c)
+		userID := session.Get("user-id").(uint)
+
+		if !userService.HasRole(userID, "admin") {
+			log.Print("unauthorized")
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 
 		c.Next()
 	}

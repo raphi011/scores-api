@@ -22,7 +22,7 @@
       "type": "go",
       "request": "launch",
       "mode": "remote",
-      "remotePath": "/go/src/github.com/raphi011/scores/cmd/api",
+      "remotePath": "/code/scores/cmd/api",
       "apiVersion": 2,
       "dlvLoadConfig": {
         "followPointers": true,

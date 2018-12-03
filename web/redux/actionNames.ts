@@ -10,3 +10,5 @@ export const DELETE_ENTITIES = 'DELETE_ENTITIES';
 
 export const SET_STATUS = 'SET_STATUS';
 export const CLEAR_STATUS = 'CLEAR_STATUS';
+
+export const RECEIVE_SCRAPE_JOBS = 'RECEIVE_SCRAPE_JOBS';

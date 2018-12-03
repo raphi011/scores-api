@@ -3,7 +3,8 @@
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "jsRules": {},
   "rules": {
-    "member-access": [true, "no-public"]
+    "member-access": [true, "no-public"],
+    "interface-name": false
   },
   "rulesDirectory": []
 }

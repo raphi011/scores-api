@@ -14,6 +14,7 @@ import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import TournamentIcon from '@material-ui/icons/Star';
 import Link from 'next/link';
 import React from 'react';
+import AdminOnly from '../containers/AdminOnly';
 
 import { Typography } from '@material-ui/core';
 import { Player } from '../types';
@@ -95,12 +96,16 @@ function Drawer({ open, userPlayer, onClose, classes }: IProps) {
             <ListItemText inset primary="Home" />
           </ListItem>
         </Link>
-        <ListItem button>
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText inset primary="Settings" />
-        </ListItem>
+        <AdminOnly>
+          <Link href="/settings">
+            <ListItem button>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Settings" />
+            </ListItem>
+          </Link>
+        </AdminOnly>
         <ListSubheader className={classes.header}>Volleynet</ListSubheader>
         <Link href="/volleynet">
           <ListItem button>

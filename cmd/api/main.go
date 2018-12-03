@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"time"
 	"net"
 	"os"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sqlite"
+	"github.com/raphi011/scores/job"
 	"github.com/raphi011/scores/volleynet/sync"
 	"github.com/raphi011/scores/volleynet/client"
 	"github.com/sirupsen/logrus"
@@ -161,16 +163,49 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		Repository: repos.Player,
 	}
 
+	volleynetService := &scores.VolleynetService{
+		Repository: repos.Volleynet,
+	}
+
 	scrapeService := &sync.SyncService{
 		Client: client.Default(),
 		VolleynetRepository: repos.Volleynet,
 	}
 
-	volleynetService := &scores.VolleynetService{
-		Repository: repos.Volleynet,
+	manager := &job.Manager{}
+
+	ladderJob := ladderJob{
+		syncService: scrapeService,
+		genders: []string{ "M", "W" },
 	}
 
+	tournamentsJob := tournamentsJob{
+		syncService: scrapeService,
+		genders: []string{ "M", "W" },
+		leagues: []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
+	}
+
+	manager.Start(
+		job.Job{
+			Name:        "Players",
+			MaxFailures: 3,
+			Interval:    1 * time.Hour,
+
+			Do:          ladderJob.do,
+		},
+		job.Job{
+			Name:        "Tournaments",
+			MaxFailures: 3,
+			Interval:    5 * time.Minute,
+			Delay:       1 * time.Minute,
+
+			Do:          tournamentsJob.do,
+		},
+	)
+
+
 	services = &scores.Services{
+		JobManager: manager,
 		VolleynetScrape: scrapeService,
 		Volleynet: volleynetService,
 		Group:     groupService,

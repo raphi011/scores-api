@@ -51,8 +51,7 @@ func initRouter(app app) *gin.Engine {
 	}
 
 	volleynetScrapeHandler := volleynetScrapeHandler{
-		syncService: app.services.VolleynetScrape,
-		userService: app.services.User,
+		jobManager: app.services.JobManager,
 	}
 
 	infoHandler := infoHandler{}
@@ -65,11 +64,6 @@ func initRouter(app app) *gin.Engine {
 	router.GET("/auth", authHandler.googleAuthenticate)
 	router.POST("/pwAuth", authHandler.passwordAuthenticate)
 
-	localhost := router.Group("/")
-	localhost.Use(localhostOnlyMiddleware())
-	localhost.GET("/volleynet/scrape/tournaments", volleynetScrapeHandler.scrapeTournaments)
-	localhost.GET("/volleynet/scrape/ladder", volleynetScrapeHandler.scrapeLadder)
-
 	auth := router.Group("/")
 	auth.Use(authMiddleware())
 	auth.POST("/logout", authHandler.logout)
@@ -80,12 +74,6 @@ func initRouter(app app) *gin.Engine {
 	auth.GET("/groups/:groupID/playerStatistics", groupHandler.getPlayerStatistics)
 	auth.POST("/groups/:groupID/matches", groupHandler.postMatch)
 
-	auth.GET("/volleynet/ladder", volleynetHandler.getLadder)
-	auth.GET("/volleynet/tournaments", volleynetHandler.getTournaments)
-	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.getTournament)
-	auth.GET("/volleynet/players/search", volleynetHandler.getSearchPlayers)
-	auth.POST("/volleynet/signup", volleynetHandler.postSignup)
-
 	auth.GET("/matches/:matchID", matchHandler.getMatch)
 	auth.DELETE("/matches/:matchID", matchHandler.deleteMatch)
 
@@ -94,6 +82,23 @@ func initRouter(app app) *gin.Engine {
 	auth.GET("/players/:playerID/teamStatistics", playerHandler.getTeamStatistics)
 	auth.GET("/players/:playerID/matches", playerHandler.getMatches)
 	auth.POST("/players", playerHandler.postPlayer)
+
+	auth.GET("/volleynet/ladder", volleynetHandler.getLadder)
+	auth.GET("/volleynet/tournaments", volleynetHandler.getTournaments)
+	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.getTournament)
+	auth.GET("/volleynet/players/search", volleynetHandler.getSearchPlayers)
+	auth.POST("/volleynet/signup", volleynetHandler.postSignup)
+
+	admin := auth.Group("/admin")
+	admin.Use(adminMiddlware(app.services.User))
+
+	volleynetAdmin := admin.Group("/volleynet")
+
+	volleynetAdmin.GET("/scrape/report", volleynetScrapeHandler.report)
+	volleynetAdmin.POST("/scrape/run", volleynetScrapeHandler.run)
+	volleynetAdmin.POST("/scrape/stop", volleynetScrapeHandler.stop)
+	// volleynetAdmin.POST("/scrape/run-all", volleynetScrapeHandler.runAll)
+	// volleynetAdmin.POST("/scrape/stop-all", volleynetScrapeHandler.stopAll)
 
 	return router
 }

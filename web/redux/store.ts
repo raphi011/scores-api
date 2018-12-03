@@ -4,12 +4,14 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import apiMiddleware, { serverAction } from './apiMiddleware';
 import reducer, { initialState } from './reducers';
 
+import { IAdminStore } from './reducers/admin';
 import { IAuthStore } from './reducers/auth';
 import { IEntityStore } from './reducers/entities';
 import { IStatusStore } from './reducers/status';
 
 export interface IStore {
   auth: IAuthStore;
+  admin: IAdminStore;
   entities: IEntityStore;
   status: IStatusStore;
 }

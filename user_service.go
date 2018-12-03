@@ -10,6 +10,17 @@ type UserService struct {
 	Password         Password
 }
 
+// HasRole verifies if a user has a certain role
+func (s *UserService) HasRole(userID uint, roleName string) bool {
+	user, err := s.Repository.ByID(userID)
+
+	if err != nil {
+		return false
+	}
+
+	return user.Role == roleName
+}
+
 // SetPassword sets a new password for a user
 func (s *UserService) SetPassword(
 	userID uint,

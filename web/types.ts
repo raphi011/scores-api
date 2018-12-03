@@ -50,6 +50,7 @@ export interface NewMatch {
 export interface User {
   id: number;
   email: string;
+  role: string;
   profileImageUrl?: string;
   playerId: number;
   player: Player;
@@ -155,6 +156,22 @@ export interface Tournament {
   longitude: number;
 }
 
+export interface ScrapeJob {
+  start: string;
+  end: string;
+  sleep: string;
+  lastDuration: number;
+  job: {
+    maxRuns: number;
+    name: string;
+    maxFailures: number;
+    interval: string;
+  };
+  // errors:       []error TODO
+  runs: number;
+  state: number;
+}
+
 export type GenericStatistic = PlayerStatistic | TeamStatistic;
 
 export type EntityType = Group | Player | Team | Match | GenericStatistic;
@@ -174,20 +191,20 @@ export interface ApiAction extends Action {
   success?: string;
   isServer?: boolean;
   params?: IParams;
-  req?: Object; // todo
-  res?: Object; // todo
+  req?: object; // todo
+  res?: object; // todo
   headers?: { [key: string]: string };
 
   error?: string;
   body?: string;
   successStatus?: string;
-  successParams?: Object;
+  successParams?: object;
 }
 
 export interface ApiActions extends Action {
   type: 'API_MULTI';
-  actions: Array<ApiAction>;
-  req?: Object; // todo
-  res?: Object; // todo
+  actions: ApiAction[];
+  req?: object; // todo
+  res?: object; // todo
   isServer?: boolean;
 }
