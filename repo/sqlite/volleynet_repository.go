@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -94,6 +95,13 @@ func (s *VolleynetRepository) UpdateTournamentTeam(t *volleynet.TournamentTeam) 
 	}
 
 	return nil
+}
+
+func (s *VolleynetRepository) TournamentsUpdatedSince(updatedSince time.Time) ([]volleynet.FullTournament, error) {
+	return scanTournaments(s.DB,
+		query("volleynet/select-tournament-by-updated-since"),
+		updatedSince,
+	)
 }
 
 func (s *VolleynetRepository) UpdateTournament(t *volleynet.FullTournament) error {
