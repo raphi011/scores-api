@@ -78,15 +78,15 @@ function Drawer({ open, userPlayer, onClose, classes }: IProps) {
   const sideList = (
     <div className={classes.list}>
       <List>
-        <Link
+        {/* <Link
           prefetch
           href={{ pathname: '/player', query: { id: userPlayer.id } }}
-        >
-          <ListItem button>
-            <Avatar src={userPlayer.profileImageUrl} />
-            <ListItemText inset primary={userPlayer.name} />
-          </ListItem>
-        </Link>
+        > */}
+        <ListItem button>
+          <Avatar src={userPlayer.profileImageUrl} />
+          <ListItemText inset primary={userPlayer.name} />
+        </ListItem>
+        {/* </Link> */}
         <ListSubheader className={classes.header}>Navigation</ListSubheader>
         <Link href="/home">
           <ListItem button>

@@ -2,7 +2,7 @@ import List from '@material-ui/core/List';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
-import PlayerListItem from './PlayerListItem';
+import SearchPlayerListItem from './SearchPlayerListItem';
 
 import { VolleynetSearchPlayer } from '../../types';
 
@@ -18,18 +18,18 @@ interface IProps {
   classes: any;
 }
 
-class PlayerList extends React.PureComponent<IProps> {
+class SearchPlayerList extends React.PureComponent<IProps> {
   render() {
     const { players = [], onPlayerClick, classes } = this.props;
 
     return (
       <List className={classes.root}>
         {players.map(p => (
-          <PlayerListItem key={p.id} onClick={onPlayerClick} player={p} />
+          <SearchPlayerListItem key={p.id} onClick={onPlayerClick} player={p} />
         ))}
       </List>
     );
   }
 }
 
-export default withStyles(styles)(PlayerList);
+export default withStyles(styles)(SearchPlayerList);

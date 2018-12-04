@@ -79,7 +79,7 @@ function receiveEntities(state: IEntityStore, action: IReceiveEntityAction) {
   // STEP 1: normalize entites
   const { entityName, payload, assignId = false, listOptions = {} } = action;
 
-  const { entities } = norm(entityName, payload, assignId);
+  const { entities, result } = norm(entityName, payload, assignId);
 
   const newState = { ...state };
 
@@ -87,9 +87,15 @@ function receiveEntities(state: IEntityStore, action: IReceiveEntityAction) {
   Object.keys(entities).forEach((entityKey: EntityName) => {
     const statePart = { ...state[entityKey] };
 
-    const newIds = Object.keys(entities[entityKey]).map(n =>
-      Number.parseInt(n, 10),
-    );
+    let newIds;
+
+    if (entityKey === action.entityName) {
+      newIds = result;
+    } else {
+      newIds = Object.keys(entities[entityKey]).map(n =>
+        Number.parseInt(n, 10),
+      );
+    }
 
     statePart.values = {
       ...state[entityKey].values,

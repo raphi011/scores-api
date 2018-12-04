@@ -4,9 +4,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import PlayerList from '../../components/volleynet/PlayerList';
 import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
 import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
+import SearchPlayerList from './SearchPlayerList';
 
 import { Gender, VolleynetSearchPlayer } from '../../types';
 import LoadingButton from '../LoadingButton';
@@ -104,7 +104,10 @@ class SearchPlayer extends React.Component<IProps, IState> {
           onChange={this.onChangeBirthday}
           value={birthday}
         />
-        <PlayerList players={foundPlayers} onPlayerClick={onSelectPlayer} />
+        <SearchPlayerList
+          players={foundPlayers}
+          onPlayerClick={onSelectPlayer}
+        />
         <LoadingButton loading={searching}>
           <SearchIcon />
           Search

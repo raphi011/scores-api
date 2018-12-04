@@ -306,7 +306,7 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 }
 
 func (s *VolleynetRepository) Ladder(gender string) ([]volleynet.Player, error) {
-	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-by-gender"), gender)
+	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-ladder"), gender)
 }
 
 func (s *VolleynetRepository) AllPlayers() ([]volleynet.Player, error) {

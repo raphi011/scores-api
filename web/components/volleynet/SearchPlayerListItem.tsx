@@ -10,7 +10,7 @@ interface IProps {
   onClick: (VolleynetSearchPlayer) => void;
 }
 
-const PlayerListItem = ({ player, onClick }: IProps) => (
+const SearchPlayerListItem = ({ player, onClick }: IProps) => (
   <ListItem button onClick={() => onClick(player)}>
     <ListItemText
       primary={`${player.firstName} ${player.lastName}`}
@@ -19,4 +19,4 @@ const PlayerListItem = ({ player, onClick }: IProps) => (
   </ListItem>
 );
 
-export default PlayerListItem;
+export default SearchPlayerListItem;

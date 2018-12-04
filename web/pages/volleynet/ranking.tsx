@@ -2,26 +2,25 @@ import React from 'react';
 // import Router from 'next/router';
 
 import Card from '@material-ui/core/Card';
-import PlayerList from '../../components/volleynet/PlayerList';
+import Ladder from '../../components/volleynet/Ladder';
 import withAuth from '../../containers/AuthContainer';
 // import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
 import { loadLadderAction } from '../../redux/actions/entities';
 import { ladderVolleynetplayerSelector } from '../../redux/reducers/entities';
 
-import { Player } from '../../types';
+import { VolleynetPlayer } from '../../types';
 
 interface IProps {
-  gender: "M" | "W";
-  ladder: Player[];
+  gender: 'M' | 'W';
+  ladder: VolleynetPlayer[];
   loadLadder: (gender: string) => void;
   classes: any;
 }
 
-const genderList = ["M", "W"];
+const genderList = ['M', 'W'];
 
 class Ranking extends React.Component<IProps> {
-
   static mapDispatchToProps = {
     loadLadder: loadLadderAction,
   };
@@ -33,7 +32,7 @@ class Ranking extends React.Component<IProps> {
     let { gender } = query;
 
     if (!genderList.includes(gender)) {
-      gender = "M"
+      gender = 'M';
     }
 
     return { gender };
@@ -59,7 +58,7 @@ class Ranking extends React.Component<IProps> {
     return (
       <Layout title={{ text: 'Rankings', href: '' }}>
         <Card>
-          <PlayerList players={ladder} />
+          <Ladder players={ladder} />
         </Card>
       </Layout>
     );
@@ -67,4 +66,3 @@ class Ranking extends React.Component<IProps> {
 }
 
 export default withAuth(Ranking);
-
