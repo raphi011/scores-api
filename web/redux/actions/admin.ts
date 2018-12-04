@@ -7,3 +7,10 @@ export const loadVolleynetScrapeJobsAction = (): ApiAction => ({
   type: actionNames.API,
   url: 'admin/volleynet/scrape/report',
 });
+
+export const runJobAction = (jobName: string): ApiAction => ({
+  method: 'POST',
+  params: { job: jobName },
+  type: actionNames.API,
+  url: 'admin/volleynet/scrape/run',
+});

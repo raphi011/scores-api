@@ -22,7 +22,7 @@ type Execution struct {
 }
 
 func (e *Execution) canStart() bool {
-	return e.State == StateErrored || e.State == StateStopped
+	return e.State == StateStopped || e.State == StateWaiting
 }
 
 func (e *Execution) stop() {

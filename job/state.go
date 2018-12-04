@@ -4,9 +4,9 @@ type State int
 
 const (
 	StateStopped State = iota
+	StateStopping
 	StateWaiting
 	StateRunning
-	StateStopping
 	StateErrored
 )
 
