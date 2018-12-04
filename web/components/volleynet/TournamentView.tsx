@@ -12,6 +12,7 @@ import LocationIcon from '@material-ui/icons/GpsFixed';
 import LinkIcon from '@material-ui/icons/Link';
 import PeopleIcon from '@material-ui/icons/People';
 import PhoneIcon from '@material-ui/icons/Phone';
+import TimeAgo from 'react-timeago';
 import { formatDateTime } from '../../utils/dateFormat';
 import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
@@ -162,7 +163,7 @@ class TournamentView extends React.Component<IProps, IState> {
           align="center"
           paragraph
         >
-          Last updated: {formatDateTime(tournament.updatedAt)}
+          Last updated: <TimeAgo date={tournament.updatedAt} />
         </Typography>
 
         <Typography className={classes.title} variant="h4">
