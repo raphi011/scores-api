@@ -2,7 +2,7 @@ import fetch from 'isomorphic-unfetch';
 import { buildUrl, isJson } from '../api';
 import { ApiAction, ApiActions } from '../types';
 import * as actionNames from './actionNames';
-import { userSelector } from './reducers/auth';
+import { userSelector } from './auth/selectors';
 
 function getHost(req): string {
   if (req) {

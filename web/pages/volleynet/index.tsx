@@ -9,8 +9,8 @@ import LeagueSelect from '../../components/volleynet/LeagueSelect';
 import TournamentList from '../../components/volleynet/TournamentList';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import { loadTournamentsAction } from '../../redux/actions/entities';
-import { tournamentsByLeagueSelector } from '../../redux/reducers/entities';
+import { loadTournamentsAction } from '../../redux/entities/actions';
+import { tournamentsByLeagueSelector } from '../../redux/entities/selectors';
 import * as ArrayUtils from '../../utils/array';
 
 import { Tournament } from '../../types';

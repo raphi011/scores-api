@@ -9,10 +9,10 @@ import (
 type VolleynetRepository interface {
 	Tournament(tournamentID int) (*volleynet.FullTournament, error)
 
-	AllTournaments() ([]volleynet.FullTournament, error)
-	SeasonTournaments(season int) ([]volleynet.FullTournament, error)
-	GetTournaments(gender, league string, season int) ([]volleynet.FullTournament, error)
-	TournamentsUpdatedSince(since time.Time) ([]volleynet.FullTournament, error)
+	AllTournaments() ([]*volleynet.FullTournament, error)
+	SeasonTournaments(season int) ([]*volleynet.FullTournament, error)
+	GetTournaments(gender, league string, season int) ([]*volleynet.FullTournament, error)
+	TournamentsUpdatedSince(since time.Time) ([]*volleynet.FullTournament, error)
 
 	NewTournament(t *volleynet.FullTournament) error
 	UpdateTournament(t *volleynet.FullTournament) error

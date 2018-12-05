@@ -8,12 +8,12 @@ import Login from '../../components/volleynet/Login';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
+import { userSelector } from '../../redux/auth/selectors';
 import {
   loadTournamentAction,
   tournamentSignupAction,
-} from '../../redux/actions/entities';
-import { userSelector } from '../../redux/reducers/auth';
-import { tournamentSelector } from '../../redux/reducers/entities';
+} from '../../redux/entities/actions';
+import { tournamentSelector } from '../../redux/entities/selectors';
 import { card, link, title } from '../../styles/shared';
 
 import { Card, CardContent, Theme } from '@material-ui/core';

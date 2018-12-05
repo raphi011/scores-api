@@ -96,17 +96,21 @@ function assignArtificialId(entities: any[] | object) {
 }
 
 export function norm(entityName: EntityName, data, assignId: boolean) {
-  const isList = Array.isArray(data);
+  try {
+    const isList = Array.isArray(data);
 
-  const entitySchema = getSchemaMap(entityName, isList);
+    const entitySchema = getSchemaMap(entityName, isList);
 
-  if (assignId) {
-    assignArtificialId(data);
+    if (assignId) {
+      assignArtificialId(data);
+    }
+
+    const { result, entities } = normalize(data, entitySchema);
+
+    return { result: isList ? result : [result], entities };
+  } catch (e) {
+    console.log(e);
   }
-
-  const { result, entities } = normalize(data, entitySchema);
-
-  return { result: isList ? result : [result], entities };
 }
 
 export function denorm(

@@ -1,28 +1,29 @@
+import React from 'react';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import Router from 'next/router';
-import React from 'react';
-
-import StatisticList from '../components/StatisticList';
-import withAuth from '../containers/AuthContainer';
-import MatchList from '../containers/MatchListContainer';
 
 import PlayerView from '../components/PlayerView';
+import StatisticList from '../components/StatisticList';
+import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
-import { multiApiAction } from '../redux/actions/api';
+import MatchList from '../containers/MatchListContainer';
+import { multiApiAction } from '../redux/api/actions';
+import { userSelector } from '../redux/auth/reducer';
 import {
   loadPlayerMatchesAction,
   loadPlayerStatisticAction,
   loadPlayerTeamStatisticAction,
-} from '../redux/actions/entities';
-import { userSelector } from '../redux/reducers/auth';
+} from '../redux/entities/actions';
 import {
   matchesByPlayerSelector,
   playerSelector,
   statisticByPlayerSelector,
   statisticByPlayerTeamSelector,
-} from '../redux/reducers/entities';
+} from '../redux/entities/reducer';
+
 import { Match, Player, PlayerStatistic, User } from '../types';
 
 interface IProps {

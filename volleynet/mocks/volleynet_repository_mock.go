@@ -15,22 +15,22 @@ func (m *VolleynetRepositoryMock) Tournament(tournamentID int) (*volleynet.FullT
 	return args.Get(0).(*volleynet.FullTournament), args.Error(1)
 }
 
-func (m *VolleynetRepositoryMock) AllTournaments() ([]volleynet.FullTournament, error) {
+func (m *VolleynetRepositoryMock) AllTournaments() ([]*volleynet.FullTournament, error) {
 	args := m.Called()
 
-	return args.Get(0).([]volleynet.FullTournament), args.Error(1)
+	return args.Get(0).([]*volleynet.FullTournament), args.Error(1)
 }
 
-func (m *VolleynetRepositoryMock) SeasonTournaments(season int) ([]volleynet.FullTournament, error) {
+func (m *VolleynetRepositoryMock) SeasonTournaments(season int) ([]*volleynet.FullTournament, error) {
 	args := m.Called(season)
 
-	return args.Get(0).([]volleynet.FullTournament), args.Error(1)
+	return args.Get(0).([]*volleynet.FullTournament), args.Error(1)
 }
 
-func (m *VolleynetRepositoryMock) GetTournaments(gender, league string, season int) ([]volleynet.FullTournament, error) {
+func (m *VolleynetRepositoryMock) GetTournaments(gender, league string, season int) ([]*volleynet.FullTournament, error) {
 	args := m.Called(gender, league, season)
 
-	return args.Get(0).([]volleynet.FullTournament), args.Error(1)
+	return args.Get(0).([]*volleynet.FullTournament), args.Error(1)
 }
 
 func (m *VolleynetRepositoryMock) NewTournament(t *volleynet.FullTournament) error {

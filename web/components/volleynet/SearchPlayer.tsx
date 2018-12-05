@@ -4,8 +4,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { searchVolleynetPlayersAction } from '../../redux/actions/entities';
-import { searchVolleynetplayerSelector } from '../../redux/reducers/entities';
+import { searchVolleynetPlayersAction } from '../../redux/entities/actions';
+import { searchVolleynetplayerSelector } from '../../redux/entities/reducer';
 import SearchPlayerList from './SearchPlayerList';
 
 import { Gender, VolleynetSearchPlayer } from '../../types';

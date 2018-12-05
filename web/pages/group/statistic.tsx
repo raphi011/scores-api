@@ -12,9 +12,9 @@ import React from 'react';
 import StatisticList from '../../components/StatisticList';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import { userOrLoginRouteAction } from '../../redux/actions/auth';
-import { loadGroupStatisticsAction } from '../../redux/actions/entities';
-import { statisticByGroupSelector } from '../../redux/reducers/entities';
+import { userOrLoginRouteAction } from '../../redux/auth/actions';
+import { loadGroupStatisticsAction } from '../../redux/entities/actions';
+import { statisticByGroupSelector } from '../../redux/entities/reducer';
 import { PlayerStatistic, StatisticFilter } from '../../types';
 
 const styles = createStyles({

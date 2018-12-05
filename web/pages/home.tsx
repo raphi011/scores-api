@@ -1,13 +1,13 @@
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
 import Paper from '@material-ui/core/Paper';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import withAuth from '../containers/AuthContainer';
 
 import Layout from '../containers/LayoutContainer';
-import { userSelector } from '../redux/reducers/auth';
-import { playerSelector } from '../redux/reducers/entities';
+import { userSelector } from '../redux/auth/selectors';
+import { playerSelector } from '../redux/entities/selectors';
 import { Player } from '../types';
 
 const styles = (theme: Theme) =>

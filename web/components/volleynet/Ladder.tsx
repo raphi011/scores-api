@@ -1,10 +1,10 @@
-import List from '@material-ui/core/List';
-import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
-import LadderItem from './LadderItem';
+import List from '@material-ui/core/List';
+import { createStyles, withStyles } from '@material-ui/core/styles';
 
 import { VolleynetPlayer } from '../../types';
+import LadderItem from './LadderItem';
 
 const styles = createStyles({
   root: {

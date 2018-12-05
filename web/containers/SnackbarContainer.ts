@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
+
 import Snackbar from '../components/Snackbar';
-import { clearStatusAction } from '../redux/actions/status';
-import { statusSelector } from '../redux/reducers/status';
+import { clearStatusAction } from '../redux/status/actions';
+import { statusSelector } from '../redux/status/reducer';
 
 function mapStateToProps(state) {
   const status = statusSelector(state);

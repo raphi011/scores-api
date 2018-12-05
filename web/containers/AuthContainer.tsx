@@ -6,8 +6,8 @@ import React from 'react';
 import Router from 'next/router';
 import { connect } from 'react-redux';
 
-import { userOrLoginRouteAction } from '../redux/actions/auth';
-import { userSelector } from '../redux/reducers/auth';
+import { userOrLoginRouteAction } from '../redux/auth/actions';
+import { userSelector } from '../redux/auth/selectors';
 import { dispatchAction, dispatchActions } from '../redux/store';
 
 import { User } from '../types';

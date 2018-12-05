@@ -1,30 +1,29 @@
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-
-import PauseIcon from '@material-ui/icons/Pause';
-import PlayIcon from '@material-ui/icons/PlayArrow';
-import StopIcon from '@material-ui/icons/Stop';
-import WarningIcon from '@material-ui/icons/Warning';
-
 import Button from '@material-ui/core/Button';
-
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
+import Paper from '@material-ui/core/Paper';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import PauseIcon from '@material-ui/icons/Pause';
+import PlayIcon from '@material-ui/icons/PlayArrow';
+import StopIcon from '@material-ui/icons/Stop';
+import WarningIcon from '@material-ui/icons/Warning';
 
 import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
 import {
+  loadUsersAction,
   loadVolleynetScrapeJobsAction,
   runJobAction,
-} from '../redux/actions/admin';
-import { scrapeJobsSelector } from '../redux/reducers/admin';
-import { ScrapeJob } from '../types';
+} from '../redux/admin/actions';
+import { scrapeJobsSelector } from '../redux/admin/selectors';
+import { allUsersSelector } from '../redux/entities/selectors';
+import { ScrapeJob, User } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -42,6 +41,7 @@ interface IProps {
   loadScrapeJobs: () => void;
   runJob: (jobName: string) => void;
   classes: any;
+  users: User[];
 }
 
 class Home extends React.Component<IProps> {
@@ -51,14 +51,16 @@ class Home extends React.Component<IProps> {
   };
 
   static buildActions() {
-    return [loadVolleynetScrapeJobsAction()];
+    return [loadVolleynetScrapeJobsAction(), loadUsersAction()];
   }
 
   static mapStateToProps(state) {
     const jobs = scrapeJobsSelector(state);
+    const users = allUsersSelector(state);
 
     return {
       jobs,
+      users,
     };
   }
 

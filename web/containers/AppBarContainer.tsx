@@ -3,8 +3,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import AppBar from '../components/AppBar';
-import { logoutAction } from '../redux/actions/auth';
-import { loginRouteSelector, userSelector } from '../redux/reducers/auth';
+import { logoutAction } from '../redux/auth/actions';
+import { loginRouteSelector, userSelector } from '../redux/auth/selectors';
 
 interface IProps {
   isLoggedIn: boolean;

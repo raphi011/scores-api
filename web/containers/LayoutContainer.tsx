@@ -1,10 +1,9 @@
 import React, { ReactNode } from 'react';
+
 import { connect } from 'react-redux';
 
 import Layout from '../components/Layout';
-
-import { userSelector } from '../redux/reducers/auth';
-
+import { userSelector } from '../redux/auth/selectors';
 import { Player } from '../types';
 
 interface IProps {

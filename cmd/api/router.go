@@ -56,6 +56,10 @@ func initRouter(app app) *gin.Engine {
 
 	infoHandler := infoHandler{}
 
+	adminHandler := adminHandler{
+		userService: app.services.User,
+	}
+
 	router.Use(sessions.Sessions("session", store), loggerMiddleware(app.log), metricMiddleware())
 
 	router.GET("/version", infoHandler.version)
@@ -91,6 +95,8 @@ func initRouter(app app) *gin.Engine {
 
 	admin := auth.Group("/admin")
 	admin.Use(adminMiddlware(app.services.User))
+
+	admin.GET("/users", adminHandler.getUsers)
 
 	volleynetAdmin := admin.Group("/volleynet")
 

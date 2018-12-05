@@ -79,6 +79,10 @@ func (s *UserService) complementUser(user *User) (*User, error) {
 	return user, errors.Wrapf(err, "could not load user player %d", user.PlayerID)
 }
 
+func (s *UserService) All() ([]User, error) {
+	return s.Repository.All()
+}
+
 // SetProfileImage updates a users profile image
 func (s *UserService) SetProfileImage(userID uint, imageURL string) error {
 	user, err := s.Repository.ByID(userID)

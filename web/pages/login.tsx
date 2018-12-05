@@ -11,8 +11,8 @@ import React, { SyntheticEvent } from 'react';
 import LoadingButton from '../components/LoadingButton';
 import withAuth from '../containers/AuthContainer';
 import Snackbar from '../containers/SnackbarContainer';
-import { loginWithPasswordAction } from '../redux/actions/auth';
-import { setStatusAction } from '../redux/actions/status';
+import { loginWithPasswordAction } from '../redux/auth/actions';
+import { setStatusAction } from '../redux/status/actions';
 
 interface IProps {
   r: string;

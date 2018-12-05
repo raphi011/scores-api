@@ -14,3 +14,19 @@ export const runJobAction = (jobName: string): ApiAction => ({
   type: actionNames.API,
   url: 'admin/volleynet/scrape/run',
 });
+
+export const loadUsersAction = (): ApiAction => ({
+  method: 'GET',
+  success: actionNames.RECEIVE_ENTITIES,
+  successParams: {
+    entityName: 'user',
+    listOptions: {
+      user: {
+        mode: 'replace',
+        name: 'all',
+      },
+    },
+  },
+  type: actionNames.API,
+  url: `admin/users`,
+});

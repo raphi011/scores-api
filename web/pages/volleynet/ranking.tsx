@@ -6,8 +6,8 @@ import Ladder from '../../components/volleynet/Ladder';
 import withAuth from '../../containers/AuthContainer';
 // import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
-import { loadLadderAction } from '../../redux/actions/entities';
-import { ladderVolleynetplayerSelector } from '../../redux/reducers/entities';
+import { loadLadderAction } from '../../redux/entities/actions';
+import { ladderVolleynetplayerSelector } from '../../redux/entities/selectors';
 
 import { VolleynetPlayer } from '../../types';
 

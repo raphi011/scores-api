@@ -1,7 +1,6 @@
 import { User } from '../../types';
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
-import { IStore } from '../store';
 
 export const initialAuthState = {
   loginRoute: null,
@@ -43,9 +42,3 @@ const reducer = createReducer(initialAuthState, {
 });
 
 export default reducer;
-
-export const loginRouteSelector = (state: IStore) => state.auth.loginRoute;
-export const userSelector = (state: IStore) => ({
-  isLoggedIn: !!state.auth.user,
-  user: state.auth.user,
-});

@@ -1,12 +1,13 @@
+import React from 'react';
+
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Router from 'next/router';
-import React from 'react';
 import { connect } from 'react-redux';
 import Waypoint from 'react-waypoint';
 
 import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';
-import { deleteMatchAction } from '../redux/actions/entities';
+import { deleteMatchAction } from '../redux/entities/actions';
 
 import { Match } from '../types';
 

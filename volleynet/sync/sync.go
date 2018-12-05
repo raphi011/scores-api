@@ -13,7 +13,7 @@ type PersistanceRepository interface {
 	Tournament(tournamentID int) (*volleynet.FullTournament, error)
 	UpdateTournament(t *volleynet.FullTournament) error
 	NewTournament(t *volleynet.FullTournament) error
-	SeasonTournaments(season int) ([]volleynet.FullTournament, error)
+	SeasonTournaments(season int) ([]*volleynet.FullTournament, error)
 
 	AllPlayers() ([]volleynet.Player, error)
 	NewPlayer(p *volleynet.Player) error

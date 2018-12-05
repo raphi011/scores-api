@@ -1,12 +1,13 @@
 import { IParams } from './api';
 
 export type EntityName =
-  | 'player'
-  | 'team'
-  | 'match'
   | 'group'
-  | 'tournament'
+  | 'match'
+  | 'player'
   | 'statistic'
+  | 'team'
+  | 'tournament'
+  | 'user'
   | 'volleynetplayer';
 
 export interface Player {

@@ -20,15 +20,15 @@ func (s *VolleynetRepository) Tournament(tournamentID int) (*volleynet.FullTourn
 	return scanTournament(row)
 }
 
-func (s *VolleynetRepository) AllTournaments() ([]volleynet.FullTournament, error) {
+func (s *VolleynetRepository) AllTournaments() ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-all"))
 }
 
-func (s *VolleynetRepository) SeasonTournaments(season int) ([]volleynet.FullTournament, error) {
+func (s *VolleynetRepository) SeasonTournaments(season int) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-by-season"), season)
 }
 
-func (s *VolleynetRepository) GetTournaments(gender, league string, season int) ([]volleynet.FullTournament, error) {
+func (s *VolleynetRepository) GetTournaments(gender, league string, season int) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-by-filter"), gender, league, season)
 }
 
@@ -97,7 +97,7 @@ func (s *VolleynetRepository) UpdateTournamentTeam(t *volleynet.TournamentTeam) 
 	return nil
 }
 
-func (s *VolleynetRepository) TournamentsUpdatedSince(updatedSince time.Time) ([]volleynet.FullTournament, error) {
+func (s *VolleynetRepository) TournamentsUpdatedSince(updatedSince time.Time) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB,
 		query("volleynet/select-tournament-by-updated-since"),
 		updatedSince,
@@ -374,8 +374,8 @@ func (s *VolleynetRepository) SearchPlayers() ([]volleynet.Player, error) {
 	return nil, nil
 }
 
-func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]volleynet.FullTournament, error) {
-	tournaments := []volleynet.FullTournament{}
+func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]*volleynet.FullTournament, error) {
+	tournaments := []*volleynet.FullTournament{}
 	rows, err := db.Query(query, args...)
 
 	if err != nil {
@@ -391,7 +391,7 @@ func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]volleynet
 			return nil, err
 		}
 
-		tournaments = append(tournaments, *tournament)
+		tournaments = append(tournaments, tournament)
 	}
 
 	return tournaments, nil

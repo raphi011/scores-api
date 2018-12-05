@@ -1,34 +1,35 @@
-import Button from '@material-ui/core/Button';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import AddIcon from '@material-ui/icons/Add';
-import Link from 'next/link';
 import React from 'react';
 
+// import Button from '@material-ui/core/Button';
+import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+// import Toolbar from '@material-ui/core/Toolbar';
+// import AddIcon from '@material-ui/icons/Add';
+// import Link from 'next/link';
+
+import { Typography } from '@material-ui/core';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import MatchList from '../../containers/MatchListContainer';
+// import MatchList from '../../containers/MatchListContainer';
 import {
   loadGroupAction,
   loadMatchesAction,
-} from '../../redux/actions/entities';
-import { setStatusAction } from '../../redux/actions/status';
+} from '../../redux/entities/actions';
 import {
-  matchesByGroupSelector,
-  groupPlayersSelector,
+  // groupPlayersSelector,
   groupSelector,
-} from '../../redux/reducers/entities';
+  matchesByGroupSelector,
+} from '../../redux/entities/selectors';
+import { setStatusAction } from '../../redux/status/actions';
 
-import { Match, User, Group } from '../../types';
-import { Typography } from '@material-ui/core';
+import { Match /*, User, Group*/ } from '../../types';
 
 const styles = (theme: Theme) => createStyles({});
 
 interface IProps {
   groupId: number;
-  user: User;
+  // user: User;
   matches: Match[];
-  group: Group;
+  // group: Group;
   loadMatches: (groupId: number, after?: string) => Promise<{ empty: boolean }>;
   classes: any;
 }

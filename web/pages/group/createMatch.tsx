@@ -1,10 +1,11 @@
+import React, { SyntheticEvent } from 'react';
+
 import Button from '@material-ui/core/Button';
 import MobileStepper from '@material-ui/core/MobileStepper';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
 import NextIcon from '@material-ui/icons/KeyboardArrowRight';
 import Router from 'next/router';
-import React, { SyntheticEvent } from 'react';
 
 import SelectPlayers from '../../components/SelectPlayers';
 import SetScores from '../../components/SetScores';
@@ -14,12 +15,12 @@ import {
   createNewMatchAction,
   loadGroupAction,
   loadMatchAction,
-} from '../../redux/actions/entities';
-import { setStatusAction } from '../../redux/actions/status';
+} from '../../redux/entities/actions';
 import {
   groupPlayersSelector,
   matchSelector,
-} from '../../redux/reducers/entities';
+} from '../../redux/entities/reducer';
+import { setStatusAction } from '../../redux/status/actions';
 import { Match, NewMatch, Player } from '../../types';
 import { IMatchValidation, validateMatch } from '../../validation/match';
 

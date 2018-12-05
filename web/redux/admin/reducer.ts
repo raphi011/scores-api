@@ -1,7 +1,6 @@
 import { ScrapeJob } from '../../types';
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
-import { IStore } from '../store';
 
 export const initialAdminState = {
   scrapeJobs: [],
@@ -22,5 +21,3 @@ const reducer = createReducer(initialAdminState, {
 });
 
 export default reducer;
-
-export const scrapeJobsSelector = (state: IStore) => state.admin.scrapeJobs;

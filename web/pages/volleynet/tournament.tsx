@@ -4,10 +4,9 @@ import TournamentView from '../../components/volleynet/TournamentView';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 
-import { loadTournamentAction } from '../../redux/actions/entities';
-import { userSelector } from '../../redux/reducers/auth';
-import { tournamentSelector } from '../../redux/reducers/entities';
-
+import { userSelector } from '../../redux/auth/selectors';
+import { loadTournamentAction } from '../../redux/entities/actions';
+import { tournamentSelector } from '../../redux/entities/selectors';
 import { Tournament, User } from '../../types';
 
 interface IProps {

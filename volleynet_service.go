@@ -16,7 +16,7 @@ func (s *VolleynetService) Ladder(gender string) ([]volleynet.Player, error) {
 }
 
 func (s *VolleynetService) GetTournamentsUpdatedSince(since time.Time) (
-	[]volleynet.FullTournament, error) {
+	[]*volleynet.FullTournament, error) {
 	tournaments, err := s.Repository.TournamentsUpdatedSince(since)
 
 	if err != nil {
@@ -27,7 +27,7 @@ func (s *VolleynetService) GetTournamentsUpdatedSince(since time.Time) (
 }
 
 func (s *VolleynetService) GetTournaments(gender, league string, season int) (
-	[]volleynet.FullTournament, error) {
+	[]*volleynet.FullTournament, error) {
 	tournaments, err := s.Repository.GetTournaments(gender, league, season)
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (s *VolleynetService) GetTournaments(gender, league string, season int) (
 	return s.addTeams(tournaments...)
 }
 
-func (s *VolleynetService) addTeams(tournaments ...volleynet.FullTournament) ([]volleynet.FullTournament, error) {
+func (s *VolleynetService) addTeams(tournaments ...*volleynet.FullTournament) ([]*volleynet.FullTournament, error) {
 	var err error
 
 	for _, t := range tournaments {
@@ -59,10 +59,10 @@ func (s *VolleynetService) Tournament(tournamentID int) (
 		return nil, err
 	}
 
-	result, err := s.addTeams(*tournament)
+	result, err := s.addTeams(tournament)
 
-	if err != nil {
-		return &result[0], nil
+	if err == nil {
+		return result[0], nil
 	}
 
 	return nil, err
