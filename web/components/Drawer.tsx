@@ -107,7 +107,7 @@ function Drawer({ open, userPlayer, onClose, classes }: IProps) {
           </Link>
         </AdminOnly>
         <ListSubheader className={classes.header}>Volleynet</ListSubheader>
-        <Link href="/volleynet">
+        <Link prefetch href="/volleynet">
           <ListItem button>
             <ListItemIcon>
               <TournamentIcon />
@@ -115,7 +115,7 @@ function Drawer({ open, userPlayer, onClose, classes }: IProps) {
             <ListItemText inset primary="Tournaments" />
           </ListItem>
         </Link>
-        <Link href="/volleynet/ranking">
+        <Link prefetch href="/volleynet/ranking">
           <ListItem button>
             <ListItemIcon>
               <LadderIcon />

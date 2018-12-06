@@ -22,13 +22,23 @@ export const entityMapSelector = createSelector(
   tournamentMap,
   userMap,
   volleynetplayerMap,
-  (group, player, team, match, statistic, tournament, volleynetplayer) => ({
+  (
+    group,
+    player,
+    team,
+    match,
+    statistic,
+    tournament,
+    user,
+    volleynetplayer,
+  ) => ({
     group,
     match,
     player,
     statistic,
     team,
     tournament,
+    user,
     volleynetplayer,
   }),
 );

@@ -74,63 +74,59 @@ function deleteEntities(state, action: IDeleteEntityAction) {
 }
 
 function receiveEntities(state: IEntityStore, action: IReceiveEntityAction) {
-  try {
-    // STEP 1: normalize entites
-    const { entityName, payload, assignId = false, listOptions = {} } = action;
+  // STEP 1: normalize entites
+  const { entityName, payload, assignId = false, listOptions = {} } = action;
 
-    const { entities, result } = norm(entityName, payload, assignId);
+  const { entities, result } = norm(entityName, payload, assignId);
 
-    const newState = { ...state };
+  const newState = { ...state };
 
-    // STEP 2: add entities to entity map(s)
-    Object.keys(entities).forEach((entityKey: EntityName) => {
-      const statePart = { ...state[entityKey] };
+  // STEP 2: add entities to entity map(s)
+  Object.keys(entities).forEach((entityKey: EntityName) => {
+    const statePart = { ...state[entityKey] };
 
-      let newIds;
+    let newIds;
 
-      if (entityKey === action.entityName) {
-        newIds = result;
-      } else {
-        newIds = Object.keys(entities[entityKey]).map(n =>
-          Number.parseInt(n, 10),
-        );
-      }
+    if (entityKey === action.entityName) {
+      newIds = result;
+    } else {
+      newIds = Object.keys(entities[entityKey]).map(n =>
+        Number.parseInt(n, 10),
+      );
+    }
 
-      statePart.values = {
-        ...state[entityKey].values,
-        ...entities[entityKey],
-      };
+    statePart.values = {
+      ...state[entityKey].values,
+      ...entities[entityKey],
+    };
 
-      const options = listOptions[entityKey];
+    const options = listOptions[entityKey];
 
-      // STEP 3: append or replace ids
-      if (options) {
-        let list = [];
+    // STEP 3: append or replace ids
+    if (options) {
+      let list = [];
 
-        if (options.mode === 'append') {
-          const previousList = options.key
-            ? (state[entityKey][options.name] || {})[options.key]
-            : state[entityKey][options.name];
+      if (options.mode === 'append') {
+        const previousList = options.key
+          ? (state[entityKey][options.name] || {})[options.key]
+          : state[entityKey][options.name];
 
-          if (previousList) {
-            list = previousList;
-          }
+        if (previousList) {
+          list = previousList;
         }
-
-        list = [...list, ...newIds];
-
-        statePart[options.name] = options.key
-          ? { ...(state[entityKey][options.name] || {}), [options.key]: list }
-          : list;
       }
 
-      newState[entityKey] = statePart;
-    });
+      list = [...list, ...newIds];
 
-    return newState;
-  } catch (e) {
-    console.log(e);
-  }
+      statePart[options.name] = options.key
+        ? { ...(state[entityKey][options.name] || {}), [options.key]: list }
+        : list;
+    }
+
+    newState[entityKey] = statePart;
+  });
+
+  return newState;
 }
 
 function receiveUser(state: IEntityStore, action) {
