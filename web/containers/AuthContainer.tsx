@@ -8,9 +8,9 @@ import Router from 'next/router';
 import { connect } from 'react-redux';
 import { Dispatch, Store } from 'redux';
 
+import { dispatchAction, dispatchActions } from '../redux/actions';
 import { userOrLoginRouteAction } from '../redux/auth/actions';
 import { userSelector } from '../redux/auth/selectors';
-import { dispatchAction, dispatchActions } from '../redux/store';
 
 type Props = {
   store: Store;

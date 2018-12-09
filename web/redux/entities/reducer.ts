@@ -7,8 +7,8 @@ import { EntityName, EntityType } from '../../types';
 export type EntityStore = {
   [key in EntityName]: {
     values: { [key: number]: EntityType };
-    all: number[];
     list?: {
+      all: number[];
       [listName: string]: number[];
     };
     by?: {
@@ -37,47 +37,64 @@ export interface IDeleteEntityAction {
 }
 
 export const initialEntitiesState: EntityStore = {
-  group: { values: {}, all: [] },
+  group: { values: {} },
   match: {
-    all: [],
     by: {
       group: {},
       player: {},
     },
+    list: {
+      all: [],
+    },
     values: {},
   },
   player: {
-    all: [],
     by: {
       group: {},
+    },
+    list: {
+      all: [],
     },
     values: {},
   },
   statistic: {
-    all: [],
     by: {
       group: {},
       player: {},
       playerTeam: {},
     },
-    values: {},
-  },
-  team: {
-    all: [],
-    values: {},
-  },
-  tournament: {
-    all: [],
-    by: {
-      league: {},
+    list: {
+      all: [],
     },
     values: {},
   },
-  user: { values: {}, all: [] },
+  team: {
+    list: {
+      all: [],
+    },
+    values: {},
+  },
+  tournament: {
+    by: {
+      league: {},
+    },
+    list: {
+      all: [],
+    },
+    values: {},
+  },
+  user: {
+    list: {
+      all: [],
+    },
+    values: {},
+  },
   volleynetplayer: {
-    all: [],
     by: {
       ladder: {},
+    },
+    list: {
+      all: [],
       search: [],
     },
     values: {},

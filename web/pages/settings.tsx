@@ -96,7 +96,7 @@ class Home extends React.Component<IProps> {
           <Paper className={classes.paper}>
             <List dense>
               {jobs.map(j => (
-                <ListItem>
+                <ListItem key={j.job.name}>
                   <ListItemIcon>{stateToString(j.state)}</ListItemIcon>
                   <ListItemText primary={j.job.name} />
                   <ListItemSecondaryAction>

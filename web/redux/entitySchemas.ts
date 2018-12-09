@@ -119,7 +119,7 @@ export function norm(
 export function denorm(
   entityName: EntityName,
   entities,
-  ids: number[] | number,
+  ids: number[] | number = [],
 ) {
   const isList = Array.isArray(ids);
 
