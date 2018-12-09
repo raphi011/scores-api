@@ -19,7 +19,7 @@ import {
 import {
   groupPlayersSelector,
   matchSelector,
-} from '../../redux/entities/reducer';
+} from '../../redux/entities/selectors';
 import { setStatusAction } from '../../redux/status/actions';
 import { Match, NewMatch, Player } from '../../types';
 import { IMatchValidation, validateMatch } from '../../validation/match';

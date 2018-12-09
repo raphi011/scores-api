@@ -7,12 +7,12 @@ export const initialAuthState = {
   user: null,
 };
 
-export interface IAuthStore {
+export type AuthStore = {
   user?: User;
   loginRoute?: string;
-}
+};
 
-function loggedOut(state: IAuthStore, action): IAuthStore {
+function loggedOut(state: AuthStore, action): AuthStore {
   // todo
   let loginRoute = '';
 
@@ -27,7 +27,7 @@ function loggedOut(state: IAuthStore, action): IAuthStore {
   };
 }
 
-function setUserOrLoginroute(state: IAuthStore, action): IAuthStore {
+function setUserOrLoginroute(state: AuthStore, action): AuthStore {
   const { user, loginRoute } = action.payload;
   return {
     ...state,

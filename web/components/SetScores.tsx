@@ -1,5 +1,5 @@
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-import React, { SyntheticEvent } from 'react';
+import React, { ChangeEvent, SyntheticEvent } from 'react';
 
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
@@ -38,7 +38,7 @@ const styles = (theme: Theme) =>
   });
 
 interface IProps {
-  onChangeTargetScore: (event: Event, score: number) => void;
+  onChangeTargetScore: (event: ChangeEvent, score: string) => void;
   onChangeScore: (teamNr: number, event: string) => void;
   onLoseFocus: (
     teamNr: number,

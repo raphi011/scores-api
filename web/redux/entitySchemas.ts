@@ -1,6 +1,6 @@
 import { denormalize, normalize, schema } from 'normalizr';
 
-import { EntityName } from './../types';
+import { EntityName, EntityType } from './../types';
 
 const player = new schema.Entity('player');
 
@@ -85,7 +85,7 @@ function getArtificialId(): number {
   return id;
 }
 
-function assignArtificialId(entities: any[] | object) {
+function assignArtificialId(entities: any[] | any) {
   if (Array.isArray(entities)) {
     entities.forEach(e => {
       e.id = getArtificialId();
@@ -95,7 +95,14 @@ function assignArtificialId(entities: any[] | object) {
   }
 }
 
-export function norm(entityName: EntityName, data, assignId: boolean) {
+export function norm(
+  entityName: EntityName,
+  data,
+  assignId: boolean,
+): {
+  result: number[];
+  entities: { [key in EntityName]: EntityType };
+} {
   const isList = Array.isArray(data);
 
   const entitySchema = getSchemaMap(entityName, isList);

@@ -6,18 +6,18 @@ import Layout from '../components/Layout';
 import { userSelector } from '../redux/auth/selectors';
 import { Player } from '../types';
 
-interface IProps {
+type Props = {
   title: { text: string; href: string };
   children: ReactNode;
   userPlayer: Player;
-}
+};
 
-interface IState {
+type State = {
   drawerOpen: boolean;
   groupOpen: { [key: number]: boolean };
-}
+};
 
-class LayoutContainer extends React.Component<IProps, IState> {
+class LayoutContainer extends React.Component<Props, State> {
   state = {
     drawerOpen: false,
     groupOpen: {},

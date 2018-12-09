@@ -1,18 +1,25 @@
+import React from 'react';
+
+import withRedux from 'next-redux-wrapper';
+import App, { Container } from 'next/app';
+import JssProvider from 'react-jss/lib/JssProvider';
+import { Provider } from 'react-redux';
+import { Store } from 'redux';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import withRedux from 'next-redux-wrapper'
-import App, { Container } from 'next/app';
-import React from 'react';
-import JssProvider from 'react-jss/lib/JssProvider';
-import {Provider} from 'react-redux'
-import initStore from '../redux/store'
 
 import Snackbar from '../containers/SnackbarContainer';
 import getPageContext from '../getPageContext';
+import initStore from '../redux/store';
 
-class MyApp extends App {
+type Props = {
+  store: Store;
+};
 
+class MyApp extends App<Props> {
   pageContext = null;
+
   constructor(props) {
     super(props);
     this.pageContext = getPageContext();

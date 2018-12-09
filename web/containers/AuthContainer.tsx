@@ -1,29 +1,35 @@
 /* eslint-disable prefer-destructuring */
 
-import Error from 'next/error';
 import React from 'react';
 
+import { NextComponentClass, NextContext } from 'next';
+import Error from 'next/error';
 import Router from 'next/router';
 import { connect } from 'react-redux';
+import { Dispatch, Store } from 'redux';
 
 import { userOrLoginRouteAction } from '../redux/auth/actions';
 import { userSelector } from '../redux/auth/selectors';
 import { dispatchAction, dispatchActions } from '../redux/store';
 
-import { User } from '../types';
-
-interface IProps {
-  isLoggedIn: boolean;
+type Props = {
+  store: Store;
   fromServer: boolean;
-  user: User;
-  dispatch: any;
+  dispatch: Dispatch;
+  error: any;
+};
+
+interface Context extends NextContext {
+  store: Store;
 }
 
-const withAuth = Component => {
-  class Auth extends React.Component<IProps> {
-    static async getInitialProps(ctx) {
+export default (Component): NextComponentClass<Props> => {
+  class Auth extends React.Component<Props> {
+    static async getInitialProps(ctx: Context) {
       try {
-        const { isServer, store, res, req, query } = ctx;
+        const { store, res, req, query } = ctx;
+
+        const isServer = !!req;
 
         const dispatch = store.dispatch;
 
@@ -154,5 +160,3 @@ const withAuth = Component => {
     Component.mapDispatchToProps,
   )(Auth);
 };
-
-export default withAuth;

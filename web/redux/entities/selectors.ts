@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 
 import { denorm } from '../entitySchemas';
 
+import { EntityName } from '../../types';
 import { IStore } from '../store';
 
 const groupMap = state => state.entities.group.values;
@@ -45,28 +46,32 @@ export const entityMapSelector = createSelector(
 
 export const allUsersSelector = (state: IStore) =>
   state.entities.user.all.length
-    ? denorm('user', entityMapSelector(state), state.entities.user.all)
+    ? denorm(EntityName.User, entityMapSelector(state), state.entities.user.all)
     : [];
 
 export const allPlayersSelector = (state: IStore) =>
   state.entities.player.all.length
-    ? denorm('player', entityMapSelector(state), state.entities.player.all)
+    ? denorm(
+        EntityName.Player,
+        entityMapSelector(state),
+        state.entities.player.all,
+      )
     : [];
 
 export const groupSelector = (state: IStore, groupId: number) =>
-  denorm('group', entityMapSelector(state), groupId);
+  denorm(EntityName.User, entityMapSelector(state), groupId);
 
 export const groupPlayersSelector = (state: IStore, groupId: number) =>
-  (state.entities.player.byGroup[groupId] || []).length
+  (state.entities.player.by.group[groupId] || []).length
     ? denorm(
-        'player',
+        EntityName.Player,
         entityMapSelector(state),
-        state.entities.player.byGroup[groupId],
+        state.entities.player.by.group[groupId],
       )
     : [];
 
 export const matchSelector = (state: IStore, id: number) =>
-  denorm('match', entityMapSelector(state), id);
+  denorm(EntityName.Match, entityMapSelector(state), id);
 
 const allMatchIdsSelector = state =>
   state.entities.match.all.length ? state.entities.match.all : [];
@@ -74,34 +79,34 @@ const allMatchIdsSelector = state =>
 export const allMatchesSelector = createSelector(
   allMatchIdsSelector,
   entityMapSelector,
-  (ids, entities) => denorm('match', entities, ids),
+  (ids, entities) => denorm(EntityName.Match, entities, ids),
 );
 
 export const playerSelector = (state: IStore, playerId: number) =>
-  denorm('player', entityMapSelector(state), playerId);
+  denorm(EntityName.Player, entityMapSelector(state), playerId);
 
 export const matchesByGroupSelector = (state: IStore, groupId: number) =>
-  (state.entities.match.byGroup[groupId] || []).length
+  (state.entities.match.by.group[groupId] || []).length
     ? denorm(
-        'match',
+        EntityName.Match,
         entityMapSelector(state),
-        state.entities.match.byGroup[groupId],
+        state.entities.match.by.group[groupId],
       )
     : [];
 
 export const matchesByPlayerSelector = (state: IStore, playerId: number) =>
-  (state.entities.match.byPlayer[playerId] || []).length
+  (state.entities.match.by.player[playerId] || []).length
     ? denorm(
-        'match',
+        EntityName.Match,
         entityMapSelector(state),
-        state.entities.match.byPlayer[playerId],
+        state.entities.match.by.player[playerId],
       )
     : [];
 
 export const allStatisticSelector = (state: IStore) =>
   state.entities.statistic.all.length
     ? denorm(
-        'statistic',
+        EntityName.Statistic,
         entityMapSelector(state),
         state.entities.statistic.all,
       )
@@ -111,29 +116,29 @@ export const statisticByPlayerTeamSelector = (
   state: IStore,
   playerId: number,
 ) =>
-  (state.entities.statistic.byPlayerTeam[playerId] || []).length
+  (state.entities.statistic.by.playerTeam[playerId] || []).length
     ? denorm(
-        'statistic',
+        EntityName.Statistic,
         entityMapSelector(state),
-        state.entities.statistic.byPlayerTeam[playerId],
+        state.entities.statistic.by.playerTeam[playerId],
       )
     : [];
 
 export const statisticByGroupSelector = (state: IStore, groupId: number) =>
-  (state.entities.statistic.byGroup[groupId] || []).length
+  (state.entities.statistic.by.group[groupId] || []).length
     ? denorm(
-        'statistic',
+        EntityName.Statistic,
         entityMapSelector(state),
-        state.entities.statistic.byGroup[groupId],
+        state.entities.statistic.by.group[groupId],
       )
     : [];
 
 export const statisticByPlayerSelector = (state: IStore, playerId: number) =>
-  (state.entities.statistic.byPlayer[playerId] || []).length
+  (state.entities.statistic.by.player[playerId] || []).length
     ? denorm(
-        'statistic',
+        EntityName.Statistic,
         entityMapSelector(state),
-        state.entities.statistic.byPlayer[playerId][0],
+        state.entities.statistic.by.player[playerId][0],
       )
     : null;
 
@@ -146,11 +151,11 @@ export const tournamentsByLeagueSelector = (
   leagues.forEach(league => {
     tournaments = [
       ...tournaments,
-      ...((state.entities.tournament.byLeague[league] || []).length
+      ...((state.entities.tournament.by.league[league] || []).length
         ? denorm(
-            'tournament',
+            EntityName.Tournament,
             entityMapSelector(state),
-            state.entities.tournament.byLeague[league],
+            state.entities.tournament.by.league[league],
           )
         : []),
     ];
@@ -160,22 +165,22 @@ export const tournamentsByLeagueSelector = (
 };
 
 export const tournamentSelector = (state: IStore, tournamentId: number) =>
-  denorm('tournament', entityMapSelector(state), tournamentId);
+  denorm(EntityName.VolleynetPlayer, entityMapSelector(state), tournamentId);
 
 export const ladderVolleynetplayerSelector = (state: IStore, gender: string) =>
-  (state.entities.volleynetplayer.ladder[gender] || []).length
+  (state.entities.volleynetplayer.by.ladder[gender] || []).length
     ? denorm(
-        'volleynetplayer',
+        EntityName.VolleynetPlayer,
         entityMapSelector(state),
-        state.entities.volleynetplayer.ladder[gender],
+        state.entities.volleynetplayer.by.ladder[gender],
       )
     : [];
 
 export const searchVolleynetplayerSelector = (state: IStore) =>
-  (state.entities.volleynetplayer.search || []).length
+  (state.entities.volleynetplayer.list.search || []).length
     ? denorm(
-        'volleynetplayer',
+        EntityName.VolleynetPlayer,
         entityMapSelector(state),
-        state.entities.volleynetplayer.search,
+        state.entities.volleynetplayer.list.search,
       )
     : [];

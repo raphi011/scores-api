@@ -7,7 +7,7 @@ import Waypoint from 'react-waypoint';
 
 import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';
-import { deleteMatchAction } from '../redux/entities/actions';
+// import { deleteMatchAction } from '../redux/entities/actions';
 
 import { Match } from '../types';
 
@@ -46,16 +46,13 @@ class MatchListContainer extends React.PureComponent<IProps, IState> {
   };
 
   onDeleteMatch = () => {
-    const { deleteMatch } = this.props;
-    const { selectedMatch } = this.state;
-
-    if (!selectedMatch) {
-      return;
-    }
-
-    deleteMatch(selectedMatch);
-
-    this.setState({ selectedMatch: null });
+    // const { deleteMatch } = this.props;
+    // const { selectedMatch } = this.state;
+    // if (!selectedMatch) {
+    //   return;
+    // }
+    // deleteMatch(selectedMatch);
+    // this.setState({ selectedMatch: null });
   };
 
   render() {
@@ -95,7 +92,7 @@ class MatchListContainer extends React.PureComponent<IProps, IState> {
 }
 
 const mapDispatchToProps = {
-  deleteMatch: deleteMatchAction,
+  // deleteMatch: deleteMatchAction,
 };
 
 export default connect(

@@ -11,7 +11,7 @@ import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
 import MatchList from '../containers/MatchListContainer';
 import { multiApiAction } from '../redux/api/actions';
-import { userSelector } from '../redux/auth/reducer';
+import { userSelector } from '../redux/auth/selectors';
 import {
   loadPlayerMatchesAction,
   loadPlayerStatisticAction,
@@ -22,7 +22,7 @@ import {
   playerSelector,
   statisticByPlayerSelector,
   statisticByPlayerTeamSelector,
-} from '../redux/entities/reducer';
+} from '../redux/entities/selectors';
 
 import { Match, Player, PlayerStatistic, User } from '../types';
 

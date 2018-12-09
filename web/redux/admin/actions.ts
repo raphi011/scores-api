@@ -1,4 +1,4 @@
-import { ApiAction } from '../../types';
+import { ApiAction } from '../../redux/api/actions';
 import * as actionNames from '../actionNames';
 
 export const loadVolleynetScrapeJobsAction = (): ApiAction => ({

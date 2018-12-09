@@ -4,7 +4,8 @@
   "jsRules": {},
   "rules": {
     "member-access": [true, "no-public"],
-    "interface-name": false
+    "interface-name": false,
+    "interface-over-type-literal": false
   },
   "rulesDirectory": []
 }

@@ -1,4 +1,6 @@
-import { ApiAction, Match, NewMatch, StatisticFilter } from '../../types';
+import { ApiAction } from '../../redux/api/actions';
+import { NewMatch, StatisticFilter } from '../../types';
+
 import * as actionNames from '../actionNames';
 
 export const loadMatchesAction = (
@@ -158,21 +160,21 @@ export const createNewMatchAction = (match: NewMatch): ApiAction => ({
   url: `groups/${match.groupId}/matches`,
 });
 
-export const deleteMatchAction = (match: Match): ApiAction => ({
-  method: 'DELETE',
-  success: actionNames.DELETE_ENTITIES,
-  successParams: {
-    entityName: 'match',
-    listOptions: {
-      match: {
-        names: ['all'],
-      },
-    },
-  },
-  successStatus: 'Match deleted',
-  type: actionNames.API,
-  url: `matches/${match.id}`,
-});
+// export const deleteMatchAction = (match: Match): ApiAction => ({
+//   method: 'DELETE',
+//   success: actionNames.DELETE_ENTITIES,
+//   successParams: {
+//     entityName: 'match',
+//     listOptions: {
+//       match: {
+//         names: ['all'],
+//       },
+//     },
+//   },
+//   successStatus: 'Match deleted',
+//   type: actionNames.API,
+//   url: `matches/${match.id}`,
+// });
 
 export const searchVolleynetPlayersAction = (filters: {
   fname: string;

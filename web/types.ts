@@ -1,14 +1,13 @@
-import { IParams } from './api';
-
-export type EntityName =
-  | 'group'
-  | 'match'
-  | 'player'
-  | 'statistic'
-  | 'team'
-  | 'tournament'
-  | 'user'
-  | 'volleynetplayer';
+export enum EntityName {
+  Group = 'group',
+  Match = 'match',
+  Player = 'player',
+  Statistic = 'statistic',
+  Team = 'team',
+  Tournament = 'tournament',
+  User = 'user',
+  VolleynetPlayer = 'volleynetplayer',
+}
 
 export interface Player {
   id: number;
@@ -175,37 +174,14 @@ export interface ScrapeJob {
 
 export type GenericStatistic = PlayerStatistic | TeamStatistic;
 
-export type EntityType = Group | Player | Team | Match | GenericStatistic;
-
-export interface Action {
-  type: string;
-}
+export type EntityType =
+  | User
+  | Group
+  | Player
+  | Team
+  | Match
+  | GenericStatistic;
 
 export interface Classes {
   [key: string]: string;
-}
-
-export interface ApiAction extends Action {
-  type: 'API';
-  method: string;
-  url: string;
-  success?: string;
-  isServer?: boolean;
-  params?: IParams;
-  req?: object; // todo
-  res?: object; // todo
-  headers?: { [key: string]: string };
-
-  error?: string;
-  body?: string;
-  successStatus?: string;
-  successParams?: object;
-}
-
-export interface ApiActions extends Action {
-  type: 'API_MULTI';
-  actions: ApiAction[];
-  req?: object; // todo
-  res?: object; // todo
-  isServer?: boolean;
 }

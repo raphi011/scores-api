@@ -24,7 +24,7 @@ class UserList extends React.PureComponent<IProps> {
     return (
       <List className={classes.root}>
         {users.map(u => (
-          <UserListItem onClick={() => {}} key={u.id} user={u} />
+          <UserListItem key={u.id} user={u} />
         ))}
       </List>
     );

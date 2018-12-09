@@ -1,21 +1,21 @@
-import { ReactNode } from 'react';
+import { ReactElement } from 'react';
 
 import { connect } from 'react-redux';
 import { User } from '../types';
 
 import { userSelector } from '../redux/auth/selectors';
 
-interface IProps {
+type Props = {
   user: User;
-  children: ReactNode;
-}
+  children: ReactElement<any>;
+};
 
-const AdminOnly = ({ user, children }: IProps) => {
+const AdminOnly = ({ user, children }: Props) => {
   if (user.role === 'admin') {
     return children;
   }
 
-  return null;
+  return <div />;
 };
 
 function mapStateToProps(state) {

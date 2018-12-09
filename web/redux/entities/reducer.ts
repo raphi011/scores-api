@@ -4,24 +4,29 @@ import { createReducer } from '../reduxHelper';
 
 import { EntityName, EntityType } from '../../types';
 
-export interface IEntityStore {
-  [key: string]: { values: { [key: number]: EntityType } };
-}
-
-export interface IEntityMap {
-  [key: string]: { [key: number]: EntityType };
-}
+export type EntityStore = {
+  [key in EntityName]: {
+    values: { [key: number]: EntityType };
+    all: number[];
+    list?: {
+      [listName: string]: number[];
+    };
+    by?: {
+      [listName: string]: { [key: number]: number[] };
+    };
+  }
+};
 
 export interface IReceiveEntityAction {
-  payload: any[];
+  payload: EntityType[];
   entityName: EntityName;
   assignId?: boolean;
   listOptions?: {
-    [key: string]: {
+    [key in EntityName]: {
       name: string;
       key?: number;
       mode?: 'replace' | 'append';
-    };
+    }
   };
 }
 
@@ -31,49 +36,55 @@ export interface IDeleteEntityAction {
   listNames: string[];
 }
 
-export const initialEntitiesState = {
+export const initialEntitiesState: EntityStore = {
   group: { values: {}, all: [] },
-  match: { values: {}, all: [], byPlayer: {}, byGroup: {} },
-  player: { values: {}, all: [], byGroup: {} },
-  statistic: {
+  match: {
     all: [],
-    byGroup: {},
-    byPlayer: {},
-    byPlayerTeam: {},
+    by: {
+      group: {},
+      player: {},
+    },
     values: {},
   },
-  team: { values: {} },
-  tournament: { values: {}, all: [], byLeague: {} },
+  player: {
+    all: [],
+    by: {
+      group: {},
+    },
+    values: {},
+  },
+  statistic: {
+    all: [],
+    by: {
+      group: {},
+      player: {},
+      playerTeam: {},
+    },
+    values: {},
+  },
+  team: {
+    all: [],
+    values: {},
+  },
+  tournament: {
+    all: [],
+    by: {
+      league: {},
+    },
+    values: {},
+  },
   user: { values: {}, all: [] },
   volleynetplayer: {
     all: [],
-    ladder: {},
-    search: [],
+    by: {
+      ladder: {},
+      search: [],
+    },
     values: {},
   },
 };
 
-function deleteEntities(state, action: IDeleteEntityAction) {
-  const { entityName, listNames, payload } = action;
-
-  const deletedId = payload.id;
-  // TODO: delete from values
-  // TODO: delete from [listName][listKey] lists
-  const newLists = listNames.reduce((listObj, name) => {
-    listObj[name] = state[entityName][name].filter(id => id !== deletedId);
-    return listObj;
-  }, {});
-
-  return {
-    ...state,
-    [entityName]: {
-      ...state[entityName],
-      ...newLists,
-    },
-  };
-}
-
-function receiveEntities(state: IEntityStore, action: IReceiveEntityAction) {
+function receiveEntities(state: EntityStore, action: IReceiveEntityAction) {
   // STEP 1: normalize entites
   const { entityName, payload, assignId = false, listOptions = {} } = action;
 
@@ -108,8 +119,8 @@ function receiveEntities(state: IEntityStore, action: IReceiveEntityAction) {
 
       if (options.mode === 'append') {
         const previousList = options.key
-          ? (state[entityKey][options.name] || {})[options.key]
-          : state[entityKey][options.name];
+          ? (state[entityKey].by[options.name] || {})[options.key]
+          : state[entityKey].list[options.name];
 
         if (previousList) {
           list = previousList;
@@ -118,9 +129,14 @@ function receiveEntities(state: IEntityStore, action: IReceiveEntityAction) {
 
       list = [...list, ...newIds];
 
-      statePart[options.name] = options.key
-        ? { ...(state[entityKey][options.name] || {}), [options.key]: list }
-        : list;
+      if (options.key) {
+        statePart.by[options.name] = {
+          ...(state[entityKey].by[options.name] || {}),
+          [options.key]: list,
+        };
+      } else {
+        statePart.list[options.name] = list;
+      }
     }
 
     newState[entityKey] = statePart;
@@ -129,7 +145,7 @@ function receiveEntities(state: IEntityStore, action: IReceiveEntityAction) {
   return newState;
 }
 
-function receiveUser(state: IEntityStore, action) {
+function receiveUser(state: EntityStore, action) {
   const { user } = action.payload;
 
   if (!user || !user.player) {
@@ -137,14 +153,13 @@ function receiveUser(state: IEntityStore, action) {
   }
 
   return receiveEntities(state, {
-    entityName: 'player',
+    entityName: EntityName.Player,
     payload: user.player,
   });
 }
 
 const reducer = createReducer(initialEntitiesState, {
   [actionNames.RECEIVE_ENTITIES]: receiveEntities,
-  [actionNames.DELETE_ENTITIES]: deleteEntities,
   [actionNames.SET_USER_OR_LOGINROUTE]: receiveUser,
 });
 

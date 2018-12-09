@@ -6,11 +6,11 @@ export const initialAdminState = {
   scrapeJobs: [],
 };
 
-export interface IAdminStore {
+export type AdminStore = {
   scrapeJobs: ScrapeJob[];
-}
+};
 
-function receiveScrapeJobs(_: IAdminStore, action): IAdminStore {
+function receiveScrapeJobs(_: AdminStore, action): AdminStore {
   return {
     scrapeJobs: action.payload,
   };

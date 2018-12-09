@@ -6,17 +6,17 @@ export const initialStatusState = {
   status: '',
 };
 
-export interface IStatusStore {
+export type StatusStore = {
   status: string;
-}
+};
 
-function setStatus(state: IStatusStore, action): IStatusStore {
+function setStatus(_: StatusStore, action): StatusStore {
   return {
     status: action.status,
   };
 }
 
-function clearStatus(): IStatusStore {
+function clearStatus(): StatusStore {
   return {
     status: '',
   };

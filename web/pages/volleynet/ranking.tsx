@@ -1,10 +1,8 @@
 import React from 'react';
-// import Router from 'next/router';
 
 import Card from '@material-ui/core/Card';
 import Ladder from '../../components/volleynet/Ladder';
 import withAuth from '../../containers/AuthContainer';
-// import CenteredLoading from '../../components/CenteredLoading';
 import Layout from '../../containers/LayoutContainer';
 import { loadLadderAction } from '../../redux/entities/actions';
 import { ladderVolleynetplayerSelector } from '../../redux/entities/selectors';

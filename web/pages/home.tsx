@@ -21,12 +21,12 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IProps {
+type Props = {
   player: Player;
   classes: any;
-}
+};
 
-class Home extends React.Component<IProps> {
+class Home extends React.Component<Props> {
   static getParameters(query) {
     const { id } = query;
 
@@ -66,9 +66,6 @@ class Home extends React.Component<IProps> {
           <Paper className={classes.paper}>
             <Typography variant="h6">News</Typography>
           </Paper>
-          {/* <Paper className={classes.paper}>
-            <Typography variant="h6">Groups</Typography>
-          </Paper> */}
           <Paper className={classes.paper}>
             <Typography variant="h6">Volleynet</Typography>
             <Typography variant="subtitle1">Upcoming tournaments</Typography>

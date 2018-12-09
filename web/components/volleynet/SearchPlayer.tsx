@@ -5,7 +5,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { searchVolleynetPlayersAction } from '../../redux/entities/actions';
-import { searchVolleynetplayerSelector } from '../../redux/entities/reducer';
+import { searchVolleynetplayerSelector } from '../../redux/entities/selectors';
 import SearchPlayerList from './SearchPlayerList';
 
 import { Gender, VolleynetSearchPlayer } from '../../types';
