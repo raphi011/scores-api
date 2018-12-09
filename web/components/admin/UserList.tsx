@@ -12,19 +12,20 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+type Props = {
   users: User[];
   classes: any;
-}
+  onClick: (user: User) => void;
+};
 
-class UserList extends React.PureComponent<IProps> {
+class UserList extends React.PureComponent<Props> {
   render() {
-    const { users = [], classes } = this.props;
+    const { users = [], onClick, classes } = this.props;
 
     return (
       <List className={classes.root}>
         {users.map(u => (
-          <UserListItem key={u.id} user={u} />
+          <UserListItem key={u.id} onClick={onClick} user={u} />
         ))}
       </List>
     );

@@ -10,16 +10,16 @@ interface IProps {
   onClick?: (User) => void;
 }
 
-const onClickHandler = handler => {
+const onClickHandler = (handler, user: User) => {
   if (!handler) {
     return undefined;
   }
 
-  return handler;
+  return () => handler(user);
 };
 
 const UserListItem = ({ user, onClick }: IProps) => (
-  <ListItem button onClick={onClickHandler(onClick)}>
+  <ListItem button onClick={onClickHandler(onClick, user)}>
     <ListItemText primary={user.email} />
   </ListItem>
 );

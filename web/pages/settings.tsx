@@ -1,19 +1,14 @@
 import React from 'react';
 
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
+import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import PauseIcon from '@material-ui/icons/Pause';
-import PlayIcon from '@material-ui/icons/PlayArrow';
-import StopIcon from '@material-ui/icons/Stop';
-import WarningIcon from '@material-ui/icons/Warning';
+import AddIcon from '@material-ui/icons/Add';
 
+import JobList from '../components/admin/JobList';
+import UserList from '../components/admin/UserList';
+import EditUserDialog from '../containers/admin/EditUserDialogContainer';
 import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
 import {
@@ -34,17 +29,29 @@ const styles = (theme: Theme) =>
       margin: '10px 0',
       padding: theme.spacing.unit * 2,
     },
+    title: { marginTop: '25px' },
+    userHeader: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
   });
 
-interface IProps {
+type Props = {
   jobs: ScrapeJob[];
   loadScrapeJobs: () => void;
   runJob: (jobName: string) => void;
   classes: any;
   users: User[];
-}
+};
 
-class Home extends React.Component<IProps> {
+type State = {
+  isEditUserOpen: boolean;
+  editUser?: User;
+};
+
+class Home extends React.Component<Props, State> {
   static mapDispatchToProps = {
     loadScrapeJobs: loadVolleynetScrapeJobsAction,
     runJob: runJobAction,
@@ -64,6 +71,11 @@ class Home extends React.Component<IProps> {
     };
   }
 
+  state = {
+    editUser: null,
+    isEditUserOpen: false,
+  };
+
   interval: NodeJS.Timer;
 
   componentDidMount() {
@@ -80,55 +92,59 @@ class Home extends React.Component<IProps> {
     loadScrapeJobs();
   };
 
-  runJob = (jobName: string) => {
-    const { runJob } = this.props;
+  newUser = () => {
+    this.setState({
+      editUser: null,
+      isEditUserOpen: true,
+    });
+  };
 
-    runJob(jobName);
+  editUser = (user: User) => {
+    this.setState({
+      editUser: user,
+      isEditUserOpen: true,
+    });
+  };
+
+  onCloseEditUser = () => {
+    this.setState({
+      editUser: null,
+      isEditUserOpen: false,
+    });
   };
 
   render() {
-    const { classes, jobs } = this.props;
+    const { classes, users, runJob, jobs } = this.props;
 
     return (
       <Layout title={{ text: 'Settings', href: '' }}>
         <div className={classes.container}>
-          <Typography variant="h5">Volleynet scrape jobs</Typography>
+          <Typography variant="h5" className={classes.title}>
+            Volleynet scrape jobs
+          </Typography>
           <Paper className={classes.paper}>
-            <List dense>
-              {jobs.map(j => (
-                <ListItem key={j.job.name}>
-                  <ListItemIcon>{stateToString(j.state)}</ListItemIcon>
-                  <ListItemText primary={j.job.name} />
-                  <ListItemSecondaryAction>
-                    <Button
-                      onClick={() => this.runJob(j.job.name)}
-                      className={classes.button}
-                    >
-                      run
-                    </Button>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
+            <JobList jobs={jobs} onAction={runJob} />
+          </Paper>
+          <div className={classes.userHeader}>
+            <Typography variant="h5" className={classes.container}>
+              Users
+            </Typography>
+            <Button color="primary" onClick={this.newUser}>
+              <AddIcon />
+              Add
+            </Button>
+          </div>
+          <Paper className={classes.paper}>
+            <UserList onClick={this.editUser} users={users} />
           </Paper>
         </div>
+        <EditUserDialog
+          onClose={this.onCloseEditUser}
+          open={this.state.isEditUserOpen}
+          user={this.state.editUser}
+        />
       </Layout>
     );
-  }
-}
-
-function stateToString(state: number) {
-  switch (state) {
-    case 0:
-      return <StopIcon />;
-    case 1:
-      return <StopIcon />;
-    case 2:
-      return <PauseIcon />;
-    case 3:
-      return <PlayIcon />;
-    case 4:
-      return <WarningIcon />;
   }
 }
 
