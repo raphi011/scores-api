@@ -67,6 +67,7 @@ function groupTournaments(tournaments: Tournament[]) {
 function renderHeader(tournaments: Tournament[]) {
   return (
     <DayHeader
+      key={tournaments[0].start}
       appendix={`(${tournaments.length})`}
       date={new Date(tournaments[0].start)}
     />
@@ -110,7 +111,7 @@ class Volleynet extends React.Component<IProps> {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
+      <div className={classes.root} key={tournaments[0].id}>
         <TournamentList
           tournaments={tournaments}
           onTournamentClick={this.onTournamentClick}

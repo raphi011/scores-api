@@ -16,7 +16,7 @@ export const loadMatchesAction = (
       match: {
         key: groupId,
         mode: after ? 'append' : 'replace',
-        name: 'byGroup',
+        name: 'group',
       },
     },
   },
@@ -37,7 +37,7 @@ export const loadPlayerMatchesAction = (
       match: {
         key: playerId,
         mode: after ? 'append' : 'replace',
-        name: 'byPlayer',
+        name: 'player',
       },
     },
   },
@@ -71,7 +71,7 @@ export const loadPlayerTeamStatisticAction = (playerId: number): ApiAction => ({
       statistic: {
         key: playerId,
         mode: 'replace',
-        name: 'byPlayerTeam',
+        name: 'playerTeam',
       },
     },
   },
@@ -89,7 +89,7 @@ export const loadPlayerStatisticAction = (playerId: number): ApiAction => ({
       statistic: {
         key: playerId,
         mode: 'replace',
-        name: 'byPlayer',
+        name: 'player',
       },
     },
   },
@@ -109,11 +109,11 @@ export const loadGroupAction = (groupId: number): ApiAction => ({
       },
       match: {
         key: groupId,
-        name: 'byGroup',
+        name: 'group',
       },
       player: {
         key: groupId,
-        name: 'byGroup',
+        name: 'group',
       },
     },
   },
@@ -135,7 +135,7 @@ export const loadGroupStatisticsAction = (
       statistic: {
         key: groupId,
         mode: 'replace',
-        name: 'byGroup',
+        name: 'group',
       },
     },
   },
@@ -221,7 +221,7 @@ export const loadTournamentsAction = (filters: {
       tournament: {
         key: filters.league,
         mode: 'replace',
-        name: 'byLeague',
+        name: 'league',
       },
     },
   },

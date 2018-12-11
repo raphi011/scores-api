@@ -138,13 +138,11 @@ export const tournamentsByLeagueSelector = (
   leagues.forEach(league => {
     tournaments = [
       ...tournaments,
-      ...((state.entities.tournament.by.league[league] || []).length
-        ? denorm(
-            EntityName.Tournament,
-            entityMap,
-            state.entities.tournament.by.league[league],
-          )
-        : []),
+      ...denorm(
+        EntityName.Tournament,
+        entityMap,
+        state.entities.tournament.by.league[league] || [],
+      ),
     ];
   });
 
@@ -152,7 +150,7 @@ export const tournamentsByLeagueSelector = (
 };
 
 export const tournamentSelector = (state: IStore, tournamentId: number) =>
-  denorm(EntityName.VolleynetPlayer, entityMapSelector(state), tournamentId);
+  denorm(EntityName.Tournament, entityMapSelector(state), tournamentId);
 
 export const ladderVolleynetplayerSelector = (state: IStore, gender: string) =>
   denorm(
