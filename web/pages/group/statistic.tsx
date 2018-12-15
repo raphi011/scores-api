@@ -42,7 +42,7 @@ class Statistics extends React.Component<IProps, IState> {
   static getParameters(query) {
     let { filter = 'month', groupId } = query;
 
-    groupId = Number.parseInt(groupId, 10) || 0;
+    groupId = Number(groupId) || 0;
     filter = filter.toLowerCase();
 
     return { filter, groupId };

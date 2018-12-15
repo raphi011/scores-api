@@ -118,9 +118,7 @@ function receiveEntities(state: EntityStore, action: IReceiveEntityAction) {
     if (entityKey === action.entityName) {
       newIds = result;
     } else {
-      newIds = Object.keys(entities[entityKey]).map(n =>
-        Number.parseInt(n, 10),
-      );
+      newIds = Object.keys(entities[entityKey]).map(n => Number(n));
     }
 
     statePart.values = {

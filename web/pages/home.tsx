@@ -30,7 +30,7 @@ class Home extends React.Component<Props> {
   static getParameters(query) {
     const { id } = query;
 
-    const playerId = Number.parseInt(id, 10);
+    const playerId = Number(id);
 
     if (Number.isInteger(playerId)) {
       return { playerId };

@@ -18,7 +18,7 @@ class ShowTournament extends React.Component<IProps> {
   static getParameters(query) {
     const { id } = query;
 
-    const tournamentId = Number.parseInt(id, 10);
+    const tournamentId = Number(id);
 
     return { tournamentId };
   }

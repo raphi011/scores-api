@@ -48,7 +48,7 @@ class Index extends React.Component<IProps, IState> {
   static getParameters(query) {
     let { groupId } = query;
 
-    groupId = Number.parseInt(groupId, 10) || 0;
+    groupId = Number(groupId) || 0;
 
     return { groupId };
   }

@@ -93,8 +93,8 @@ class CreateMatch extends React.Component<IProps, IState> {
   static getParameters(query) {
     let { rematchId, groupId } = query;
 
-    rematchId = Number.parseInt(rematchId, 10) || 0;
-    groupId = Number.parseInt(groupId, 10) || 0;
+    rematchId = Number(rematchId) || 0;
+    groupId = Number(groupId) || 0;
 
     return { groupId, rematchId };
   }
@@ -294,9 +294,9 @@ class CreateMatch extends React.Component<IProps, IState> {
       ...this.state.match,
     };
 
-    const scoreTeam1 = Number.parseInt(match.scoreTeam1, 10);
-    const scoreTeam2 = Number.parseInt(match.scoreTeam2, 10);
-    const targetScore = Number.parseInt(match.targetScore, 10);
+    const scoreTeam1 = Number(match.scoreTeam1);
+    const scoreTeam2 = Number(match.scoreTeam2);
+    const targetScore = Number(match.targetScore);
 
     switch (teamNr) {
       case 1: {
@@ -361,9 +361,9 @@ class CreateMatch extends React.Component<IProps, IState> {
       player2Id: player2 ? player2.id : 0,
       player3Id: player3 ? player3.id : 0,
       player4Id: player4 ? player4.id : 0,
-      scoreTeam1: Number.parseInt(scoreTeam1, 10) || 0,
-      scoreTeam2: Number.parseInt(scoreTeam2, 10) || 0,
-      targetScore: Number.parseInt(targetScore, 10) || 0,
+      scoreTeam1: Number(scoreTeam1) || 0,
+      scoreTeam2: Number(scoreTeam2) || 0,
+      targetScore: Number(targetScore) || 0,
     };
   };
 

@@ -49,7 +49,7 @@ class PlayerInfo extends React.Component<IProps, IState> {
   static getParameters(query) {
     const { id } = query;
 
-    const playerId = Number.parseInt(id, 10);
+    const playerId = Number(id);
 
     if (Number.isInteger(playerId)) {
       return { playerId };
