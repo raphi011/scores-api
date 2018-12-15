@@ -6,13 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type infoHandler struct {
-}
+type infoHandler struct{}
 
 func (h *infoHandler) version(c *gin.Context) {
-	log := logger(c)
-
-	log.Print("Version")
-
-	jsonn(c, http.StatusOK, version, "")
+	response(c, http.StatusOK, version)
 }

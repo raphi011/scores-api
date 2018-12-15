@@ -34,7 +34,7 @@ func (h *groupHandler) postMatch(c *gin.Context) {
 	userID := c.GetInt("user-id")
 
 	if err := c.ShouldBindWith(&newMatch, binding.JSON); err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		responseBadRequest(c)
 		return
 	}
 
@@ -43,36 +43,36 @@ func (h *groupHandler) postMatch(c *gin.Context) {
 	})
 
 	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		responseErr(c, err)
 		return
 	}
 
-	jsonn(c, http.StatusCreated, match, "")
+	response(c, http.StatusCreated, match)
 }
 
 func (h *groupHandler) getGroup(c *gin.Context) {
 	groupID, err := strconv.Atoi(c.Param("groupID"))
 
 	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		responseBadRequest(c)
 		return
 	}
 
 	group, err := h.service.Group(uint(groupID))
 
 	if err != nil {
-		jsonn(c, http.StatusNotFound, nil, "Group not found")
+		responseErr(c, err)
 		return
 	}
 
-	jsonn(c, http.StatusOK, group, "")
+	response(c, http.StatusOK, group)
 }
 
 func (h *groupHandler) getMatches(c *gin.Context) {
 	groupID, err := strconv.Atoi(c.Param("groupID"))
 
 	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		responseBadRequest(c)
 		return
 	}
 
@@ -83,7 +83,7 @@ func (h *groupHandler) getMatches(c *gin.Context) {
 		after, err = time.Parse(time.RFC3339, afterParam)
 
 		if err != nil {
-			jsonn(c, http.StatusBadRequest, nil, "Bad request")
+			responseBadRequest(c)
 			return
 		}
 	}
@@ -91,24 +91,29 @@ func (h *groupHandler) getMatches(c *gin.Context) {
 	matches, err := h.matchService.ByGroup(uint(groupID), after, count)
 
 	if err != nil {
-		jsonn(c, http.StatusInternalServerError, nil, "Unknown error")
+		responseErr(c, err)
 		return
 	}
 
-	jsonn(c, http.StatusOK, matches, "")
+	response(c, http.StatusOK, matches)
 }
 
 func (h *groupHandler) getPlayers(c *gin.Context) {
 	groupID, err := strconv.Atoi(c.Param("groupID"))
 
-	players, err := h.playerService.ByGroup(uint(groupID))
-
-	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+	if groupID < 0 {
+		responseBadRequest(c)
 		return
 	}
 
-	jsonn(c, http.StatusOK, players, "")
+	players, err := h.playerService.ByGroup(uint(groupID))
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	response(c, http.StatusOK, players)
 }
 
 func (h *groupHandler) getPlayerStatistics(c *gin.Context) {
@@ -118,9 +123,9 @@ func (h *groupHandler) getPlayerStatistics(c *gin.Context) {
 	statistics, err := h.statisticService.PlayersByGroup(uint(groupID), filter)
 
 	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad request")
+		responseBadRequest(c)
 		return
 	}
 
-	jsonn(c, http.StatusOK, statistics, "")
+	response(c, http.StatusOK, statistics)
 }

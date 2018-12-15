@@ -1,9 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"strconv"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -107,18 +104,4 @@ func initRouter(app app) *gin.Engine {
 	// volleynetAdmin.POST("/scrape/stop-all", volleynetScrapeHandler.stopAll)
 
 	return router
-}
-
-func jsonn(c *gin.Context, code int, data interface{}, message string) {
-	out, _ := json.Marshal(gin.H{
-		"status":  code,
-		"message": message,
-		"data":    data,
-	})
-
-	c.Writer.Header().Set("Content-Type", "application/json; charset=utf-8")
-	c.Writer.Header().Set("Content-Length", strconv.Itoa(len(out)))
-
-	c.Writer.WriteHeader(code)
-	c.Writer.Write(out)
 }

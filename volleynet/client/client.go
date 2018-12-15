@@ -306,7 +306,7 @@ func (c *ClientImpl) TournamentEntry(playerName string, playerID, tournamentID i
 	code, err := c.loadUniqueWriteCode(tournamentID)
 
 	if err != nil {
-		return errors.Wrapf(err, "loading unique writecode failed for tournamentID: %d", tournamentID)
+		return errors.Wrapf(err, "could not load writecode for tournamentID: %d", tournamentID)
 	}
 
 	form.Add("action", "Beach/Profile/TurnierAnmeldung")
@@ -322,21 +322,25 @@ func (c *ClientImpl) TournamentEntry(playerName string, playerID, tournamentID i
 	url := c.buildPostURL("/Admin/formular").String()
 
 	req, err := http.NewRequest("POST", url, bytes.NewBufferString(form.Encode()))
+
 	if err != nil {
 		return errors.Wrap(err, "creating tournamententry request failed")
 	}
+
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Cookie", c.Cookie)
 
 	httpClient := &http.Client{}
 	resp, err := httpClient.Do(req)
-	defer resp.Body.Close()
-
-	// TODO: volleynet always returns 200, parse content and see what really happened ..
 
 	if err != nil {
 		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
-	} else if resp.StatusCode != http.StatusOK {
+	}
+
+	defer resp.Body.Close()
+
+	// TODO: volleynet always returns 200, parse content and see what really happened ..
+	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("tournamententry request for tournamentID: %d failed with code %d",
 			tournamentID,
 			resp.StatusCode)

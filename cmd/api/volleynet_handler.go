@@ -22,14 +22,19 @@ type volleynetHandler struct {
 func (h *volleynetHandler) getLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 
-	ladder, err := h.volleynetService.Ladder(gender)
-
-	if err != nil {
-		c.Status(http.StatusBadRequest)
+	if !h.volleynetService.ValidGender(gender) {
+		responseBadRequest(c)
 		return
 	}
 
-	jsonn(c, http.StatusOK, ladder, "")
+	ladder, err := h.volleynetService.Ladder(gender)
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	response(c, http.StatusOK, ladder)
 }
 
 func (h *volleynetHandler) getTournaments(c *gin.Context) {
@@ -37,40 +42,44 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	league := c.DefaultQuery("league", "AMATEUR TOUR")
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
 
+	if !h.volleynetService.ValidGender(gender) {
+		responseBadRequest(c)
+		return
+	}
+
 	seasonNumber, err := strconv.Atoi(season)
 
 	if err != nil {
-		c.Status(http.StatusBadRequest)
+		responseBadRequest(c)
 		return
 	}
 
 	tournaments, err := h.volleynetService.GetTournaments(gender, league, seasonNumber)
 
 	if err != nil {
-		logger(c).Error(err)
-		c.AbortWithError(http.StatusBadRequest, err)
+		responseErr(c, err)
+		return
 	}
 
-	jsonn(c, http.StatusOK, tournaments, "")
+	response(c, http.StatusOK, tournaments)
 }
 
 func (h *volleynetHandler) getTournament(c *gin.Context) {
 	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		responseBadRequest(c)
 		return
 	}
 
 	tournament, err := h.volleynetService.Tournament(tournamentID)
 
-	if err == scores.ErrorNotFound {
-		c.AbortWithError(http.StatusNotFound, err)
-	} else if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+	if err != nil {
+		responseErr(c, err)
+		return
 	}
 
-	jsonn(c, http.StatusOK, tournament, "")
+	response(c, http.StatusOK, tournament)
 }
 
 type signupForm struct {
@@ -84,8 +93,9 @@ type signupForm struct {
 
 func (h *volleynetHandler) postSignup(c *gin.Context) {
 	su := signupForm{}
+
 	if err := c.ShouldBindWith(&su, binding.JSON); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		responseBadRequest(c)
 		return
 	}
 
@@ -94,7 +104,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 		su.PartnerID <= 0 ||
 		su.TournamentID <= 0 {
 
-		c.AbortWithStatus(http.StatusBadRequest)
+		responseBadRequest(c)
 		return
 	}
 
@@ -102,7 +112,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 	loginData, err := vnClient.Login(su.Username, su.Password)
 
 	if err != nil {
-		c.AbortWithError(http.StatusUnauthorized, err)
+		response(c, http.StatusUnauthorized, nil)
 		return
 	}
 
@@ -115,7 +125,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 			logger(c).Warnf("loading user by email: %s failed", userID.(string))
 		}
 
-		if user.VolleynetLogin != su.Username ||
+		if user != nil && user.VolleynetLogin != su.Username ||
 			user.VolleynetUserID != loginData.ID {
 
 			err = h.userService.SetVolleynetLogin(su.Username, loginData.ID)
@@ -129,12 +139,11 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 	err = vnClient.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
 
 	if err != nil {
-		logger(c).Warnf("entry to tournamentID %v with partnerID %v did not work: %s", su.TournamentID, su.PartnerID, err)
-		c.AbortWithError(http.StatusBadRequest, err)
+		responseErr(c, err)
 		return
 	}
 
-	c.Status(http.StatusOK)
+	response(c, http.StatusOK, nil)
 }
 
 func (h *volleynetHandler) getSearchPlayers(c *gin.Context) {
@@ -142,12 +151,13 @@ func (h *volleynetHandler) getSearchPlayers(c *gin.Context) {
 	firstName := c.Query("fname")
 	lastName := c.Query("lname")
 	birthday := c.Query("bday")
+
 	players, err := vnClient.SearchPlayers(firstName, lastName, birthday)
 
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		responseErr(c, err)
 		return
 	}
 
-	jsonn(c, http.StatusOK, players, "")
+	response(c, http.StatusOK, players)
 }

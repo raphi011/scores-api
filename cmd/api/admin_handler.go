@@ -19,10 +19,11 @@ func (a *adminHandler) getUsers(c *gin.Context) {
 	users, err := a.userService.All()
 
 	if err != nil {
-		jsonn(c, http.StatusInternalServerError, nil, "")
+		responseErr(c, err)
+		return
 	}
 
-	jsonn(c, http.StatusOK, users, "")
+	response(c, http.StatusOK, users)
 }
 
 func (a *adminHandler) postUser(c *gin.Context) {

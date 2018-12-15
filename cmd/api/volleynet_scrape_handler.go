@@ -12,7 +12,9 @@ type volleynetScrapeHandler struct {
 }
 
 func (h *volleynetScrapeHandler) report(c *gin.Context) {
-	jsonn(c, http.StatusOK, h.jobManager.Executions(), "")
+	execs := h.jobManager.Executions()
+
+	response(c, http.StatusOK, execs)
 }
 
 func (h *volleynetScrapeHandler) run(c *gin.Context) {
@@ -21,16 +23,18 @@ func (h *volleynetScrapeHandler) run(c *gin.Context) {
 	exists := h.jobManager.HasJob(jobName)
 
 	if !exists {
-		jsonn(c, http.StatusNotFound, nil, "Not Found")
+		response(c, http.StatusNotFound, nil)
+		return
 	}
 
 	err := h.jobManager.Run(jobName)
 
 	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad Request")
+		responseErr(c, err)
+		return
 	}
 
-	jsonn(c, http.StatusOK, nil, "")
+	response(c, http.StatusOK, nil)
 }
 
 func (h *volleynetScrapeHandler) stop(c *gin.Context) {
@@ -39,17 +43,18 @@ func (h *volleynetScrapeHandler) stop(c *gin.Context) {
 	exists := h.jobManager.HasJob(jobName)
 
 	if !exists {
-		jsonn(c, http.StatusNotFound, nil, "Not Found")
+		response(c, http.StatusNotFound, nil)
+		return
 	}
 
 	err := h.jobManager.StopJob(jobName)
 
 	if err != nil {
-		jsonn(c, http.StatusBadRequest, nil, "Bad Request")
+		responseErr(c, err)
+		return
 	}
 
-	jsonn(c, http.StatusOK, nil, "")
-
+	response(c, http.StatusOK, nil)
 }
 
 func (h *volleynetScrapeHandler) runAll(c *gin.Context) {

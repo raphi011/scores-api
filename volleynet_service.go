@@ -11,6 +11,10 @@ type VolleynetService struct {
 	Repository VolleynetRepository
 }
 
+func (s *VolleynetService) ValidGender(gender string) bool {
+	return gender == "M" || gender == "W"
+}
+
 func (s *VolleynetService) Ladder(gender string) ([]volleynet.Player, error) {
 	return s.Repository.Ladder(gender)
 }
