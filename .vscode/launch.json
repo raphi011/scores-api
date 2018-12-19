@@ -6,7 +6,7 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}/cmd/api",
+      "program": "${workspaceRoot}/cmd/api",
       "args": [
         "-provider",
         "mysql",
