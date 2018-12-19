@@ -20,6 +20,7 @@ func responseErr(c *gin.Context, err error) {
 	writeResponse(c, code, nil, message)
 
 	if code >= 500 {
+		// log server errors
 		logger(c).Warnf("an error occured: %v", err)
 	}
 }
@@ -32,9 +33,12 @@ func extractErrorInformation(err error) (code int, message string) {
 
 	if cause == scores.ErrorNotFound {
 		code = http.StatusNotFound
+	} else if cause == scores.ErrorUnauthorized {
+		code = http.StatusUnauthorized
 	}
 
 	if code == http.StatusInternalServerError {
+		// redact server errors for security reasons
 		message = ""
 	}
 
