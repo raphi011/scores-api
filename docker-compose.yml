@@ -1,39 +1,11 @@
 version: "3.6"
 
 services:
-  frontend:
-    build:
-      dockerfile: ./dockerfiles/dev/frontend
-      context: .
-    volumes:
-      - ".:/scores"
-
-  backend:
-    build:
-      dockerfile: ./dockerfiles/dev/backend
-      context: .
-    volumes:
-      - "./data/backend:/srv/scores"
-    command:
-      - "-connection"
-      - "root:test@tcp(mariadb)/scores?charset=utf8mb4&parseTime=true"
-      - "-provider"
-      - "mysql"
-      - "-goauth"
-      - "/srv/scores/client_secret.json"
-    environment:
-      - GIN_MODE=debug
-      - BACKEND_URL=http://localhost
-      - APP_ENV=debug
-    security_opt:
-      - seccomp:unconfined
-    ports:
-      - "127.0.0.1:40000:40000"
-
   envoy:
     build:
       dockerfile: "./dockerfiles/dev/envoy"
       context: .
+    network_mode: "host"
     volumes:
       - "./certs:/usr/share/letsencrypt/scores.network"
     ports:
@@ -76,5 +48,7 @@ services:
         ELK_VERSION: $ELK_VERSION
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    ports:
+      - "127.0.0.1:5000:5000"
     depends_on:
       - elasticsearch

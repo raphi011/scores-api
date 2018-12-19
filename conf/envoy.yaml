@@ -74,12 +74,12 @@ static_resources:
                   filename: "/usr/share/letsencrypt/scores.network/server.key"
   clusters:
     - name: frontend
-      connect_timeout: 5s # long timeouts because the frontend could recompile
+      connect_timeout: 60s # long timeouts for debugging
       type: strict_dns
       lb_policy: round_robin
       hosts:
         - socket_address:
-            address: frontend
+            address: 127.0.0.1
             port_value: 3000
     - name: backend
       connect_timeout: 60s # long timeouts for debugging
@@ -87,7 +87,7 @@ static_resources:
       lb_policy: round_robin
       hosts:
         - socket_address:
-            address: backend
+            address: 127.0.0.1
             port_value: 8080
 
 admin:

@@ -1,13 +1,13 @@
+import * as http from 'http';
 import fetch from 'isomorphic-unfetch';
-import { buildUrl, isJson } from '../api';
-import { ApiAction, ApiActions } from '../types';
+import { BACKEND_URL, buildUrl, isJson } from '../api';
+import { ApiAction, ApiActions } from '../redux/api/actions';
 import * as actionNames from './actionNames';
 import { userSelector } from './auth/selectors';
 
-function getHost(req): string {
+function getHost(req?: http.IncomingMessage): string {
   if (req) {
-    // docker hostname for backend
-    return 'http://backend:8080';
+    return BACKEND_URL;
   }
 
   return `${window.location.origin}/api`;
@@ -22,7 +22,13 @@ export function serverAction(action, req, res) {
   };
 }
 
-async function doAction(store, action: ApiAction, isServer = false, req, res) {
+async function doAction(
+  store,
+  action: ApiAction,
+  isServer = false,
+  req?: http.IncomingMessage,
+  res?: http.ServerResponse,
+) {
   let { headers = {} } = action;
   const {
     success,

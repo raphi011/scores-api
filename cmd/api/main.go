@@ -33,10 +33,11 @@ func main() {
 	dbProvider := flag.String("provider", "sqlite3", "DB Driver (sqlite3 or mysql)")
 	connectionString := flag.String("connection", "./scores.db", "Path to sqlite db")
 	gSecret := flag.String("goauth", "./client_secret.json", "Path to google oauth secret")
+	logstashURL := flag.String("logstash", "", "logstash url")
 
 	flag.Parse()
 
-	log := setupLogger()
+	log := setupLogger(*logstashURL)
 
 	production := os.Getenv("APP_ENV") == "production"
 	host := os.Getenv("BACKEND_URL")
@@ -70,38 +71,40 @@ func main() {
 	router.Run()
 }
 
-func setupLogger() logrus.FieldLogger {
+func setupLogger(logstashURL string) logrus.FieldLogger {
 	log := logrus.New()
 
-	var con net.Conn
+	if logstashURL != "" {
+		var con net.Conn
 
-	err := backoff.Retry(func() error {
-		var err error
+		err := backoff.Retry(func() error {
+			var err error
 
-		con, err = net.Dial("tcp", "logstash:5000")
+			con, err = net.Dial("tcp", logstashURL)
+
+			if err != nil {
+				log.Printf("Retrying connection to logstash: %s", err)
+			}
+
+			return err
+		}, backoff.NewExponentialBackOff())
 
 		if err != nil {
-			log.Printf("Retrying connection to logstash: %s", err)
+			log.Warnf("unable to setup logstash hook: %s", err)
+			return log
 		}
 
-		return err
-	}, backoff.NewExponentialBackOff())
+		log.Print("Successfully connected to logstash")
 
-	if err != nil {
-		log.Warnf("unable to setup logstash hook: %s", err)
-		return log
+		hook, err := logrustash.NewHookWithConn(con, "scores")
+
+		if err != nil {
+			log.Warnf("unable to setup logstash hook: %s", err)
+			return log
+		}
+
+		log.Hooks.Add(hook)
 	}
-
-	log.Print("Successfully connected to logstash")
-
-	hook, err := logrustash.NewHookWithConn(con, "scores")
-
-	if err != nil {
-		log.Warnf("unable to setup logstash hook: %s", err)
-		return log
-	}
-
-	log.Hooks.Add(hook)
 
 	return log
 }
