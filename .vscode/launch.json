@@ -22,7 +22,7 @@
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeVersion": "10.7.0",
-      "cwd": "${workspaceFolder}/web",
+      "cwd": "${workspaceRoot}/web",
       "runtimeArgs": ["run-script", "debug"],
       "env": { "BACKEND_URL": "http://localhost:8080" },
       "port": 9229,

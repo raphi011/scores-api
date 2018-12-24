@@ -6,7 +6,7 @@ services:
       dockerfile: ./dockerfiles/deploy/frontend
       context: .
     environment:
-      - BACKEND_URL=https://scores.network
+      - BACKEND_URL=http://backend:8080 # Internal Docker Backend
 
   backend:
     build:

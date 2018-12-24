@@ -69,6 +69,13 @@ async function doAction(
       return Promise.reject();
     }
 
+    if (responseCode === 504) {
+      dispatch({
+        status: 'Cannot connect to server, please try again',
+        type: actionNames.SET_STATUS,
+      });
+    }
+
     if (isServer) {
       const setCookie = response.headers.get('Set-Cookie');
 
@@ -83,7 +90,7 @@ async function doAction(
     if (isJson(response)) {
       const { data, message } = await response.json();
       payload = data;
-      statusMessage = message;
+      statusMessage = message || statusMessage;
     }
 
     if (responseCode >= 200 && responseCode < 300) {
@@ -106,15 +113,8 @@ async function doAction(
       });
     }
 
-    // error ...
-    if (responseCode === 504) {
-      dispatch({
-        status: 'Cannot connect to server, please try again',
-        type: actionNames.SET_STATUS,
-      });
-    } else {
-      dispatch({ type: actionNames.SET_STATUS, status: statusMessage });
-    }
+    dispatch({ type: actionNames.SET_STATUS, status: statusMessage });
+
   } catch (e) {
     if (error) {
       dispatch({ type: error, error: e.message });
