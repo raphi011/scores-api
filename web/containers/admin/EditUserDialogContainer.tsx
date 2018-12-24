@@ -13,12 +13,14 @@ type Props = {
 type State = {
   email: string;
   password: string;
+  submitting: boolean;
 };
 
 class EditUserDialogContainer extends React.Component<Props, State> {
   state = {
     email: '',
     password: '',
+    submitting: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -45,6 +47,14 @@ class EditUserDialogContainer extends React.Component<Props, State> {
     this.setState({ password: event.currentTarget.value });
   };
 
+  onSubmit = () => {};
+
+  canSubmit = () => {
+    const { email, password } = this.state;
+
+    return email && password;
+  };
+
   render() {
     const { user, onClose, open } = this.props;
 
@@ -52,6 +62,8 @@ class EditUserDialogContainer extends React.Component<Props, State> {
 
     return (
       <EditUserDialog
+        canSubmit={this.canSubmit}
+        onSubmit={this.onSubmit}
         onClose={onClose}
         isNew={isNew}
         user={user}
@@ -76,7 +88,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  // logout: logoutAction,
+  updateUser: updateUserAction,
 };
 
 export default connect(

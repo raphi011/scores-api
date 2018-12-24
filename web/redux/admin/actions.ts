@@ -15,6 +15,20 @@ export const runJobAction = (jobName: string): ApiAction => ({
   url: 'admin/volleynet/scrape/run',
 });
 
+export const updateUserAction = ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}): ApiAction => ({
+  body: JSON.stringify({ username, password }),
+  method: 'POST',
+  successStatus: `User ${username} updated`,
+  type: actionNames.API,
+  url: 'admin/users',
+});
+
 export const loadUsersAction = (): ApiAction => ({
   method: 'GET',
   success: actionNames.RECEIVE_ENTITIES,

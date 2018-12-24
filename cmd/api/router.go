@@ -94,6 +94,7 @@ func initRouter(app app) *gin.Engine {
 	admin.Use(adminMiddlware(app.services.User))
 
 	admin.GET("/users", adminHandler.getUsers)
+	admin.POST("/users", adminHandler.postUser)
 
 	volleynetAdmin := admin.Group("/volleynet")
 

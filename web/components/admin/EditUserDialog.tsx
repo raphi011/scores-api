@@ -1,6 +1,6 @@
 import React, { ChangeEvent } from 'react';
 
-import { Dialog, DialogTitle, TextField, Button } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, TextField } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 
 import { User } from '../../types';
@@ -9,7 +9,7 @@ const styles = createStyles({
   userForm: {
     display: 'flex',
     flexDirection: 'column',
-    padding: '10px',
+    padding: '20px',
   },
 });
 
