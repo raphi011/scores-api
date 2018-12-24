@@ -101,12 +101,14 @@ func (s *UserRepository) All() (scores.Users, error) {
 	return users, nil
 }
 
+// ByID retrieves a user by his/her ID
 func (s *UserRepository) ByID(userID uint) (*scores.User, error) {
 	row := s.DB.QueryRow(query("user/select-by-id"), userID)
 
 	return scanUser(row)
 }
 
+// ByEmail retrieves a user by his/her email
 func (s *UserRepository) ByEmail(email string) (*scores.User, error) {
 	row := s.DB.QueryRow(query("user/select-by-email"), email)
 
@@ -129,6 +131,10 @@ func scanUser(scanner scan) (*scores.User, error) {
 		&u.VolleynetLogin,
 		&u.Role,
 	)
+
+	if err == sql.ErrNoRows {
+		return nil, errors.Wrap(scores.ErrorNotFound, "user not found")
+	}
 
 	return u, err
 }

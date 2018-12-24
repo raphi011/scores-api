@@ -5,7 +5,7 @@ export const userOrLoginRouteAction = (): ApiAction => ({
   method: 'GET',
   success: actionNames.SET_USER_OR_LOGINROUTE,
   type: actionNames.API,
-  url: 'userOrLoginRoute',
+  url: 'user-or-login',
 });
 
 export const loginWithPasswordAction = (credentials): ApiAction => ({
@@ -14,7 +14,7 @@ export const loginWithPasswordAction = (credentials): ApiAction => ({
   success: actionNames.SET_USER_OR_LOGINROUTE,
   successStatus: 'Logged in',
   type: actionNames.API,
-  url: 'pwAuth',
+  url: 'pw-auth',
 });
 
 export const logoutAction = (): ApiAction => ({

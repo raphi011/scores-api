@@ -76,7 +76,7 @@ export const loadPlayerTeamStatisticAction = (playerId: number): ApiAction => ({
     },
   },
   type: actionNames.API,
-  url: `players/${playerId}/teamStatistics`,
+  url: `players/${playerId}/team-statistics`,
 });
 
 export const loadPlayerStatisticAction = (playerId: number): ApiAction => ({
@@ -94,7 +94,7 @@ export const loadPlayerStatisticAction = (playerId: number): ApiAction => ({
     },
   },
   type: actionNames.API,
-  url: `players/${playerId}/playerStatistics`,
+  url: `players/${playerId}/player-statistics`,
 });
 
 export const loadGroupAction = (groupId: number): ApiAction => ({
@@ -140,7 +140,7 @@ export const loadGroupStatisticsAction = (
     },
   },
   type: actionNames.API,
-  url: `groups/${groupId}/playerStatistics`,
+  url: `groups/${groupId}/player-statistics`,
 });
 
 export const loadMatchAction = (id: number): ApiAction => ({
@@ -159,22 +159,6 @@ export const createNewMatchAction = (match: NewMatch): ApiAction => ({
   type: actionNames.API,
   url: `groups/${match.groupId}/matches`,
 });
-
-// export const deleteMatchAction = (match: Match): ApiAction => ({
-//   method: 'DELETE',
-//   success: actionNames.DELETE_ENTITIES,
-//   successParams: {
-//     entityName: 'match',
-//     listOptions: {
-//       match: {
-//         names: ['all'],
-//       },
-//     },
-//   },
-//   successStatus: 'Match deleted',
-//   type: actionNames.API,
-//   url: `matches/${match.id}`,
-// });
 
 export const searchVolleynetPlayersAction = (filters: {
   fname: string;

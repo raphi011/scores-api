@@ -10,10 +10,12 @@ import (
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/cmd/api/logger"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
+
 )
 
 type loginRouteOrUserDto struct {
@@ -68,7 +70,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
-	logger(c).Infof("user %q authenticated via password", user.Email)
+	logger.Get(c).Infof("user %q authenticated via password", user.Email)
 
 	successfullLogin(c, session, user)
 
@@ -128,11 +130,11 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 	if user.ProfileImageURL != googleUser.Picture {
 		err := a.userService.SetProfileImage(user.ID, googleUser.Picture)
 		if err != nil {
-			logger(c).Errorf("error setting profile image %v", err)
+			logger.Get(c).Errorf("error setting profile image %v", err)
 		}
 	}
 
-	logger(c).Infof("user %q authenticated via google", googleUser.Email)
+	logger.Get(c).Infof("user %q authenticated via google", googleUser.Email)
 
 	successfullLogin(c, session, user)
 
@@ -179,7 +181,7 @@ func (a *authHandler) logout(c *gin.Context) {
 
 	loginRoute := a.conf.AuthCodeURL(state)
 
-	logger(c).Info("user logged out")
+	logger.Get(c).Info("user logged out")
 
 	response(c, http.StatusOK, loginRouteOrUserDto{LoginRoute: loginRoute})
 }

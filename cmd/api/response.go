@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/cmd/api/logger"
 )
 
 func responseBadRequest(c *gin.Context) {
@@ -21,7 +22,7 @@ func responseErr(c *gin.Context, err error) {
 
 	if code >= 500 {
 		// log server errors
-		logger(c).Warnf("an error occured: %v", err)
+		logger.Get(c).Warnf("an error occured: %v", err)
 	}
 }
 
@@ -47,6 +48,10 @@ func extractErrorInformation(err error) (code int, message string) {
 
 func response(c *gin.Context, code int, data interface{}) {
 	writeResponse(c, code, data, "")
+}
+
+func responseNoContent(c *gin.Context) {
+	writeResponse(c, http.StatusNoContent, nil, "")
 }
 
 func writeResponse(c *gin.Context, code int, data interface{}, message string) {

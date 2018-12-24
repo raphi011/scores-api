@@ -69,7 +69,7 @@ func (s *PlayerRepository) Get(ID uint) (*scores.Player, error) {
 }
 
 func (s *PlayerRepository) Create(player *scores.Player) (*scores.Player, error) {
-	result, err := s.DB.Exec(query("player/insert"), player.Name)
+	result, err := s.DB.Exec(query("player/insert"), player.Name, player.UserID)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "creating player failed")

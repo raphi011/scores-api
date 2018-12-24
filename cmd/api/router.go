@@ -4,6 +4,8 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+
+	"github.com/raphi011/scores/cmd/api/middleware"
 )
 
 var store = cookie.NewStore([]byte("ultrasecret"))
@@ -57,22 +59,26 @@ func initRouter(app app) *gin.Engine {
 		userService: app.services.User,
 	}
 
-	router.Use(sessions.Sessions("session", store), loggerMiddleware(app.log), metricMiddleware())
+	debugHandler := debugHandler{
+		userService: app.services.User,
+	}
+
+	router.Use(sessions.Sessions("session", store), middleware.Logger(app.log), middleware.Metric())
 
 	router.GET("/version", infoHandler.version)
 
-	router.GET("/userOrLoginRoute", authHandler.loginRouteOrUser)
+	router.GET("/user-or-login", authHandler.loginRouteOrUser)
 	router.GET("/auth", authHandler.googleAuthenticate)
-	router.POST("/pwAuth", authHandler.passwordAuthenticate)
+	router.POST("/pw-auth", authHandler.passwordAuthenticate)
 
 	auth := router.Group("/")
-	auth.Use(authMiddleware())
+	auth.Use(middleware.Auth())
 	auth.POST("/logout", authHandler.logout)
 
 	auth.GET("/groups/:groupID/matches", groupHandler.getMatches)
 	auth.GET("/groups/:groupID", groupHandler.getGroup)
 	auth.GET("/groups/:groupID/players", groupHandler.getPlayers)
-	auth.GET("/groups/:groupID/playerStatistics", groupHandler.getPlayerStatistics)
+	auth.GET("/groups/:groupID/player-statistics", groupHandler.getPlayerStatistics)
 	auth.POST("/groups/:groupID/matches", groupHandler.postMatch)
 
 	auth.GET("/matches/:matchID", matchHandler.getMatch)
@@ -80,7 +86,7 @@ func initRouter(app app) *gin.Engine {
 
 	auth.GET("/players/:playerID", playerHandler.getPlayer)
 	auth.GET("/players/:playerID/statistics", playerHandler.getStatistics)
-	auth.GET("/players/:playerID/teamStatistics", playerHandler.getTeamStatistics)
+	auth.GET("/players/:playerID/team-statistics", playerHandler.getTeamStatistics)
 	auth.GET("/players/:playerID/matches", playerHandler.getMatches)
 	auth.POST("/players", playerHandler.postPlayer)
 
@@ -91,18 +97,23 @@ func initRouter(app app) *gin.Engine {
 	auth.POST("/volleynet/signup", volleynetHandler.postSignup)
 
 	admin := auth.Group("/admin")
-	admin.Use(adminMiddlware(app.services.User))
+	admin.Use(middleware.Admin(app.services.User))
 
 	admin.GET("/users", adminHandler.getUsers)
 	admin.POST("/users", adminHandler.postUser)
+
+	if !app.production {
+		debug := router.Group("/debug")
+		debug.Use(middleware.LocalhostOnly())
+
+		debug.POST("/new-admin", debugHandler.postCreateAdmin)
+	}
 
 	volleynetAdmin := admin.Group("/volleynet")
 
 	volleynetAdmin.GET("/scrape/report", volleynetScrapeHandler.report)
 	volleynetAdmin.POST("/scrape/run", volleynetScrapeHandler.run)
 	volleynetAdmin.POST("/scrape/stop", volleynetScrapeHandler.stop)
-	// volleynetAdmin.POST("/scrape/run-all", volleynetScrapeHandler.runAll)
-	// volleynetAdmin.POST("/scrape/stop-all", volleynetScrapeHandler.stopAll)
 
 	return router
 }

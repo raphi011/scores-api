@@ -12,6 +12,7 @@ import (
 
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet/client"
+	"github.com/raphi011/scores/cmd/api/logger"
 )
 
 type volleynetHandler struct {
@@ -122,7 +123,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 		user, err := h.userService.ByEmail(userID.(string))
 
 		if err != nil {
-			logger(c).Warnf("loading user by email: %s failed", userID.(string))
+			logger.Get(c).Warnf("loading user by email: %s failed", userID.(string))
 		}
 
 		if user != nil && user.VolleynetLogin != su.Username ||
@@ -131,7 +132,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 			err = h.userService.SetVolleynetLogin(su.Username, loginData.ID)
 
 			if err != nil {
-				logger(c).Warnf("updating volleynet user information failed for userID: %d", user.ID)
+				logger.Get(c).Warnf("updating volleynet user information failed for userID: %d", user.ID)
 			}
 		}
 	}

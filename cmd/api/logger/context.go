@@ -1,11 +1,11 @@
-package main
+package logger
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
-func logger(ctx *gin.Context) logrus.FieldLogger {
+func Get(ctx *gin.Context) logrus.FieldLogger {
 	if log, ok := ctx.Get("log"); ok {
 		return log.(logrus.FieldLogger)
 	}
