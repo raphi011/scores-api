@@ -18,21 +18,37 @@ type postUserDto struct {
 }
 
 func (a *adminHandler) postUser(c *gin.Context) {
-	var user postUserDto
+	var userChanges postUserDto
 
-	if err := c.ShouldBindWith(&user, binding.JSON); err != nil {
+	if err := c.ShouldBindWith(&userChanges, binding.JSON); err != nil {
 		responseBadRequest(c)
 		return
 	}
 
-	_, err := a.userService.ByEmail(user.Email)
+	user, err := a.userService.ByEmail(userChanges.Email)
 
 	if err == scores.ErrorNotFound {
-		a.userService.New(user.Email, user.Password)
+		user, err = a.userService.New(userChanges.Email, userChanges.Password)
+
+		if err != nil {
+			responseErr(c, err)
+			return
+		}
+
+		response(c, http.StatusCreated, user)
 	} else if err != nil {
 		responseErr(c, err)
+		return
 	}
 
+	err = a.userService.SetPassword(user.ID, userChanges.Password)
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	response(c, http.StatusOK, user)
 }
 
 func (a *adminHandler) getUsers(c *gin.Context) {

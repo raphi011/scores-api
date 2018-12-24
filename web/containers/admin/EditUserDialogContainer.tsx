@@ -2,12 +2,14 @@ import React, { ChangeEvent } from 'react';
 
 import { connect } from 'react-redux';
 import EditUserDialog from '../../components/admin/EditUserDialog';
+import { updateUserAction } from '../../redux/admin/actions';
 import { User } from '../../types';
 
 type Props = {
   user?: User;
   open: boolean;
   onClose: () => void;
+  updateUser: (email: string, password: string) => Promise<null>;
 };
 
 type State = {
@@ -47,12 +49,19 @@ class EditUserDialogContainer extends React.Component<Props, State> {
     this.setState({ password: event.currentTarget.value });
   };
 
-  onSubmit = () => {};
-
-  canSubmit = () => {
+  onSubmit = async () => {
+    const { onClose, updateUser } = this.props;
     const { email, password } = this.state;
 
-    return email && password;
+    await updateUser(email, password);
+
+    onClose();
+  };
+
+  canSubmit = () => {
+    const { email, password, submitting } = this.state;
+
+    return !!email && !!password && !submitting;
   };
 
   render() {
@@ -62,7 +71,7 @@ class EditUserDialogContainer extends React.Component<Props, State> {
 
     return (
       <EditUserDialog
-        canSubmit={this.canSubmit}
+        canSubmit={this.canSubmit()}
         onSubmit={this.onSubmit}
         onClose={onClose}
         isNew={isNew}

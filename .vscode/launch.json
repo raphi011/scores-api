@@ -11,9 +11,7 @@
         "-provider",
         "mysql",
         "-connection",
-        "root:test@tcp(localhost)/scores?charset=utf8mb4&parseTime=true",
-        "-logstash",
-        "localhost:5000"
+        "root:test@tcp(localhost)/scores?charset=utf8mb4&parseTime=true"
       ],
       "showLog": true,
       "apiVersion": 2

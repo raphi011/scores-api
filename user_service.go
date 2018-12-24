@@ -21,6 +21,36 @@ func (s *UserService) HasRole(userID uint, roleName string) bool {
 	return user.Role == roleName
 }
 
+// New creates a new user
+func (s *UserService) New(email, password string) (*User, error) {
+	passwordInfo, err := s.Password.Hash([]byte(password))
+
+	if err != nil {
+		return nil, errors.Wrap(err, "hashing password")
+	}
+
+	user, err := s.Repository.New(&User{
+		Email:        email,
+		PasswordInfo: *passwordInfo,
+		Role:         "user",
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "creating user")
+	}
+
+	user.Player, err = s.PlayerRepository.Create(&Player{
+		Name:   "",
+		UserID: user.ID,
+	})
+
+	if err != nil {
+		return nil, errors.Wrap(err, "creating user player")
+	}
+
+	return user, nil
+}
+
 // SetPassword sets a new password for a user
 func (s *UserService) SetPassword(
 	userID uint,
@@ -35,7 +65,7 @@ func (s *UserService) SetPassword(
 	passwordInfo, err := s.Password.Hash([]byte(password))
 
 	if err != nil {
-		return errors.Wrap(err, "error hashing password")
+		return errors.Wrap(err, "hashing password")
 	}
 
 	user.PasswordInfo = *passwordInfo

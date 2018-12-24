@@ -22,6 +22,9 @@ type Props = {
   email: string;
   password: string;
 
+  canSubmit: boolean;
+
+  onSubmit: () => void;
   onClose: () => void;
   onChangeEmail: (event: ChangeEvent<HTMLInputElement>) => void;
   onChangePassword: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -36,6 +39,8 @@ export default withStyles(styles)(
     onChangeEmail,
     password,
     onChangePassword,
+    onSubmit,
+    canSubmit,
     classes,
   }: Props) => {
     const title = isNew ? 'New User' : 'Edit User';
@@ -57,7 +62,12 @@ export default withStyles(styles)(
             value={password}
             onChange={onChangePassword}
           />
-          <Button color="primary" variant="contained">
+          <Button
+            color="primary"
+            disabled={!canSubmit}
+            onClick={onSubmit}
+            variant="contained"
+          >
             Submit
           </Button>
         </form>

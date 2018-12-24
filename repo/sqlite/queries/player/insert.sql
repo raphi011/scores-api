@@ -1,1 +1,1 @@
-INSERT INTO players (created_at, name) VALUES (CURRENT_TIMESTAMP, ?)
+INSERT INTO players (created_at, name, user_id) VALUES (CURRENT_TIMESTAMP, ?, ?)
