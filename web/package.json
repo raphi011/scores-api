@@ -39,7 +39,9 @@
     "debug": "next --inspect",
     "build": "next build",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "ci-lint": "tslint --project .",
+    "ci-build": "tsc --noEmit --project ."
   },
   "author": "Raphael Gruber",
   "license": "MIT"

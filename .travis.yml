@@ -1,23 +1,31 @@
 jobs:
   include:
     - stage: "Test"
-      name: "go"
+      name: "backend"
       language: go
       go: "1.11"
       script: go test
       env:
         - GO111MODULE=on
 
-    - language: node_js
+    - name: "frontend"
+      language: node_js
       node_js: node
       install: npm --prefix ./web install ./web
       script: npm --prefix ./web test
-      name: "nextjs"
+
+    - name: "lint-frontend"
+      language: node_js
+      node_js: node
+      install: npm --prefix ./web install ./web
+      script:
+        - npm --prefix ./web run ci-lint
+        - npm --prefix ./web run ci-build
 
     - stage: "Deploy"
       script: skip
       language: generic
-      if: branch IN (master, development) # and tag IS present
+      if: branch IN (master, development) and tag IS present
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_531129a75a03_key -iv $encrypted_531129a75a03_iv -in secrets.tar.enc -out secrets.tar -d
         - mkdir $DOCKER_CERT_PATH
