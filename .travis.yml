@@ -22,6 +22,12 @@ jobs:
         - npm --prefix ./web run ci-lint
         - npm --prefix ./web run ci-build
 
+    - name: "lint-backend"
+      language: "go"
+      go: "1.11"
+      install: go get github.com/mgechev/revive
+      script: revive -formatter friendly ./...
+
     - stage: "Deploy"
       script: skip
       language: generic
