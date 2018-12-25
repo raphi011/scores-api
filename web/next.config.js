@@ -1,8 +1,8 @@
 const webpack = require('webpack');
-const child_process = require('child_process');
+const childProcess = require('child_process');
 const withTypescript = require('@zeit/next-typescript');
 
-const version = child_process
+const version = childProcess
   .execSync('git describe --always --long')
   .toString();
 

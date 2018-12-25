@@ -1,10 +1,21 @@
-import Document, { Head, Main, NextScript } from 'next/document';
 import React from 'react';
+
+import { MuiThemeProviderProps } from '@material-ui/core/styles/MuiThemeProvider';
+import Document, { Head, Main, NextScript } from 'next/document';
 import flush from 'styled-jsx/server';
 
-class MyDocument extends Document {
+class MyDocument extends Document<{
+  pageContext: MuiThemeProviderProps;
+}> {
   render() {
     const { pageContext } = this.props;
+
+    const theme =
+      typeof pageContext.theme === 'function'
+        ? pageContext.theme(null)
+        : pageContext.theme;
+
+    const themeColor = theme.palette.primary.main;
 
     return (
       <html lang="en" dir="ltr">
@@ -17,10 +28,7 @@ class MyDocument extends Document {
               'minimum-scale=1, width=device-width, height=device-height'
             }
           />
-          <meta
-            name="theme-color"
-            content={pageContext.theme.palette.primary.main}
-          />
+          <meta name="theme-color" content={themeColor} />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"

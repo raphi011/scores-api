@@ -43,8 +43,12 @@ async function doAction(
   const { dispatch, getState } = store;
 
   if (isServer && req.headers.cookie) {
+    const cookie = Array.isArray(req.headers.cookie)
+      ? req.headers.cookie[0]
+      : req.headers.cookie;
+
     // set the client's cookie for serverside request
-    headers = { ...headers, cookie: req.headers.cookie };
+    headers = { ...headers, cookie };
   }
 
   const endpoint = buildUrl(getHost(req), url, params);
@@ -114,7 +118,6 @@ async function doAction(
     }
 
     dispatch({ type: actionNames.SET_STATUS, status: statusMessage });
-
   } catch (e) {
     if (error) {
       dispatch({ type: error, error: e.message });

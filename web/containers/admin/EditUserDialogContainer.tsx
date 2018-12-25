@@ -5,18 +5,19 @@ import EditUserDialog from '../../components/admin/EditUserDialog';
 import { updateUserAction } from '../../redux/admin/actions';
 import { User } from '../../types';
 
-type Props = {
+interface Props {
   user?: User;
   open: boolean;
+
   onClose: () => void;
   updateUser: (email: string, password: string) => Promise<null>;
-};
+}
 
-type State = {
+interface State {
   email: string;
   password: string;
   submitting: boolean;
-};
+}
 
 class EditUserDialogContainer extends React.Component<Props, State> {
   state = {
@@ -72,28 +73,18 @@ class EditUserDialogContainer extends React.Component<Props, State> {
     return (
       <EditUserDialog
         canSubmit={this.canSubmit()}
+        email={this.state.email}
+        isNew={isNew}
+        open={open}
+        password={this.state.password}
+        user={user}
         onSubmit={this.onSubmit}
         onClose={onClose}
-        isNew={isNew}
-        user={user}
-        open={open}
-        email={this.state.email}
         onChangeEmail={this.onChangeEmail}
-        password={this.state.password}
         onChangePassword={this.onChangePassword}
       />
     );
   }
-}
-
-function mapStateToProps(state) {
-  // const { isLoggedIn } = userSelector(state);
-  // const loginRoute = loginRouteSelector(state);
-
-  return {
-    // isLoggedIn,
-    // loginRoute,
-  };
 }
 
 const mapDispatchToProps = {
@@ -101,6 +92,7 @@ const mapDispatchToProps = {
 };
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
+  // @ts-ignore
 )(EditUserDialogContainer);

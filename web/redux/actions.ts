@@ -1,3 +1,6 @@
+import * as http from 'http';
+import { Dispatch } from 'redux';
+
 import { serverAction } from './apiMiddleware';
 
 export interface Action {
@@ -5,9 +8,9 @@ export interface Action {
 }
 
 export async function dispatchActions(
-  dispatch,
+  dispatch: Dispatch,
   actions = [],
-  isServer,
+  isServer: boolean,
   req?: object,
   res?: object,
 ) {
@@ -18,7 +21,13 @@ export async function dispatchActions(
   }
 }
 
-export async function dispatchAction(dispatch, action, isServer, req, res) {
+export async function dispatchAction(
+  dispatch: Dispatch,
+  action,
+  isServer: boolean,
+  req?: http.IncomingMessage,
+  res?: http.ServerResponse,
+) {
   const result = await dispatch(
     isServer ? serverAction(action, req, res) : action,
   );

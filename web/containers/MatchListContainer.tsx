@@ -12,7 +12,7 @@ import { Match } from '../types';
 
 interface Props {
   matches: Match[];
-  deleteMatch: (Match) => void;
+  // deleteMatch: (Match) => void;
   onLoadMore: () => void;
   highlightPlayerId: number;
   loading: boolean;

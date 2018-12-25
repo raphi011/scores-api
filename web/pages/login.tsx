@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react';
+import React from 'react';
 
 import Router from 'next/router';
 
@@ -61,11 +61,11 @@ class Login extends React.Component<Props, State> {
     }
   }
 
-  onEmailChange = e => {
+  onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ email: e.target.value });
   };
 
-  onPasswordChange = e => {
+  onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ password: e.target.value });
   };
 

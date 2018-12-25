@@ -6,6 +6,7 @@ import TimeAgo from 'react-timeago';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import Grid from '@material-ui/core/Grid';
 import {
   createStyles,
   Theme,
@@ -26,7 +27,6 @@ import { card, link, title } from '../../styles/shared';
 import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
 import { Tournament, User } from '../../types';
-import Grid from '@material-ui/core/Grid';
 
 const styles = (theme: Theme) =>
   createStyles({

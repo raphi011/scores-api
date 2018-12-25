@@ -1,10 +1,7 @@
 import React, { SyntheticEvent } from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
-import SeasonIcon from '@material-ui/icons/CalendarToday';
-import InfoIcon from '@material-ui/icons/Info';
 import MDrawer from '@material-ui/core/Drawer';
-// import Hidden from '@material-ui/core/Hidden';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -16,7 +13,9 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core/styles';
+import SeasonIcon from '@material-ui/icons/CalendarToday';
 import HomeIcon from '@material-ui/icons/Home';
+import InfoIcon from '@material-ui/icons/Info';
 import LadderIcon from '@material-ui/icons/LooksOne';
 import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import TournamentIcon from '@material-ui/icons/Star';
@@ -40,29 +39,13 @@ const styles = (theme: Theme) =>
     drawerPaper: {
       width: drawerWidth,
     },
-    toolbar: theme.mixins.toolbar,
-
-    // drawerPaper: {
-    //   width: drawerWidth,
-    //   [theme.breakpoints.up('md')]: {
-    //     position: 'relative',
-    //   },
-    // },
     header: {
       lineHeight: 'inherit',
       marginBottom: '5px',
       marginTop: '25px',
       textTransform: 'uppercase',
     },
-    // list: {
-    //   background: theme.palette.background.paper,
-    // },
-    // listFull: {
-    //   width: 'auto',
-    // },
-    // nested: {
-    //   paddingLeft: theme.spacing.unit * 4,
-    // },
+    toolbar: theme.mixins.toolbar,
   });
 
 interface Props extends WithStyles<typeof styles> {
@@ -72,15 +55,14 @@ interface Props extends WithStyles<typeof styles> {
   userPlayer: Player;
 }
 
-function Drawer({ open, userPlayer, onClose, classes }: Props) {
+function Drawer({ userPlayer, classes }: Props) {
   const sideList = (
-    <div className={classes.list}>
+    <div>
       <List>
         <ListItem button>
           <Avatar src={userPlayer.profileImageUrl} />
           <ListItemText inset primary={userPlayer.name} />
         </ListItem>
-        {/* </Link> */}
         <ListSubheader className={classes.header}>Navigation</ListSubheader>
         <ListItem button>
           <ListItemIcon>
@@ -143,17 +125,6 @@ function Drawer({ open, userPlayer, onClose, classes }: Props) {
   );
 
   return (
-    // <>
-    //   <Hidden mdUp>
-    //     <MDrawer
-    //       open={open}
-    //       onClose={onClose}
-    //       ModalProps={{ keepMounted: true }}
-    //     >
-    //       {content}
-    //     </MDrawer>
-    //   </Hidden>
-    // <Hidden smDown implementation="css">
     <MDrawer
       className={classes.drawer}
       variant="permanent"
@@ -164,8 +135,6 @@ function Drawer({ open, userPlayer, onClose, classes }: Props) {
       <div className={classes.toolbar} />
       {content}
     </MDrawer>
-    //    </Hidden>
-    // </>
   );
 }
 

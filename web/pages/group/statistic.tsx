@@ -14,7 +14,7 @@ import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import { userOrLoginRouteAction } from '../../redux/auth/actions';
 import { loadGroupStatisticsAction } from '../../redux/entities/actions';
-import { statisticByGroupSelector } from '../../redux/entities/reducer';
+import { statisticByGroupSelector } from '../../redux/entities/selectors';
 import { PlayerStatistic, StatisticFilter } from '../../types';
 
 const styles = createStyles({

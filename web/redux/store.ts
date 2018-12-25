@@ -32,6 +32,7 @@ const middleware =
     : applyMiddleware(apiMiddleware);
 
 const initStore = (state: Store = initialState) =>
+  // @ts-ignore
   createStore<Store>(reducer, state, middleware);
 
 export const initialState = {

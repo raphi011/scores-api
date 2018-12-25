@@ -3,7 +3,6 @@ import { IParams } from '../../api';
 import * as actionNames from '../actionNames';
 import { Action } from '../actions';
 
-// eslint-disable-next-line import/prefer-default-export
 export const multiApiAction = (actions: ApiAction[]): ApiActions => ({
   actions,
   type: actionNames.API_MULTI,

@@ -14,12 +14,12 @@ const styles = createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  user?: User;
-  open: boolean;
-  isNew: boolean;
-  email: string;
-  password: string;
   canSubmit: boolean;
+  email: string;
+  isNew: boolean;
+  open: boolean;
+  password: string;
+  user?: User;
 
   onSubmit: () => void;
   onClose: () => void;
