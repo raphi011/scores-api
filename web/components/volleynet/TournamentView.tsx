@@ -26,6 +26,7 @@ import { card, link, title } from '../../styles/shared';
 import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
 import { Tournament, User } from '../../types';
+import Grid from '@material-ui/core/Grid';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -127,67 +128,66 @@ class TournamentView extends React.Component<Props, State> {
 
     return (
       <div className={classes.container}>
-        <div className={`${classes.title} ${classes.link}`}>
-          <a
-            className={classes.link}
-            href={`${tournament.link}`}
-            target="_blank"
-          >
-            <Typography variant="h5">{tournament.name}</Typography>
-          </a>
-        </div>
-        <Card className={classes.card}>
-          <CardContent>
-            <div>
-              {infos.map((info, i) => (
-                <Typography key={i} variant="subtitle1">
-                  {info.icon}{' '}
-                  <span className={classes.infoElement}>{info.info}</span>
-                </Typography>
-              ))}
-            </div>
-            {!showSignup || (
-              <Link
-                prefetch
-                href={{
-                  pathname: '/volleynet/signup',
-                  query: { id: tournament.id },
-                }}
-              >
-                <Button variant="contained" color="primary" fullWidth>
-                  {signedup ? 'You are signed up' : 'Signup'}
-                </Button>
-              </Link>
-            )}
-          </CardContent>
-        </Card>
-        <Typography
-          className={classes.updatedAt}
-          variant="caption"
-          align="center"
-          paragraph
-        >
-          Last updated: <TimeAgo date={tournament.updatedAt} />
-        </Typography>
+        <Grid container spacing={24}>
+          <Grid item xs={6}>
+            <Typography className={classes.title} variant="h4">
+              {tournament.name}
+            </Typography>
+            <Card className={classes.card}>
+              <CardContent>
+                <div>
+                  {infos.map((info, i) => (
+                    <Typography key={i} variant="subtitle1">
+                      {info.icon}{' '}
+                      <span className={classes.infoElement}>{info.info}</span>
+                    </Typography>
+                  ))}
+                </div>
+                {!showSignup || (
+                  <Link
+                    prefetch
+                    href={{
+                      pathname: '/volleynet/signup',
+                      query: { id: tournament.id },
+                    }}
+                  >
+                    <Button variant="contained" color="primary" fullWidth>
+                      {signedup ? 'You are signed up' : 'Signup'}
+                    </Button>
+                  </Link>
+                )}
+              </CardContent>
+            </Card>
+            <Typography
+              className={classes.updatedAt}
+              variant="caption"
+              align="center"
+              paragraph
+            >
+              Last updated: <TimeAgo date={tournament.updatedAt} />
+            </Typography>
+            <Typography className={classes.title} variant="h4">
+              Notes
+            </Typography>
+            <Card className={classes.card}>
+              <CardContent>{infoText}</CardContent>
+            </Card>
+          </Grid>
 
-        <Typography className={classes.title} variant="h4">
-          Notes
-        </Typography>
-        <Card className={classes.card}>
-          <CardContent>{infoText}</CardContent>
-        </Card>
-
-        <Typography className={classes.title} variant="h4">
-          Teams
-        </Typography>
-        <Card className={classes.card}>
-          <CardContent>
-            <TeamList
-              emptyMessage="No teams are signed up."
-              teams={registered}
-            />
-          </CardContent>
-        </Card>
+          <Grid item xs={6}>
+            <Typography className={classes.title} variant="h4">
+              Teams
+            </Typography>
+            <Card>
+              <CardContent>
+                <TeamList
+                  emptyMessage="No teams are signed up."
+                  teams={registered}
+                />
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
         {deregistered.length ? (
           <>
             <Typography className={classes.title} variant="h4">

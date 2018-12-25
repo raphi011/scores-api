@@ -19,7 +19,7 @@ const reducer = combineReducers({
   status,
 });
 
-export interface IStore {
+export interface Store {
   auth: AuthStore;
   admin: AdminStore;
   entities: EntityStore;
@@ -31,8 +31,8 @@ const middleware =
     ? composeWithDevTools(applyMiddleware(apiMiddleware))
     : applyMiddleware(apiMiddleware);
 
-const initStore = (state: IStore = initialState) =>
-  createStore<IStore>(reducer, state, middleware);
+const initStore = (state: Store = initialState) =>
+  createStore<Store>(reducer, state, middleware);
 
 export const initialState = {
   admin: initialAdminState,

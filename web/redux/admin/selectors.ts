@@ -1,3 +1,3 @@
-import { IStore } from '../store';
+import { Store } from '../store';
 
-export const scrapeJobsSelector = (state: IStore) => state.admin.scrapeJobs;
+export const scrapeJobsSelector = (state: Store) => state.admin.scrapeJobs;

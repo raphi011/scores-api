@@ -4,31 +4,52 @@ import Router from 'next/router';
 
 import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
+import { Fade } from '@material-ui/core';
 import CenteredLoading from '../../components/CenteredLoading';
 import DayHeader from '../../components/DayHeader';
 import GroupedList from '../../components/GroupedList';
 import LeagueSelect from '../../components/volleynet/LeagueSelect';
 import TournamentList from '../../components/volleynet/TournamentList';
+import TournamentView from '../../components/volleynet/TournamentView';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import { loadTournamentsAction } from '../../redux/entities/actions';
-import { tournamentsByLeagueSelector } from '../../redux/entities/selectors';
+import { userSelector } from '../../redux/auth/selectors';
+import {
+  loadTournamentAction,
+  loadTournamentsAction,
+} from '../../redux/entities/actions';
+import {
+  tournamentsByLeagueSelector,
+  tournamentSelector,
+} from '../../redux/entities/selectors';
+import { Store } from '../../redux/store';
+import { Tournament, User } from '../../types';
 import * as ArrayUtils from '../../utils/array';
-
-import { Tournament } from '../../types';
 
 const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TOUR'];
 
 const styles = createStyles({
+  left: {
+    flexGrow: 1,
+    maxWidth: '500px',
+  },
+  right: {
+    flexGrow: 1,
+  },
   root: {
-    margin: '0 10px',
+    display: 'flex',
+    flexDirection: 'row',
   },
 });
 
 interface Props extends WithStyles<typeof styles> {
+  tournament?: Tournament;
   tournaments: Tournament[];
+  tournamentId: string;
   leagues: string[];
+  user: User;
 
+  loadTournament: (tournamentId: string) => void;
   loadTournaments: (
     filters: { gender: string; league: string; season: string },
   ) => void;
@@ -36,20 +57,28 @@ interface Props extends WithStyles<typeof styles> {
 
 class Volleynet extends React.Component<Props> {
   static mapDispatchToProps = {
+    loadTournament: loadTournamentAction,
     loadTournaments: loadTournamentsAction,
   };
 
-  static buildActions({ leagues = [] }: Props) {
-    return leagues.map(league =>
+  static buildActions({ leagues = [], tournamentId }: Props) {
+    const actions = leagues.map(league =>
       loadTournamentsAction({
         gender: 'M',
         league,
         season: thisYear,
       }),
     );
+
+    if (tournamentId) {
+      actions.push(loadTournamentAction(tournamentId));
+    }
+
+    return actions;
   }
 
   static getParameters(query) {
+    const { tournamentId } = query;
     let { leagues = ['AMATEUR TOUR'] } = query;
 
     if (!Array.isArray(leagues)) {
@@ -58,20 +87,20 @@ class Volleynet extends React.Component<Props> {
 
     leagues = leagues.filter((l: string) => defaultLeagues.includes(l));
 
-    return { leagues };
+    return { leagues, tournamentId };
   }
 
-  static mapStateToProps(state, { leagues }: Props) {
+  static mapStateToProps(state: Store, { leagues, tournamentId }: Props) {
     const tournaments = tournamentsByLeagueSelector(state, leagues);
+    const tournament = tournamentSelector(state, Number(tournamentId));
+    const { user } = userSelector(state);
 
-    return { tournaments };
+    return { tournament, tournaments, user };
   }
 
   renderList = (tournaments: Tournament[]) => {
-    const { classes } = this.props;
-
     return (
-      <div className={classes.root} key={tournaments[0].id}>
+      <div key={tournaments[0].id}>
         <TournamentList
           tournaments={tournaments}
           onTournamentClick={this.onTournamentClick}
@@ -91,7 +120,12 @@ class Volleynet extends React.Component<Props> {
   }
 
   onTournamentClick = (t: Tournament) => {
-    Router.push({ pathname: '/volleynet/tournament', query: { id: t.id } });
+    const { leagues } = this.props;
+
+    Router.push({
+      pathname: '/volleynet',
+      query: { tournamentId: t.id, leagues },
+    });
   };
 
   onLeagueChange = (_, selectedLeagues) => {
@@ -102,12 +136,12 @@ class Volleynet extends React.Component<Props> {
   };
 
   render() {
-    const { leagues, tournaments } = this.props;
+    const { leagues, user, tournaments, tournament, classes } = this.props;
 
-    let content = <CenteredLoading />;
+    let leftContent = <CenteredLoading />;
 
     if (tournaments) {
-      content = (
+      leftContent = (
         <GroupedList<Tournament>
           groupItems={groupTournaments}
           items={tournaments.sort(sortDescending)}
@@ -117,10 +151,23 @@ class Volleynet extends React.Component<Props> {
       );
     }
 
+    let rightContent: any = <span>Select a tournament</span>;
+
+    if (tournament) {
+      rightContent = <TournamentView tournament={tournament} user={user} />;
+    }
+
     return (
       <Layout title={{ text: 'Volleynet', href: '' }}>
-        <LeagueSelect selected={leagues} onChange={this.onLeagueChange} />
-        {content}
+        <div className={classes.root}>
+          <div className={classes.left}>
+            <LeagueSelect selected={leagues} onChange={this.onLeagueChange} />
+            {leftContent}
+          </div>
+          <div className={classes.right}>
+            <Fade in={!!tournament}>{rightContent}</Fade>
+          </div>
+        </div>
       </Layout>
     );
   }

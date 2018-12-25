@@ -1,6 +1,6 @@
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
-import { IStore } from '../store';
+import { Store } from '../store';
 
 export const initialStatusState = {
   status: '',
@@ -29,4 +29,4 @@ const reducer = createReducer(initialStatusState, {
 
 export default reducer;
 
-export const statusSelector = (state: IStore) => state.status.status;
+export const statusSelector = (state: Store) => state.status.status;

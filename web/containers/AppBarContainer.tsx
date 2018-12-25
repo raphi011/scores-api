@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import AppBar from '../components/AppBar';
 import { logoutAction } from '../redux/auth/actions';
 import { loginRouteSelector, userSelector } from '../redux/auth/selectors';
+import { Store } from '../redux/store';
 
 interface Props {
   isLoggedIn: boolean;
@@ -28,7 +29,7 @@ class AppBarContainer extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: Store) {
   const { isLoggedIn } = userSelector(state);
   const loginRoute = loginRouteSelector(state);
 

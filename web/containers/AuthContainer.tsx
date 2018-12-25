@@ -73,10 +73,7 @@ export default (Component): NextComponentClass<Props> => {
             const redir = url ? `?r=${encodeURIComponent(url)}` : '';
 
             if (isServer) {
-              // TODO: improve this
-              const protocol =
-                process.env.NODE_ENV === 'development' ? 'http' : 'https';
-
+              const protocol = 'https';
               const host = req.headers.host;
               const loginUrl = `${protocol}://${host}/login${redir}`;
               res.writeHead(302, {

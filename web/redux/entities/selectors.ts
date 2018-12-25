@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import { denorm } from '../entitySchemas';
 
 import { EntityName } from '../../types';
-import { IStore } from '../store';
+import { Store } from '../store';
 
 const groupMap = state => state.entities.group.values;
 const playerMap = state => state.entities.player.values;
@@ -44,31 +44,31 @@ export const entityMapSelector = createSelector(
   }),
 );
 
-export const allUsersSelector = (state: IStore) =>
+export const allUsersSelector = (state: Store) =>
   denorm(
     EntityName.User,
     entityMapSelector(state),
     state.entities.user.list.all,
   );
 
-export const allPlayersSelector = (state: IStore) =>
+export const allPlayersSelector = (state: Store) =>
   denorm(
     EntityName.Player,
     entityMapSelector(state),
     state.entities.player.list.all,
   );
 
-export const groupSelector = (state: IStore, groupId: number) =>
+export const groupSelector = (state: Store, groupId: number) =>
   denorm(EntityName.User, entityMapSelector(state), groupId);
 
-export const groupPlayersSelector = (state: IStore, groupId: number) =>
+export const groupPlayersSelector = (state: Store, groupId: number) =>
   denorm(
     EntityName.Player,
     entityMapSelector(state),
     state.entities.player.by.group[groupId],
   );
 
-export const matchSelector = (state: IStore, id: number) =>
+export const matchSelector = (state: Store, id: number) =>
   denorm(EntityName.Match, entityMapSelector(state), id);
 
 const allMatchIdsSelector = state =>
@@ -80,48 +80,45 @@ export const allMatchesSelector = createSelector(
   (ids, entities) => denorm(EntityName.Match, entities, ids),
 );
 
-export const playerSelector = (state: IStore, playerId: number) =>
+export const playerSelector = (state: Store, playerId: number) =>
   denorm(EntityName.Player, entityMapSelector(state), playerId);
 
-export const matchesByGroupSelector = (state: IStore, groupId: number) =>
+export const matchesByGroupSelector = (state: Store, groupId: number) =>
   denorm(
     EntityName.Match,
     entityMapSelector(state),
     state.entities.match.by.group[groupId],
   );
 
-export const matchesByPlayerSelector = (state: IStore, playerId: number) =>
+export const matchesByPlayerSelector = (state: Store, playerId: number) =>
   denorm(
     EntityName.Match,
     entityMapSelector(state),
     state.entities.match.by.player[playerId],
   );
 
-export const allStatisticSelector = (state: IStore) =>
+export const allStatisticSelector = (state: Store) =>
   denorm(
     EntityName.Statistic,
     entityMapSelector(state),
     state.entities.statistic.list.all,
   );
 
-export const statisticByPlayerTeamSelector = (
-  state: IStore,
-  playerId: number,
-) =>
+export const statisticByPlayerTeamSelector = (state: Store, playerId: number) =>
   denorm(
     EntityName.Statistic,
     entityMapSelector(state),
     state.entities.statistic.by.playerTeam[playerId],
   );
 
-export const statisticByGroupSelector = (state: IStore, groupId: number) =>
+export const statisticByGroupSelector = (state: Store, groupId: number) =>
   denorm(
     EntityName.Statistic,
     entityMapSelector(state),
     state.entities.statistic.by.group[groupId],
   );
 
-export const statisticByPlayerSelector = (state: IStore, playerId: number) =>
+export const statisticByPlayerSelector = (state: Store, playerId: number) =>
   denorm(
     EntityName.Statistic,
     entityMapSelector(state),
@@ -129,7 +126,7 @@ export const statisticByPlayerSelector = (state: IStore, playerId: number) =>
   );
 
 export const tournamentsByLeagueSelector = (
-  state: IStore,
+  state: Store,
   leagues: string[],
 ) => {
   let tournaments = [];
@@ -149,17 +146,17 @@ export const tournamentsByLeagueSelector = (
   return tournaments;
 };
 
-export const tournamentSelector = (state: IStore, tournamentId: number) =>
+export const tournamentSelector = (state: Store, tournamentId: number) =>
   denorm(EntityName.Tournament, entityMapSelector(state), tournamentId);
 
-export const ladderVolleynetplayerSelector = (state: IStore, gender: string) =>
+export const ladderVolleynetplayerSelector = (state: Store, gender: string) =>
   denorm(
     EntityName.VolleynetPlayer,
     entityMapSelector(state),
     state.entities.volleynetplayer.by.ladder[gender],
   );
 
-export const searchVolleynetplayerSelector = (state: IStore) =>
+export const searchVolleynetplayerSelector = (state: Store) =>
   denorm(
     EntityName.VolleynetPlayer,
     entityMapSelector(state),
