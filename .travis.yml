@@ -26,7 +26,7 @@ jobs:
       language: "go"
       go: "1.11"
       install: go get github.com/mgechev/revive
-      script: revive -config ./revive.toml -formatter friendly ./...
+      script: revive -exclude volleynet/mocks -config ./revive.toml -formatter friendly ./...
 
     - stage: "Deploy"
       script: skip

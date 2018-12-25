@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Execution represents a running job
 type Execution struct {
 	Start        time.Time     `json:"start"`
 	End          time.Time     `json:"end"`

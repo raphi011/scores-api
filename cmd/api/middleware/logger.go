@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// Logger middleware populates a logger with request specific fields
+// and adds it to the context
 func Logger(log logrus.FieldLogger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log = log.WithFields(logrus.Fields{

@@ -15,10 +15,13 @@ type scan interface {
 	Scan(src ...interface{}) error
 }
 
+// CreateTest creates the Repositories struct and returns the sql.DB connection
 func CreateTest(provider, connectionString string) (*repo.Repositories, *sql.DB, error) {
 	return create(provider, connectionString)
 }
 
+// Create creates the Repositories struct and returns a function that
+// closes the underlying db when called
 func Create(provider, connectionString string) (*repo.Repositories, func(), error) {
 	repo, db, err := create(provider, connectionString)
 

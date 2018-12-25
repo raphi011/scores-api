@@ -9,6 +9,7 @@ import (
 
 var _ scores.StatisticRepository = &StatisticRepository{}
 
+// StatisticRepository calculates various statistics from the repository
 type StatisticRepository struct {
 	DB *sql.DB
 }
@@ -34,18 +35,21 @@ func parseTimeFilter(filter string) time.Time {
 	return timeFilter
 }
 
+// Players loads statistics for players since a certain time
 func (s *StatisticRepository) Players(filter string) ([]scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, query("statistic/select-by-players"), timeFilter)
 }
 
+// PlayersByGroup loads statistics for players of a group since a certain time
 func (s *StatisticRepository) PlayersByGroup(groupID uint, filter string) ([]scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
 	return scanPlayerStatistics(s.DB, query("statistic/select-by-group-player"), timeFilter, groupID)
 }
 
+// Player loads statistics for a players
 func (s *StatisticRepository) Player(playerID uint, filter string) (*scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
@@ -54,6 +58,7 @@ func (s *StatisticRepository) Player(playerID uint, filter string) (*scores.Play
 	return scanPlayerStatistic(row)
 }
 
+// PlayerTeams loads statistics of all teammates of a player since a certain time
 func (s *StatisticRepository) PlayerTeams(playerID uint, filter string) ([]scores.PlayerStatistic, error) {
 	timeFilter := parseTimeFilter(filter)
 
