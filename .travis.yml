@@ -4,7 +4,7 @@ jobs:
       name: "backend"
       language: go
       go: "1.11"
-      script: go test
+      script: go test ./...
       env:
         - GO111MODULE=on
 
