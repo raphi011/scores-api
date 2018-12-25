@@ -26,16 +26,16 @@ func (h *playerHandler) postPlayer(c *gin.Context) {
 	if err := c.ShouldBindWith(&newPlayer, binding.JSON); err != nil {
 		responseBadRequest(c)
 		return
-	} else {
-		player, err := h.playerService.Create(&scores.Player{Name: newPlayer.Name})
-
-		if err != nil {
-			responseErr(c, err)
-			return
-		}
-
-		response(c, http.StatusCreated, player)
 	}
+
+	player, err := h.playerService.Create(&scores.Player{Name: newPlayer.Name})
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	response(c, http.StatusCreated, player)
 }
 
 func (h *playerHandler) getStatistics(c *gin.Context) {

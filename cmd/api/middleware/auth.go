@@ -10,6 +10,7 @@ import (
 	"github.com/raphi011/scores/cmd/api/logger"
 )
 
+// Auth middleware restricts routes for authenticated users only
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log := logger.Get(c)

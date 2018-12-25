@@ -107,7 +107,7 @@ func runMigrations(db *sql.DB, migrations []Migration, fromVersion uint16) error
 		err = execMultiple(tx, m...)
 
 		if err != nil {
-			log.Fatalf("An error occured, rolling back: %v", err)
+			log.Warnf("An error occured, rolling back: %v", err)
 			_ = tx.Rollback()
 			return err
 		}

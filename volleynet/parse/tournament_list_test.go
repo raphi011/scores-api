@@ -19,7 +19,7 @@ func mustParseDate(date string) time.Time {
 	return result
 }
 
-func Test_tournament_list(t *testing.T) {
+func TestTournamentList(t *testing.T) {
 	response, _ := os.Open("../testdata/tournament-list-amateur.html")
 
 	tournaments, err := TournamentList(response, "http://example.com")

@@ -14,24 +14,30 @@ type VolleynetRepository struct {
 	DB *sql.DB
 }
 
+// Tournament loads a tournament by its id
 func (s *VolleynetRepository) Tournament(tournamentID int) (*volleynet.FullTournament, error) {
 	row := s.DB.QueryRow(query("volleynet/select-tournament-by-id"), tournamentID)
 
 	return scanTournament(row)
 }
 
+// AllTournaments loads all tournaments
+// Note: should only be used for debugging
 func (s *VolleynetRepository) AllTournaments() ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-all"))
 }
 
+// SeasonTournaments loads all tournaments of a season
 func (s *VolleynetRepository) SeasonTournaments(season int) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-by-season"), season)
 }
 
+// GetTournaments loads all tournaments by season, league and gender
 func (s *VolleynetRepository) GetTournaments(gender, league string, season int) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-by-filter"), gender, league, season)
 }
 
+// NewTournament creates a new tournament
 func (s *VolleynetRepository) NewTournament(t *volleynet.FullTournament) error {
 	_, err := s.DB.Exec(query("volleynet/insert-tournament"),
 		t.ID,
@@ -66,6 +72,7 @@ func (s *VolleynetRepository) NewTournament(t *volleynet.FullTournament) error {
 	return err
 }
 
+// UpdateTournamentTeam updates a tournament team
 func (s *VolleynetRepository) UpdateTournamentTeam(t *volleynet.TournamentTeam) error {
 	result, err := s.DB.Exec(
 		query("volleynet/update-team"),
@@ -97,6 +104,7 @@ func (s *VolleynetRepository) UpdateTournamentTeam(t *volleynet.TournamentTeam) 
 	return nil
 }
 
+// TournamentsUpdatedSince gets all tournaments that were updated after a certain time
 func (s *VolleynetRepository) TournamentsUpdatedSince(updatedSince time.Time) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB,
 		query("volleynet/select-tournament-by-updated-since"),
@@ -104,6 +112,7 @@ func (s *VolleynetRepository) TournamentsUpdatedSince(updatedSince time.Time) ([
 	)
 }
 
+// UpdateTournament updates a tournament
 func (s *VolleynetRepository) UpdateTournament(t *volleynet.FullTournament) error {
 	result, err := s.DB.Exec(
 		query("volleynet/update-tournament"),
@@ -152,6 +161,7 @@ func (s *VolleynetRepository) UpdateTournament(t *volleynet.FullTournament) erro
 	return nil
 }
 
+// NewTeam creates a new team
 func (s *VolleynetRepository) NewTeam(t *volleynet.TournamentTeam) error {
 	_, err := s.DB.Exec(query("volleynet/insert-team"),
 		t.TournamentID,
@@ -168,6 +178,7 @@ func (s *VolleynetRepository) NewTeam(t *volleynet.TournamentTeam) error {
 	return err
 }
 
+// NewTeams creates multiple new teams
 func (s *VolleynetRepository) NewTeams(teams []volleynet.TournamentTeam) error {
 	for _, t := range teams {
 		err := s.NewTeam(&t)
@@ -237,6 +248,7 @@ func scanTournamentTeam(scanner scan) (*volleynet.TournamentTeam, error) {
 	return t, err
 }
 
+// UpdateTournamentTeams updates tournament teams
 func (s *VolleynetRepository) UpdateTournamentTeams(teams []volleynet.TournamentTeam) error {
 	for _, t := range teams {
 		if err := s.UpdateTournamentTeam(&t); err != nil {
@@ -247,12 +259,14 @@ func (s *VolleynetRepository) UpdateTournamentTeams(teams []volleynet.Tournament
 	return nil
 }
 
+// DeleteTeam deletes a team
 func (s *VolleynetRepository) DeleteTeam(t *volleynet.TournamentTeam) error {
 	_, err := s.DB.Exec(query("volleynet/delete-team"), t.TournamentID, t.Player1.ID, t.Player2.ID)
 
 	return err
 }
 
+// TournamentTeams loads all teams of a tournament
 func (s *VolleynetRepository) TournamentTeams(tournamentID int) ([]volleynet.TournamentTeam, error) {
 	return scanTournamentTeams(s.DB,
 		query("volleynet/select-team-by-tournament-id"),
@@ -305,14 +319,18 @@ func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
 	return p, nil
 }
 
+// Ladder gets all players of the passed gender that have a rank
 func (s *VolleynetRepository) Ladder(gender string) ([]volleynet.Player, error) {
 	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-ladder"), gender)
 }
 
+// AllPlayers loads all players
+// Note: should only be used for debugging
 func (s *VolleynetRepository) AllPlayers() ([]volleynet.Player, error) {
 	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-all"))
 }
 
+// Player loads a player
 func (s *VolleynetRepository) Player(id int) (*volleynet.Player, error) {
 	row := s.DB.QueryRow(
 		query("volleynet/select-player-by-id"),
@@ -322,6 +340,7 @@ func (s *VolleynetRepository) Player(id int) (*volleynet.Player, error) {
 	return scanVolleynetPlayer(row)
 }
 
+// NewPlayer creates a new player
 func (s *VolleynetRepository) NewPlayer(p *volleynet.Player) error {
 	_, err := s.DB.Exec(query("volleynet/insert-player"),
 		p.ID,
@@ -339,6 +358,7 @@ func (s *VolleynetRepository) NewPlayer(p *volleynet.Player) error {
 	return err
 }
 
+// UpdatePlayer updates a player
 func (s *VolleynetRepository) UpdatePlayer(p *volleynet.Player) error {
 	result, err := s.DB.Exec(
 		query("volleynet/update-player"),
@@ -370,6 +390,8 @@ func (s *VolleynetRepository) UpdatePlayer(p *volleynet.Player) error {
 	return nil
 }
 
+// SearchPlayers searches players
+// Note: not implemented yet
 func (s *VolleynetRepository) SearchPlayers() ([]volleynet.Player, error) {
 	return nil, nil
 }

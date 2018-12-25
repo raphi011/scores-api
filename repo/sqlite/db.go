@@ -3,13 +3,12 @@ package sqlite
 import (
 	"database/sql"
 
+	//revive:disable:blank-imports
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores/migrate"
 	"github.com/raphi011/scores/repo"
-	"github.com/raphi011/scores/repo/sqlite/migrations"
 )
 
 type scan interface {
@@ -45,12 +44,4 @@ func create(provider, connectionString string) (*repo.Repositories, *sql.DB, err
 		User:      &UserRepository{DB: db},
 		Volleynet: &VolleynetRepository{DB: db},
 	}, db, nil
-}
-
-func Migrate(db *sql.DB) error {
-	return migrate.Migrate(db, migrations.MigrationSet)
-}
-
-func Reset(db *sql.DB) error {
-	return migrate.Reset(db, migrations.ResetSet)
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/raphi011/scores/cmd/api/logger"
 )
 
+// Admin middleware restricts routes for admins only
 func Admin(userService *scores.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log := logger.Get(c)

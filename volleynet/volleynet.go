@@ -87,11 +87,13 @@ type FullTournament struct {
 	Longitude       float32          `json:"longitude"`
 }
 
+// LoginData contains the data of the form that is shown after a successful login
 type LoginData struct {
 	PlayerInfo
 	License License
 }
 
+// License contains the license data of a player
 type License struct {
 	Nr        string
 	Type      string

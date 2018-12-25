@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Metric middleware logs how long a request took
 func Metric() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()

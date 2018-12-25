@@ -57,10 +57,10 @@ func (h *volleynetScrapeHandler) stop(c *gin.Context) {
 	response(c, http.StatusOK, nil)
 }
 
-func (h *volleynetScrapeHandler) runAll(c *gin.Context) {
+// func (h *volleynetScrapeHandler) runAll(c *gin.Context) {
 
-}
+// }
 
-func (h *volleynetScrapeHandler) stopAll(c *gin.Context) {
+// func (h *volleynetScrapeHandler) stopAll(c *gin.Context) {
 
-}
+// }

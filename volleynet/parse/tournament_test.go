@@ -9,7 +9,7 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-var tournament_tests = []struct {
+var tournamentTests = []struct {
 	file       string
 	now        time.Time
 	tournament volleynet.Tournament
@@ -484,8 +484,8 @@ var tournament_tests = []struct {
 	},
 }
 
-func Test_tournament(t *testing.T) {
-	for _, tt := range tournament_tests {
+func TestTournament(t *testing.T) {
+	for _, tt := range tournamentTests {
 		t.Run(tt.file, func(t *testing.T) {
 			response, _ := os.Open(tt.file)
 

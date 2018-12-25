@@ -85,7 +85,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		}
 	},
 	"Ort": func(value *goquery.Selection, t *volleynet.FullTournament) {
-		t.Location = trimmSelectionHtml(value)
+		t.Location = trimSelectionHTML(value)
 	},
 	"Max. Punkte": func(value *goquery.Selection, t *volleynet.FullTournament) {
 		t.MaxPoints = findInt(value.Text())

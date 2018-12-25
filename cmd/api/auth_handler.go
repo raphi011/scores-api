@@ -72,7 +72,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 
 	logger.Get(c).Infof("user %q authenticated via password", user.Email)
 
-	successfullLogin(c, session, user)
+	successfullLogin(session, user)
 
 	response(c, http.StatusOK, loginRouteOrUserDto{User: user})
 }
@@ -136,12 +136,12 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 
 	logger.Get(c).Infof("user %q authenticated via google", googleUser.Email)
 
-	successfullLogin(c, session, user)
+	successfullLogin(session, user)
 
 	c.Redirect(http.StatusFound, "/")
 }
 
-func successfullLogin(c *gin.Context, session sessions.Session, user *scores.User) {
+func successfullLogin(session sessions.Session, user *scores.User) {
 	session.Set("user-id", user.ID)
 	session.Save()
 }
