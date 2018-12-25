@@ -5,7 +5,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayIcon from '@material-ui/icons/PlayArrow';
@@ -20,27 +20,22 @@ const styles = createStyles({
   },
 });
 
-type Props = {
+interface Props extends WithStyles<typeof styles> {
   job: ScrapeJob;
+
   onAction: (jobName: string) => void;
-  classes: any;
-};
+}
 
 class JobListItem extends React.PureComponent<Props> {
   render() {
-    const { job, onAction, classes } = this.props;
+    const { job, onAction } = this.props;
 
     return (
       <ListItem key={job.job.name}>
         <ListItemIcon>{stateToString(job.state)}</ListItemIcon>
         <ListItemText primary={job.job.name} />
         <ListItemSecondaryAction>
-          <Button
-            onClick={() => onAction(job.job.name)}
-            className={classes.button}
-          >
-            run
-          </Button>
+          <Button onClick={() => onAction(job.job.name)}>run</Button>
         </ListItemSecondaryAction>
       </ListItem>
     );

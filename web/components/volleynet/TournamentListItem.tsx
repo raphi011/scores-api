@@ -1,7 +1,8 @@
+import React from 'react';
+
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { createStyles, withStyles } from '@material-ui/core/styles';
-import React from 'react';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import { Tournament } from '../../types';
 
@@ -11,25 +12,13 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   tournament: Tournament;
-  onClick: (Tournament) => void;
-  classes: any;
+
+  onClick: (tournament: Tournament) => void;
 }
 
-function buildSubtitle(tournament: Tournament) {
-  let st = tournament.signedupTeams.toString();
-
-  if (tournament.maxTeams >= 0) {
-    st += ` / ${tournament.maxTeams} teams`;
-  }
-
-  st += ` • ${tournament.league}`;
-
-  return st;
-}
-
-const TournamentListItem = ({ tournament, classes, onClick }: IProps) => {
+const TournamentListItem = ({ tournament, classes, onClick }: Props) => {
   let primary: string | JSX.Element = tournament.name;
 
   if (tournament.status === 'canceled') {
@@ -51,5 +40,17 @@ const TournamentListItem = ({ tournament, classes, onClick }: IProps) => {
     </ListItem>
   );
 };
+
+function buildSubtitle(tournament: Tournament) {
+  let st = tournament.signedupTeams.toString();
+
+  if (tournament.maxTeams >= 0) {
+    st += ` / ${tournament.maxTeams} teams`;
+  }
+
+  st += ` • ${tournament.league}`;
+
+  return st;
+}
 
 export default withStyles(styles)(TournamentListItem);

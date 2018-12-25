@@ -1,4 +1,3 @@
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React, { ChangeEvent, SyntheticEvent } from 'react';
 
 import Button from '@material-ui/core/Button';
@@ -7,6 +6,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import DoneIcon from '@material-ui/icons/Done';
 
@@ -37,7 +42,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   onChangeTargetScore: (event: ChangeEvent, score: string) => void;
   onChangeScore: (teamNr: number, event: string) => void;
   onLoseFocus: (
@@ -53,10 +58,9 @@ interface IProps {
   targetScore: string;
   onCreateMatch: (Event) => void;
   errors: IMatchValidation;
-  classes: any;
 }
 
-class SetScores extends React.PureComponent<IProps> {
+class SetScores extends React.PureComponent<Props> {
   onChangeScoreTeam1 = e => {
     const { onChangeScore } = this.props;
     onChangeScore(1, e.target.value);
@@ -131,7 +135,6 @@ class SetScores extends React.PureComponent<IProps> {
             onChange={this.onChangeScoreTeam1}
             onBlur={this.onLoseFocusScoreTeam1}
             type="number"
-            className={classes.textField}
             InputLabelProps={{
               shrink: true,
             }}
@@ -150,7 +153,6 @@ class SetScores extends React.PureComponent<IProps> {
             onChange={this.onChangeScoreTeam2}
             onBlur={this.onLoseFocusScoreTeam2}
             type="number"
-            className={classes.textField}
             InputLabelProps={{
               shrink: true,
             }}
@@ -158,13 +160,8 @@ class SetScores extends React.PureComponent<IProps> {
           />
           {allError}
         </FormControl>
-        <Button
-          className={classes.submitButton}
-          color="primary"
-          type="submit"
-          variant="contained"
-        >
-          <DoneIcon className={classes.leftIcon} />
+        <Button color="primary" type="submit" variant="contained">
+          <DoneIcon />
           Submit
         </Button>
       </form>

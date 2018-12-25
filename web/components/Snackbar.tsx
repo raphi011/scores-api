@@ -1,8 +1,14 @@
+import React from 'react';
+
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
-import React from 'react';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -12,22 +18,14 @@ const styles = (theme: Theme) =>
     },
   });
 
-const handleRequestClose = onClose => (_, reason) => {
-  if (reason === 'clickaway') {
-    return;
-  }
-
-  onClose();
-};
-
-interface IProps {
-  onClose: () => void;
+interface Props extends WithStyles<typeof styles> {
   status: string;
   open: boolean;
-  classes: any;
+
+  onClose: () => void;
 }
 
-const SimpleSnackbar = ({ classes, onClose, status, open }: IProps) => (
+const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
   <Snackbar
     anchorOrigin={{
       horizontal: 'center',
@@ -50,5 +48,13 @@ const SimpleSnackbar = ({ classes, onClose, status, open }: IProps) => (
     ]}
   />
 );
+
+const handleRequestClose = onClose => (_, reason) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+
+  onClose();
+};
 
 export default withStyles(styles)(SimpleSnackbar);

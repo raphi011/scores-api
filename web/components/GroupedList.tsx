@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
 
-interface IProps<T> {
+interface Props<T> {
   groupItems: (items: T[]) => T[][];
-  renderHeader: (T) => ReactNode;
+  renderHeader: (item: T[]) => ReactNode;
   renderList: (items: T[]) => ReactNode;
   items: T[];
 }
@@ -12,7 +12,7 @@ export default function GroupedList<T>({
   items,
   renderHeader,
   renderList,
-}: IProps<T>) {
+}: Props<T>) {
   const groupedItems = groupItems(items);
 
   const groupsWithHeaders = [];

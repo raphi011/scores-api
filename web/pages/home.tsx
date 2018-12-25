@@ -1,7 +1,12 @@
 import React from 'react';
 
 import Paper from '@material-ui/core/Paper';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import withAuth from '../containers/AuthContainer';
 
@@ -21,10 +26,9 @@ const styles = (theme: Theme) =>
     },
   });
 
-type Props = {
+interface Props extends WithStyles<typeof styles> {
   player: Player;
-  classes: any;
-};
+}
 
 class Home extends React.Component<Props> {
   static getParameters(query) {

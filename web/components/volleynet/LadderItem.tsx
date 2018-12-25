@@ -5,11 +5,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { VolleynetPlayer } from '../../types';
 
-interface IProps {
+interface Props {
   player: VolleynetPlayer;
 }
 
-const LadderItem = ({ player }: IProps) => (
+const LadderItem = ({ player }: Props) => (
   <ListItem>
     <ListItemText
       primary={`${player.rank}. ${player.firstName} ${player.lastName}`}

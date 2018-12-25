@@ -1,6 +1,7 @@
+import React, { SyntheticEvent } from 'react';
+
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import React from 'react';
 
 const defaultLeagues = [
   { name: 'Junior Tour', key: 'JUNIOR TOUR' },
@@ -8,18 +9,19 @@ const defaultLeagues = [
   { name: 'Pro Tour', key: 'PRO TOUR' },
 ];
 
-interface ILeague {
+interface League {
   name: string;
   key: string;
 }
 
-interface IProps {
+interface Props {
   selected: string[];
-  onChange: (event, league: string[]) => void;
-  leagues?: ILeague[];
+  leagues?: League[];
+
+  onChange: (event: SyntheticEvent<{}>, league: string[]) => void;
 }
 
-export default ({ selected, onChange, leagues = defaultLeagues }: IProps) => (
+export default ({ selected, onChange, leagues = defaultLeagues }: Props) => (
   <ToggleButtonGroup value={selected} onChange={onChange}>
     {leagues.map(l => (
       <ToggleButton key={l.key} value={l.key}>

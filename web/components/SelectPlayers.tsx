@@ -1,6 +1,12 @@
-import List from '@material-ui/core/List';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React from 'react';
+
+import List from '@material-ui/core/List';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 
 import { Player } from '../types';
 import PlayerListItem from './PlayerListItem';
@@ -13,7 +19,7 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   players: Player[];
   onUnsetPlayer: (playerId: number) => void;
   onSetPlayer: (playerId: number, player: Player, complete: boolean) => void;
@@ -21,10 +27,9 @@ interface IProps {
   player2: Player;
   player3: Player;
   player4: Player;
-  classes: any;
 }
 
-class SelectPlayers extends React.Component<IProps> {
+class SelectPlayers extends React.Component<Props> {
   onSelectPlayer = (selected: Player) => {
     const { onUnsetPlayer, onSetPlayer } = this.props;
 

@@ -1,21 +1,22 @@
+import React from 'react';
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
-import React from 'react';
 
 import DoneIcon from '@material-ui/icons/Done';
 import LoadingButton from '../LoadingButton';
 
 const styles = createStyles({});
 
-interface IProps {
-  onLogin: (username: string, password: string, rememberMe: boolean) => void;
-  classes: any;
+interface Props extends WithStyles<typeof styles> {
   username?: string;
+
+  onLogin: (username: string, password: string, rememberMe: boolean) => void;
 }
 
-interface IState {
+interface State {
   loggingIn: boolean;
   username: string;
   password: string;
@@ -23,7 +24,7 @@ interface IState {
   usernameValidation: string;
 }
 
-class Login extends React.Component<IProps, IState> {
+class Login extends React.Component<Props, State> {
   loginRegex = /^[A-Z][a-z]+\.[A-Z]+$/;
   constructor(props) {
     super(props);
@@ -77,7 +78,6 @@ class Login extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { classes } = this.props;
     const {
       username,
       password,
@@ -87,7 +87,7 @@ class Login extends React.Component<IProps, IState> {
     } = this.state;
 
     return (
-      <form onSubmit={this.onLogin} className={classes.container}>
+      <form onSubmit={this.onLogin}>
         <TextField
           label={usernameValidation || 'Username'}
           error={!!usernameValidation}

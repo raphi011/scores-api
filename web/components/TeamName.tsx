@@ -1,5 +1,11 @@
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
 import React from 'react';
+
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 
 import { Team } from '../types';
 
@@ -12,13 +18,12 @@ const styles = (theme: Theme) =>
     normal: { padding: '2px 4px' },
   });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   team: Team;
   highlightPlayerId: number;
-  classes: any;
 }
 
-const TeamName = ({ team, highlightPlayerId, classes }: IProps) => {
+const TeamName = ({ team, highlightPlayerId, classes }: Props) => {
   if (team.name) {
     const highlight =
       team.player1Id === highlightPlayerId ||

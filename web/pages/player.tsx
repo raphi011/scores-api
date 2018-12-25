@@ -26,26 +26,28 @@ import {
 
 import { Match, Player, PlayerStatistic, User } from '../types';
 
-interface IProps {
+interface Props {
   player: Player;
   user: User;
   statistic: PlayerStatistic;
   teamStatistic: PlayerStatistic[];
   matches: Match[];
   playerId: number;
+
   loadMatches: (playerId: number, after?: string) => Promise<any>;
 }
 
-interface IState {
+interface State {
   tabOpen: number;
   loading: boolean;
   hasMore: boolean;
 }
 
-class PlayerInfo extends React.Component<IProps, IState> {
+class PlayerInfo extends React.Component<Props, State> {
   static mapDispatchToProps = {
     loadMatches: loadPlayerMatchesAction,
   };
+
   static getParameters(query) {
     const { id } = query;
 
@@ -166,6 +168,7 @@ class PlayerInfo extends React.Component<IProps, IState> {
         </Tabs>
         {this.state.tabOpen === 0 ? (
           <MatchList
+            deleteMatch={null}
             matches={matches}
             highlightPlayerId={playerId}
             onLoadMore={this.onLoadMore}

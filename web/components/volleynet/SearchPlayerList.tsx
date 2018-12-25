@@ -1,6 +1,7 @@
-import List from '@material-ui/core/List';
-import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
+
+import List from '@material-ui/core/List';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import SearchPlayerListItem from './SearchPlayerListItem';
 
@@ -12,13 +13,13 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   players: VolleynetSearchPlayer[];
-  onPlayerClick: (VolleynetSearchPlayer) => void;
-  classes: any;
+
+  onPlayerClick: (player: VolleynetSearchPlayer) => void;
 }
 
-class SearchPlayerList extends React.PureComponent<IProps> {
+class SearchPlayerList extends React.PureComponent<Props> {
   render() {
     const { players = [], onPlayerClick, classes } = this.props;
 

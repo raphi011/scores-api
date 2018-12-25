@@ -1,8 +1,9 @@
+import React from 'react';
+
 import Avatar from '@material-ui/core/Avatar';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
 import { Player, PlayerStatistic } from '../types';
 
 const styles = createStyles({
@@ -21,13 +22,12 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   statistic: PlayerStatistic;
   player: Player;
-  classes: any;
 }
 
-function PlayerView({ player, statistic, classes }: IProps) {
+function PlayerView({ player, statistic, classes }: Props) {
   const avatar = statistic.player.profileImageUrl ? (
     <Avatar className={classes.avatar} src={statistic.player.profileImageUrl} />
   ) : (

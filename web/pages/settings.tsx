@@ -2,7 +2,12 @@ import React from 'react';
 
 import { Button } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -38,13 +43,13 @@ const styles = (theme: Theme) =>
     },
   });
 
-type Props = {
+interface Props extends WithStyles<typeof styles> {
   jobs: ScrapeJob[];
+  users: User[];
+
   loadScrapeJobs: () => void;
   runJob: (jobName: string) => void;
-  classes: any;
-  users: User[];
-};
+}
 
 type State = {
   isEditUserOpen: boolean;

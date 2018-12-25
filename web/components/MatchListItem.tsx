@@ -1,14 +1,15 @@
+import React from 'react';
+
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import React from 'react';
 
 import TeamName from './TeamName';
 
 import { Match, Team } from '../types';
 
-const itemStyles = createStyles({
+const styles = createStyles({
   listContainer: {
     alignItems: 'center',
     display: 'flex',
@@ -19,11 +20,11 @@ const itemStyles = createStyles({
   team: { flex: '1 1 0' },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   match: Match;
-  onMatchClick: (Match) => void;
   highlightPlayerId: number;
-  classes: any;
+
+  onMatchClick: (match: Match) => void;
 }
 
 function WinnerAndLoser(
@@ -56,7 +57,7 @@ const MatchListItem = ({
   match,
   highlightPlayerId,
   classes,
-}: IProps) => {
+}: Props) => {
   const result = WinnerAndLoser(match);
 
   const winnerScore = result.winnerScore.toString(); /*.padStart(2, '0');*/
@@ -91,4 +92,4 @@ const MatchListItem = ({
   );
 };
 
-export default withStyles(itemStyles)(MatchListItem);
+export default withStyles(styles)(MatchListItem);

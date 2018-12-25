@@ -1,11 +1,17 @@
 import React, { SyntheticEvent } from 'react';
 
+import Router from 'next/router';
+
 import Button from '@material-ui/core/Button';
 import MobileStepper from '@material-ui/core/MobileStepper';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import BackIcon from '@material-ui/icons/KeyboardArrowLeft';
 import NextIcon from '@material-ui/icons/KeyboardArrowRight';
-import Router from 'next/router';
 
 import SelectPlayers from '../../components/SelectPlayers';
 import SetScores from '../../components/SetScores';
@@ -58,18 +64,18 @@ function calcWinnerScore(loserScore: number, targetScore: number): number {
   return winnerScore;
 }
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   rematch?: Match;
   players: Player[];
-  createNewMatch: (NewMatch) => Promise<any>;
-  setStatus: (status: string) => void;
   /* eslint-disable react/no-unused-prop-types */
   groupId: number;
   rematchId: number;
-  classes: any;
+
+  createNewMatch: (match: NewMatch) => Promise<any>;
+  setStatus: (status: string) => void;
 }
 
-interface IState {
+interface State {
   activeStep: number;
   teamsComplete: boolean;
   match: {
@@ -85,7 +91,7 @@ interface IState {
   errors: IMatchValidation;
 }
 
-class CreateMatch extends React.Component<IProps, IState> {
+class CreateMatch extends React.Component<Props, State> {
   static mapDispatchToProps = {
     createNewMatch: createNewMatchAction,
     setStatus: setStatusAction,
@@ -99,7 +105,13 @@ class CreateMatch extends React.Component<IProps, IState> {
     return { groupId, rematchId };
   }
 
-  static buildActions({ rematchId, groupId }) {
+  static buildActions({
+    rematchId,
+    groupId,
+  }: {
+    rematchId: number;
+    groupId: number;
+  }) {
     const actions = [loadGroupAction(groupId)];
 
     if (rematchId) {
@@ -109,7 +121,7 @@ class CreateMatch extends React.Component<IProps, IState> {
     return actions;
   }
 
-  static mapStateToProps(state, ownProps: IProps) {
+  static mapStateToProps(state, ownProps: Props) {
     const { rematchId, groupId } = ownProps;
 
     const players = groupPlayersSelector(state, groupId);
@@ -189,7 +201,7 @@ class CreateMatch extends React.Component<IProps, IState> {
     this.setState({ match, teamsComplete: false });
   };
 
-  setRematch = (props: IProps) => {
+  setRematch = (props: Props) => {
     const { rematchId, rematch, players } = props;
 
     if (rematchId && !this.rematchPlayersSet) {
@@ -386,7 +398,6 @@ class CreateMatch extends React.Component<IProps, IState> {
         <div>
           <MobileStepper
             position="static"
-            className={classes.mobileStepper}
             steps={2}
             activeStep={activeStep}
             backButton={

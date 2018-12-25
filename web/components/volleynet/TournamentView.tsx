@@ -1,10 +1,17 @@
-import Link from 'next/link';
 import React from 'react';
+
+import Link from 'next/link';
+import TimeAgo from 'react-timeago';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import CalendarIcon from '@material-ui/icons/DateRange';
 import EmailIcon from '@material-ui/icons/Email';
@@ -12,13 +19,11 @@ import LocationIcon from '@material-ui/icons/GpsFixed';
 import LinkIcon from '@material-ui/icons/Link';
 import PeopleIcon from '@material-ui/icons/People';
 import PhoneIcon from '@material-ui/icons/Phone';
-import TimeAgo from 'react-timeago';
-import { formatDateTime } from '../../utils/dateFormat';
-import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
 import CenteredLoading from '../../components/CenteredLoading';
 import TeamList from '../../components/volleynet/TeamList';
 import { card, link, title } from '../../styles/shared';
+import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
 import { Tournament, User } from '../../types';
 
@@ -48,17 +53,16 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   tournament: Tournament;
   user: User;
-  classes: any;
 }
 
-interface IState {
+interface State {
   tabOpen: number;
 }
 
-class TournamentView extends React.Component<IProps, IState> {
+class TournamentView extends React.Component<Props, State> {
   render() {
     const { user, tournament, classes } = this.props;
 
@@ -134,7 +138,7 @@ class TournamentView extends React.Component<IProps, IState> {
         </div>
         <Card className={classes.card}>
           <CardContent>
-            <div className={classes.infoContainer}>
+            <div>
               {infos.map((info, i) => (
                 <Typography key={i} variant="subtitle1">
                   {info.icon}{' '}

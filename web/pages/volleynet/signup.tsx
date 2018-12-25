@@ -1,8 +1,12 @@
 import React from 'react';
 
-import { createStyles, withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import Link from 'next/link';
+
+import { Theme } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 import Login from '../../components/volleynet/Login';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
@@ -16,7 +20,6 @@ import {
 import { tournamentSelector } from '../../redux/entities/selectors';
 import { card, link, title } from '../../styles/shared';
 
-import { Card, CardContent, Theme } from '@material-ui/core';
 import { Tournament, User, VolleynetPlayer } from '../../types';
 
 const styles = (theme: Theme) =>
@@ -29,10 +32,11 @@ const styles = (theme: Theme) =>
     title: title(theme),
   });
 
-type Props = {
+interface Props extends WithStyles<typeof styles> {
   tournamentId: number;
   tournament?: Tournament;
   user: User;
+
   signup: (
     info: {
       username: string;
@@ -43,8 +47,7 @@ type Props = {
       rememberMe: boolean;
     },
   ) => void;
-  classes: any;
-};
+}
 
 type State = {
   partner?: VolleynetPlayer;
@@ -108,7 +111,7 @@ class Signup extends React.Component<Props, State> {
       return null;
     }
 
-    let content;
+    let content: React.ReactNode;
 
     if (partner) {
       content = (

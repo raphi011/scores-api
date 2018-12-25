@@ -1,3 +1,7 @@
+import React, { SyntheticEvent } from 'react';
+
+import Router from 'next/router';
+
 import Button from '@material-ui/core/Button';
 import Red from '@material-ui/core/colors/red';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -5,8 +9,6 @@ import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import WarningIcon from '@material-ui/icons/Warning';
-import Router from 'next/router';
-import React, { SyntheticEvent } from 'react';
 
 import LoadingButton from '../components/LoadingButton';
 import withAuth from '../containers/AuthContainer';
@@ -14,29 +16,30 @@ import Snackbar from '../containers/SnackbarContainer';
 import { loginWithPasswordAction } from '../redux/auth/actions';
 import { setStatusAction } from '../redux/status/actions';
 
-interface IProps {
+interface Props {
   r: string;
   loginRoute: string;
   fromServer: boolean;
   error: string;
-  classes: any;
+
   loginWithPassword: (
     credentials: { email: string; password: string },
   ) => Promise<any>;
   setStatus: (status: string) => void;
 }
 
-interface IState {
+interface State {
   email: string;
   password: string;
   loggingIn: boolean;
 }
 
-class Login extends React.Component<IProps, IState> {
+class Login extends React.Component<Props, State> {
   static mapDispatchToProps = {
     loginWithPassword: loginWithPasswordAction,
     setStatus: setStatusAction,
   };
+
   static getParameters(query) {
     const { error, r } = query;
 

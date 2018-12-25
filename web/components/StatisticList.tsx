@@ -1,10 +1,16 @@
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import React from 'react';
+
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import React from 'react';
 import { PlayerStatistic } from '../types';
 
 import StatisticListRow from './StatisticListRow';
@@ -16,13 +22,13 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   statistics: PlayerStatistic[];
+
   onPlayerClick: (playerId: number) => void;
-  classes: any;
 }
 
-function StatisticList({ statistics, onPlayerClick, classes }: IProps) {
+function StatisticList({ statistics, onPlayerClick, classes }: Props) {
   return (
     <Table>
       <TableHead>

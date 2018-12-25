@@ -1,7 +1,7 @@
 import React from 'react';
 
 import List from '@material-ui/core/List';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import { VolleynetPlayer } from '../../types';
 import LadderItem from './LadderItem';
@@ -12,12 +12,11 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   players: VolleynetPlayer[];
-  classes: any;
 }
 
-class SearchPlayerList extends React.PureComponent<IProps> {
+class SearchPlayerList extends React.PureComponent<Props> {
   render() {
     const { players = [], classes } = this.props;
 

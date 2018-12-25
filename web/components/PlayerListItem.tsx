@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import Badge from '@material-ui/core/Badge';
@@ -7,15 +7,16 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { Player } from '../types';
 
-interface IProps {
-  onClick: (Event) => void;
+interface Props {
   player: Player;
   playerNr: number;
+
+  onClick: (event: SyntheticEvent<{}>) => void;
 }
 
-function PlayerListItem({ player, onClick, playerNr }: IProps) {
-  let color;
-  let team;
+function PlayerListItem({ player, onClick, playerNr }: Props) {
+  let color: 'primary' | 'secondary' | 'default';
+  let team: number;
 
   switch (playerNr) {
     case 1:
@@ -29,7 +30,7 @@ function PlayerListItem({ player, onClick, playerNr }: IProps) {
       team = 2;
       break;
     default:
-      color = '';
+      color = 'default';
       team = null;
   }
 

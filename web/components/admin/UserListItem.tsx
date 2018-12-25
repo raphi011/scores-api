@@ -5,7 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 import { User } from '../../types';
 
-interface IProps {
+interface Props {
   user: User;
   onClick?: (User) => void;
 }
@@ -18,7 +18,7 @@ const onClickHandler = (handler, user: User) => {
   return () => handler(user);
 };
 
-const UserListItem = ({ user, onClick }: IProps) => (
+const UserListItem = ({ user, onClick }: Props) => (
   <ListItem button onClick={onClickHandler(onClick, user)}>
     <ListItemText primary={user.email} />
   </ListItem>

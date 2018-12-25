@@ -1,21 +1,13 @@
 import React from 'react';
 
-// import Button from '@material-ui/core/Button';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import AddIcon from '@material-ui/icons/Add';
-// import Link from 'next/link';
-
 import { Typography } from '@material-ui/core';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-// import MatchList from '../../containers/MatchListContainer';
 import {
   loadGroupAction,
   loadMatchesAction,
 } from '../../redux/entities/actions';
 import {
-  // groupPlayersSelector,
   groupSelector,
   matchesByGroupSelector,
 } from '../../redux/entities/selectors';
@@ -23,23 +15,19 @@ import { setStatusAction } from '../../redux/status/actions';
 
 import { Match /*, User, Group*/ } from '../../types';
 
-const styles = (theme: Theme) => createStyles({});
-
-interface IProps {
+interface Props {
   groupId: number;
-  // user: User;
   matches: Match[];
-  // group: Group;
+
   loadMatches: (groupId: number, after?: string) => Promise<{ empty: boolean }>;
-  classes: any;
 }
 
-interface IState {
+interface State {
   loading: boolean;
   hasMore: boolean;
 }
 
-class Index extends React.Component<IProps, IState> {
+class Index extends React.Component<Props, State> {
   static mapDispatchToProps = {
     loadMatches: loadMatchesAction,
     setStatus: setStatusAction,
@@ -73,48 +61,18 @@ class Index extends React.Component<IProps, IState> {
   };
 
   render() {
-    const { matches, user, group, classes } = this.props;
-    const { loading, hasMore } = this.state;
+    // const { group } = this.props;
 
     return (
       <Layout title={{ text: 'Matches', href: '' }}>
         <div>
-          <Typography>{group.name}</Typography>
+          {/* <Typography>{group.name}</Typography> */}
           <Typography>Last 5 Matches</Typography>
           <Typography>First 5 Players</Typography>
-          {/* <Toolbar>
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              onClick={this.onRefresh}
-            >
-              Refresh
-            </Button>
-          </Toolbar> */}
-
-          {/* <MatchList
-            highlightPlayerId={user.playerId}
-            matches={matches}
-            onLoadMore={this.onLoadMore}
-            loading={loading}
-            hasMore={hasMore}
-          /> */}
         </div>
-
-        {/* <Button
-          variant="fab"
-          color="primary"
-          aria-label="add"
-          className={classes.button}
-        >
-          <Link prefetch href="/createMatch">
-            <AddIcon />
-          </Link>
-        </Button> */}
       </Layout>
     );
   }
 }
 
-export default withAuth(withStyles(styles)(Index));
+export default withAuth(Index);

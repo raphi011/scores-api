@@ -1,7 +1,9 @@
-import Router from 'next/router';
 import React from 'react';
 
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import Router from 'next/router';
+
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
+
 import CenteredLoading from '../../components/CenteredLoading';
 import DayHeader from '../../components/DayHeader';
 import GroupedList from '../../components/GroupedList';
@@ -23,62 +25,21 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   tournaments: Tournament[];
+  leagues: string[];
+
   loadTournaments: (
     filters: { gender: string; league: string; season: string },
   ) => void;
-  leagues: string[];
-  classes: any;
 }
 
-const thisYear = new Date().getFullYear().toString();
-
-function sortDescending(a, b) {
-  return new Date(b.start).getTime() - new Date(a.start).getTime();
-}
-
-function sameDay(d1: Date, d2: Date): boolean {
-  return (
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDay() === d2.getDay()
-  );
-}
-
-function groupTournaments(tournaments: Tournament[]) {
-  const grouped = [];
-
-  let previous = null;
-
-  tournaments.forEach(t => {
-    if (!previous || !sameDay(new Date(previous.start), new Date(t.start))) {
-      grouped.push([t]);
-    } else {
-      grouped[grouped.length - 1].push(t);
-    }
-
-    previous = t;
-  });
-
-  return grouped;
-}
-
-function renderHeader(tournaments: Tournament[]) {
-  return (
-    <DayHeader
-      key={tournaments[0].start}
-      appendix={`(${tournaments.length})`}
-      date={new Date(tournaments[0].start)}
-    />
-  );
-}
-
-class Volleynet extends React.Component<IProps> {
+class Volleynet extends React.Component<Props> {
   static mapDispatchToProps = {
     loadTournaments: loadTournamentsAction,
   };
-  static buildActions({ leagues = [] }: IProps) {
+
+  static buildActions({ leagues = [] }: Props) {
     return leagues.map(league =>
       loadTournamentsAction({
         gender: 'M',
@@ -95,13 +56,12 @@ class Volleynet extends React.Component<IProps> {
       leagues = [leagues];
     }
 
-    // TODO: remove uniques
-    leagues = leagues.filter(l => defaultLeagues.includes(l));
+    leagues = leagues.filter((l: string) => defaultLeagues.includes(l));
 
     return { leagues };
   }
 
-  static mapStateToProps(state, { leagues }: IProps) {
+  static mapStateToProps(state, { leagues }: Props) {
     const tournaments = tournamentsByLeagueSelector(state, leagues);
 
     return { tournaments };
@@ -164,6 +124,48 @@ class Volleynet extends React.Component<IProps> {
       </Layout>
     );
   }
+}
+
+const thisYear = new Date().getFullYear().toString();
+
+function sortDescending(a: Tournament, b: Tournament) {
+  return new Date(b.start).getTime() - new Date(a.start).getTime();
+}
+
+function sameDay(d1: Date, d2: Date): boolean {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDay() === d2.getDay()
+  );
+}
+
+function groupTournaments(tournaments: Tournament[]) {
+  const grouped = [];
+
+  let previous = null;
+
+  tournaments.forEach(t => {
+    if (!previous || !sameDay(new Date(previous.start), new Date(t.start))) {
+      grouped.push([t]);
+    } else {
+      grouped[grouped.length - 1].push(t);
+    }
+
+    previous = t;
+  });
+
+  return grouped;
+}
+
+function renderHeader(tournaments: Tournament[]) {
+  return (
+    <DayHeader
+      key={tournaments[0].start}
+      appendix={`(${tournaments.length})`}
+      date={new Date(tournaments[0].start)}
+    />
+  );
 }
 
 export default withStyles(styles)(withAuth(Volleynet));

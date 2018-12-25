@@ -1,5 +1,4 @@
-import { createStyles, withStyles } from '@material-ui/core/styles';
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 
 import Avatar from '@material-ui/core/Avatar';
 import Dialog from '@material-ui/core/Dialog';
@@ -8,6 +7,7 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import Link from 'next/link';
@@ -20,16 +20,16 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   match: Match;
-  onDelete: (Match) => void;
-  onClose: (Event) => void;
-  onShowPlayer: (playerId: number) => void;
   open: boolean;
-  classes: any;
+
+  onClose: (event: SyntheticEvent<{}>) => void;
+  onDelete: (match: Match) => void;
+  onShowPlayer: (playerId: number) => void;
 }
 
-class MatchOptionsDialog extends React.Component<IProps> {
+class MatchOptionsDialog extends React.Component<Props> {
   shouldComponentUpdate(nextProps) {
     return this.props.open !== nextProps.open;
   }

@@ -2,7 +2,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -27,12 +27,11 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   onOpenMenu: () => void;
   title: { text: string; href: string };
   isLoggedIn: boolean;
   onLogout: () => Promise<void>;
-  classes: any;
 }
 
 function ButtonAppBar({
@@ -41,7 +40,7 @@ function ButtonAppBar({
   isLoggedIn,
   onLogout,
   classes,
-}: IProps) {
+}: Props) {
   const button = isLoggedIn ? (
     <Button color="inherit" onClick={onLogout}>
       Logout

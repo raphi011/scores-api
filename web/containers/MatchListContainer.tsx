@@ -7,11 +7,10 @@ import Waypoint from 'react-waypoint';
 
 import MatchList from '../components/MatchList';
 import MatchOptionsDialog from '../components/MatchOptionsDialog';
-// import { deleteMatchAction } from '../redux/entities/actions';
 
 import { Match } from '../types';
 
-interface IProps {
+interface Props {
   matches: Match[];
   deleteMatch: (Match) => void;
   onLoadMore: () => void;
@@ -25,7 +24,7 @@ interface IState {
   dialogOpen: boolean;
 }
 
-class MatchListContainer extends React.PureComponent<IProps, IState> {
+class MatchListContainer extends React.PureComponent<Props, IState> {
   state = {
     dialogOpen: false,
     selectedMatch: null,
@@ -91,9 +90,7 @@ class MatchListContainer extends React.PureComponent<IProps, IState> {
   }
 }
 
-const mapDispatchToProps = {
-  // deleteMatch: deleteMatchAction,
-};
+const mapDispatchToProps = {};
 
 export default connect(
   null,

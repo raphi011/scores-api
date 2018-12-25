@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 
 import { Button, Dialog, DialogTitle, TextField } from '@material-ui/core';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import { User } from '../../types';
 
@@ -13,22 +13,19 @@ const styles = createStyles({
   },
 });
 
-type Props = {
+interface Props extends WithStyles<typeof styles> {
   user?: User;
   open: boolean;
   isNew: boolean;
-  classes: any;
-
   email: string;
   password: string;
-
   canSubmit: boolean;
 
   onSubmit: () => void;
   onClose: () => void;
   onChangeEmail: (event: ChangeEvent<HTMLInputElement>) => void;
   onChangePassword: (event: ChangeEvent<HTMLInputElement>) => void;
-};
+}
 
 export default withStyles(styles)(
   ({

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import List from '@material-ui/core/List';
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import { User } from '../../types';
 import UserListItem from './UserListItem';
@@ -12,11 +12,11 @@ const styles = createStyles({
   },
 });
 
-type Props = {
+interface Props extends WithStyles<typeof styles> {
   users: User[];
-  classes: any;
+
   onClick: (user: User) => void;
-};
+}
 
 class UserList extends React.PureComponent<Props> {
   render() {

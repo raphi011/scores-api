@@ -1,11 +1,12 @@
-import List from '@material-ui/core/List';
-import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
+import List from '@material-ui/core/List';
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
+
+import DayHeader from './DayHeader';
 import MatchListItem from './MatchListItem';
 
 import { Match } from '../types';
-import DayHeader from './DayHeader';
 
 const styles = createStyles({
   root: {
@@ -13,22 +14,14 @@ const styles = createStyles({
   },
 });
 
-function isSameDay(date1: Date, date2: Date): boolean {
-  return (
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate()
-  );
-}
-
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   matches: Match[];
-  onMatchClick: (Match) => void;
   highlightPlayerId: number;
-  classes: any;
+
+  onMatchClick: (match: Match) => void;
 }
 
-class MatchList extends React.PureComponent<IProps> {
+class MatchList extends React.PureComponent<Props> {
   render() {
     const {
       matches = [],
@@ -60,6 +53,14 @@ class MatchList extends React.PureComponent<IProps> {
       </List>
     );
   }
+}
+
+function isSameDay(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
 }
 
 export default withStyles(styles)(MatchList);

@@ -1,3 +1,5 @@
+import React, { SyntheticEvent } from 'react';
+
 import Avatar from '@material-ui/core/Avatar';
 import MDrawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -6,14 +8,17 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
-// import GroupIcon from '@material-ui/icons/Group';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import HomeIcon from '@material-ui/icons/Home';
 import LadderIcon from '@material-ui/icons/LooksOne';
 import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import TournamentIcon from '@material-ui/icons/Star';
 import Link from 'next/link';
-import React from 'react';
 import AdminOnly from '../containers/AdminOnly';
 
 import { Typography } from '@material-ui/core';
@@ -49,39 +54,17 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   open: boolean;
-  onOpen: (Event) => void;
-  onClose: (Event) => void;
+  onOpen: (event: SyntheticEvent<{}>) => void;
+  onClose: (event: SyntheticEvent<{}>) => void;
   userPlayer: Player;
-  classes: any;
 }
 
-function Drawer({ open, userPlayer, onClose, classes }: IProps) {
-  // const { groups = [] } = userPlayer;
-
-  // const groupList = groups.map(g => (
-  //   <Link
-  //     prefetch
-  //     key={g.id}
-  //     href={{ pathname: '/group', query: { groupId: g.id } }}
-  //   >
-  //     <ListItem button>
-  //       <ListItemIcon>
-  //         <GroupIcon />
-  //       </ListItemIcon>
-  //       <ListItemText primary={g.name} />
-  //     </ListItem>
-  //   </Link>
-  // ));
-
+function Drawer({ open, userPlayer, onClose, classes }: Props) {
   const sideList = (
     <div className={classes.list}>
       <List>
-        {/* <Link
-          prefetch
-          href={{ pathname: '/player', query: { id: userPlayer.id } }}
-        > */}
         <ListItem button>
           <Avatar src={userPlayer.profileImageUrl} />
           <ListItemText inset primary={userPlayer.name} />
@@ -123,12 +106,6 @@ function Drawer({ open, userPlayer, onClose, classes }: IProps) {
             <ListItemText inset primary="Rankings" />
           </ListItem>
         </Link>
-        {/* <ListSubheader className={classes.header}>My groups</ListSubheader>
-        {groupList}
-        <ListSubheader className={classes.header}>Other groups</ListSubheader>
-        <ListItem button>
-          <ListItemText primary="-" />
-        </ListItem> */}
       </List>
     </div>
   );

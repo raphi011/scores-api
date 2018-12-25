@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Card from '@material-ui/core/Card';
+
 import Ladder from '../../components/volleynet/Ladder';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
@@ -9,20 +10,21 @@ import { ladderVolleynetplayerSelector } from '../../redux/entities/selectors';
 
 import { VolleynetPlayer } from '../../types';
 
-interface IProps {
+interface Props {
   gender: 'M' | 'W';
   ladder: VolleynetPlayer[];
+
   loadLadder: (gender: string) => void;
-  classes: any;
 }
 
 const genderList = ['M', 'W'];
 
-class Ranking extends React.Component<IProps> {
+class Ranking extends React.Component<Props> {
   static mapDispatchToProps = {
     loadLadder: loadLadderAction,
   };
-  static buildActions({ gender }: IProps) {
+
+  static buildActions({ gender }: Props) {
     return [loadLadderAction(gender)];
   }
 
@@ -36,7 +38,7 @@ class Ranking extends React.Component<IProps> {
     return { gender };
   }
 
-  static mapStateToProps(state, { gender }: IProps) {
+  static mapStateToProps(state, { gender }: Props) {
     const ladder = ladderVolleynetplayerSelector(state, gender);
 
     return { ladder };

@@ -1,7 +1,8 @@
-import { createStyles, withStyles } from '@material-ui/core/styles';
+import React from 'react';
+
+import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
-import React from 'react';
 import { connect } from 'react-redux';
 
 import { searchVolleynetPlayersAction } from '../../redux/entities/actions';
@@ -17,24 +18,24 @@ const styles = createStyles({
   },
 });
 
-interface IProps {
+interface Props extends WithStyles<typeof styles> {
   gender: Gender;
-  onSelectPlayer: (VolleynetSearchPlayer) => void;
+  foundPlayers: VolleynetSearchPlayer[];
+
+  onSelectPlayer: (player: VolleynetSearchPlayer) => void;
   searchVolleynetPlayers: (
     params: { fname: string; lname: string; bday: string },
   ) => void;
-  foundPlayers: VolleynetSearchPlayer[];
-  classes: any;
 }
 
-interface IState {
+interface State {
   firstName: string;
   lastName: string;
   birthday: string;
   searching: boolean;
 }
 
-class SearchPlayer extends React.Component<IProps, IState> {
+class SearchPlayer extends React.Component<Props, State> {
   state = {
     birthday: '',
     firstName: '',
