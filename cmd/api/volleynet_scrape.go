@@ -7,13 +7,14 @@ import (
 	"github.com/raphi011/scores/volleynet/sync"
 )
 
+// JobReport contains information about a running job
 type JobReport struct {
 	State        job.State     `json:"state"`
 	RunningSince time.Duration `json:"runningSince"`
 }
 
 type ladderJob struct {
-	syncService *sync.SyncService
+	syncService *sync.Service
 	genders     []string
 }
 
@@ -33,7 +34,7 @@ var leagues = []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"}
 var genders = []string{"M", "W"}
 
 type tournamentsJob struct {
-	syncService *sync.SyncService
+	syncService *sync.Service
 	leagues     []string
 	genders     []string
 }

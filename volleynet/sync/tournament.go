@@ -8,6 +8,8 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// TournamentChanges lists the tournaments that are `New`, `Delete`'d and `Update`'d
+// during a sync job
 type TournamentChanges struct {
 	New    []volleynet.FullTournament
 	Delete []volleynet.FullTournament
@@ -31,7 +33,7 @@ const (
 	SyncTournamentNew                = "SyncTournamentNew"
 )
 
-func (s *SyncService) syncTournaments(changes *Changes, oldTournaments, newTournaments []volleynet.FullTournament) {
+func (s *Service) syncTournaments(changes *Changes, oldTournaments, newTournaments []volleynet.FullTournament) {
 	oldTournamentMap := createTournamentMap(oldTournaments)
 	newTournamentMap := createTournamentMap(newTournaments)
 
@@ -95,7 +97,8 @@ func hasTournamentChanged(old, new volleynet.FullTournament) bool {
 	return !cmp.Equal(new, old)
 }
 
-func SyncTournaments(persisted *volleynet.FullTournament, current *volleynet.Tournament) TournamentSyncInformation {
+// Tournaments figures out if and how a tournament needs to be synchronized
+func Tournaments(persisted *volleynet.FullTournament, current *volleynet.Tournament) TournamentSyncInformation {
 	syncType := tournamentSyncType(persisted, current)
 
 	return TournamentSyncInformation{
@@ -106,7 +109,7 @@ func SyncTournaments(persisted *volleynet.FullTournament, current *volleynet.Tou
 	}
 }
 
-func (s *SyncService) persistTournaments(changes *TournamentChanges) error {
+func (s *Service) persistTournaments(changes *TournamentChanges) error {
 	for _, new := range changes.New {
 		err := s.VolleynetRepository.NewTournament(&new)
 

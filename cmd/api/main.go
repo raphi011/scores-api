@@ -170,8 +170,8 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		Repository: repos.Volleynet,
 	}
 
-	scrapeService := &sync.SyncService{
-		Client: client.Default(),
+	scrapeService := &sync.Service{
+		Client: client.DefaultClient(),
 		VolleynetRepository: repos.Volleynet,
 	}
 

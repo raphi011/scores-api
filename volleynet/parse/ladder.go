@@ -6,6 +6,7 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// Ladder parses players from the ladder page
 func Ladder(html io.Reader) ([]volleynet.Player, error) {
 	doc, err := parseHTML(html)
 

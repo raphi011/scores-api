@@ -19,9 +19,13 @@ const (
 	insertVersion1SQL = "INSERT INTO dbVersion VALUES (1)"
 )
 
+// Migration is a list of migration sql commands
 type Migration []string
+
+// TableNames is a list of table names
 type TableNames []string
 
+// Reset deletes all rows from the passed tables
 func Reset(db *sql.DB, resets []TableNames) error {
 	dbVersion, err := GetDBVersion(db)
 
@@ -44,6 +48,7 @@ func Reset(db *sql.DB, resets []TableNames) error {
 	return nil
 }
 
+// Migrate runs the passed `migrations` on the db connection
 func Migrate(db *sql.DB, migrations []Migration) error {
 	dbVersion, err := GetDBVersion(db)
 
@@ -64,6 +69,7 @@ func Migrate(db *sql.DB, migrations []Migration) error {
 	return err
 }
 
+// GetDBVersion returns the version of the passed db
 func GetDBVersion(db *sql.DB) (uint16, error) {
 	var dbVersion uint16
 

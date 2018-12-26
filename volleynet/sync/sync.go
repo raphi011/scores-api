@@ -8,8 +8,8 @@ import (
 	"github.com/raphi011/scores/volleynet/client"
 )
 
-// PersistanceRepository persists and retrieve tournaments
-type PersistanceRepository interface {
+// Repository persists and retrieve tournaments
+type Repository interface {
 	Tournament(tournamentID int) (*volleynet.FullTournament, error)
 	UpdateTournament(t *volleynet.FullTournament) error
 	NewTournament(t *volleynet.FullTournament) error
@@ -26,6 +26,7 @@ type PersistanceRepository interface {
 	UpdateTournamentTeam(t *volleynet.TournamentTeam) error
 }
 
+// Changes contains metrics of a scrape job
 type Changes struct {
 	Tournament     *TournamentChanges
 	Team           *TeamChanges
@@ -33,12 +34,15 @@ type Changes struct {
 	Success        bool
 }
 
-type SyncService struct {
-	VolleynetRepository PersistanceRepository
+// Service allows loading and synchronizing of the volleynetpage.
+type Service struct {
+	VolleynetRepository Repository
 	Client              client.Client
 }
 
-func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, error) {
+// Tournaments loads tournaments of a certain `gender`, `league` and `season` and
+// synchronizes + updates them (if necessary) in the repository.
+func (s *Service) Tournaments(gender, league string, season int) (*Changes, error) {
 	report := &Changes{Tournament: &TournamentChanges{}, Team: &TeamChanges{}}
 
 	start := time.Now()
@@ -58,7 +62,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 			return report, errors.Wrap(err, "loading the persisted tournament failed")
 		}
 
-		syncInfo := SyncTournaments(persisted, &t)
+		syncInfo := Tournaments(persisted, &t)
 
 		if syncInfo.Type == SyncTournamentNoUpdate {
 			continue
@@ -90,7 +94,7 @@ func (s *SyncService) Tournaments(gender, league string, season int) (*Changes, 
 	return report, errors.Wrap(err, "sync failed")
 }
 
-func (s *SyncService) persistChanges(report *Changes) error {
+func (s *Service) persistChanges(report *Changes) error {
 	err := s.addMissingPlayers(report.Team.New)
 
 	if err != nil {

@@ -7,6 +7,8 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// TeamChanges lists the teams that are `New`, `Delete`'d and `Update`'d
+// during a sync job.
 type TeamChanges struct {
 	New    []volleynet.TournamentTeam
 	Delete []volleynet.TournamentTeam
@@ -28,7 +30,7 @@ func createTeamMap(teams []volleynet.TournamentTeam) map[string]volleynet.Tourna
 	return teamMap
 }
 
-func (s *SyncService) syncTournamentTeams(changes *TeamChanges, oldTeams, newTeams []volleynet.TournamentTeam) {
+func (s *Service) syncTournamentTeams(changes *TeamChanges, oldTeams, newTeams []volleynet.TournamentTeam) {
 	oldTeamMap := createTeamMap(oldTeams)
 	newTeamMap := createTeamMap(newTeams)
 
@@ -55,7 +57,7 @@ func hasTeamChanged(old, new volleynet.TournamentTeam) bool {
 	return new != old
 }
 
-func (s *SyncService) persistTeams(changes *TeamChanges) error {
+func (s *Service) persistTeams(changes *TeamChanges) error {
 	for _, new := range changes.New {
 		err := s.VolleynetRepository.NewTeam(&new)
 
@@ -83,7 +85,7 @@ func (s *SyncService) persistTeams(changes *TeamChanges) error {
 	return nil
 }
 
-func (s *SyncService) addMissingPlayers(teams []volleynet.TournamentTeam) error {
+func (s *Service) addMissingPlayers(teams []volleynet.TournamentTeam) error {
 	players := distinctPlayers(teams)
 
 	for _, p := range players {
@@ -117,7 +119,7 @@ func distinctPlayers(teams []volleynet.TournamentTeam) []*volleynet.Player {
 	return distinct
 }
 
-func (s *SyncService) addPlayerIfNeeded(player *volleynet.Player) error {
+func (s *Service) addPlayerIfNeeded(player *volleynet.Player) error {
 	if p, _ := s.VolleynetRepository.Player(player.ID); p == nil {
 		err := s.VolleynetRepository.NewPlayer(player)
 

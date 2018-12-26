@@ -29,26 +29,26 @@ type Client interface {
 	SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error)
 }
 
-// ClientImpl implements the Client interface
-type ClientImpl struct {
+// Default implements the Client interface
+type Default struct {
 	PostURL string
 	GetURL  string
 	Cookie  string
 }
 
-// Default returns a Client with the correct PostURL and GetURL fields set.
-func Default() Client {
-	return &ClientImpl{
+// DefaultClient returns a Client with the correct PostURL and GetURL fields set.
+func DefaultClient() Client {
+	return &Default{
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",
 	}
 }
 
-func (c *ClientImpl) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *Default) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	return buildGetAPIURL(c.GetURL, "/api", relativePath, routeArgs...)
 }
 
-func (c *ClientImpl) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *Default) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	return buildGetAPIURL(c.GetURL, "", relativePath, routeArgs...)
 }
 
@@ -82,7 +82,7 @@ func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interf
 	return link
 }
 
-func (c *ClientImpl) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	path := escapeArgs(relativePath, routeArgs...)
 
 	link, err := url.Parse(c.PostURL + path)
@@ -95,7 +95,7 @@ func (c *ClientImpl) buildPostURL(relativePath string, routeArgs ...interface{})
 }
 
 // GetTournamentLink returns the link for a tournament.
-func (c *ClientImpl) GetTournamentLink(t *volleynet.Tournament) string {
+func (c *Default) GetTournamentLink(t *volleynet.Tournament) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -108,7 +108,7 @@ func (c *ClientImpl) GetTournamentLink(t *volleynet.Tournament) string {
 }
 
 // GetAPITournamentLink returns the API link for a tournament.
-func (c *ClientImpl) GetAPITournamentLink(t *volleynet.Tournament) string {
+func (c *Default) GetAPITournamentLink(t *volleynet.Tournament) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -122,7 +122,7 @@ func (c *ClientImpl) GetAPITournamentLink(t *volleynet.Tournament) string {
 
 // Login authenticates the user against the volleynet page, if
 // successfull the Client cookie is set, else an error is returned.
-func (c *ClientImpl) Login(username, password string) (*volleynet.LoginData, error) {
+func (c *Default) Login(username, password string) (*volleynet.LoginData, error) {
 	form := url.Values{}
 	form.Add("login_name", username)
 	form.Add("login_pass", password)
@@ -156,7 +156,7 @@ func (c *ClientImpl) Login(username, password string) (*volleynet.LoginData, err
 
 // AllTournaments reads all tournaments of a certain gender, league and year.
 // To get more detailed tournamnent information call `ComplementTournament`.
-func (c *ClientImpl) AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error) {
+func (c *Default) AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/information/all",
 		league,
@@ -177,7 +177,7 @@ func (c *ClientImpl) AllTournaments(gender, league string, year int) ([]volleyne
 }
 
 // Ladder reads all players of a certain gender.
-func (c *ClientImpl) Ladder(gender string) ([]volleynet.Player, error) {
+func (c *Default) Ladder(gender string) ([]volleynet.Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
 		genderLong(gender),
@@ -205,7 +205,7 @@ func genderLong(gender string) string {
 }
 
 // ComplementTournament adds the missing information from `AllTournaments`.
-func (c *ClientImpl) ComplementTournament(tournament volleynet.Tournament) (
+func (c *Default) ComplementTournament(tournament volleynet.Tournament) (
 	*volleynet.FullTournament, error) {
 	url := c.GetAPITournamentLink(&tournament)
 
@@ -227,7 +227,8 @@ func (c *ClientImpl) ComplementTournament(tournament volleynet.Tournament) (
 	return t, nil
 }
 
-func (c *ClientImpl) ComplementMultipleTournaments(tournaments []volleynet.Tournament) (
+// ComplementMultipleTournaments adds the missing information from `AllTournaments`
+func (c *Default) ComplementMultipleTournaments(tournaments []volleynet.Tournament) (
 	[]volleynet.FullTournament, error) {
 	// maybe donwload tournaments in parallel in the future?
 	fullTournaments := []volleynet.FullTournament{}
@@ -244,7 +245,7 @@ func (c *ClientImpl) ComplementMultipleTournaments(tournaments []volleynet.Tourn
 	return fullTournaments, nil
 }
 
-func (c *ClientImpl) loadUniqueWriteCode(tournamentID int) (string, error) {
+func (c *Default) loadUniqueWriteCode(tournamentID int) (string, error) {
 	url := c.buildPostURL(
 		"/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&parent=0&prev=0&next=0&cur=%d",
 		tournamentID,
@@ -274,7 +275,7 @@ func (c *ClientImpl) loadUniqueWriteCode(tournamentID int) (string, error) {
 }
 
 // TournamentWithdrawal signs a player out of a tournament. A valid session Cookie must be set.
-func (c *ClientImpl) TournamentWithdrawal(tournamentID int) error {
+func (c *Default) TournamentWithdrawal(tournamentID int) error {
 	url := c.buildPostURL("/Abmelden/0-%d-00-0", tournamentID).String()
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -282,11 +283,14 @@ func (c *ClientImpl) TournamentWithdrawal(tournamentID int) error {
 
 	httpClient := &http.Client{}
 	resp, err := httpClient.Do(req)
-	defer resp.Body.Close()
 
 	if err != nil {
 		return errors.Wrapf(err, "tournamentwithdrawal request for tournamentID: %d failed", tournamentID)
-	} else if resp.StatusCode != http.StatusOK {
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("tournamentwithdrawal request for tournamentID: %d failed with code %d",
 			tournamentID,
 			resp.StatusCode)
@@ -296,7 +300,7 @@ func (c *ClientImpl) TournamentWithdrawal(tournamentID int) error {
 }
 
 // TournamentEntry signs a player up for a tournament. A valid session Cookie must be set.
-func (c *ClientImpl) TournamentEntry(playerName string, playerID, tournamentID int) error {
+func (c *Default) TournamentEntry(playerName string, playerID, tournamentID int) error {
 	if c.Cookie == "" {
 		return errors.New("cookie must be set")
 	}
@@ -350,7 +354,7 @@ func (c *ClientImpl) TournamentEntry(playerName string, playerID, tournamentID i
 }
 
 // SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
-func (c *ClientImpl) SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error) {
+func (c *Default) SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")

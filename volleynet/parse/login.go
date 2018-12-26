@@ -29,6 +29,7 @@ var parseLoginDataMap = map[string]loginDataParser{
 	},
 }
 
+// Login parses data from the successfull login page
 func Login(html io.Reader) (*volleynet.LoginData, error) {
 	doc, err := parseHTML(html)
 

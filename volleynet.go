@@ -6,6 +6,7 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// VolleynetRepository stores volleynet data
 type VolleynetRepository interface {
 	Tournament(tournamentID int) (*volleynet.FullTournament, error)
 

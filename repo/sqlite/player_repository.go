@@ -10,6 +10,7 @@ import (
 
 var _ scores.PlayerRepository = &PlayerRepository{}
 
+// PlayerRepository stores players
 type PlayerRepository struct {
 	DB *sql.DB
 }
@@ -35,10 +36,13 @@ const (
 	playerSelectSQL = playersBaseSelectSQL + playersWhereSQL + " and p.id = ?"
 )
 
+// ByGroup returns all players of a group
 func (s *PlayerRepository) ByGroup(groupID uint) ([]scores.Player, error) {
 	return scanPlayers(s.DB, query("player/select-by-group"), groupID)
 }
 
+// All returns all players
+// Note: this should only be used for debugging
 func (s *PlayerRepository) All() ([]scores.Player, error) {
 	return scanPlayers(s.DB, query("player/select-all"))
 }
@@ -68,6 +72,7 @@ func (s *PlayerRepository) Get(ID uint) (*scores.Player, error) {
 	return p, nil
 }
 
+// Create creates a player and assigns a new ID
 func (s *PlayerRepository) Create(player *scores.Player) (*scores.Player, error) {
 	var userID sql.NullInt64
 
@@ -88,6 +93,7 @@ func (s *PlayerRepository) Create(player *scores.Player) (*scores.Player, error)
 	return player, nil
 }
 
+// Delete deletes a player
 func (s *PlayerRepository) Delete(ID uint) error {
 	result, err := s.DB.Exec(query("player/update-delete"), ID)
 

@@ -11,18 +11,21 @@ import (
 
 var _ Password = &PBKDF2Password{}
 
-// PasswordInfo
+// PasswordInfo contains the passwords hash, it's corresponding salt
+// and the amount of PBKDF2 iterations it was hashed with.
 type PasswordInfo struct {
 	Salt       []byte
 	Hash       []byte
 	Iterations int
 }
 
+// Password allows comparing hashed passwords and creating new ones
 type Password interface {
 	Compare([]byte, *PasswordInfo) bool
 	Hash(password []byte) (*PasswordInfo, error)
 }
 
+// PBKDF2Password contains parameters for the PBKDF2 algorithm
 type PBKDF2Password struct {
 	SaltBytes  int
 	Iterations int

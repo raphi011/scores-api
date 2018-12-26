@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// UserService allows loading / mutation of user data
 type UserService struct {
 	Repository       UserRepository
 	PlayerRepository PlayerRepository
@@ -109,6 +110,7 @@ func (s *UserService) complementUser(user *User) (*User, error) {
 	return user, errors.Wrapf(err, "could not load user player %d", user.PlayerID)
 }
 
+// All returns all users
 func (s *UserService) All() ([]User, error) {
 	return s.Repository.All()
 }

@@ -1,5 +1,6 @@
 package scores
 
+// User represents a user in the repository
 type User struct {
 	Model
 	Email           string       `json:"email"`
@@ -12,8 +13,10 @@ type User struct {
 	PasswordInfo    PasswordInfo `json:"-"`
 }
 
+// Users is a slice of multiple users
 type Users []User
 
+// UserRepository stores users
 type UserRepository interface {
 	New(*User) (*User, error)
 	ByID(userID uint) (*User, error)

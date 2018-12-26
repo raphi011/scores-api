@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Job is the definition of a job which is run the Manager in defined intervals.
 type Job struct {
 	MaxRuns     uint          `json:"maxRuns"`     // limit the # of runs, no limit if 0
 	Name        string        `json:"name"`        // name of the job, useful in logs
@@ -19,6 +20,7 @@ type Job struct {
 	Do func() error `json:"-"` // when started the job calls the do function
 }
 
+// Manager runs jobs in defined intervals
 type Manager struct {
 	waitGroup sync.WaitGroup
 	running   bool
@@ -71,6 +73,7 @@ func (s *Manager) schedule(exec *Execution) {
 	s.executed <- exec
 }
 
+// Run attempts to run a job referenced by its name (job.Name)
 func (s *Manager) Run(jobName string) error {
 	exec, ok := s.runningJobs[jobName]
 
@@ -81,6 +84,7 @@ func (s *Manager) Run(jobName string) error {
 	return s.RunJob(exec.Job)
 }
 
+// Executions returns all running jobs
 func (s *Manager) Executions() []Execution {
 	executions := []Execution{}
 
@@ -91,6 +95,7 @@ func (s *Manager) Executions() []Execution {
 	return executions
 }
 
+// RunJob runs a job
 func (s *Manager) RunJob(job Job) error {
 	if !s.running {
 		return errors.New("Manager must be running before starting a job")
@@ -128,12 +133,14 @@ func (s *Manager) RunJob(job Job) error {
 	return nil
 }
 
+// HasJob returns true if a job with the name `jobName` exists.
 func (s *Manager) HasJob(jobName string) bool {
 	_, ok := s.runningJobs[jobName]
 
 	return ok
 }
 
+// StopJob stops a job.
 func (s *Manager) StopJob(jobName string) error {
 	exec, ok := s.runningJobs[jobName]
 
@@ -146,6 +153,7 @@ func (s *Manager) StopJob(jobName string) error {
 	return nil
 }
 
+// Start runs the Manager and queues the `jobs`
 func (s *Manager) Start(jobs ...Job) (err error) {
 	if s.running || len(jobs) == 0 {
 		return
@@ -170,12 +178,14 @@ func (s *Manager) Start(jobs ...Job) (err error) {
 	return err
 }
 
+// StopJobs stops all jobs
 func (s *Manager) StopJobs() {
 	for _, exec := range s.runningJobs {
 		exec.stop()
 	}
 }
 
+// Stop stops the manager and all its jobs
 func (s *Manager) Stop() {
 	if !s.running {
 		return

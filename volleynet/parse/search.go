@@ -7,6 +7,7 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// Players parses the list of players found in the search query.
 func Players(html io.Reader) ([]volleynet.PlayerInfo, error) {
 	players := []volleynet.PlayerInfo{}
 	doc, err := parseHTML(html)

@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// UniqueWriteCode extracts the XSRF token from the tournament login page
 func UniqueWriteCode(html io.Reader) (string, error) {
 	doc, err := parseHTML(html)
 
@@ -18,7 +19,7 @@ func UniqueWriteCode(html io.Reader) (string, error) {
 	val, exists := input.Attr("value")
 
 	if !exists {
-		return "", errors.New("UniqueWriteCode failed, code not found")
+		return "", errors.New("UniqueWriteCode code not found")
 	}
 
 	return val, nil

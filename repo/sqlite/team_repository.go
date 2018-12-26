@@ -8,10 +8,13 @@ import (
 
 var _ scores.TeamRepository = &TeamRepository{}
 
+// TeamRepository stores teams
 type TeamRepository struct {
 	DB *sql.DB
 }
 
+// TeamPlayerOrder returns the playerIDs in the order the repository expects
+// (lower ID then the other)
 func TeamPlayerOrder(player1ID, player2ID uint) (uint, uint) {
 	if player1ID > player2ID {
 		return player2ID, player1ID
@@ -20,12 +23,14 @@ func TeamPlayerOrder(player1ID, player2ID uint) (uint, uint) {
 	return player1ID, player2ID
 }
 
+// Create creates a new team
 func (s *TeamRepository) Create(team *scores.Team) (*scores.Team, error) {
 	_, err := s.DB.Exec(query("team/insert"), team.Name, team.Player1ID, team.Player2ID)
 
 	return team, err
 }
 
+// ByPlayers returns a team
 func (s *TeamRepository) ByPlayers(player1ID, player2ID uint) (*scores.Team, error) {
 	team := &scores.Team{}
 
@@ -37,6 +42,7 @@ func (s *TeamRepository) ByPlayers(player1ID, player2ID uint) (*scores.Team, err
 	return team, err
 }
 
+// GetOrCreate loads a team or creates one if it doesn't exist yet
 func (s *TeamRepository) GetOrCreate(player1ID, player2ID uint) (*scores.Team, error) {
 	player1ID, player2ID = TeamPlayerOrder(player1ID, player2ID)
 

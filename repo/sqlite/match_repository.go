@@ -54,14 +54,17 @@ func (s *MatchRepository) Get(ID uint) (*scores.Match, error) {
 	return scanMatch(row)
 }
 
+// After loads at most `count` matches after a certain time
 func (s *MatchRepository) After(after time.Time, count uint) ([]scores.Match, error) {
 	return scanMatches(s.DB, query("match/select-after"), after, count)
 }
 
+// ByGroup loads at most `count` group matches after a certain time
 func (s *MatchRepository) ByGroup(groupID uint, after time.Time, count uint) ([]scores.Match, error) {
 	return scanMatches(s.DB, query("match/select-group-matches"), groupID, after, count)
 }
 
+// ByPlayer loads at most `count` matches of a player after a certain time
 func (s *MatchRepository) ByPlayer(playerID uint, after time.Time, count uint) ([]scores.Match, error) {
 	return scanMatches(s.DB, query("match/select-player-matches"), playerID, after, count)
 }

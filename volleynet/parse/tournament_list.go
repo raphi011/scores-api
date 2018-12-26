@@ -10,6 +10,7 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// TournamentList parses the list of tournaments
 func TournamentList(html io.Reader, host string) ([]volleynet.Tournament, error) {
 	doc, err := parseHTML(html)
 

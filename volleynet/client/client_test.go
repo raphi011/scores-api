@@ -9,7 +9,7 @@ import (
 func Test_upcoming_games(t *testing.T) {
 	t.Skip()
 
-	c := Default()
+	c := DefaultClient()
 	tournaments, err := c.AllTournaments("M", "AMATEUR TOUR", 2018)
 
 	if err != nil {
@@ -20,7 +20,7 @@ func Test_upcoming_games(t *testing.T) {
 }
 
 func Test_searchPlayers(t *testing.T) {
-	c := Default()
+	c := DefaultClient()
 	players, err := c.SearchPlayers("Lukas", "Wimmer", "")
 
 	if err != nil {
@@ -35,7 +35,7 @@ func Test_searchPlayers(t *testing.T) {
 func Test_login(t *testing.T) {
 	t.Skip() // Add Testing credentials to env
 
-	c := Default()
+	c := DefaultClient()
 	_, err := c.Login("", "")
 
 	if err != nil {

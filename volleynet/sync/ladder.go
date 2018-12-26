@@ -7,12 +7,14 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// LadderSyncReport contains metrics of a Ladder sync job
 type LadderSyncReport struct {
 	NewPlayers     int
 	UpdatedPlayers int
 }
 
-func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
+// Ladder synchronizes player and rank data of all players of a certain `gender`
+func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 	ranks, err := s.Client.Ladder(gender)
 	report := &LadderSyncReport{}
 
@@ -26,7 +28,7 @@ func (s *SyncService) Ladder(gender string) (*LadderSyncReport, error) {
 		return nil, errors.Wrap(err, "loading persisted players failed")
 	}
 
-	syncInfos := SyncPlayers(persisted, ranks...)
+	syncInfos := Players(persisted, ranks...)
 
 	for _, info := range syncInfos {
 		if info.IsNew {
@@ -66,9 +68,9 @@ type PlayerSyncInformation struct {
 	NewPlayer *volleynet.Player
 }
 
-// SyncPlayers takes a slice of current and old `Player`s and finds out which
+// Players takes a slice of current and old `Player`s and finds out which
 // one is new and which needs to get updated
-func SyncPlayers(persisted []volleynet.Player, current ...volleynet.Player) []PlayerSyncInformation {
+func Players(persisted []volleynet.Player, current ...volleynet.Player) []PlayerSyncInformation {
 	ps := []PlayerSyncInformation{}
 	for i := range current {
 		newPlayer := &current[i]

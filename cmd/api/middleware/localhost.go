@@ -8,6 +8,7 @@ import (
 	"github.com/raphi011/scores/cmd/api/logger"
 )
 
+// LocalhostOnly middleware restricts routes to requests coming from private ip ranges
 func LocalhostOnly() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		host, _, err := net.SplitHostPort(c.Request.RemoteAddr)

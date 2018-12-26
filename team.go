@@ -2,6 +2,7 @@ package scores
 
 import "time"
 
+// Team represents a user in the repository
 type Team struct {
 	CreatedAt time.Time `json:"createdAt"`
 	Name      string    `json:"name"`
@@ -11,8 +12,10 @@ type Team struct {
 	Player2ID uint      `json:"player2Id"`
 }
 
+// Teams is a slice of teams
 type Teams []Team
 
+// TeamRepository stores teams
 type TeamRepository interface {
 	ByPlayers(player1ID, player2ID uint) (*Team, error)
 	GetOrCreate(player1ID, player2ID uint) (*Team, error)
