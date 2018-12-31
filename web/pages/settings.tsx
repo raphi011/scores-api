@@ -113,7 +113,6 @@ class Home extends React.Component<Props, State> {
 
   onCloseEditUser = () => {
     this.setState({
-      editUser: null,
       isEditUserOpen: false,
     });
   };

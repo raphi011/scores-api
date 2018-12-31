@@ -33,13 +33,12 @@ class EditUserDialogContainer extends React.Component<Props, State> {
       return;
     }
 
-    const newState = { email: '', password: '' };
-
     if (user) {
-      newState.email = user.email;
+      this.setState({ 
+        email: user.email,
+        password: "",
+      });
     }
-
-    this.setState(newState);
   }
 
   onChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
