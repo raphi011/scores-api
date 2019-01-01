@@ -13,6 +13,7 @@ import (
 	"github.com/cenkalti/backoff"
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/repo/sqlite"
 	"github.com/raphi011/scores/job"
 	"github.com/raphi011/scores/volleynet/sync"
@@ -109,6 +110,22 @@ func setupLogger(logstashURL string) logrus.FieldLogger {
 	return log
 }
 
+func newBroker() *events.Broker {
+	broker := &events.Broker{}
+
+	// we never unsubcribe
+	events, _ := broker.Subscribe(sync.ScrapeEventsType)
+
+	go func() {
+		for event := range events {
+			// TODO log the changes properly
+			fmt.Printf("scrape event: %v", event)
+		}
+	}()
+
+	return broker
+}
+
 func createServices(provider string, connectionString string) (*scores.Services, func(), error) {
 	var repos *repo.Repositories
 	var services *scores.Services
@@ -170,9 +187,12 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		Repository: repos.Volleynet,
 	}
 
+	broker := newBroker()
+
 	scrapeService := &sync.Service{
 		Client: client.DefaultClient(),
 		VolleynetRepository: repos.Volleynet,
+		Subscriptions: broker,
 	}
 
 	manager := &job.Manager{}

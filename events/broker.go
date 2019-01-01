@@ -6,10 +6,12 @@ import (
 	"sync"
 )
 
+// Broker handles subscribing and publishing of events
 type Broker struct {
 	subscribers sync.Map
 }
 
+// Publish publishes an event to all subscribers that are listening to an event
 func (b *Broker) Publish(event Event) {
 	if event.Name == "" {
 		return
@@ -27,11 +29,14 @@ func (b *Broker) Publish(event Event) {
 		subscriptions, ok := s.(*subscriptions)
 
 		if !ok {
-			panic(fmt.Sprintf("incompatible eventhandler for event %s", event.Name))
+			panic(fmt.Sprintf("incompatible subscription for event %s", event.Name))
 		}
 
-		for _, subscriber := range subscriptions.handlers {
-			subscriber(event)
+		subscriptions.mutex.Lock()
+		defer subscriptions.mutex.Unlock()
+
+		for _, listener := range subscriptions.listeners {
+			listener <- event
 		}
 	}
 }
@@ -66,8 +71,13 @@ func expandPossibleHandlers(eventName string) []string {
 	return handlers
 }
 
-func (b *Broker) Subscribe(eventName string, handler EventHandler) {
+// Subscribe subscribes to an event in the form of "some/interesting/event" or
+// (with wildcards) "some/interesting/*". Wildcards are only valid after directly
+// preceding slashes.
+func (b *Broker) Subscribe(eventName string) (<-chan Event, Unsubscribe) {
 	var subs *subscriptions
+
+	messageChan := make(chan Event)
 
 	if s, found := b.subscribers.Load(eventName); found {
 		subs = s.(*subscriptions)
@@ -76,5 +86,10 @@ func (b *Broker) Subscribe(eventName string, handler EventHandler) {
 		b.subscribers.Store(eventName, subs)
 	}
 
-	subs.Add(handler)
+	subs.Add(messageChan)
+
+	return messageChan, func() {
+		subs.Remove(messageChan)
+		close(messageChan)
+	}
 }

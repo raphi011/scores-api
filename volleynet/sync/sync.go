@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/client"
 )
@@ -38,18 +39,19 @@ type Changes struct {
 type Service struct {
 	VolleynetRepository Repository
 	Client              client.Client
+	Subscriptions       events.Publisher
 }
 
 // Tournaments loads tournaments of a certain `gender`, `league` and `season` and
 // synchronizes + updates them (if necessary) in the repository.
-func (s *Service) Tournaments(gender, league string, season int) (*Changes, error) {
+func (s *Service) Tournaments(gender, league string, season int) error {
 	report := &Changes{Tournament: &TournamentChanges{}, Team: &TeamChanges{}}
+	s.publishStartScrapeEvent("tournaments", time.Now())
 
-	start := time.Now()
 	current, err := s.Client.AllTournaments(gender, league, season)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "loading the client tournament list failed")
+		return errors.Wrap(err, "loading the client tournament list failed")
 	}
 
 	persistedTournaments := []volleynet.FullTournament{}
@@ -59,7 +61,7 @@ func (s *Service) Tournaments(gender, league string, season int) (*Changes, erro
 		persisted, err := s.VolleynetRepository.Tournament(t.ID)
 
 		if err != nil {
-			return report, errors.Wrap(err, "loading the persisted tournament failed")
+			return errors.Wrap(err, "loading the persisted tournament failed")
 		}
 
 		syncInfo := Tournaments(persisted, &t)
@@ -70,7 +72,7 @@ func (s *Service) Tournaments(gender, league string, season int) (*Changes, erro
 			persisted.Teams, err = s.VolleynetRepository.TournamentTeams(t.ID)
 
 			if err != nil {
-				return report, errors.Wrap(err, "loading the persisted tournament teams failed")
+				return errors.Wrap(err, "loading the persisted tournament teams failed")
 			}
 
 			persistedTournaments = append(persistedTournaments, *persisted)
@@ -80,7 +82,7 @@ func (s *Service) Tournaments(gender, league string, season int) (*Changes, erro
 	}
 
 	if len(toDownload) == 0 {
-		return report, nil
+		return nil
 	}
 
 	currentTournaments, err := s.Client.ComplementMultipleTournaments(toDownload)
@@ -89,9 +91,9 @@ func (s *Service) Tournaments(gender, league string, season int) (*Changes, erro
 
 	err = s.persistChanges(report)
 
-	report.ScrapeDuration = time.Since(start) / time.Millisecond
+	s.publishEndScrapeEvent(report, time.Now())
 
-	return report, errors.Wrap(err, "sync failed")
+	return errors.Wrap(err, "sync failed")
 }
 
 func (s *Service) persistChanges(report *Changes) error {

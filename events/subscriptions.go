@@ -3,13 +3,24 @@ package events
 import "sync"
 
 type subscriptions struct {
-	mutex    sync.Mutex
-	handlers []EventHandler
+	mutex     sync.Mutex
+	listeners []chan<- Event
 }
 
-func (s *subscriptions) Add(handler EventHandler) {
+func (s *subscriptions) Add(listener chan<- Event) {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	s.handlers = append(s.handlers, handler)
+	s.listeners = append(s.listeners, listener)
+}
+
+func (s *subscriptions) Remove(listener chan<- Event) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	for i, l := range s.listeners {
+		if l == listener {
+			s.listeners = append(s.listeners[:i], s.listeners[i+1:]...)
+		}
+	}
 }

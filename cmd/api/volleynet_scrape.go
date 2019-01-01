@@ -44,7 +44,7 @@ func (j *tournamentsJob) do() error {
 
 	for _, league := range j.leagues {
 		for _, gender := range j.genders {
-			_, err := j.syncService.Tournaments(gender, league, season)
+			err := j.syncService.Tournaments(gender, league, season)
 
 			if err != nil {
 				return err
