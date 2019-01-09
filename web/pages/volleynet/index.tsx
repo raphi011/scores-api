@@ -4,13 +4,11 @@ import Router from 'next/router';
 
 import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
-import { Fade } from '@material-ui/core';
+import { QueryStringMapObject } from 'next';
 import CenteredLoading from '../../components/CenteredLoading';
 import DayHeader from '../../components/DayHeader';
 import GroupedList from '../../components/GroupedList';
-import LeagueSelect from '../../components/volleynet/LeagueSelect';
 import TournamentList from '../../components/volleynet/TournamentList';
-import TournamentView from '../../components/volleynet/TournamentView';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 import { userSelector } from '../../redux/auth/selectors';
@@ -25,13 +23,13 @@ import {
 import { Store } from '../../redux/store';
 import { Tournament, User } from '../../types';
 import * as ArrayUtils from '../../utils/array';
+import TournamentFilters from '../../components/volleynet/filters/TournamentFilters';
 
 const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TOUR'];
 
 const styles = createStyles({
   left: {
-    flexGrow: 1,
-    maxWidth: '500px',
+    width: '300px',
   },
   right: {
     flexGrow: 1,
@@ -77,7 +75,7 @@ class Volleynet extends React.Component<Props> {
     return actions;
   }
 
-  static getParameters(query) {
+  static getParameters(query: QueryStringMapObject) {
     const { tournamentId } = query;
     let { leagues = ['AMATEUR TOUR'] } = query;
 
@@ -120,11 +118,9 @@ class Volleynet extends React.Component<Props> {
   }
 
   onTournamentClick = (t: Tournament) => {
-    const { leagues } = this.props;
-
     Router.push({
-      pathname: '/volleynet',
-      query: { tournamentId: t.id, leagues },
+      pathname: '/volleynet/tournament',
+      query: { id: t.id },
     });
   };
 
@@ -151,29 +147,20 @@ class Volleynet extends React.Component<Props> {
       );
     }
 
-    let rightContent: any = <span>Select a tournament</span>;
-
-    if (tournament) {
-      rightContent = <TournamentView tournament={tournament} user={user} />;
-    }
-
     return (
       <Layout title={{ text: 'Volleynet', href: '' }}>
         <div className={classes.root}>
           <div className={classes.left}>
-            <LeagueSelect selected={leagues} onChange={this.onLeagueChange} />
-            {leftContent}
+            <TournamentFilters />
           </div>
-          <div className={classes.right}>
-            <Fade in={!!tournament}>{rightContent}</Fade>
-          </div>
+          <div className={classes.right}>{leftContent}</div>
         </div>
       </Layout>
     );
   }
 }
 
-const thisYear = new Date().getFullYear().toString();
+const thisYear = '2018'; // new Date().getFullYear().toString();
 
 function sortDescending(a: Tournament, b: Tournament) {
   return new Date(b.start).getTime() - new Date(a.start).getTime();

@@ -1,27 +1,23 @@
 /* eslint-disable no-underscore-dangle */
 
-import blue from '@material-ui/core/colors/blue';
-import teal from '@material-ui/core/colors/teal';
 import {
   createGenerateClassName,
   createMuiTheme,
 } from '@material-ui/core/styles';
 import { SheetsRegistry } from 'jss';
+import { background, grey, primary, secondary } from './styles/theme';
 
 // A theme with custom primary and secondary color.
 // It's optional.
 const theme = createMuiTheme({
   palette: {
-    primary: {
-      dark: blue[700],
-      light: blue[300],
-      main: blue[500],
-    },
-    secondary: {
-      dark: teal[700],
-      light: teal[300],
-      main: teal[500],
-    },
+    background,
+    grey,
+    primary,
+    secondary,
+  },
+  shape: {
+    borderRadius: 0,
   },
   typography: {
     useNextVariants: true,

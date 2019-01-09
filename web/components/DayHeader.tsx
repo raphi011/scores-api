@@ -1,16 +1,33 @@
 import ListItem from '@material-ui/core/ListItem';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+
 import { formatDate } from '../utils/dateFormat';
 
-interface Props {
+const styles = (theme: Theme) =>
+  createStyles({
+    header: {
+      color: theme.palette.grey[500],
+      fontSize: '16px',
+    },
+  });
+
+interface Props extends WithStyles<typeof styles> {
   appendix?: string;
   date: Date;
 }
 
-export default ({ date, appendix }: Props) => (
-  <ListItem style={{ margin: '15px 0 3px 0' }}>
-    <Typography variant="h6">
+const DayHeader = ({ date, appendix, classes }: Props) => (
+  <ListItem disableGutters>
+    <Typography className={classes.header} variant="h6">
       {formatDate(date)} {appendix}
     </Typography>
   </ListItem>
 );
+
+export default withStyles(styles)(DayHeader);

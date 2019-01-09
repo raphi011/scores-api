@@ -16,7 +16,30 @@ interface Props {
   logout: () => void;
 }
 
-class AppBarContainer extends React.Component<Props> {
+interface State {
+  bodyScrolled: boolean;
+}
+
+class AppBarContainer extends React.Component<Props, State> {
+  state = {
+    bodyScrolled: false,
+  };
+
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll);
+  }
+
+  onScroll = () => {
+    const bodyScrolled = window.scrollY !== 0;
+
+    if (bodyScrolled !== this.state.bodyScrolled) {
+      this.setState({ bodyScrolled });
+    }
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+  }
   onLogout = async () => {
     const { logout } = this.props;
 
@@ -25,7 +48,13 @@ class AppBarContainer extends React.Component<Props> {
   };
 
   render() {
-    return <AppBar {...this.props} onLogout={this.onLogout} />;
+    return (
+      <AppBar
+        {...this.props}
+        bodyScrolled={this.state.bodyScrolled}
+        onLogout={this.onLogout}
+      />
+    );
   }
 }
 

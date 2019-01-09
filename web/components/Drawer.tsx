@@ -63,7 +63,6 @@ function Drawer({ userPlayer, classes }: Props) {
           <Avatar src={userPlayer.profileImageUrl} />
           <ListItemText inset primary={userPlayer.name} />
         </ListItem>
-        <ListSubheader className={classes.header}>Navigation</ListSubheader>
         <ListItem button>
           <ListItemIcon>
             <InfoIcon />
@@ -88,7 +87,6 @@ function Drawer({ userPlayer, classes }: Props) {
             </ListItem>
           </Link>
         </AdminOnly>
-        <ListSubheader className={classes.header}>Volleynet</ListSubheader>
         <Link prefetch href="/volleynet">
           <ListItem button>
             <ListItemIcon>

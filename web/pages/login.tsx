@@ -10,13 +10,14 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import WarningIcon from '@material-ui/icons/Warning';
 
+import { createStyles, withStyles, WithStyles } from '@material-ui/core';
 import LoadingButton from '../components/LoadingButton';
 import withAuth from '../containers/AuthContainer';
 import Snackbar from '../containers/SnackbarContainer';
 import { loginWithPasswordAction } from '../redux/auth/actions';
 import { setStatusAction } from '../redux/status/actions';
 
-interface Props {
+interface Props extends WithStyles<typeof styles> {
   r: string;
   loginRoute: string;
   fromServer: boolean;
@@ -33,6 +34,21 @@ interface State {
   password: string;
   loggingIn: boolean;
 }
+
+const styles = createStyles({
+  center: {
+    alignItems: 'center',
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  container: {
+    marginTop: '30px',
+    padding: '30px',
+    textAlign: 'center',
+    width: '350px',
+  },
+});
 
 class Login extends React.Component<Props, State> {
   static mapDispatchToProps = {
@@ -98,7 +114,7 @@ class Login extends React.Component<Props, State> {
   };
 
   render() {
-    const { loginRoute, error } = this.props;
+    const { loginRoute, error, classes } = this.props;
     const { email, password, loggingIn } = this.state;
 
     const errorBox = error ? (
@@ -117,17 +133,10 @@ class Login extends React.Component<Props, State> {
     ) : null;
 
     return (
-      <div
-        style={{
-          alignItems: 'center',
-          display: 'flex',
-          height: '100%',
-          justifyContent: 'center',
-        }}
-      >
-        <Paper style={{ textAlign: 'center', padding: '30px' }}>
+      <div className={classes.center}>
+        <Paper className={classes.container}>
           <form onSubmit={this.loginWithPassword}>
-            <Typography variant="h3">Welcome</Typography>
+            <Typography variant="h3">Scores</Typography>
             <br />
             <FormGroup>
               <TextField
@@ -150,7 +159,6 @@ class Login extends React.Component<Props, State> {
             <LoadingButton loading={loggingIn}>Login</LoadingButton>
             <div style={{ margin: '20px 0' }}>- or -</div>
             <Button
-              color="primary"
               disabled={!loginRoute}
               fullWidth
               variant="contained"
@@ -171,4 +179,4 @@ class Login extends React.Component<Props, State> {
   }
 }
 
-export default withAuth(Login);
+export default withAuth(withStyles(styles)(Login));
