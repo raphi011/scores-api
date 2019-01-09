@@ -59,7 +59,7 @@ func hasTeamChanged(old, new volleynet.TournamentTeam) bool {
 
 func (s *Service) persistTeams(changes *TeamChanges) error {
 	for _, new := range changes.New {
-		err := s.VolleynetRepository.NewTeam(&new)
+		err := s.TeamRepository.New(&new)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting new tournamentteam failed")
@@ -67,7 +67,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 	}
 
 	for _, update := range changes.Update {
-		err := s.VolleynetRepository.UpdateTournamentTeam(&update)
+		err := s.TeamRepository.Update(&update)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting updated tournamentteam failed")
@@ -75,7 +75,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 	}
 
 	for _, delete := range changes.Delete {
-		err := s.VolleynetRepository.DeleteTeam(&delete)
+		err := s.TeamRepository.Delete(&delete)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting deleted tournamentteam failed")
@@ -120,8 +120,8 @@ func distinctPlayers(teams []volleynet.TournamentTeam) []*volleynet.Player {
 }
 
 func (s *Service) addPlayerIfNeeded(player *volleynet.Player) error {
-	if p, _ := s.VolleynetRepository.Player(player.ID); p == nil {
-		err := s.VolleynetRepository.NewPlayer(player)
+	if p, _ := s.PlayerRepository.Get(player.ID); p == nil {
+		err := s.PlayerRepository.New(player)
 
 		if err != nil {
 			return err

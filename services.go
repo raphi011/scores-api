@@ -2,6 +2,7 @@ package scores
 
 import (
 	"github.com/raphi011/scores/job"
+	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/sync"
 )
 
@@ -17,5 +18,5 @@ type Services struct {
 	Statistic  *StatisticService
 	Team       *TeamService
 	Player     *PlayerService
-	Volleynet  *VolleynetService
+	Volleynet  *volleynet.Service
 }

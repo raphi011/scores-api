@@ -10,5 +10,7 @@ type Repositories struct {
 	Statistic scores.StatisticRepository
 	Team      scores.TeamRepository
 	User      scores.UserRepository
-	Volleynet scores.VolleynetRepository
+	VolleynetPlayer scores.VolleynetPlayerRepository
+	VolleynetTeam scores.VolleynetTeamRepository
+	VolleynetTournament scores.VolleynetTournamentRepository
 }

@@ -111,7 +111,7 @@ func Tournaments(persisted *volleynet.FullTournament, current *volleynet.Tournam
 
 func (s *Service) persistTournaments(changes *TournamentChanges) error {
 	for _, new := range changes.New {
-		err := s.VolleynetRepository.NewTournament(&new)
+		err := s.TournamentRepository.New(&new)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting new tournament failed")
@@ -119,7 +119,7 @@ func (s *Service) persistTournaments(changes *TournamentChanges) error {
 	}
 
 	for _, update := range changes.Update {
-		err := s.VolleynetRepository.UpdateTournament(&update)
+		err := s.TournamentRepository.Update(&update)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting updated tournament failed")

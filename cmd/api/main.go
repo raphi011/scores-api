@@ -16,6 +16,7 @@ import (
 	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/repo/sqlite"
 	"github.com/raphi011/scores/job"
+	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/sync"
 	"github.com/raphi011/scores/volleynet/client"
 	"github.com/sirupsen/logrus"
@@ -183,15 +184,19 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		Repository: repos.Player,
 	}
 
-	volleynetService := &scores.VolleynetService{
-		Repository: repos.Volleynet,
+	volleynetService := &volleynet.Service{
+		PlayerRepository: repos.VolleynetPlayer,
+		TeamRepository: repos.VolleynetTeam,
+		TournamentRepository: repos.VolleynetTournament,
 	}
 
 	broker := newBroker()
 
 	scrapeService := &sync.Service{
 		Client: client.DefaultClient(),
-		VolleynetRepository: repos.Volleynet,
+		PlayerRepository: repos.VolleynetPlayer,
+		TeamRepository: repos.VolleynetTeam,
+		TournamentRepository: repos.VolleynetTournament,
 		Subscriptions: broker,
 	}
 

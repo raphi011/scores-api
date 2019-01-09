@@ -22,7 +22,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 		return nil, errors.Wrap(err, "loading the ladder failed")
 	}
 
-	persisted, err := s.VolleynetRepository.AllPlayers()
+	persisted, err := s.PlayerRepository.All()
 
 	if err != nil {
 		return nil, errors.Wrap(err, "loading persisted players failed")
@@ -37,7 +37,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 				info.NewPlayer.FirstName,
 				info.NewPlayer.LastName)
 
-			err = s.VolleynetRepository.NewPlayer(info.NewPlayer)
+			err = s.PlayerRepository.New(info.NewPlayer)
 			report.NewPlayers++
 
 		} else {
@@ -48,7 +48,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 				merged.FirstName,
 				merged.LastName)
 
-			err = s.VolleynetRepository.UpdatePlayer(merged)
+			err = s.PlayerRepository.Update(merged)
 			report.UpdatedPlayers++
 
 		}

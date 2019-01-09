@@ -2,8 +2,8 @@ package main
 
 import (
 	"net/http"
-	"strconv"
 	"time"
+	"strconv"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin/binding"
@@ -39,23 +39,27 @@ func (h *volleynetHandler) getLadder(c *gin.Context) {
 }
 
 func (h *volleynetHandler) getTournaments(c *gin.Context) {
-	gender := c.DefaultQuery("gender", "M")
-	league := c.DefaultQuery("league", "AMATEUR TOUR")
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
+	gender := c.QueryArray("gender")
+	league := c.QueryArray("league")
 
-	if !h.volleynetService.ValidGender(gender) {
-		responseBadRequest(c)
-		return
-	}
+	// if !h.volleynetService.ValidGender(gender) {
+	// 	responseBadRequest(c)
+	// 	return
+	// }
 
 	seasonNumber, err := strconv.Atoi(season)
 
-	if err != nil {
-		responseBadRequest(c)
-		return
-	}
+	// if err != nil {
+	// 	responseBadRequest(c)
+	// 	return
+	// }
 
-	tournaments, err := h.volleynetService.GetTournaments(gender, league, seasonNumber)
+	tournaments, err := h.volleynetService.GetTournaments(
+		seasonNumber,
+		gender,
+		league,
+	)
 
 	if err != nil {
 		responseErr(c, err)

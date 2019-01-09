@@ -34,10 +34,32 @@ type Changes struct {
 	ScrapeDuration time.Duration
 	Success        bool
 }
+type teamRepository interface{
+	ByTournament(tournamentID int) ([]volleynet.TournamentTeam, error)
+	New(team *volleynet.TournamentTeam) error
+	Update(team *volleynet.TournamentTeam) error
+	Delete(team *volleynet.TournamentTeam) error
+}
+
+type tournamentRepository interface{
+	Get(tournamentID int) (*volleynet.FullTournament, error)
+	New(tournament *volleynet.FullTournament) (error)
+	Update(tournament *volleynet.FullTournament) (error)
+}
+
+type playerRepository interface{
+	All() ([]volleynet.Player, error)
+	Ladder(gender string) ([]volleynet.Player, error)
+	Get(playerID int) (*volleynet.Player, error)
+	New(player *volleynet.Player) error
+	Update(player *volleynet.Player) error
+}
 
 // Service allows loading and synchronizing of the volleynetpage.
 type Service struct {
-	VolleynetRepository Repository
+	TeamRepository teamRepository
+	TournamentRepository tournamentRepository
+	PlayerRepository playerRepository
 	Client              client.Client
 	Subscriptions       events.Publisher
 }
@@ -58,7 +80,7 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 	toDownload := []volleynet.Tournament{}
 
 	for _, t := range current {
-		persisted, err := s.VolleynetRepository.Tournament(t.ID)
+		persisted, err := s.TournamentRepository.Get(t.ID)
 
 		if err != nil {
 			return errors.Wrap(err, "loading the persisted tournament failed")
@@ -69,7 +91,7 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 		if syncInfo.Type == SyncTournamentNoUpdate {
 			continue
 		} else if syncInfo.Type != SyncTournamentNew {
-			persisted.Teams, err = s.VolleynetRepository.TournamentTeams(t.ID)
+			persisted.Teams, err = s.TeamRepository.ByTournament(t.ID)
 
 			if err != nil {
 				return errors.Wrap(err, "loading the persisted tournament teams failed")

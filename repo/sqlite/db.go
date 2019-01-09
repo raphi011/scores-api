@@ -45,6 +45,8 @@ func create(provider, connectionString string) (*repo.Repositories, *sql.DB, err
 		Statistic: &StatisticRepository{DB: db},
 		Team:      &TeamRepository{DB: db},
 		User:      &UserRepository{DB: db},
-		Volleynet: &VolleynetRepository{DB: db},
+		VolleynetPlayer: &VolleynetPlayerRepository{DB: db},
+		VolleynetTeam: &VolleynetTeamRepository{DB: db},
+		VolleynetTournament: &VolleynetTournamentRepository{DB: db},
 	}, db, nil
 }
