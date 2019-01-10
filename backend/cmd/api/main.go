@@ -32,9 +32,9 @@ type app struct {
 var version = "undefined"
 
 func main() {
-	dbProvider := flag.String("provider", "sqlite3", "DB Driver (sqlite3 or mysql)")
-	connectionString := flag.String("connection", "./scores.db", "Path to sqlite db")
-	gSecret := flag.String("goauth", "./client_secret.json", "Path to google oauth secret")
+	dbProvider := flag.String("provider", "sqlite3", "DB Driver (sqlite3, mysql or postgres)")
+	connectionString := flag.String("connection", "./scores.db", "provider specific connectionstring")
+	gSecret := flag.String("gauth", "./client_secret.json", "Path to google oauth secret")
 	logstashURL := flag.String("logstash", "", "logstash url")
 
 	flag.Parse()
@@ -151,37 +151,10 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		Iterations: 10000,
 	}
 
-	groupService := scores.NewGroupService(
-		repos.Group,
-		repos.Match,
-		repos.Player,
-		repos.Statistic,
-	)
-
 	userService := &scores.UserService{
 		Repository:       repos.User,
 		PlayerRepository: repos.Player,
 		Password:         password,
-	}
-
-	matchService := &scores.MatchService{
-		Repository:       repos.Match,
-		PlayerRepository: repos.Player,
-		GroupRepository:  repos.Group,
-		UserRepository:   repos.User,
-		TeamRepository:   repos.Team,
-	}
-
-	statisticService := &scores.StatisticService{
-		Repository: repos.Statistic,
-	}
-
-	teamService := &scores.TeamService{
-		Repository: repos.Team,
-	}
-
-	playerService := &scores.PlayerService{
-		Repository: repos.Player,
 	}
 
 	volleynetService := &volleynet.Service{
@@ -236,15 +209,8 @@ func createServices(provider string, connectionString string) (*scores.Services,
 		JobManager: manager,
 		VolleynetScrape: scrapeService,
 		Volleynet: volleynetService,
-		Group:     groupService,
 		Password:  password,
 		User:      userService,
-		Match:     matchService,
-		Statistic: statisticService,
-		Team:      teamService,
-		Player:    playerService,
-
-
 	}
 
 	return services, closerFunc, nil
