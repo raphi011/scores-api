@@ -6,37 +6,6 @@ import (
 	"github.com/raphi011/scores"
 )
 
-// func TestSetPassword(t *testing.T) {
-// 	s := createRepositories(t)
-
-// 	email := "test@test.com"
-
-// 	user, err := s.User.Create(&scores.User{
-// 		Email:           email,
-// 		ProfileImageURL: "image.url",
-// 	})
-
-// 	pw := []byte("password")
-
-// 	info, _ := s.pwRepository.Hash(pw)
-
-// 	err = s.User.UpdatePasswordAuthentication(user.ID, info)
-
-// 	if err != nil {
-// 		t.Errorf("userRepository.UpdatePasswordAuthentication(), err: %s", err)
-// 	}
-
-// 	user, err = s.User.User(user.ID)
-
-// 	if err != nil {
-// 		t.Errorf("userRepository.User(), err: %s", err)
-// 	}
-
-// 	if !s.pwRepository.Compare(pw, &user.PasswordInfo) {
-// 		t.Error("Password.Compare(), want true, got false")
-// 	}
-// }
-
 func TestCreateUser(t *testing.T) {
 	s := createRepositories(t)
 

@@ -8,13 +8,13 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// VolleynetTeamRepository implements VolleynetRepository interface
-type VolleynetTeamRepository struct {
+// TeamRepository implements VolleynetRepository interface
+type TeamRepository struct {
 	DB *sql.DB
 }
 
 // New creates a new team
-func (s *VolleynetTeamRepository) New(t *volleynet.TournamentTeam) error {
+func (s *TeamRepository) New(t *volleynet.TournamentTeam) error {
 	_, err := s.DB.Exec(query("volleynet/insert-team"),
 		t.TournamentID,
 		t.Player1.ID,
@@ -31,7 +31,7 @@ func (s *VolleynetTeamRepository) New(t *volleynet.TournamentTeam) error {
 }
 
 // NewBatch creates multiple new teams
-func (s *VolleynetTeamRepository) NewBatch(teams []volleynet.TournamentTeam) error {
+func (s *TeamRepository) NewBatch(teams []volleynet.TournamentTeam) error {
 	for _, t := range teams {
 		err := s.New(&t)
 
@@ -44,7 +44,7 @@ func (s *VolleynetTeamRepository) NewBatch(teams []volleynet.TournamentTeam) err
 }
 
 // Update updates a tournament team
-func (s *VolleynetTeamRepository) Update(t *volleynet.TournamentTeam) error {
+func (s *TeamRepository) Update(t *volleynet.TournamentTeam) error {
 	result, err := s.DB.Exec(
 		query("volleynet/update-team"),
 		t.Rank,
@@ -76,7 +76,7 @@ func (s *VolleynetTeamRepository) Update(t *volleynet.TournamentTeam) error {
 }
 
 // UpdateBatch updates tournament teams
-func (s *VolleynetTeamRepository) UpdateBatch(teams []volleynet.TournamentTeam) error {
+func (s *TeamRepository) UpdateBatch(teams []volleynet.TournamentTeam) error {
 	for _, t := range teams {
 		if err := s.Update(&t); err != nil {
 			return err
@@ -87,14 +87,14 @@ func (s *VolleynetTeamRepository) UpdateBatch(teams []volleynet.TournamentTeam) 
 }
 
 // Delete deletes a team
-func (s *VolleynetTeamRepository) Delete(t *volleynet.TournamentTeam) error {
+func (s *TeamRepository) Delete(t *volleynet.TournamentTeam) error {
 	_, err := s.DB.Exec(query("volleynet/delete-team"), t.TournamentID, t.Player1.ID, t.Player2.ID)
 
 	return err
 }
 
 // ByTournament loads all teams of a tournament
-func (s *VolleynetTeamRepository) ByTournament(tournamentID int) ([]volleynet.TournamentTeam, error) {
+func (s *TeamRepository) ByTournament(tournamentID int) ([]volleynet.TournamentTeam, error) {
 	return scanTournamentTeams(s.DB,
 		query("volleynet/select-team-by-tournament-id"),
 		tournamentID)

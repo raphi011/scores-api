@@ -8,25 +8,24 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// VolleynetPlayerRepository implements VolleynetPlayerRepository interface
-type VolleynetPlayerRepository struct {
+// PlayerRepository implements PlayerRepository interface
+type PlayerRepository struct {
 	DB *sql.DB
 }
 
-
 // Ladder gets all players of the passed gender that have a rank
-func (s *VolleynetPlayerRepository) Ladder(gender string) ([]volleynet.Player, error) {
+func (s *PlayerRepository) Ladder(gender string) ([]volleynet.Player, error) {
 	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-ladder"), gender)
 }
 
 // All loads all players
 // Note: should only be used for debugging
-func (s *VolleynetPlayerRepository) All() ([]volleynet.Player, error) {
+func (s *PlayerRepository) All() ([]volleynet.Player, error) {
 	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-all"))
 }
 
 // Get loads a player
-func (s *VolleynetPlayerRepository) Get(id int) (*volleynet.Player, error) {
+func (s *PlayerRepository) Get(id int) (*volleynet.Player, error) {
 	row := s.DB.QueryRow(
 		query("volleynet/select-player-by-id"),
 		id,
@@ -36,7 +35,7 @@ func (s *VolleynetPlayerRepository) Get(id int) (*volleynet.Player, error) {
 }
 
 // New creates a new player
-func (s *VolleynetPlayerRepository) New(p *volleynet.Player) error {
+func (s *PlayerRepository) New(p *volleynet.Player) error {
 	_, err := s.DB.Exec(query("volleynet/insert-player"),
 		p.ID,
 		p.FirstName,
@@ -54,7 +53,7 @@ func (s *VolleynetPlayerRepository) New(p *volleynet.Player) error {
 }
 
 // Update updates a player
-func (s *VolleynetPlayerRepository) Update(p *volleynet.Player) error {
+func (s *PlayerRepository) Update(p *volleynet.Player) error {
 	result, err := s.DB.Exec(
 		query("volleynet/update-player"),
 		p.FirstName,

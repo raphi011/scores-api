@@ -9,13 +9,13 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// VolleynetTournamentRepository implements VolleynetRepository interface
-type VolleynetTournamentRepository struct {
+// TournamentRepository implements VolleynetRepository interface
+type TournamentRepository struct {
 	DB *sql.DB
 }
 
 // Get loads a tournament by its id
-func (s *VolleynetTournamentRepository) Get(tournamentID int) (*volleynet.FullTournament, error) {
+func (s *TournamentRepository) Get(tournamentID int) (*volleynet.FullTournament, error) {
 	row := s.DB.QueryRow(query("volleynet/select-tournament-by-id"), tournamentID)
 
 	return scanTournament(row)
@@ -23,18 +23,18 @@ func (s *VolleynetTournamentRepository) Get(tournamentID int) (*volleynet.FullTo
 
 // All loads all tournaments
 // Note: should only be used for debugging
-func (s *VolleynetTournamentRepository) All() ([]*volleynet.FullTournament, error) {
+func (s *TournamentRepository) All() ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-all"))
 }
 
 // Season loads all tournaments of a season
-func (s *VolleynetTournamentRepository) Season(season int) ([]*volleynet.FullTournament, error) {
+func (s *TournamentRepository) Season(season int) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB, query("volleynet/select-tournament-by-season"), season)
 }
 
 
 // New creates a new tournament
-func (s *VolleynetTournamentRepository) New(t *volleynet.FullTournament) error {
+func (s *TournamentRepository) New(t *volleynet.FullTournament) error {
 	_, err := s.DB.Exec(query("volleynet/insert-tournament"),
 		t.ID,
 		t.Gender,
@@ -69,7 +69,7 @@ func (s *VolleynetTournamentRepository) New(t *volleynet.FullTournament) error {
 }
 
 // UpdatedSince gets all tournaments that were updated after a certain time
-func (s *VolleynetTournamentRepository) UpdatedSince(updatedSince time.Time) ([]*volleynet.FullTournament, error) {
+func (s *TournamentRepository) UpdatedSince(updatedSince time.Time) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB,
 		query("volleynet/select-tournament-by-updated-since"),
 		updatedSince,
@@ -77,7 +77,7 @@ func (s *VolleynetTournamentRepository) UpdatedSince(updatedSince time.Time) ([]
 }
 
 // Update updates a tournament
-func (s *VolleynetTournamentRepository) Update(t *volleynet.FullTournament) error {
+func (s *TournamentRepository) Update(t *volleynet.FullTournament) error {
 	result, err := s.DB.Exec(
 		query("volleynet/update-tournament"),
 		t.Gender,
@@ -126,7 +126,7 @@ func (s *VolleynetTournamentRepository) Update(t *volleynet.FullTournament) erro
 }
 
 // Filter loads all tournaments by season, league and gender
-func (s *VolleynetTournamentRepository) Filter(
+func (s *TournamentRepository) Filter(
 	season int,
 	leagues []string,
 	genders []string) ([]*volleynet.FullTournament, error) {
