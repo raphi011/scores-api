@@ -8,8 +8,6 @@ type User struct {
 	VolleynetUserID int          `json:"volleynetUserId"`
 	VolleynetLogin  string       `json:"volleynetLogin"`
 	Role            string       `json:"role"`
-	PlayerID        uint         `json:"playerId"`
-	Player          *Player      `json:"player"`
 	PasswordInfo    PasswordInfo `json:"-"`
 }
 

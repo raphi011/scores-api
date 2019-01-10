@@ -1,7 +1,7 @@
 module github.com/raphi011/scores
 
 require (
-	cloud.google.com/go v0.19.0
+	cloud.google.com/go v0.30.0
 	github.com/PuerkitoBio/goquery v1.4.0
 	github.com/andybalholm/cascadia v1.0.0
 	github.com/bshuster-repo/logrus-logstash-hook v0.4.1
@@ -10,12 +10,13 @@ require (
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7
 	github.com/gin-gonic/gin v1.3.0
-	github.com/go-sql-driver/mysql v1.4.0
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packr v1.19.0
-	github.com/golang/protobuf v1.0.0
+	github.com/golang-migrate/migrate/v4 v4.2.1
+	github.com/golang/protobuf v1.2.0
 	github.com/google/go-cmp v0.2.0
 	github.com/google/uuid v1.0.0
-	github.com/gorilla/context v0.0.0-20160226214623-1ea25387ff6f
+	github.com/gorilla/context v1.1.1
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v0.0.0-20160922145804-ca9ada445741
 	github.com/mattn/go-isatty v0.0.3
@@ -28,9 +29,9 @@ require (
 	github.com/ugorji/go v0.0.0-20180112141927-9831f2c3ac10
 	golang.org/x/crypto v0.0.0-20180306223934-85f98707c97e
 	golang.org/x/net v0.0.0-20181102091132-c10e9556a7bc
-	golang.org/x/oauth2 v0.0.0-20180228173056-2f32c3ac0fa4
-	golang.org/x/sys v0.0.0-20180302081741-dd2ff4accc09
-	google.golang.org/appengine v1.0.0
+	golang.org/x/oauth2 v0.0.0-20181003184128-c57b0facaced
+	golang.org/x/sys v0.0.0-20181011152604-fa43e7bc11ba
+	google.golang.org/appengine v1.2.0
 	gopkg.in/go-playground/validator.v8 v8.18.2
 	gopkg.in/yaml.v2 v2.1.1
 )

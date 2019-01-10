@@ -9,14 +9,9 @@ import (
 // Services contains all available services
 type Services struct {
 	VolleynetScrape *sync.Service
-	Group           *GroupService
 
 	JobManager *job.Manager
 	Password   *PBKDF2Password
 	User       *UserService
-	Match      *MatchService
-	Statistic  *StatisticService
-	Team       *TeamService
-	Player     *PlayerService
 	Volleynet  *volleynet.Service
 }
