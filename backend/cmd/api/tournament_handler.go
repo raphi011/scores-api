@@ -20,23 +20,6 @@ type volleynetHandler struct {
 	userService      *scores.UserService
 }
 
-func (h *volleynetHandler) getLadder(c *gin.Context) {
-	gender := c.DefaultQuery("gender", "M")
-
-	if !h.volleynetService.ValidGender(gender) {
-		responseBadRequest(c)
-		return
-	}
-
-	ladder, err := h.volleynetService.Ladder(gender)
-
-	if err != nil {
-		responseErr(c, err)
-		return
-	}
-
-	response(c, http.StatusOK, ladder)
-}
 
 func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
@@ -149,20 +132,4 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 	}
 
 	response(c, http.StatusOK, nil)
-}
-
-func (h *volleynetHandler) getSearchPlayers(c *gin.Context) {
-	vnClient := client.DefaultClient()
-	firstName := c.Query("fname")
-	lastName := c.Query("lname")
-	birthday := c.Query("bday")
-
-	players, err := vnClient.SearchPlayers(firstName, lastName, birthday)
-
-	if err != nil {
-		responseErr(c, err)
-		return
-	}
-
-	response(c, http.StatusOK, players)
 }

@@ -7,17 +7,17 @@ import (
 	"github.com/raphi011/scores/job"
 )
 
-type volleynetScrapeHandler struct {
+type scrapeHandler struct {
 	jobManager *job.Manager
 }
 
-func (h *volleynetScrapeHandler) report(c *gin.Context) {
+func (h *scrapeHandler) report(c *gin.Context) {
 	execs := h.jobManager.Executions()
 
 	response(c, http.StatusOK, execs)
 }
 
-func (h *volleynetScrapeHandler) run(c *gin.Context) {
+func (h *scrapeHandler) run(c *gin.Context) {
 	jobName := c.Query("job")
 
 	exists := h.jobManager.HasJob(jobName)
@@ -37,7 +37,7 @@ func (h *volleynetScrapeHandler) run(c *gin.Context) {
 	response(c, http.StatusOK, nil)
 }
 
-func (h *volleynetScrapeHandler) stop(c *gin.Context) {
+func (h *scrapeHandler) stop(c *gin.Context) {
 	jobName := c.Query("job")
 
 	exists := h.jobManager.HasJob(jobName)
@@ -56,11 +56,3 @@ func (h *volleynetScrapeHandler) stop(c *gin.Context) {
 
 	response(c, http.StatusOK, nil)
 }
-
-// func (h *volleynetScrapeHandler) runAll(c *gin.Context) {
-
-// }
-
-// func (h *volleynetScrapeHandler) stopAll(c *gin.Context) {
-
-// }

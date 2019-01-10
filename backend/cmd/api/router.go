@@ -26,24 +26,6 @@ func initRouter(app app) *gin.Engine {
 		conf:        app.conf,
 	}
 
-	playerHandler := playerHandler{
-		playerService:    app.services.Player,
-		statisticService: app.services.Statistic,
-		matchService:     app.services.Match,
-	}
-
-	matchHandler := matchHandler{
-		matchService: app.services.Match,
-		userService:  app.services.User,
-	}
-
-	groupHandler := groupHandler{
-		service:          app.services.Group,
-		playerService:    app.services.Player,
-		matchService:     app.services.Match,
-		statisticService: app.services.Statistic,
-	}
-
 	volleynetHandler := volleynetHandler{
 		volleynetService: app.services.Volleynet,
 		userService:      app.services.User,
@@ -75,26 +57,11 @@ func initRouter(app app) *gin.Engine {
 	auth.Use(middleware.Auth())
 	auth.POST("/logout", authHandler.logout)
 
-	auth.GET("/groups/:groupID/matches", groupHandler.getMatches)
-	auth.GET("/groups/:groupID", groupHandler.getGroup)
-	auth.GET("/groups/:groupID/players", groupHandler.getPlayers)
-	auth.GET("/groups/:groupID/player-statistics", groupHandler.getPlayerStatistics)
-	auth.POST("/groups/:groupID/matches", groupHandler.postMatch)
-
-	auth.GET("/matches/:matchID", matchHandler.getMatch)
-	auth.DELETE("/matches/:matchID", matchHandler.deleteMatch)
-
-	auth.GET("/players/:playerID", playerHandler.getPlayer)
-	auth.GET("/players/:playerID/statistics", playerHandler.getStatistics)
-	auth.GET("/players/:playerID/team-statistics", playerHandler.getTeamStatistics)
-	auth.GET("/players/:playerID/matches", playerHandler.getMatches)
-	auth.POST("/players", playerHandler.postPlayer)
-
-	auth.GET("/volleynet/ladder", volleynetHandler.getLadder)
-	auth.GET("/volleynet/tournaments", volleynetHandler.getTournaments)
-	auth.GET("/volleynet/tournaments/:tournamentID", volleynetHandler.getTournament)
-	auth.GET("/volleynet/players/search", volleynetHandler.getSearchPlayers)
-	auth.POST("/volleynet/signup", volleynetHandler.postSignup)
+	auth.GET("/ladder", volleynetHandler.getLadder)
+	auth.GET("/tournaments", volleynetHandler.getTournaments)
+	auth.GET("/tournaments/:tournamentID", volleynetHandler.getTournament)
+	auth.GET("/players/search", volleynetHandler.getSearchPlayers)
+	auth.POST("/signup", volleynetHandler.postSignup)
 
 	admin := auth.Group("/admin")
 	admin.Use(middleware.Admin(app.services.User))
