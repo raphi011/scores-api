@@ -8,35 +8,35 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// PlayerRepository implements PlayerRepository interface
+// PlayerRepository implements the PlayerRepository interface.
 type PlayerRepository struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
-// Ladder gets all players of the passed gender that have a rank
+// Ladder gets all players of the passed gender that have a rank.
 func (s *PlayerRepository) Ladder(gender string) ([]volleynet.Player, error) {
-	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-ladder"), gender)
+	return scanVolleynetPlayers(s.DB, query("player/select-ladder"), gender)
 }
 
-// All loads all players
-// Note: should only be used for debugging
+// All loads all players.
+// Note: should only be used for debugging.
 func (s *PlayerRepository) All() ([]volleynet.Player, error) {
-	return scanVolleynetPlayers(s.DB, query("volleynet/select-player-all"))
+	return scanVolleynetPlayers(s.DB, query("player/select-all"))
 }
 
-// Get loads a player
+// Get loads a player.
 func (s *PlayerRepository) Get(id int) (*volleynet.Player, error) {
 	row := s.DB.QueryRow(
-		query("volleynet/select-player-by-id"),
+		query("player/select-by-id"),
 		id,
 	)
 
 	return scanVolleynetPlayer(row)
 }
 
-// New creates a new player
+// New creates a new player.
 func (s *PlayerRepository) New(p *volleynet.Player) error {
-	_, err := s.DB.Exec(query("volleynet/insert-player"),
+	_, err := s.DB.Exec(query("player/insert"),
 		p.ID,
 		p.FirstName,
 		p.LastName,
@@ -52,10 +52,10 @@ func (s *PlayerRepository) New(p *volleynet.Player) error {
 	return err
 }
 
-// Update updates a player
+// Update updates a player.
 func (s *PlayerRepository) Update(p *volleynet.Player) error {
 	result, err := s.DB.Exec(
-		query("volleynet/update-player"),
+		query("player/update"),
 		p.FirstName,
 		p.LastName,
 		p.Birthday,
@@ -84,7 +84,7 @@ func (s *PlayerRepository) Update(p *volleynet.Player) error {
 	return nil
 }
 
-func scanVolleynetPlayers(db *sql.DB, query string, args ...interface{}) ([]volleynet.Player, error) {
+func scanVolleynetPlayers(db *sqlx.DB, query string, args ...interface{}) ([]volleynet.Player, error) {
 	players := []volleynet.Player{}
 	rows, err := db.Query(query, args...)
 

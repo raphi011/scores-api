@@ -1,7 +1,7 @@
 package sql
 
 import (
-	"database/sql"
+	"github.com/jmoiron/sqlx"
 	"time"
 
 	"github.com/pkg/errors"
@@ -11,31 +11,29 @@ import (
 
 // TournamentRepository implements VolleynetRepository interface
 type TournamentRepository struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
 // Get loads a tournament by its id
 func (s *TournamentRepository) Get(tournamentID int) (*volleynet.FullTournament, error) {
-	row := s.DB.QueryRow(query("volleynet/select-tournament-by-id"), tournamentID)
-
+	row := s.DB.QueryRow(query("tournament/select-by-id"), tournamentID)
 	return scanTournament(row)
 }
 
 // All loads all tournaments
 // Note: should only be used for debugging
 func (s *TournamentRepository) All() ([]*volleynet.FullTournament, error) {
-	return scanTournaments(s.DB, query("volleynet/select-tournament-all"))
+	return scanTournaments(s.DB, query("tournament/select-all"))
 }
 
 // Season loads all tournaments of a season
 func (s *TournamentRepository) Season(season int) ([]*volleynet.FullTournament, error) {
-	return scanTournaments(s.DB, query("volleynet/select-tournament-by-season"), season)
+	return scanTournaments(s.DB, query("tournament/select-by-season"), season)
 }
-
 
 // New creates a new tournament
 func (s *TournamentRepository) New(t *volleynet.FullTournament) error {
-	_, err := s.DB.Exec(query("volleynet/insert-tournament"),
+	_, err := s.DB.Exec(query("tournament/insert"),
 		t.ID,
 		t.Gender,
 		t.Start,
@@ -71,7 +69,7 @@ func (s *TournamentRepository) New(t *volleynet.FullTournament) error {
 // UpdatedSince gets all tournaments that were updated after a certain time
 func (s *TournamentRepository) UpdatedSince(updatedSince time.Time) ([]*volleynet.FullTournament, error) {
 	return scanTournaments(s.DB,
-		query("volleynet/select-tournament-by-updated-since"),
+		query("tournament/select-by-updated-since"),
 		updatedSince,
 	)
 }
@@ -79,7 +77,7 @@ func (s *TournamentRepository) UpdatedSince(updatedSince time.Time) ([]*volleyne
 // Update updates a tournament
 func (s *TournamentRepository) Update(t *volleynet.FullTournament) error {
 	result, err := s.DB.Exec(
-		query("volleynet/update-tournament"),
+		query("tournament/update"),
 		t.Gender,
 		t.Start,
 		t.End,
@@ -109,7 +107,7 @@ func (s *TournamentRepository) Update(t *volleynet.FullTournament) error {
 		t.ID)
 
 	if err != nil {
-		return err
+		return mapError(err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
@@ -119,7 +117,7 @@ func (s *TournamentRepository) Update(t *volleynet.FullTournament) error {
 	}
 
 	if rowsAffected != 1 {
-		return errors.New("Tournament not found")
+		return scores.ErrorNotFound
 	}
 
 	return nil
@@ -130,17 +128,19 @@ func (s *TournamentRepository) Filter(
 	season int,
 	leagues []string,
 	genders []string) ([]*volleynet.FullTournament, error) {
-	// return scanTournaments(s.DB, query("volleynet/select-tournament-by-filter"), gender, league, season)
 
-	return nil, nil
+	rawQuery := query("tournament/select-by-filter")
+	query, args, err := sqlx.In(rawQuery, gender, league, season)
+
+	return scanTournaments(s.DB, query, args...)
 }
 
-func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]*volleynet.FullTournament, error) {
+func scanTournaments(db *sqlx.DB, query string, args ...interface{}) ([]*volleynet.FullTournament, error) {
 	tournaments := []*volleynet.FullTournament{}
 	rows, err := db.Query(query, args...)
 
 	if err != nil {
-		return nil, err
+		return tournaments, mapError(err)
 	}
 
 	defer rows.Close()
@@ -149,7 +149,7 @@ func scanTournaments(db *sql.DB, query string, args ...interface{}) ([]*volleyne
 		tournament, err := scanTournament(rows)
 
 		if err != nil {
-			return nil, err
+			return , err
 		}
 
 		tournaments = append(tournaments, tournament)
@@ -194,9 +194,5 @@ func scanTournament(scanner scan) (*volleynet.FullTournament, error) {
 		&t.SignedupTeams,
 	)
 
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-
-	return t, err
+	return t, mapError(err)
 }

@@ -1,8 +1,7 @@
 package sql
 
 import (
-	"database/sql"
-
+	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores/volleynet"
@@ -10,7 +9,7 @@ import (
 
 // TeamRepository implements VolleynetRepository interface
 type TeamRepository struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
 // New creates a new team

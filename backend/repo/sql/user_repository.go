@@ -1,51 +1,30 @@
 package sql
 
 import (
-	"database/sql"
-
+	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+
 	"github.com/raphi011/scores"
 )
 
 var _ scores.UserRepository = &UserRepository{}
 
-// UserRepository stores users
+// UserRepository stores users.
 type UserRepository struct {
-	DB *sql.DB
+	DB *sqlx.DB
 }
 
-// New persists a user and assigns a new id
+// New persists a user and assigns a new id.
 func (s *UserRepository) New(user *scores.User) (*scores.User, error) {
-	result, err := s.DB.Exec(query("user/insert"),
-		user.Email,
-		user.ProfileImageURL,
-		user.VolleynetUserID,
-		user.VolleynetLogin,
-		user.Role,
-		user.PasswordInfo.Salt,
-		user.PasswordInfo.Hash,
-		user.PasswordInfo.Iterations,
-	)
+	err := insert(s.DB, "user/insert", user)
 
-	if err != nil {
-		return nil, err
-	}
-
-	ID, err := result.LastInsertId()
-
-	if err != nil {
-		return nil, err
-	}
-
-	user.ID = uint(ID)
-
-	return user, nil
+	return user, mapError(err)
 }
 
-// Update updates a user
+// Update updates a user.
 func (s *UserRepository) Update(user *scores.User) error {
 	if user == nil || user.ID == 0 {
-		return errors.New("User must exist")
+		return errors.New("user must exist")
 	}
 
 	result, err := s.DB.Exec(query("user/update"),
@@ -60,23 +39,23 @@ func (s *UserRepository) Update(user *scores.User) error {
 		user.ID)
 
 	if err != nil {
-		return err
+		return mapError(err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
 
 	if err != nil {
-		return err
+		return mapError(err)
 	}
 
 	if rowsAffected != 1 {
-		return errors.New("User not found")
+		return scores.ErrorNotFound
 	}
 
 	return nil
 }
 
-// All returns all user's, this is used mainly for testing
+// All returns all user's, this is used mainly for testing.
 func (s *UserRepository) All() (scores.Users, error) {
 	users := scores.Users{}
 
@@ -101,14 +80,14 @@ func (s *UserRepository) All() (scores.Users, error) {
 	return users, nil
 }
 
-// ByID retrieves a user by his/her ID
+// ByID retrieves a user by his/her ID.
 func (s *UserRepository) ByID(userID uint) (*scores.User, error) {
 	row := s.DB.QueryRow(query("user/select-by-id"), userID)
 
 	return scanUser(row)
 }
 
-// ByEmail retrieves a user by his/her email
+// ByEmail retrieves a user by his/her email.
 func (s *UserRepository) ByEmail(email string) (*scores.User, error) {
 	row := s.DB.QueryRow(query("user/select-by-email"), email)
 
@@ -132,9 +111,5 @@ func scanUser(scanner scan) (*scores.User, error) {
 		&u.Role,
 	)
 
-	if err == sql.ErrNoRows {
-		return nil, errors.Wrap(scores.ErrorNotFound, "user not found")
-	}
-
-	return u, err
+	return u, mapError(err)
 }

@@ -9,4 +9,14 @@ INSERT INTO users (
     hash,
     iterations
 )
-VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)
+VALUES (
+    :createdAt,
+    :email,
+    :profileImageUrl,
+    :volleynetUserId,
+    :volleynetLogin,
+    :role,
+    :salt,
+    :hash,
+    :iterations
+)

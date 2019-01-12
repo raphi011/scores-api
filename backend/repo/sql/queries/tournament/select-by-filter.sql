@@ -29,4 +29,7 @@ SELECT
 	t.season,
 	t.signedup_teams
 FROM volleynet_tournaments t
-WHERE t.gender = ? AND t.league = ? AND t.season = ?
+WHERE
+	t.gender IN (?) AND
+	t.league IN (?) AND
+	t.season IN (?)
