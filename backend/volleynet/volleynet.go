@@ -60,7 +60,7 @@ type Tournament struct {
 	ID               int       `json:"id"`
 	Status           string    `json:"status"` // can be `StatusUpcoming`, `StatusDone` or `StatusCanceled`
 	RegistrationOpen bool      `json:"registrationOpen"`
-	Gender           string    `json:"gender"`
+	Format 			 string    `json:"format"`
 }
 
 // FullTournament adds additional information to `Tournament`
@@ -76,7 +76,7 @@ type FullTournament struct {
 	Organiser       string           `json:"organiser"`
 	Phone           string           `json:"phone"`
 	Email           string           `json:"email"`
-	Web             string           `json:"web"`
+	Website         string           `json:"website"`
 	CurrentPoints   string           `json:"currentPoints"`
 	LivescoringLink string           `json:"livescoringLink"`
 	SignedupTeams   int              `json:"signedupTeams"`

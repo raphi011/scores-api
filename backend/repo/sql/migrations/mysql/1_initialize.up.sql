@@ -18,7 +18,7 @@ CREATE TABLE tournaments (
 	id integer PRIMARY KEY,
 	created_at datetime NOT NULL,
 	updated_at datetime NOT NULL,
-	gender varchar(1) NOT NULL,
+	format varchar(255) NOT NULL,
 	signedup_teams integer NOT NULL,
 	start datetime NOT NULL,
 	end datetime NOT NULL,

@@ -23,7 +23,7 @@ CREATE TABLE tournaments (
 	end datetime NOT NULL,
 	end_registration datetime NOT NULL,
 	entry_link varchar(255) NOT NULL,
-	gender varchar(1) NOT NULL,
+	format varchar(255) NOT NULL,
 	league varchar(255) NOT NULL,
 	link varchar(255) NOT NULL,
 	live_scoring_link varchar(255) NOT NULL,

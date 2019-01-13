@@ -9,64 +9,70 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// TournamentRepository implements VolleynetRepository interface
+// TournamentRepository implements VolleynetRepository interface.
 type TournamentRepository struct {
 	DB *sqlx.DB
 }
 
-// Get loads a tournament by its id
+// Get loads a tournament by its id.
 func (s *TournamentRepository) Get(tournamentID int) (*volleynet.FullTournament, error) {
 	return s.scanOne("tournament/select-by-id", tournamentID)
 }
 
-// All loads all tournaments
-// Note: should only be used for debugging
+// All loads all tournaments.
+// Note: should only be used for debugging.
 func (s *TournamentRepository) All() ([]*volleynet.FullTournament, error) {
 	tournaments, err := s.scan("tournament/select-all")
 
 	return tournaments, errors.Wrap(err, "all tournaments")
 }
 
-// Season loads all tournaments of a season
+// Season loads all tournaments of a season.
 func (s *TournamentRepository) Season(season int) ([]*volleynet.FullTournament, error) {
 	tournaments, err := s.scan("tournament/select-by-season", season)
 
 	return tournaments, errors.Wrap(err, "season tournaments")
 }
 
-// New creates a new tournament
+// New creates a new tournament.
 func (s *TournamentRepository) New(t *volleynet.FullTournament) error {
 	_, err := exec(s.DB, "tournament/insert", t)
 
 	return errors.Wrap(err, "insert tournament")
 }
 
-// UpdatedSince gets all tournaments that were updated after a certain time
+// UpdatedSince gets all tournaments that were updated after a certain time.
 func (s *TournamentRepository) UpdatedSince(updatedSince time.Time) ([]*volleynet.FullTournament, error) {
 	tournaments, err := s.scan("tournament/select-by-updated-since", updatedSince)
 
 	return tournaments, errors.Wrap(err, "updated since tournaments")
 }
 
-// Update updates a tournament
+// Update updates a tournament.
 func (s *TournamentRepository) Update(t *volleynet.FullTournament) error {
 	err := update(s.DB, "tournament/update", t)
 
 	return errors.Wrap(err, "update tournament")
 }
 
-// Filter loads all tournaments by season, league and gender
+// Filter loads all tournaments by season, league and gender.
 func (s *TournamentRepository) Filter(
 	seasons []int,
 	leagues []string,
 	genders []string) ([]*volleynet.FullTournament, error) {
 
-	tournaments, err := s.scan("tournament/select-by-filter", genders, leagues, seasons)
+	tournaments, err := s.scan("tournament/select-by-filter",
+		genders,
+		leagues, 
+		seasons,
+	)
 
 	return tournaments, errors.Wrap(err, "filtered tournaments")
 }
 
-func (s *TournamentRepository) scan(queryName string, args ...interface{}) ([]*volleynet.FullTournament, error) {
+func (s *TournamentRepository) scan(queryName string, args ...interface{}) (
+	[]*volleynet.FullTournament, error) {
+
 	tournaments := []*volleynet.FullTournament{}
 
 	q := query(s.DB, queryName)
@@ -87,7 +93,7 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) ([]*v
 			&t.ID,
 			&t.CreatedAt,
 			&t.UpdatedAt,
-			&t.Gender,
+			&t.Format,
 			&t.Start,
 			&t.End,
 			&t.Name,
@@ -106,7 +112,7 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) ([]*v
 			&t.Organiser,
 			&t.Phone,
 			&t.Email,
-			&t.Web,
+			&t.Website,
 			&t.CurrentPoints,
 			&t.LivescoringLink,
 			&t.Latitude,
@@ -128,7 +134,7 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) ([]*v
 func (s *TournamentRepository) scanOne(query string, args ...interface{}) (
 	*volleynet.FullTournament, error) {
 
-	tournaments, err := s.scan(query, args)
+	tournaments, err := s.scan(query, args...)
 
 	if err != nil {
 		return nil, err

@@ -1,8 +1,8 @@
-UPDATE volleynet_tournaments SET
+UPDATE tournaments SET
 	updated_at = CURRENT_TIMESTAMP,
-	gender = ?,
-	start = ?,
-	end = ?,
+	format = ?,
+	start_date = ?,
+	end_date = ?,
 	name = ?,
 	league = ?,
 	link = ?,
@@ -19,7 +19,7 @@ UPDATE volleynet_tournaments SET
 	organiser = ?,
 	phone = ?,
 	email = ?,
-	web = ?,
+	website = ?,
 	current_points = ?,
 	live_scoring_link = ?,
 	loc_lat = ?,

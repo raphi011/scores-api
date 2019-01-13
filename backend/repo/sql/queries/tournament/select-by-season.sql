@@ -2,9 +2,9 @@ SELECT
 	t.id,
 	t.created_at,
 	t.updated_at,
-	t.gender,
-	t.start,
-	t.end,
+	t.format,
+	t.start_date,
+	t.end_date,
 	t.name,
 	t.league,
 	t.link,
@@ -21,12 +21,12 @@ SELECT
 	t.organiser,
 	t.phone,
 	t.email,
-	t.web,
+	t.website,
 	t.current_points,
 	t.live_scoring_link,
 	t.loc_lat,
 	t.loc_lon,
 	t.season,
 	t.signedup_teams
-FROM volleynet_tournaments t
+FROM tournaments t
 WHERE t.season = ?

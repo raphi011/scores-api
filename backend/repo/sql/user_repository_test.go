@@ -19,11 +19,11 @@ func TestCreateUser(t *testing.T) {
 	})
 
 	if err != nil {
-		t.Fatalf("userRepository.Create() err: %s", err)
+		t.Fatalf("userRepository.New() err: %s", err)
 	}
 
 	if user.ID == 0 {
-		t.Fatalf("userRepository.Create(), want ID != 0, got 0")
+		t.Fatalf("userRepository.New(), want ID != 0, got 0")
 	}
 
 	userByEmail, err := userRepo.ByEmail(email)
