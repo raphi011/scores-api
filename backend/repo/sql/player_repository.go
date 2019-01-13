@@ -1,7 +1,7 @@
 package sql
 
 import (
-	"database/sql"
+	"github.com/jmoiron/sqlx"
 
 	"github.com/pkg/errors"
 
@@ -14,79 +14,47 @@ type PlayerRepository struct {
 }
 
 // Ladder gets all players of the passed gender that have a rank.
-func (s *PlayerRepository) Ladder(gender string) ([]volleynet.Player, error) {
-	return scanVolleynetPlayers(s.DB, query("player/select-ladder"), gender)
+func (s *PlayerRepository) Ladder(gender string) ([]*volleynet.Player, error) {
+	return s.scan("player/select-ladder", gender)
 }
 
 // All loads all players.
 // Note: should only be used for debugging.
-func (s *PlayerRepository) All() ([]volleynet.Player, error) {
-	return scanVolleynetPlayers(s.DB, query("player/select-all"))
+func (s *PlayerRepository) All() ([]*volleynet.Player, error) {
+	players, err := s.scan("player/select-all")
+
+	return players, errors.Wrap(err, "all players")
 }
 
 // Get loads a player.
 func (s *PlayerRepository) Get(id int) (*volleynet.Player, error) {
-	row := s.DB.QueryRow(
-		query("player/select-by-id"),
-		id,
-	)
+	player, err := s.scanOne("player/select-by-id", id)
 
-	return scanVolleynetPlayer(row)
+	return player, errors.Wrap(err, "get player")
 }
 
 // New creates a new player.
 func (s *PlayerRepository) New(p *volleynet.Player) error {
-	_, err := s.DB.Exec(query("player/insert"),
-		p.ID,
-		p.FirstName,
-		p.LastName,
-		p.Birthday,
-		p.Gender,
-		p.TotalPoints,
-		p.Rank,
-		p.Club,
-		p.CountryUnion,
-		p.License,
-	)
+	_, err := exec(s.DB, "player/insert", p)
 
-	return err
+	return errors.Wrap(err, "new player")
 }
 
 // Update updates a player.
 func (s *PlayerRepository) Update(p *volleynet.Player) error {
-	result, err := s.DB.Exec(
-		query("player/update"),
-		p.FirstName,
-		p.LastName,
-		p.Birthday,
-		p.Gender,
-		p.TotalPoints,
-		p.Rank,
-		p.Club,
-		p.CountryUnion,
-		p.License,
-		p.ID)
+	err := update(s.DB, "player/update", p)
 
-	if err != nil {
-		return err
-	}
-
-	rowsAffected, err := result.RowsAffected()
-
-	if err != nil {
-		return err
-	}
-
-	if rowsAffected != 1 {
-		return errors.New("Player not found")
-	}
-
-	return nil
+	return errors.Wrap(err, "update player")
 }
 
-func scanVolleynetPlayers(db *sqlx.DB, query string, args ...interface{}) ([]volleynet.Player, error) {
-	players := []volleynet.Player{}
-	rows, err := db.Query(query, args...)
+func (s *PlayerRepository) scan(queryName string, args ...interface{}) (
+	[]*volleynet.Player, error) {
+
+	players := []*volleynet.Player{}
+
+	q := query(s.DB, queryName)
+
+	rows, err := s.DB.Query(q, args...)
 
 	if err != nil {
 		return nil, err
@@ -95,37 +63,43 @@ func scanVolleynetPlayers(db *sqlx.DB, query string, args ...interface{}) ([]vol
 	defer rows.Close()
 
 	for rows.Next() {
-		player, err := scanVolleynetPlayer(rows)
+		p := &volleynet.Player{}
+
+		err := rows.Scan(
+			&p.ID,
+			&p.FirstName,
+			&p.LastName,
+			&p.Birthday,
+			&p.Gender,
+			&p.TotalPoints,
+			&p.Rank,
+			&p.Club,
+			&p.CountryUnion,
+			&p.License,
+		)
 
 		if err != nil {
 			return nil, err
 		}
 
-		players = append(players, *player)
+		players = append(players, p)
 	}
 
 	return players, nil
 }
 
-func scanVolleynetPlayer(scanner scan) (*volleynet.Player, error) {
-	p := &volleynet.Player{}
+func (s *PlayerRepository) scanOne(query string, args ...interface{}) (
+	*volleynet.Player, error) {
 
-	err := scanner.Scan(
-		&p.ID,
-		&p.FirstName,
-		&p.LastName,
-		&p.Birthday,
-		&p.Gender,
-		&p.TotalPoints,
-		&p.Rank,
-		&p.Club,
-		&p.CountryUnion,
-		&p.License,
-	)
+	players, err := s.scan(query, args)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return p, nil
+	if len(players) >= 1 {
+		return players[0], nil
+	}
+
+	return nil, nil
 }

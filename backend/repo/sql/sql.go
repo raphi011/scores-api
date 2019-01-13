@@ -1,17 +1,17 @@
 package sql
 
 import (
+	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/raphi011/scores"
-	"github.com/pkg/errors"
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	log "github.com/sirupsen/logrus"
 )
 
-var queries packr.Box
+var queries *packr.Box
 
 func init() {
-	queries = packr.NewBox("./queries")
+	queries = packr.New("sql", "./queries")
 }
 
 func loadQuery(name string) string {
@@ -28,35 +28,75 @@ func namedQuery(name string) string {
 	return loadQuery(name)
 }
 
-func query(name string) string {
-	return sqlx.Rebind(loadQuery(q))
+func query(db *sqlx.DB, queryName string) string {
+	return db.Rebind(loadQuery(queryName))
 }
 
 type model interface {
 	SetID(id int)
 }
 
-func insert(db *sqlx.DB, queryName string, entity model) (int, error) {
+func update(db *sqlx.DB, queryName string, entity interface{}) error {
+	result, err := exec(db, queryName, entity)
+
+	if err != nil {
+		return mapError(err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected != 1 {
+		return scores.ErrorNotFound
+	}
+
+	return nil
+}
+
+func exec(db *sqlx.DB, queryName string, entity interface{}) (sql.Result, error) {
+	result, err := db.NamedExec(
+		namedQuery(queryName),
+		entity,
+	)
+
+	return result, mapError(err)
+}
+
+func insertSetID(db *sqlx.DB, queryName string, entity model) error {
 	var id int
 	var err error
 
-	// doesn't support `LastInsertID()`
 	if db.DriverName() == "postgres" {
-		err = db.NamedQuery(
+		var rows *sqlx.Rows
+		// doesn't support `LastInsertID()`
+		rows, err = db.NamedQuery(
 			namedQuery(queryName),
-			entity
-		).Scan(&id)
+			entity)
 
+		if err != nil {
+			return mapError(nil)
+		}
+
+		defer rows.Close()
+
+		if rows.Next() {
+			rows.Scan(&id)
+		}
 	} else {
-		var result db.Result
+		var result sql.Result
+		var bigID int64
 
 		result, err = db.NamedExec(
-			query,
-			entity
+			query(db, queryName),
+			entity,
 		)
 
 		if err == nil {
-			id, err = result.LastInsertId()
+			bigID, err = result.LastInsertId()
+			id = int(bigID)
 		}
 	}
 

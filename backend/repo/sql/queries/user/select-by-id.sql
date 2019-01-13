@@ -1,15 +1,13 @@
 SELECT
     u.id,
-    u.email,
-    COALESCE(u.profile_image_url, "") as profile_image_url,
-    COALESCE(p.id, 0) as player_id,
     u.created_at,
-    u.salt,
+    u.email,
     u.hash,
     COALESCE(u.iterations, 0) as iterations,
-    u.volleynet_user_id,
+    COALESCE(u.profile_image_url, "") as profile_image_url,
+    u.role,
+    u.salt,
     u.volleynet_login,
-    u.role
+    u.volleynet_user_id
 FROM users u
-LEFT JOIN players p on u.id = p.user_id
 WHERE u.deleted_at is null and u.id = ?

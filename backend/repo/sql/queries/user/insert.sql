@@ -12,11 +12,12 @@ INSERT INTO users (
 VALUES (
     :createdAt,
     :email,
-    :profileImageUrl,
-    :volleynetUserId,
-    :volleynetLogin,
+    :profileimageurl,
+    :volleynetuserid,
+    :volleynetlogin,
     :role,
     :salt,
     :hash,
     :iterations
 )
+RETURNING id

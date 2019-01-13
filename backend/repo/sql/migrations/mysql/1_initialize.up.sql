@@ -1,16 +1,17 @@
 CREATE TABLE users (
 	id integer PRIMARY KEY AUTO_INCREMENT,
+
 	created_at datetime NOT NULL,
-	updated_at datetime,
 	deleted_at datetime,
-	role varchar(32) NOT NULL,
-	volleynet_login varchar(64),
-	volleynet_user_id integer,
 	email varchar(255) NOT NULL UNIQUE,
-	profile_image_url varchar(255) NOT NULL,
-	salt blob,
 	hash blob,
-	iterations integer
+	iterations integer,
+	profile_image_url varchar(255) NOT NULL,
+	role varchar(32) NOT NULL,
+	salt blob,
+	updated_at datetime,
+	volleynet_user varchar(64),
+	volleynet_user_id integer
 );
 
 CREATE TABLE tournaments (

@@ -1,16 +1,17 @@
 CREATE TABLE users (
 	id                  serial      PRIMARY KEY,
+
 	created_at          timestamptz NOT NULL,
-	updated_at          timestamptz,
 	deleted_at          timestamptz,
-	role                text        NOT NULL,
-	volleynet_user      text,
-	volleynet_user_id   int,
     email               text        NOT NULL UNIQUE,
-	profile_image_url   text        NOT NULL,
-	salt                bytea,
 	hash                bytea,
-	iterations          int
+	iterations          int,
+	profile_image_url   text        NOT NULL,
+	role                text        NOT NULL,
+	salt                bytea,
+	updated_at          timestamptz,
+	volleynet_user      text,
+	volleynet_user_id   int
 );
 
 CREATE TABLE tournaments (

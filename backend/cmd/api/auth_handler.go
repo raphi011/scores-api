@@ -24,10 +24,10 @@ type loginRouteOrUserDto struct {
 }
 
 type userDto struct {
-	ID              uint          `json:"id"`
+	ID              int          `json:"id"`
 	Email           string        `json:"email"`
 	Player          scores.Player `json:"player"`
-	PlayerID        uint          `json:"playerId"`
+	PlayerID        int          `json:"playerId"`
 	ProfileImageURL string        `json:"profileImageUrl"`
 }
 
@@ -150,7 +150,7 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
 	if userID := session.Get("user-id"); userID != nil {
-		user, err := a.userService.ByID(userID.(uint))
+		user, err := a.userService.ByID(userID)
 
 		if err != nil {
 			session.Delete("user-id")

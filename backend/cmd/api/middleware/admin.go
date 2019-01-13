@@ -14,7 +14,7 @@ func Admin(userService *scores.UserService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log := logger.Get(c)
 		session := sessions.Default(c)
-		userID := session.Get("user-id").(uint)
+		userID := session.Get("user-id")
 
 		if !userService.HasRole(userID, "admin") {
 			log.Print("unauthorized")

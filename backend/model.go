@@ -6,7 +6,7 @@ import (
 
 // Model is an entity with a primary key `ID`.
 type Model struct {
-	ID        uint       `json:"id"`
+	ID        int       `json:"id" db:"id"`
 }
 
 // SetID sets the ID on the model
@@ -18,8 +18,8 @@ func (m *Model) SetID(id int) {
 // `DeletedAt` to the model.
 type TrackedModel struct {
 	Model
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"-"`
-	DeletedAt *time.Time `json:"-"`
+	CreatedAt time.Time  `json:"createdAt" db:"createdAt"`
+	UpdatedAt time.Time  `json:"-" db:"updatedAt"`
+	DeletedAt *time.Time `json:"-" db:"deletedAt"`
 
 }
