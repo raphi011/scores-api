@@ -1,10 +1,4 @@
-DELETE FROM volleynet_tournament_teams;
-DELETE FROM volleynet_players;
-DELETE FROM volleynet_tournaments;
-DELETE FROM matches;
-DELETE FROM teams;
-DELETE FROM group_players;
-DELETE FROM groups;
+DELETE FROM tournament_teams;
 DELETE FROM players;
+DELETE FROM tournaments;
 DELETE FROM users;
-DELETE FROM db_version;

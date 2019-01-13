@@ -3,7 +3,7 @@ SET
     profile_image_url = :createdAt,
     email = :email,
     volleynet_user_id = :volleynetuserid,
-    volleynet_login = :volleynetlogin,
+    volleynet_user = :volleynetuser,
     role = :role,
     salt = :salt,
     hash = :hash,

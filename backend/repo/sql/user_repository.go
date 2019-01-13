@@ -49,7 +49,7 @@ func (s *UserRepository) ByEmail(email string) (*scores.User, error) {
 	return user, errors.Wrap(err, "byEmail user")
 }
 
-func  (s *UserRepository) scan(queryName string, args ...interface{}) (
+func (s *UserRepository) scan(queryName string, args ...interface{}) (
 	[]*scores.User, error) {
 
 	users := []*scores.User{}
@@ -76,7 +76,7 @@ func  (s *UserRepository) scan(queryName string, args ...interface{}) (
 			&u.ProfileImageURL,
 			&u.Role,
 			&u.PasswordInfo.Salt,
-			&u.VolleynetLogin,
+			&u.VolleynetUser,
 			&u.VolleynetUserID,
 		)
 

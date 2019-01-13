@@ -6,7 +6,7 @@ type User struct {
 	Email           string       `json:"email"`
 	ProfileImageURL string       `json:"profileImageUrl"`
 	VolleynetUserID int          `json:"volleynetUserId"`
-	VolleynetLogin  string       `json:"volleynetLogin"`
+	VolleynetUser  string       `json:"volleynetLogin"`
 	Role            string       `json:"role"`
 	PasswordInfo
 }
