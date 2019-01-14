@@ -59,10 +59,10 @@ func (s *TournamentRepository) Update(t *volleynet.FullTournament) error {
 func (s *TournamentRepository) Filter(
 	seasons []int,
 	leagues []string,
-	genders []string) ([]*volleynet.FullTournament, error) {
+	formats []string) ([]*volleynet.FullTournament, error) {
 
 	tournaments, err := s.scan("tournament/select-by-filter",
-		genders,
+		formats,
 		leagues, 
 		seasons,
 	)
@@ -75,7 +75,13 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) (
 
 	tournaments := []*volleynet.FullTournament{}
 
-	q := query(s.DB, queryName)
+	q, args, err := sqlx.In(loadQuery(queryName), args...)
+
+	if err != nil {
+		return tournaments, errors.Wrap(err, "creating query")
+	}
+
+	q = s.DB.Rebind(q)
 
 	rows, err := s.DB.Query(q, args...)
 
