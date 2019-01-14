@@ -5,6 +5,7 @@ require (
 	github.com/andybalholm/cascadia v1.0.0 // indirect
 	github.com/bshuster-repo/logrus-logstash-hook v0.4.1
 	github.com/cenkalti/backoff v2.0.0+incompatible
+	github.com/corpix/uarand v0.0.0 // indirect
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
@@ -16,6 +17,7 @@ require (
 	github.com/google/go-cmp v0.2.0
 	github.com/google/uuid v1.0.0
 	github.com/gorilla/sessions v1.1.3 // indirect
+	github.com/icrowley/fake v0.0.0-20180203215853-4178557ae428 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.5 // indirect
@@ -28,6 +30,7 @@ require (
 	github.com/sirupsen/logrus v1.3.0
 	github.com/spf13/afero v1.2.0 // indirect
 	github.com/stretchr/testify v1.3.0
+	github.com/wawandco/fako v0.0.0-20180828010250-c36a0bc97398
 	golang.org/x/crypto v0.0.0-20190103213133-ff983b9c42bc
 	golang.org/x/net v0.0.0-20190110200230-915654e7eabc // indirect
 	golang.org/x/oauth2 v0.0.0-20181003184128-c57b0facaced

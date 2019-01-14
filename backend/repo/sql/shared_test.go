@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func setupDB(t *testing.T) *sqlx.DB {
+func setupDB(t testing.TB) *sqlx.DB {
 	t.Helper()
 
 	dbProvider := "sqlite3"
@@ -36,7 +36,7 @@ func setupDB(t *testing.T) *sqlx.DB {
 	return db
 }
 
-func assert(t *testing.T, message string, err error) {
+func assert(t testing.TB, message string, err error) {
 	if err != nil {
 		t.Fatalf(message, err)
 	}

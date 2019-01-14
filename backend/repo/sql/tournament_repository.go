@@ -20,9 +20,16 @@ func (s *TournamentRepository) Get(tournamentID int) (*volleynet.FullTournament,
 
 // New creates a new tournament.
 func (s *TournamentRepository) New(t *volleynet.FullTournament) (*volleynet.FullTournament, error) {
-	_, err := exec(s.DB, "tournament/insert", t)
+	err := s.exec("tournament/insert", t)
 
 	return t, errors.Wrap(err, "insert tournament")
+}
+
+// NewBatch creates multiple new tournaments
+func (s *TournamentRepository) NewBatch(t ...*volleynet.FullTournament) error {
+	err := s.exec("tournament/insert", t...)
+
+	return errors.Wrap(err, "insert tournament")
 }
 
 // Update updates a tournament.
@@ -112,6 +119,24 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) (
 	}
 
 	return tournaments, nil
+}
+
+func (s *TournamentRepository) exec(queryName string, entities ...*volleynet.FullTournament) error {
+	stmt, err := s.DB.PrepareNamed(namedQuery(queryName))
+
+	if err != nil {
+		return mapError(err)
+	}
+
+	for _, entity := range entities {
+		_, err := stmt.Exec(entity)
+
+		if err != nil {
+			return mapError(err)
+		}
+	}
+
+	return nil
 }
 
 func (s *TournamentRepository) scanOne(query string, args ...interface{}) (

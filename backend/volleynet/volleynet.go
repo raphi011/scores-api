@@ -51,11 +51,11 @@ const (
 type Tournament struct {
 	Start            time.Time `json:"start"`
 	End              time.Time `json:"end"`
-	Name             string    `json:"name"`
+	Name             string    `json:"name" fako:"city"`
 	Season           int       `json:"season"`
 	League           string    `json:"league"`
 	Phase            string    `json:"phase"`
-	Link             string    `json:"link"`
+	Link             string    `json:"link" fako:"domain_name"` 
 	EntryLink        string    `json:"entryLink"`
 	ID               int       `json:"id"`
 	Status           string    `json:"status"` // can be `StatusUpcoming`, `StatusDone` or `StatusCanceled`
@@ -71,11 +71,11 @@ type FullTournament struct {
 	EndRegistration time.Time        `json:"endRegistration"`
 	Teams           []TournamentTeam `json:"teams"`
 	Location        string           `json:"location"`
-	HTMLNotes       string           `json:"htmlNotes"`
+	HTMLNotes       string           `json:"htmlNotes" fako:"paragraph"`
 	Mode            string           `json:"mode"`
-	Organiser       string           `json:"organiser"`
-	Phone           string           `json:"phone"`
-	Email           string           `json:"email"`
+	Organiser       string           `json:"organiser" fako:"full_name"`
+	Phone           string           `json:"phone" fako:"phone"`
+	Email           string           `json:"email" fako:"email_address"`
 	Website         string           `json:"website"`
 	CurrentPoints   string           `json:"currentPoints"`
 	LivescoringLink string           `json:"livescoringLink"`

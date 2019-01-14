@@ -52,7 +52,7 @@ func update(db *sqlx.DB, queryName string, entity interface{}) error {
 	if rowsAffected != 1 {
 		return scores.ErrNotFound
 	}
-
+	
 	return nil
 }
 
@@ -63,6 +63,24 @@ func exec(db *sqlx.DB, queryName string, entity interface{}) (sql.Result, error)
 	)
 
 	return result, mapError(err)
+}
+
+func execMultiple(db *sqlx.DB, queryName string, entities ...interface{}) error {
+	stmt, err := db.PrepareNamed(namedQuery(queryName))
+
+	if err != nil {
+		return mapError(err)
+	}
+
+	for _, entity := range entities {
+		_, err := stmt.Exec(entity)
+
+		if err != nil {
+			return mapError(err)
+		}
+	}
+
+	return nil
 }
 
 func insertSetID(db *sqlx.DB, queryName string, entity model) error {

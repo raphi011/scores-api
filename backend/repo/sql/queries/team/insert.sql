@@ -12,13 +12,13 @@ INSERT INTO volleynet_tournament_teams
 )
 VALUES
 (
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?
+	:tournamentid,
+	:player1Id,
+	:player2Id,
+	:rank,
+	:seed,
+	:totalpoints,
+	:wonpoints,
+	:prizemoney,
+	:deregistered
 )
