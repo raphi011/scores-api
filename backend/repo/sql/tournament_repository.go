@@ -2,7 +2,6 @@ package sql
 
 import (
 	"github.com/jmoiron/sqlx"
-	"time"
 
 	"github.com/pkg/errors"
 
@@ -27,25 +26,11 @@ func (s *TournamentRepository) All() ([]*volleynet.FullTournament, error) {
 	return tournaments, errors.Wrap(err, "all tournaments")
 }
 
-// Season loads all tournaments of a season.
-func (s *TournamentRepository) Season(season int) ([]*volleynet.FullTournament, error) {
-	tournaments, err := s.scan("tournament/select-by-season", season)
-
-	return tournaments, errors.Wrap(err, "season tournaments")
-}
-
 // New creates a new tournament.
-func (s *TournamentRepository) New(t *volleynet.FullTournament) error {
+func (s *TournamentRepository) New(t *volleynet.FullTournament) (*volleynet.FullTournament, error) {
 	_, err := exec(s.DB, "tournament/insert", t)
 
-	return errors.Wrap(err, "insert tournament")
-}
-
-// UpdatedSince gets all tournaments that were updated after a certain time.
-func (s *TournamentRepository) UpdatedSince(updatedSince time.Time) ([]*volleynet.FullTournament, error) {
-	tournaments, err := s.scan("tournament/select-by-updated-since", updatedSince)
-
-	return tournaments, errors.Wrap(err, "updated since tournaments")
+	return t, errors.Wrap(err, "insert tournament")
 }
 
 // Update updates a tournament.

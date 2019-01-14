@@ -11,13 +11,12 @@ func TestCreateTournament(t *testing.T) {
 	db := setupDB(t)
 	tournamentRepo :=  &TournamentRepository{DB: db}
 
-	tournament := &volleynet.FullTournament{
+	tournament, err := tournamentRepo.New(&volleynet.FullTournament{
 		Tournament: volleynet.Tournament{
 		 ID: 1,
 		},
 		Teams: []volleynet.TournamentTeam{},
-	}
-	err := tournamentRepo.New(tournament)
+	})
 
 	if err != nil {
 		t.Fatalf("tournamentRepository.New(), err: %s", err)
@@ -33,7 +32,6 @@ func TestCreateTournament(t *testing.T) {
 		t.Fatalf("tournaments are not equal:\n%s", cmp.Diff(tournament, persistedTournament))
 	}
 }
-
 
 func TestFilterTournament(t *testing.T) {
 	db := setupDB(t)
@@ -97,4 +95,27 @@ func TestFilterTournament(t *testing.T) {
 	}
 
 
+}
+
+func TestUpdateTournament(t *testing.T) {
+	db := setupDB(t)
+	tournamentRepo := &TournamentRepository{DB: db}
+
+	tournament, err := tournamentRepo.New(&volleynet.FullTournament{
+		Tournament: volleynet.Tournament{ ID: 1 },
+		Teams: []volleynet.TournamentTeam{},
+	})
+	assert(t, "couldn't persist tournament: %v", err)
+
+	tournament.Email = "test!"
+
+	err = tournamentRepo.Update(tournament)
+	assert(t, "couldnt update tournament: %v", err)
+
+	updatedTournament, err := tournamentRepo.Get(tournament.ID)
+	assert(t, "couldnt get tournament: %v", err)
+
+	if diff := cmp.Diff(tournament, updatedTournament); diff != "" {
+		t.Fatalf("tournaments are not equal:\n%s", diff)
+	}
 }

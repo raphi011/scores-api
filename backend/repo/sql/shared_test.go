@@ -22,24 +22,22 @@ func setupDB(t *testing.T) *sqlx.DB {
 	}
 
 	db, err := sqlx.Open(dbProvider, connectionString)
-
-	if err != nil {
-		t.Fatalf("unable to open db: %v", err)
-	}
+	assert(t, "unable to open db: %v", err)
 
 	err = db.Ping()
+	assert(t, "unable to connect to db: %v", err)
 
-	if err != nil {
-		t.Fatalf("unable to connect to db: %v", err)
-	}
+	err = migrateAll(dbProvider, db)
+	assert(t, "migration failed: %v", err)
 
-	if err = migrateAll(dbProvider, db); err != nil {
-		t.Fatalf("migration failed: %v", err)
-	}
+	_, err = exec(db, "test/delete-all", make(map[string]interface{}));
+	assert(t, "db cleanup failed: %v", err)
 
-	if _, err := exec(db, "test/delete-all", make(map[string]interface{})); err != nil {
-		t.Fatalf("db cleanup failed: %v", err)
-	}
-	
 	return db
+}
+
+func assert(t *testing.T, message string, err error) {
+	if err != nil {
+		t.Fatalf(message, err)
+	}
 }
