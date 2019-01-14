@@ -1,34 +1,38 @@
 jobs:
   include:
-    - stage: "Test"
-      name: "backend"
+    - stage: 'Test'
+      name: 'backend'
       language: go
-      go: "1.11"
-      script: go test ./... --race
+      go: '1.11'
+      script:
+        - cd backend
+        - go test ./... -race -cover
       env:
         - GO111MODULE=on
 
-    - name: "frontend"
+    - name: 'frontend'
       language: node_js
       node_js: node
-      install: npm --prefix ./web install ./web
-      script: npm --prefix ./web test
+      install: npm --prefix ./web-client install ./web-client
+      script: npm --prefix ./web-client test
 
-    - name: "lint-frontend"
+    - name: 'lint-frontend'
       language: node_js
       node_js: node
-      install: npm --prefix ./web install ./web
+      install: npm --prefix ./web-client install ./web-client
       script:
-        - npm --prefix ./web run ci-lint
-        - npm --prefix ./web run ci-build
+        - npm --prefix ./web-client run ci-lint
+        - npm --prefix ./web-client run ci-build
 
-    - name: "lint-backend"
-      language: "go"
-      go: "1.11"
+    - name: 'lint-backend'
+      language: 'go'
+      go: '1.11'
       install: go get github.com/mgechev/revive
-      script: revive -exclude volleynet/mocks -config ./revive.toml -formatter friendly ./...
+      script:
+        - cd backend
+        - revive -exclude volleynet/mocks -config ./revive.toml -formatter friendly ./...
 
-    - stage: "Deploy"
+    - stage: 'Deploy'
       script: skip
       language: generic
       if: branch IN (master, development) and tag IS present
