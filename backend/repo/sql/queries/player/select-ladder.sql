@@ -9,5 +9,5 @@ SELECT
 	p.club,
 	p.country_union,
 	p.license
-FROM volleynet_players p
+FROM players p
 WHERE p.rank > 0 AND p.gender = ? ORDER BY p.rank

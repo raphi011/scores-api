@@ -205,7 +205,3 @@ func randomTournaments(db *sqlx.DB, count, run int) []*volleynet.FullTournament 
 
 	return tournaments
 }
-
-// func createRandomTournaments(t testing.TB, ) {
-
-// }

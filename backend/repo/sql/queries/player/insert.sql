@@ -1,4 +1,4 @@
-INSERT INTO volleynet_players
+INSERT INTO players
 (
 	id,
 	created_at,
@@ -15,16 +15,16 @@ INSERT INTO volleynet_players
 )
 VALUES
 (
-	?,
-	CURRENT_TIMESTAMP,
-	CURRENT_TIMESTAMP,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?,
-	?
+	:id,
+	:createdAt,
+	:updatedAt,
+	:firstname,
+	:lastname,
+	:birthday,
+	:gender,
+	:totalpoints,
+	:rank,
+	:club,
+	:countryunion,
+	:license
 )

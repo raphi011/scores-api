@@ -2,11 +2,13 @@ package volleynet
 
 import (
 	"time"
+
+	"github.com/raphi011/scores"
 )
 
 // PlayerInfo contains all player information that the search player api returns
 type PlayerInfo struct {
-	ID        int       `json:"id"`
+	scores.TrackedModel
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	Birthday  time.Time `json:"birthday"`
@@ -15,6 +17,7 @@ type PlayerInfo struct {
 // Player adds additional information to `PlayerInfo`
 type Player struct {
 	PlayerInfo
+
 	Gender       string `json:"gender"`
 	TotalPoints  int    `json:"totalPoints"`
 	Rank         int    `json:"rank"`

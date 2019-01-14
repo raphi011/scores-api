@@ -1,4 +1,4 @@
-UPDATE volleynet_players SET
+UPDATE players SET
 	updated_at = CURRENT_TIMESTAMP,
 	first_name = ?,
 	last_name = ?,

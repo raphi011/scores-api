@@ -23,6 +23,6 @@ SELECT
 	t.prize_money,
 	t.deregistered
 FROM volleynet_tournament_teams t
-JOIN volleynet_players p1 on p1.id = t.volleynet_player_1_id
-JOIN volleynet_players p2 on p2.id = t.volleynet_player_2_id
+JOIN players p1 on p1.id = t.volleynet_player_1_id
+JOIN players p2 on p2.id = t.volleynet_player_2_id
 WHERE t.volleynet_tournament_id = ?

@@ -70,14 +70,18 @@ func (s *TeamRepository) Delete(t *volleynet.TournamentTeam) error {
 }
 
 // ByTournament loads all teams of a tournament.
-func (s *TeamRepository) ByTournament(tournamentID int) ([]*volleynet.TournamentTeam, error) {
+func (s *TeamRepository) ByTournament(tournamentID int) (
+	[]*volleynet.TournamentTeam, error) {
+
 	return s.scan(
 		"team/select-by-tournament-id",
 		tournamentID,
 	)
 }
 
-func (s *TeamRepository) scan(queryName string, args ...interface{}) ([]*volleynet.TournamentTeam, error) {
+func (s *TeamRepository) scan(queryName string, args ...interface{}) (
+	[]*volleynet.TournamentTeam, error) {
+
 	teams := []*volleynet.TournamentTeam{}
 
 	q := query(s.DB, queryName)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -18,14 +19,6 @@ func (s *PlayerRepository) Ladder(gender string) ([]*volleynet.Player, error) {
 	return s.scan("player/select-ladder", gender)
 }
 
-// All loads all players.
-// Note: should only be used for debugging.
-func (s *PlayerRepository) All() ([]*volleynet.Player, error) {
-	players, err := s.scan("player/select-all")
-
-	return players, errors.Wrap(err, "all players")
-}
-
 // Get loads a player.
 func (s *PlayerRepository) Get(id int) (*volleynet.Player, error) {
 	player, err := s.scanOne("player/select-by-id", id)
@@ -34,10 +27,10 @@ func (s *PlayerRepository) Get(id int) (*volleynet.Player, error) {
 }
 
 // New creates a new player.
-func (s *PlayerRepository) New(p *volleynet.Player) error {
+func (s *PlayerRepository) New(p *volleynet.Player) (*volleynet.Player, error) {
 	_, err := exec(s.DB, "player/insert", p)
 
-	return errors.Wrap(err, "new player")
+	return p, errors.Wrap(err, "new player")
 }
 
 // Update updates a player.
@@ -57,7 +50,7 @@ func (s *PlayerRepository) scan(queryName string, args ...interface{}) (
 	rows, err := s.DB.Query(q, args...)
 
 	if err != nil {
-		return nil, err
+		return players, err
 	}
 
 	defer rows.Close()
@@ -79,7 +72,7 @@ func (s *PlayerRepository) scan(queryName string, args ...interface{}) (
 		)
 
 		if err != nil {
-			return nil, err
+			return players, err
 		}
 
 		players = append(players, p)
@@ -91,7 +84,7 @@ func (s *PlayerRepository) scan(queryName string, args ...interface{}) (
 func (s *PlayerRepository) scanOne(query string, args ...interface{}) (
 	*volleynet.Player, error) {
 
-	players, err := s.scan(query, args)
+	players, err := s.scan(query, args...)
 
 	if err != nil {
 		return nil, err
@@ -101,5 +94,5 @@ func (s *PlayerRepository) scanOne(query string, args ...interface{}) (
 		return players[0], nil
 	}
 
-	return nil, nil
+	return nil, scores.ErrNotFound
 }
