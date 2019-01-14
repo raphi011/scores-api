@@ -16,7 +16,7 @@ func (a *debugHandler) postCreateAdmin(c *gin.Context) {
 
 	_, err := a.userService.ByEmail(testEmail)
 
-	if errors.Cause(err) == scores.ErrorNotFound {
+	if errors.Cause(err) == scores.ErrNotFound {
 		_, err = a.userService.New(testEmail, testPassword)
 
 		if err != nil {

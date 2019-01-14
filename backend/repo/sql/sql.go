@@ -50,7 +50,7 @@ func update(db *sqlx.DB, queryName string, entity interface{}) error {
 	}
 
 	if rowsAffected != 1 {
-		return scores.ErrorNotFound
+		return scores.ErrNotFound
 	}
 
 	return nil
@@ -115,7 +115,7 @@ func mapError(err error) error {
 	}
 
 	if err == sql.ErrNoRows {
-		return scores.ErrorNotFound
+		return scores.ErrNotFound
 	}
 
 	return err

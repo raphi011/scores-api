@@ -103,5 +103,5 @@ func (s *UserRepository) scanOne(query string, args ...interface{}) (
 		return users[0], nil
 	}
 
-	return nil, nil
+	return nil, scores.ErrNotFound
 }

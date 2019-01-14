@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"github.com/pkg/errors"
 	"github.com/google/go-cmp/cmp"
 	"testing"
 
@@ -40,6 +41,17 @@ func TestCreateUser(t *testing.T) {
 
 	if !cmp.Equal(userByEmail, userByID) {
 		t.Fatal("user byID and byEmail is not equal")
+	}
+}
+
+func TestUserNotFound(t *testing.T) {
+	db := setupDB(t)
+	userRepo := &UserRepository{DB: db}
+
+	_, err := userRepo.ByID(1)
+
+	if errors.Cause(err) != scores.ErrNotFound {
+		t.Errorf("userRepository.ByID(), want err = ErrNotFound, got: %v", err)
 	}
 }
 

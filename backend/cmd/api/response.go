@@ -32,7 +32,7 @@ func extractErrorInformation(err error) (code int, message string) {
 
 	cause := errors.Cause(err)
 
-	if cause == scores.ErrorNotFound {
+	if cause == scores.ErrNotFound {
 		code = http.StatusNotFound
 	} else if cause == scores.ErrorUnauthorized {
 		code = http.StatusUnauthorized

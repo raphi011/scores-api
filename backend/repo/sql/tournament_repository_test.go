@@ -93,8 +93,6 @@ func TestFilterTournament(t *testing.T) {
 	if len(tournaments) != 3 {
 		t.Fatalf("tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(tournaments))
 	}
-
-
 }
 
 func TestUpdateTournament(t *testing.T) {

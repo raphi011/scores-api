@@ -77,12 +77,15 @@ func (s *TeamRepository) ByTournament(tournamentID int) ([]*volleynet.Tournament
 	)
 }
 
-func (s *TeamRepository) scan(query string, args ...interface{}) ([]*volleynet.TournamentTeam, error) {
+func (s *TeamRepository) scan(queryName string, args ...interface{}) ([]*volleynet.TournamentTeam, error) {
 	teams := []*volleynet.TournamentTeam{}
-	rows, err := s.DB.Query(query, args...)
+
+	q := query(s.DB, queryName)
+
+	rows, err := s.DB.Query(q, args...)
 
 	if err != nil {
-		return nil, err
+		return nil, mapError(err)
 	}
 
 	defer rows.Close()

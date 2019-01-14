@@ -29,7 +29,7 @@ func (a *adminHandler) postUser(c *gin.Context) {
 
 	user, err := a.userService.ByEmail(userChanges.Email)
 
-	if errors.Cause(err) == scores.ErrorNotFound {
+	if errors.Cause(err) == scores.ErrNotFound {
 		user, err = a.userService.New(userChanges.Email, userChanges.Password)
 
 		if err != nil {

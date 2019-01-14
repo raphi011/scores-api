@@ -1,11 +1,11 @@
 package sql
 
 import (
-	"github.com/jmoiron/sqlx"
-
-	"github.com/pkg/errors"
-
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
+
+	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 )
 
 // TournamentRepository implements VolleynetRepository interface.
@@ -16,14 +16,6 @@ type TournamentRepository struct {
 // Get loads a tournament by its id.
 func (s *TournamentRepository) Get(tournamentID int) (*volleynet.FullTournament, error) {
 	return s.scanOne("tournament/select-by-id", tournamentID)
-}
-
-// All loads all tournaments.
-// Note: should only be used for debugging.
-func (s *TournamentRepository) All() ([]*volleynet.FullTournament, error) {
-	tournaments, err := s.scan("tournament/select-all")
-
-	return tournaments, errors.Wrap(err, "all tournaments")
 }
 
 // New creates a new tournament.
@@ -135,5 +127,5 @@ func (s *TournamentRepository) scanOne(query string, args ...interface{}) (
 		return tournaments[0], nil
 	}
 
-	return nil, nil
+	return nil, scores.ErrNotFound
 }
