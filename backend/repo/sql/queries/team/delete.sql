@@ -1,4 +1,5 @@
-DELETE FROM volleynet_tournament_teams
-WHERE volleynet_tournament_id = ? 
-	AND volleynet_player_1_id = ?
-	AND volleynet_player_2_id = ?
+DELETE FROM tournament_teams
+WHERE
+	tournament_id = ? AND
+	player_1_id = ? AND
+	player_2_id = ?

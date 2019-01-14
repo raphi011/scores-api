@@ -1,6 +1,6 @@
 SELECT
-	t.volleynet_tournament_id,
-	t.volleynet_player_1_id,
+	t.tournament_id,
+	t.player_1_id,
 	p1.first_name,
 	p1.last_name,
 	p1.total_points,
@@ -8,7 +8,7 @@ SELECT
 	p1.birthday,
 	p1.license,
 	p1.gender,
-	t.volleynet_player_2_id,
+	t.player_2_id,
 	p2.first_name,
 	p2.last_name,
 	p2.total_points,
@@ -22,7 +22,7 @@ SELECT
 	t.won_points,
 	t.prize_money,
 	t.deregistered
-FROM volleynet_tournament_teams t
-JOIN players p1 on p1.id = t.volleynet_player_1_id
-JOIN players p2 on p2.id = t.volleynet_player_2_id
-WHERE t.volleynet_tournament_id = ?
+FROM tournament_teams t
+JOIN players p1 on p1.id = t.player_1_id
+JOIN players p2 on p2.id = t.player_2_id
+WHERE t.tournament_id = ?

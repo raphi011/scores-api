@@ -13,16 +13,16 @@ type TeamRepository struct {
 }
 
 // New creates a new team.
-func (s *TeamRepository) New(t *volleynet.TournamentTeam) error {
+func (s *TeamRepository) New(t *volleynet.TournamentTeam) (*volleynet.TournamentTeam, error) {
 	_, err := exec(s.DB,  "team/insert", t)
 
-	return errors.Wrap(err, "insert team")
+	return t, errors.Wrap(err, "insert team")
 }
 
 // NewBatch creates multiple new teams.
 func (s *TeamRepository) NewBatch(teams []*volleynet.TournamentTeam) error {
 	for _, t := range teams {
-		err := s.New(t)
+		_, err := s.New(t)
 
 		if err != nil {
 			return err

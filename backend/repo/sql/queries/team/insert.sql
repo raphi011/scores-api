@@ -1,8 +1,8 @@
-INSERT INTO volleynet_tournament_teams
+INSERT INTO tournament_teams
 (
-	volleynet_tournament_id,
-	volleynet_player_1_id,
-	volleynet_player_2_id,
+	tournament_id,
+	player_1_id,
+	player_2_id,
 	rank,
 	seed,
 	total_points,
@@ -13,8 +13,8 @@ INSERT INTO volleynet_tournament_teams
 VALUES
 (
 	:tournamentid,
-	:player1Id,
-	:player2Id,
+	:player1.id,
+	:player2.id,
 	:rank,
 	:seed,
 	:totalpoints,

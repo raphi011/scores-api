@@ -1,4 +1,4 @@
-UPDATE volleynet_tournament_teams SET
+UPDATE tournament_teams SET
 	rank = :rank,
 	seed = :seed,
 	total_points = :totalpoints,

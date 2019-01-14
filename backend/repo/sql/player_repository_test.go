@@ -65,29 +65,13 @@ func TestLadder(t *testing.T) {
 		t.Fatalf("ladder should be empty: %v", err)
 	}
 
-	newPlayers := []struct{
-		Gender string
-		TotalPoints int
-		Rank int
-		ID int
-	} {
-		{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
-		{ Gender: "m", TotalPoints: 4, Rank: 2, ID: 2 },
-		{ Gender: "m", TotalPoints: 0, Rank: 0, ID: 3 },
-		{ Gender: "w", TotalPoints: 4, Rank: 1, ID: 4 },
-	}
+	createPlayers(t, db,
+		P{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
+		P{ Gender: "m", TotalPoints: 4, Rank: 2, ID: 2 },
+		P{ Gender: "m", TotalPoints: 0, Rank: 0, ID: 3 },
+		P{ Gender: "w", TotalPoints: 4, Rank: 1, ID: 4 },
+	)
 
-	for _, p := range newPlayers {
-		_, err := playerRepo.New(&volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{
-				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: p.ID }},
-			},
-			Gender: p.Gender,
-			TotalPoints: p.TotalPoints,
-			Rank: p.Rank,
-		})
-		assert(t, "playerRepo.New() failed", err)
-	}
 
 	players, err = playerRepo.Ladder("m")
 	assert(t, "playerRepo.Ladder() failed", err)
