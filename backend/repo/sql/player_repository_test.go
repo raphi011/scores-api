@@ -30,3 +30,69 @@ func TestCreatePlayer(t *testing.T) {
 	}
 }
 
+func TestUpdatePlayer(t *testing.T) {
+	db := setupDB(t)
+	playerRepo := &PlayerRepository{DB: db}
+
+	player, err := playerRepo.New(&volleynet.Player{
+		PlayerInfo: volleynet.PlayerInfo{
+			TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 1 }},
+		},
+	})
+	assert(t, "couldn't persist player: %v", err)
+
+	player.FirstName = "test!"
+
+	err = playerRepo.Update(player)
+	assert(t, "couldnt update player: %v", err)
+
+	updatedPlayer, err := playerRepo.Get(player.ID)
+	assert(t, "couldnt get player: %v", err)
+
+	if diff := cmp.Diff(player, updatedPlayer); diff != "" {
+		t.Fatalf("players are not equal:\n%s", diff)
+	}
+}
+
+func TestLadder(t *testing.T) {
+	db := setupDB(t)
+	playerRepo := &PlayerRepository{DB: db}
+
+	players, err := playerRepo.Ladder("m")
+	assert(t, "playerRepo.Ladder() failed", err)
+
+	if len(players) != 0 {
+		t.Fatalf("ladder should be empty: %v", err)
+	}
+
+	newPlayers := []struct{
+		Gender string
+		TotalPoints int
+		Rank int
+		ID int
+	} {
+		{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
+		{ Gender: "m", TotalPoints: 4, Rank: 2, ID: 2 },
+		{ Gender: "m", TotalPoints: 0, Rank: 0, ID: 3 },
+		{ Gender: "w", TotalPoints: 4, Rank: 1, ID: 4 },
+	}
+
+	for _, p := range newPlayers {
+		_, err := playerRepo.New(&volleynet.Player{
+			PlayerInfo: volleynet.PlayerInfo{
+				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: p.ID }},
+			},
+			Gender: p.Gender,
+			TotalPoints: p.TotalPoints,
+			Rank: p.Rank,
+		})
+		assert(t, "playerRepo.New() failed", err)
+	}
+
+	players, err = playerRepo.Ladder("m")
+	assert(t, "playerRepo.Ladder() failed", err)
+
+	if len(players) != 2 {
+		t.Fatalf("len(ladder) should be 2 but is: %d", len(players))
+	}
+}
