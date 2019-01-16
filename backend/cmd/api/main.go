@@ -123,7 +123,7 @@ func newBroker() *events.Broker {
 	return broker
 }
 
-type Services struct {
+type handlerServices struct {
 	JobManager *job.Manager
 	User *services.User
 	Volleynet *services.Service
@@ -131,9 +131,9 @@ type Services struct {
 	Password services.Password
 }
 
-func createServices(provider string, connectionString string) (*Services, error) {
+func createServices(provider string, connectionString string) (*handlerServices, error) {
 	var repos *repo.Repositories
-	var s *Services
+	var s *handlerServices
 	var err error
 
 	switch provider {
@@ -210,7 +210,7 @@ func createServices(provider string, connectionString string) (*Services, error)
 	)
 
 
-	s = &Services{
+	s = &handlerServices{
 		JobManager: manager,
 		Scrape: scrapeService,
 		Volleynet: volleynetService,

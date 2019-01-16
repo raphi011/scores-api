@@ -8,7 +8,6 @@ import (
 	"github.com/wawandco/fako"
 	"github.com/google/go-cmp/cmp"
 	"github.com/raphi011/scores/volleynet"
-	"github.com/jmoiron/sqlx"
 )
 
 func TestCreateTournament(t *testing.T) {
@@ -17,7 +16,7 @@ func TestCreateTournament(t *testing.T) {
 
 	tournament, err := tournamentRepo.New(&volleynet.FullTournament{
 		Tournament: volleynet.Tournament{ ID: 1 },
-		Teams: []volleynet.TournamentTeam{},
+		Teams: []*volleynet.TournamentTeam{},
 	})
 
 	if err != nil {
@@ -49,7 +48,7 @@ func TestFilterTournament(t *testing.T) {
 			League: "amateur-tour",
 			Format: "m",
 		},
-		Teams: []volleynet.TournamentTeam{},
+		Teams: []*volleynet.TournamentTeam{},
 	}
 
 	tournament2 := &volleynet.FullTournament{
@@ -59,7 +58,7 @@ func TestFilterTournament(t *testing.T) {
 			League: "amateur-tour",
 			Format: "m",
 		},
-		Teams: []volleynet.TournamentTeam{},
+		Teams: []*volleynet.TournamentTeam{},
 	}
 
 	tournament3 := &volleynet.FullTournament{
@@ -69,7 +68,7 @@ func TestFilterTournament(t *testing.T) {
 			League: "pro-tour",
 			Format: "m",
 		},
-		Teams: []volleynet.TournamentTeam{},
+		Teams: []*volleynet.TournamentTeam{},
 	}
 
 	tournament4 := &volleynet.FullTournament{
@@ -79,7 +78,7 @@ func TestFilterTournament(t *testing.T) {
 			League: "amateur-tour",
 			Format: "m",
 		},
-		Teams: []volleynet.TournamentTeam{},
+		Teams: []*volleynet.TournamentTeam{},
 	}
 
 	tournamentRepo.New(tournament1)
@@ -107,7 +106,7 @@ func BenchmarkCreateTournament(b *testing.B) {
 
 	for n := 0; n < b.N; n++ {
 		b.StopTimer()
-		tournaments := randomTournaments(db, 1000, n)
+		tournaments := randomTournaments(1000, n)
 		b.StartTimer()
 
 		err := tournamentRepo.NewBatch(tournaments...)
@@ -123,7 +122,7 @@ func BenchmarkFilterTournament(b *testing.B) {
 	db := setupDB(b)
 	tournamentRepo := &TournamentRepository{DB: db}
 
-	tournaments := randomTournaments(db, 1000, 0)
+	tournaments := randomTournaments(1000, 0)
 	err := tournamentRepo.NewBatch(tournaments...)
 	assert(b, "failed to create random tournaments: %v", err)
 	b.StartTimer()
@@ -147,7 +146,7 @@ func TestUpdateTournament(t *testing.T) {
 
 	tournament, err := tournamentRepo.New(&volleynet.FullTournament{
 		Tournament: volleynet.Tournament{ ID: 1 },
-		Teams: []volleynet.TournamentTeam{},
+		Teams: []*volleynet.TournamentTeam{},
 	})
 	assert(t, "couldn't persist tournament: %v", err)
 
@@ -164,7 +163,7 @@ func TestUpdateTournament(t *testing.T) {
 	}
 }
 
-func randomTournaments(db *sqlx.DB, count, run int) []*volleynet.FullTournament {
+func randomTournaments(count, run int) []*volleynet.FullTournament {
 	tournaments := make([]*volleynet.FullTournament, count)
 	rand.Seed(time.Now().Unix())
 

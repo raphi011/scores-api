@@ -19,6 +19,7 @@ func init() {
 	queries = packr.New("sql", "./queries")
 }
 
+// Repositories returns a collection of all repositories with an SQL backend
 func Repositories(driverName, connectionString string) (*repo.Repositories, error) {
 	db, err := sqlx.Open(driverName, connectionString)
 

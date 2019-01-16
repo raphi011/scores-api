@@ -10,7 +10,7 @@ import (
 
 var store = cookie.NewStore([]byte("ultrasecret"))
 
-func initRouter(app app, services *Services) *gin.Engine {
+func initRouter(app app, services *handlerServices) *gin.Engine {
 	var router *gin.Engine
 	if app.production {
 		router = gin.Default()
