@@ -59,7 +59,7 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) (
 
 	tournaments := []*volleynet.FullTournament{}
 
-	q, args, err := sqlx.In(loadQuery(queryName), args...)
+	q, args, err := sqlx.In(loadQuery(s.DB, queryName), args...)
 
 	if err != nil {
 		return tournaments, errors.Wrap(err, "creating query")
@@ -122,7 +122,7 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) (
 }
 
 func (s *TournamentRepository) exec(queryName string, entities ...*volleynet.FullTournament) error {
-	stmt, err := s.DB.PrepareNamed(namedQuery(queryName))
+	stmt, err := s.DB.PrepareNamed(namedQuery(s.DB, queryName))
 
 	if err != nil {
 		return mapError(err)

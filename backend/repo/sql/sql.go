@@ -1,6 +1,8 @@
 package sql
 
 import (
+	"fmt"
+
 	"database/sql"
 	"github.com/jmoiron/sqlx"
 	"github.com/raphi011/scores"
@@ -14,22 +16,30 @@ func init() {
 	queries = packr.New("sql", "./queries")
 }
 
-func loadQuery(name string) string {
-	q, err := queries.FindString(name + ".sql")
+func loadQuery(db *sqlx.DB, name string) string {
+	var q string
+	var err error
 
-	if err != nil {
-		log.Fatalf("could not load sql query %s", name)
+	dbSpecificName := fmt.Sprintf("%s.%s.sql", name, db.DriverName())
+	genericName := fmt.Sprintf("%s.sql", name)
+
+	if q, err = queries.FindString(dbSpecificName); err == nil {
+		return q
+	} else if q, err = queries.FindString(genericName); err == nil {
+		return q
 	}
 
-	return q
+	log.Fatalf("could not load sql query %s: %v", name, err)
+
+	return ""
 }
 
-func namedQuery(name string) string {
-	return loadQuery(name)
+func namedQuery(db *sqlx.DB, name string) string {
+	return loadQuery(db, name)
 }
 
 func query(db *sqlx.DB, queryName string) string {
-	return db.Rebind(loadQuery(queryName))
+	return db.Rebind(loadQuery(db, queryName))
 }
 
 type model interface {
@@ -58,7 +68,7 @@ func update(db *sqlx.DB, queryName string, entity interface{}) error {
 
 func exec(db *sqlx.DB, queryName string, entity interface{}) (sql.Result, error) {
 	result, err := db.NamedExec(
-		namedQuery(queryName),
+		namedQuery(db, queryName),
 		entity,
 	)
 
@@ -66,7 +76,7 @@ func exec(db *sqlx.DB, queryName string, entity interface{}) (sql.Result, error)
 }
 
 func execMultiple(db *sqlx.DB, queryName string, entities ...interface{}) error {
-	stmt, err := db.PrepareNamed(namedQuery(queryName))
+	stmt, err := db.PrepareNamed(namedQuery(db, queryName))
 
 	if err != nil {
 		return mapError(err)
@@ -91,7 +101,7 @@ func insertSetID(db *sqlx.DB, queryName string, entity model) error {
 		var rows *sqlx.Rows
 		// doesn't support `LastInsertID()`
 		rows, err = db.NamedQuery(
-			namedQuery(queryName),
+			namedQuery(db, queryName),
 			entity)
 
 		if err != nil {

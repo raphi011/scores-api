@@ -84,11 +84,7 @@ func createTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 		persistedTournament, err := tournamentRepo.New(&volleynet.FullTournament{
 			Tournament: volleynet.Tournament{
 				ID: tournament.ID,
-				// Season: 2018,
-				// League: "pro-tour",
-				// Format: "m",
 			},
-			// Teams: []volleynet.TournamentTeam{},
 		})
 		assert(t, "tournamentRepo.New() failed", err)
 
@@ -96,4 +92,41 @@ func createTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 	}
 
 	return newTournaments
+}
+
+type TT struct {
+	TournamentID int     
+	TotalPoints  int     
+	Seed         int     
+	Rank         int     
+	WonPoints    int     
+	Player1      *volleynet.Player 
+	Player2      *volleynet.Player 
+	PrizeMoney   float32 
+	Deregistered bool    
+}
+
+func createTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.TournamentTeam {
+	newTeams := []*volleynet.TournamentTeam{}
+	teamRepo := &TeamRepository{DB: db}
+
+	for _, team := range teams {
+		persistedTeam, err := teamRepo.New(&volleynet.TournamentTeam{
+			TournamentID: team.TournamentID,
+			TotalPoints: team.TotalPoints,
+			Seed: team.Seed,
+			Rank: team.Rank,
+			WonPoints: team.WonPoints,
+			Player1: team.Player1,
+			Player2: team.Player2,
+			PrizeMoney: team.PrizeMoney,
+			Deregistered: team.Deregistered,
+		})
+
+		assert(t, "teamRepo.New() failed", err)
+
+		newTeams = append(newTeams, persistedTeam)
+	}
+
+	return newTeams
 }

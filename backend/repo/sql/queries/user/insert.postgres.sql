@@ -20,3 +20,4 @@ VALUES (
     :hash,
     :iterations
 )
+RETURNING id
