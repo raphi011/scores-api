@@ -5,9 +5,10 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/repo"
 )
 
-var _ scores.UserRepository = &UserRepository{}
+var _ repo.UserRepository = &UserRepository{}
 
 // UserRepository stores users.
 type UserRepository struct {

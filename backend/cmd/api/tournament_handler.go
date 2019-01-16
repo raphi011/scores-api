@@ -10,14 +10,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/services"
 	"github.com/raphi011/scores/volleynet/client"
 	"github.com/raphi011/scores/cmd/api/logger"
 )
 
 type volleynetHandler struct {
-	volleynetService *scores.VolleynetService
-	userService      *scores.UserService
+	volleynetService *services.Service
+	userService      *services.User
 }
 
 
@@ -39,7 +39,7 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	// }
 
 	tournaments, err := h.volleynetService.GetTournaments(
-		seasonNumber,
+		[]int{seasonNumber},
 		gender,
 		league,
 	)
@@ -113,7 +113,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 			logger.Get(c).Warnf("loading user by email: %s failed", userID.(string))
 		}
 
-		if user != nil && user.VolleynetLogin != su.Username ||
+		if user != nil && user.VolleynetUser != su.Username ||
 			user.VolleynetUserID != loginData.ID {
 
 			err = h.userService.SetVolleynetLogin(su.Username, loginData.ID)

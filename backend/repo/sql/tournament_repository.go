@@ -77,7 +77,7 @@ func (s *TournamentRepository) scan(queryName string, args ...interface{}) (
 
 	for rows.Next() {
 		t := &volleynet.FullTournament{}
-		t.Teams = []volleynet.TournamentTeam{}
+		t.Teams = []*volleynet.TournamentTeam{}
 
 		err := rows.Scan(
 			&t.ID,

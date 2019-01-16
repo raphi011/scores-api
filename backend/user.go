@@ -11,11 +11,10 @@ type User struct {
 	PasswordInfo
 }
 
-// UserRepository stores users
-type UserRepository interface {
-	New(*User) (*User, error)
-	ByID(userID int) (*User, error)
-	ByEmail(email string) (*User, error)
-	Update(*User) error
-	All() ([]*User, error)
+// PasswordInfo contains the passwords hash, it's corresponding salt
+// and the amount of PBKDF2 iterations it was hashed with.
+type PasswordInfo struct {
+	Salt       []byte
+	Hash       []byte
+	Iterations int
 }

@@ -3,9 +3,9 @@ package sync
 import "github.com/raphi011/scores/volleynet"
 
 // FindPlayer searches a player slice for a player, returns nil if not found
-func FindPlayer(players []volleynet.Player, playerID int) *volleynet.Player {
+func FindPlayer(players []*volleynet.Player, playerID int) *volleynet.Player {
 	for i := range players {
-		p := &players[i]
+		p := players[i]
 		if p.ID == playerID {
 			return p
 		}
@@ -15,9 +15,9 @@ func FindPlayer(players []volleynet.Player, playerID int) *volleynet.Player {
 }
 
 // FindTournament searches a tournament slice for a tournament, returns nil if not found
-func FindTournament(tournaments []volleynet.FullTournament, tournamentID int) *volleynet.FullTournament {
+func FindTournament(tournaments []*volleynet.FullTournament, tournamentID int) *volleynet.FullTournament {
 	for i := range tournaments {
-		t := &tournaments[i]
+		t := tournaments[i]
 
 		if t.ID == tournamentID {
 			return t
@@ -28,9 +28,9 @@ func FindTournament(tournaments []volleynet.FullTournament, tournamentID int) *v
 }
 
 // FindTeam searches a team slice for a team, returns nil if not found
-func FindTeam(teams []volleynet.TournamentTeam, tournamentID, player1ID, player2ID int) *volleynet.TournamentTeam {
+func FindTeam(teams []*volleynet.TournamentTeam, tournamentID, player1ID, player2ID int) *volleynet.TournamentTeam {
 	for i := range teams {
-		t := &teams[i]
+		t := teams[i]
 		if t.TournamentID == tournamentID && t.Player1.ID == player1ID && t.Player2.ID == player2ID {
 			return t
 		}

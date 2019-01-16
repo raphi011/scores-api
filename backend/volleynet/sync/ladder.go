@@ -22,7 +22,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 		return nil, errors.Wrap(err, "loading the ladder failed")
 	}
 
-	persisted, err := s.PlayerRepository.All()
+	persisted, err := s.PlayerRepo.Ladder(gender)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "loading persisted players failed")
@@ -37,7 +37,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 				info.NewPlayer.FirstName,
 				info.NewPlayer.LastName)
 
-			err = s.PlayerRepository.New(info.NewPlayer)
+			_, err = s.PlayerRepo.New(info.NewPlayer)
 			report.NewPlayers++
 
 		} else {
@@ -48,7 +48,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 				merged.FirstName,
 				merged.LastName)
 
-			err = s.PlayerRepository.Update(merged)
+			err = s.PlayerRepo.Update(merged)
 			report.UpdatedPlayers++
 
 		}
@@ -70,10 +70,10 @@ type PlayerSyncInformation struct {
 
 // Players takes a slice of current and old `Player`s and finds out which
 // one is new and which needs to get updated
-func Players(persisted []volleynet.Player, current ...volleynet.Player) []PlayerSyncInformation {
+func Players(persisted []*volleynet.Player, current ...*volleynet.Player) []PlayerSyncInformation {
 	ps := []PlayerSyncInformation{}
 	for i := range current {
-		newPlayer := &current[i]
+		newPlayer := current[i]
 		oldPlayer := FindPlayer(persisted, newPlayer.ID)
 
 		ps = append(ps, PlayerSyncInformation{

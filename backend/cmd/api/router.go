@@ -10,7 +10,7 @@ import (
 
 var store = cookie.NewStore([]byte("ultrasecret"))
 
-func initRouter(app app) *gin.Engine {
+func initRouter(app app, services *Services) *gin.Engine {
 	var router *gin.Engine
 	if app.production {
 		router = gin.Default()
@@ -21,28 +21,28 @@ func initRouter(app app) *gin.Engine {
 	}
 
 	authHandler := authHandler{
-		userService: app.services.User,
-		password:    app.services.Password,
+		userService: services.User,
+		password:    services.Password,
 		conf:        app.conf,
 	}
 
 	volleynetHandler := volleynetHandler{
-		volleynetService: app.services.Volleynet,
-		userService:      app.services.User,
+		volleynetService: services.Volleynet,
+		userService:      services.User,
 	}
 
-	volleynetScrapeHandler := volleynetScrapeHandler{
-		jobManager: app.services.JobManager,
+	scrapeHandler := scrapeHandler{
+		jobManager: services.JobManager,
 	}
 
 	infoHandler := infoHandler{}
 
 	adminHandler := adminHandler{
-		userService: app.services.User,
+		userService: services.User,
 	}
 
 	debugHandler := debugHandler{
-		userService: app.services.User,
+		userService: services.User,
 	}
 
 	router.Use(sessions.Sessions("session", store), middleware.Logger(app.log), middleware.Metric())
@@ -64,7 +64,7 @@ func initRouter(app app) *gin.Engine {
 	auth.POST("/signup", volleynetHandler.postSignup)
 
 	admin := auth.Group("/admin")
-	admin.Use(middleware.Admin(app.services.User))
+	admin.Use(middleware.Admin(services.User))
 
 	admin.GET("/users", adminHandler.getUsers)
 	admin.POST("/users", adminHandler.postUser)
@@ -78,9 +78,9 @@ func initRouter(app app) *gin.Engine {
 
 	volleynetAdmin := admin.Group("/volleynet")
 
-	volleynetAdmin.GET("/scrape/report", volleynetScrapeHandler.report)
-	volleynetAdmin.POST("/scrape/run", volleynetScrapeHandler.run)
-	volleynetAdmin.POST("/scrape/stop", volleynetScrapeHandler.stop)
+	volleynetAdmin.GET("/scrape/report", scrapeHandler.report)
+	volleynetAdmin.POST("/scrape/run", scrapeHandler.run)
+	volleynetAdmin.POST("/scrape/stop", scrapeHandler.stop)
 
 	return router
 }

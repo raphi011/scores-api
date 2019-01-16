@@ -8,8 +8,8 @@ import (
 )
 
 // Players parses the list of players found in the search query.
-func Players(html io.Reader) ([]volleynet.PlayerInfo, error) {
-	players := []volleynet.PlayerInfo{}
+func Players(html io.Reader) ([]*volleynet.PlayerInfo, error) {
+	players := []*volleynet.PlayerInfo{}
 	doc, err := parseHTML(html)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func Players(html io.Reader) ([]volleynet.PlayerInfo, error) {
 	for i := range rows.Nodes {
 		r := rows.Eq(i)
 
-		player := volleynet.PlayerInfo{}
+		player := &volleynet.PlayerInfo{}
 
 		columns := r.Find("td")
 

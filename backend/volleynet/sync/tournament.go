@@ -11,9 +11,9 @@ import (
 // TournamentChanges lists the tournaments that are `New`, `Delete`'d and `Update`'d
 // during a sync job
 type TournamentChanges struct {
-	New    []volleynet.FullTournament
-	Delete []volleynet.FullTournament
-	Update []volleynet.FullTournament
+	New    []*volleynet.FullTournament
+	Delete []*volleynet.FullTournament
+	Update []*volleynet.FullTournament
 }
 
 // TournamentSyncInformation contains sync information for two `Tournament`s
@@ -33,7 +33,7 @@ const (
 	SyncTournamentNew                = "SyncTournamentNew"
 )
 
-func (s *Service) syncTournaments(changes *Changes, oldTournaments, newTournaments []volleynet.FullTournament) {
+func (s *Service) syncTournaments(changes *Changes, oldTournaments, newTournaments []*volleynet.FullTournament) {
 	oldTournamentMap := createTournamentMap(oldTournaments)
 	newTournamentMap := createTournamentMap(newTournaments)
 
@@ -59,8 +59,8 @@ func (s *Service) syncTournaments(changes *Changes, oldTournaments, newTournamen
 	}
 }
 
-func createTournamentMap(tournaments []volleynet.FullTournament) map[int]volleynet.FullTournament {
-	tournamentMap := make(map[int]volleynet.FullTournament)
+func createTournamentMap(tournaments []*volleynet.FullTournament) map[int]*volleynet.FullTournament {
+	tournamentMap := make(map[int]*volleynet.FullTournament)
 
 	for i := range tournaments {
 		t := tournaments[i]
@@ -90,7 +90,7 @@ func tournamentSyncType(persisted *volleynet.FullTournament, current *volleynet.
 	return ""
 }
 
-func hasTournamentChanged(old, new volleynet.FullTournament) bool {
+func hasTournamentChanged(old, new *volleynet.FullTournament) bool {
 	new.UpdatedAt = time.Time{}
 	old.UpdatedAt = time.Time{}
 
@@ -111,7 +111,7 @@ func Tournaments(persisted *volleynet.FullTournament, current *volleynet.Tournam
 
 func (s *Service) persistTournaments(changes *TournamentChanges) error {
 	for _, new := range changes.New {
-		err := s.TournamentRepository.New(&new)
+		_, err := s.TournamentRepo.New(new)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting new tournament failed")
@@ -119,7 +119,7 @@ func (s *Service) persistTournaments(changes *TournamentChanges) error {
 	}
 
 	for _, update := range changes.Update {
-		err := s.TournamentRepository.Update(&update)
+		err := s.TournamentRepo.Update(update)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting updated tournament failed")

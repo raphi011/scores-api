@@ -11,20 +11,19 @@ import (
 
 	"github.com/bshuster-repo/logrus-logstash-hook"
 	"github.com/cenkalti/backoff"
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/repo"
+	"github.com/sirupsen/logrus"
+
 	"github.com/raphi011/scores/events"
-	"github.com/raphi011/scores/repo/sqlite"
+	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/job"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores/services"
 	"github.com/raphi011/scores/volleynet/sync"
 	"github.com/raphi011/scores/volleynet/client"
-	"github.com/sirupsen/logrus"
 )
 
 type app struct {
 	conf       *oauth2.Config
-	services   *scores.Services
 	log        logrus.FieldLogger
 	production bool
 }
@@ -48,13 +47,11 @@ func main() {
 		host = "http://localhost:3000"
 	}
 
-	services, repoClose, err := createServices(*dbProvider, *connectionString)
+	services, err := createServices(*dbProvider, *connectionString)
 
 	if err != nil {
 		log.Fatalf("Could not initialize services: %s", err)
 	}
-
-	defer repoClose()
 
 	googleOAuth, err := googleOAuthConfig(*gSecret, host)
 
@@ -64,12 +61,11 @@ func main() {
 
 	app := app{
 		production: production,
-		services:   services,
 		conf:       googleOAuth,
 		log:        log,
 	}
 
-	router := initRouter(app)
+	router := initRouter(app, services)
 	router.Run()
 }
 
@@ -127,49 +123,58 @@ func newBroker() *events.Broker {
 	return broker
 }
 
-func createServices(provider string, connectionString string) (*scores.Services, func(), error) {
+type Services struct {
+	JobManager *job.Manager
+	User *services.User
+	Volleynet *services.Service
+	Scrape *sync.Service
+	Password services.Password
+}
+
+func createServices(provider string, connectionString string) (*Services, error) {
 	var repos *repo.Repositories
-	var services *scores.Services
-	var closerFunc func()
+	var s *Services
 	var err error
 
 	switch provider {
 	case "sqlite3":
 		fallthrough
+	case "postgres": 
+		fallthrough
 	case "mysql":
-		repos, closerFunc, err = sqlite.Create(provider, connectionString)
+		repos, err = sql.Repositories(provider, connectionString)
 	default:
-		return nil, nil, fmt.Errorf("invalid repo provider %q", provider)
+		return nil, fmt.Errorf("invalid repo provider %q", provider)
 	}
 
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	password := &scores.PBKDF2Password{
+	password := &services.PBKDF2Password{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}
 
-	userService := &scores.UserService{
-		Repository:       repos.User,
-		PlayerRepository: repos.Player,
+	userService := &services.User{
+		Repo:       repos.UserRepo,
+		PlayerRepo: repos.PlayerRepo,
 		Password:         password,
 	}
 
-	volleynetService := &volleynet.Service{
-		PlayerRepository: repos.VolleynetPlayer,
-		TeamRepository: repos.VolleynetTeam,
-		TournamentRepository: repos.VolleynetTournament,
+	volleynetService := &services.Service{
+		PlayerRepo: repos.PlayerRepo,
+		TeamRepo: repos.TeamRepo,
+		TournamentRepo: repos.TournamentRepo,
 	}
 
 	broker := newBroker()
 
 	scrapeService := &sync.Service{
 		Client: client.DefaultClient(),
-		PlayerRepository: repos.VolleynetPlayer,
-		TeamRepository: repos.VolleynetTeam,
-		TournamentRepository: repos.VolleynetTournament,
+		PlayerRepo: repos.PlayerRepo,
+		TeamRepo: repos.TeamRepo,
+		TournamentRepo: repos.TournamentRepo,
 		Subscriptions: broker,
 	}
 
@@ -205,13 +210,13 @@ func createServices(provider string, connectionString string) (*scores.Services,
 	)
 
 
-	services = &scores.Services{
+	s = &Services{
 		JobManager: manager,
-		VolleynetScrape: scrapeService,
+		Scrape: scrapeService,
 		Volleynet: volleynetService,
 		Password:  password,
 		User:      userService,
 	}
 
-	return services, closerFunc, nil
+	return s, nil
 }

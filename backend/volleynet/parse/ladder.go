@@ -7,14 +7,14 @@ import (
 )
 
 // Ladder parses players from the ladder page
-func Ladder(html io.Reader) ([]volleynet.Player, error) {
+func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err
 	}
 
-	players := []volleynet.Player{}
+	players := []*volleynet.Player{}
 	rows := doc.Find("tbody>tr")
 	genderTitle := doc.Find("h2").Text()
 	var gender string
@@ -34,7 +34,7 @@ func Ladder(html io.Reader) ([]volleynet.Player, error) {
 			continue
 		}
 
-		p := volleynet.Player{}
+		p := &volleynet.Player{}
 		p.Gender = gender
 
 		for j := range columns.Nodes {

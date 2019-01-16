@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/services"
 	"github.com/raphi011/scores/cmd/api/logger"
 
 	"github.com/gin-contrib/sessions"
@@ -26,7 +27,7 @@ type loginRouteOrUserDto struct {
 type userDto struct {
 	ID              int          `json:"id"`
 	Email           string        `json:"email"`
-	Player          scores.Player `json:"player"`
+	// Player          scores.Player `json:"player"`
 	PlayerID        int          `json:"playerId"`
 	ProfileImageURL string        `json:"profileImageUrl"`
 }
@@ -43,10 +44,10 @@ func randToken() string {
 }
 
 type authHandler struct {
-	userService *scores.UserService
+	userService *services.User
+	password services.Password
 
 	conf     *oauth2.Config
-	password scores.Password
 }
 
 func (a *authHandler) passwordAuthenticate(c *gin.Context) {
@@ -150,7 +151,7 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
 	if userID := session.Get("user-id"); userID != nil {
-		user, err := a.userService.ByID(userID)
+		user, err := a.userService.ByID(userID.(int))
 
 		if err != nil {
 			session.Delete("user-id")

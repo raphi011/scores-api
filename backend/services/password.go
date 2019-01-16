@@ -1,4 +1,4 @@
-package scores
+package services
 
 import (
 	"bytes"
@@ -6,23 +6,17 @@ import (
 	"crypto/sha256"
 	"io"
 
+	"github.com/raphi011/scores"
 	"golang.org/x/crypto/pbkdf2"
 )
 
 var _ Password = &PBKDF2Password{}
 
-// PasswordInfo contains the passwords hash, it's corresponding salt
-// and the amount of PBKDF2 iterations it was hashed with.
-type PasswordInfo struct {
-	Salt       []byte
-	Hash       []byte
-	Iterations int
-}
 
 // Password allows comparing hashed passwords and creating new ones
 type Password interface {
-	Compare([]byte, *PasswordInfo) bool
-	Hash(password []byte) (*PasswordInfo, error)
+	Compare([]byte, *scores.PasswordInfo) bool
+	Hash(password []byte) (*scores.PasswordInfo, error)
 }
 
 // PBKDF2Password contains parameters for the PBKDF2 algorithm
@@ -44,14 +38,14 @@ func (s *PBKDF2Password) newSalt() ([]byte, error) {
 
 // Compare takes a password and compares it to the hashed version and returns true
 // if they are equal
-func (s *PBKDF2Password) Compare(password []byte, info *PasswordInfo) bool {
+func (s *PBKDF2Password) Compare(password []byte, info *scores.PasswordInfo) bool {
 	hash := s.hash(password, info.Salt, info.Iterations)
 
 	return bytes.Compare(hash, info.Hash) == 0
 }
 
 // Hash generates and new salt and hashes the passed password with it
-func (s *PBKDF2Password) Hash(password []byte) (*PasswordInfo, error) {
+func (s *PBKDF2Password) Hash(password []byte) (*scores.PasswordInfo, error) {
 	salt, err := s.newSalt()
 
 	if err != nil {
@@ -60,7 +54,7 @@ func (s *PBKDF2Password) Hash(password []byte) (*PasswordInfo, error) {
 
 	hash := s.hash(password, salt, s.Iterations)
 
-	return &PasswordInfo{
+	return &scores.PasswordInfo{
 		Salt:       salt,
 		Hash:       hash,
 		Iterations: s.Iterations,

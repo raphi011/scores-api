@@ -4,78 +4,82 @@ import "github.com/raphi011/scores/volleynet"
 
 // MergeTournamentTeam merges two tournament teams depending on the syncType
 // and returns the new TournamentTeam.
-func MergeTournamentTeam(persisted, current volleynet.TournamentTeam) volleynet.TournamentTeam {
-	persisted.Deregistered = current.Deregistered
+func MergeTournamentTeam(persisted, current *volleynet.TournamentTeam) *volleynet.TournamentTeam {
+	merged := *persisted
+	merged.Deregistered = current.Deregistered
 
 	isTournamentDone := persisted.Rank == 0 && current.Rank > 0
 
 	if isTournamentDone {
-		persisted.PrizeMoney = current.PrizeMoney
-		persisted.Rank = current.Rank
-		persisted.WonPoints = current.WonPoints
+		merged.PrizeMoney = current.PrizeMoney
+		merged.Rank = current.Rank
+		merged.WonPoints = current.WonPoints
 	} else {
-		persisted.Seed = current.Seed
-		persisted.TotalPoints = current.TotalPoints
+		merged.Seed = current.Seed
+		merged.TotalPoints = current.TotalPoints
 	}
 
-	return persisted
+	return &merged
 }
 
 // MergeTournament merges two tournaments depending on the syncType
 // and returns the new Tournament.
-func MergeTournament(persisted, current volleynet.FullTournament) volleynet.FullTournament {
+func MergeTournament(persisted, current *volleynet.FullTournament) *volleynet.FullTournament {
+	merged := *persisted
+
 	if persisted.Status == volleynet.StatusUpcoming && current.Status == volleynet.StatusCanceled {
-		persisted.Name = current.Name
-		persisted.HTMLNotes = current.HTMLNotes
+		merged.Name = current.Name
+		merged.HTMLNotes = current.HTMLNotes
 	} else {
-		persisted.Start = current.Start
-		persisted.End = current.End
-		persisted.Name = current.Name
-		persisted.Link = current.Link
-		persisted.Location = current.Location
-		persisted.HTMLNotes = current.HTMLNotes
-		persisted.Mode = current.Mode
-		persisted.MinTeams = current.MinTeams
-		persisted.MaxTeams = current.MaxTeams
-		persisted.MaxPoints = current.MaxPoints
-		persisted.EndRegistration = current.EndRegistration
-		persisted.Organiser = current.Organiser
-		persisted.Phone = current.Phone
-		persisted.Email = current.Email
-		persisted.Web = current.Web
-		persisted.CurrentPoints = current.CurrentPoints
-		persisted.LivescoringLink = current.LivescoringLink
-		persisted.Latitude = current.Latitude
-		persisted.Longitude = current.Longitude
-		persisted.SignedupTeams = current.SignedupTeams
+		merged.Start = current.Start
+		merged.End = current.End
+		merged.Name = current.Name
+		merged.Link = current.Link
+		merged.Location = current.Location
+		merged.HTMLNotes = current.HTMLNotes
+		merged.Mode = current.Mode
+		merged.MinTeams = current.MinTeams
+		merged.MaxTeams = current.MaxTeams
+		merged.MaxPoints = current.MaxPoints
+		merged.EndRegistration = current.EndRegistration
+		merged.Organiser = current.Organiser
+		merged.Phone = current.Phone
+		merged.Email = current.Email
+		merged.Website = current.Website
+		merged.CurrentPoints = current.CurrentPoints
+		merged.LivescoringLink = current.LivescoringLink
+		merged.Latitude = current.Latitude
+		merged.Longitude = current.Longitude
+		merged.SignedupTeams = current.SignedupTeams
 
 		if persisted.Status == volleynet.StatusUpcoming && current.Status == volleynet.StatusDone {
-			persisted.EntryLink = ""
-			persisted.RegistrationOpen = false
+			merged.EntryLink = ""
+			merged.RegistrationOpen = false
 
 		} else if current.Status == volleynet.StatusUpcoming {
-			persisted.EntryLink = current.EntryLink
-			persisted.RegistrationOpen = current.RegistrationOpen
+			merged.EntryLink = current.EntryLink
+			merged.RegistrationOpen = current.RegistrationOpen
 		}
 	}
 
-	persisted.Status = current.Status
+	merged.Status = current.Status
 
-	return persisted
+	return &merged
 }
 
 // MergePlayer merges two players depending on the syncType
 // and returns the new player.
 func MergePlayer(persisted, current *volleynet.Player) *volleynet.Player {
-	persisted.FirstName = current.FirstName
-	persisted.LastName = current.LastName
-	persisted.Birthday = current.Birthday
-	persisted.Gender = current.Gender
-	persisted.TotalPoints = current.TotalPoints
-	persisted.Rank = current.Rank
-	persisted.Club = current.Club
-	persisted.CountryUnion = current.CountryUnion
-	persisted.License = current.License
+	merged := *persisted
+	merged.FirstName = current.FirstName
+	merged.LastName = current.LastName
+	merged.Birthday = current.Birthday
+	merged.Gender = current.Gender
+	merged.TotalPoints = current.TotalPoints
+	merged.Rank = current.Rank
+	merged.Club = current.Club
+	merged.CountryUnion = current.CountryUnion
+	merged.License = current.License
 
-	return persisted
+	return &merged
 }

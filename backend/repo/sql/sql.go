@@ -5,15 +5,33 @@ import (
 
 	"database/sql"
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores"
+	"github.com/pkg/errors"
 	"github.com/gobuffalo/packr/v2"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/repo"
 )
 
 var queries *packr.Box
 
 func init() {
 	queries = packr.New("sql", "./queries")
+}
+
+func Repositories(driverName, connectionString string) (*repo.Repositories, error) {
+	db, err := sqlx.Open(driverName, connectionString)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "open db: %v")
+	}
+
+	return &repo.Repositories{
+		UserRepo: &UserRepository{DB: db},
+		PlayerRepo: &PlayerRepository{DB: db},
+		TournamentRepo: &TournamentRepository{DB: db},
+		TeamRepo: &TeamRepository{DB: db},
+	}, nil
 }
 
 func loadQuery(db *sqlx.DB, name string) string {

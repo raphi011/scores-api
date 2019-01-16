@@ -10,17 +10,17 @@ import (
 // TeamChanges lists the teams that are `New`, `Delete`'d and `Update`'d
 // during a sync job.
 type TeamChanges struct {
-	New    []volleynet.TournamentTeam
-	Delete []volleynet.TournamentTeam
-	Update []volleynet.TournamentTeam
+	New    []*volleynet.TournamentTeam
+	Delete []*volleynet.TournamentTeam
+	Update []*volleynet.TournamentTeam
 }
 
-func artificialTeamKey(team volleynet.TournamentTeam) string {
+func artificialTeamKey(team *volleynet.TournamentTeam) string {
 	return fmt.Sprintf("%d-%d-%d", team.TournamentID, team.Player1.ID, team.Player2.ID)
 }
 
-func createTeamMap(teams []volleynet.TournamentTeam) map[string]volleynet.TournamentTeam {
-	teamMap := make(map[string]volleynet.TournamentTeam)
+func createTeamMap(teams []*volleynet.TournamentTeam) map[string]*volleynet.TournamentTeam {
+	teamMap := make(map[string]*volleynet.TournamentTeam)
 
 	for i := range teams {
 		t := teams[i]
@@ -30,7 +30,7 @@ func createTeamMap(teams []volleynet.TournamentTeam) map[string]volleynet.Tourna
 	return teamMap
 }
 
-func (s *Service) syncTournamentTeams(changes *TeamChanges, oldTeams, newTeams []volleynet.TournamentTeam) {
+func (s *Service) syncTournamentTeams(changes *TeamChanges, oldTeams, newTeams []*volleynet.TournamentTeam) {
 	oldTeamMap := createTeamMap(oldTeams)
 	newTeamMap := createTeamMap(newTeams)
 
@@ -53,13 +53,13 @@ func (s *Service) syncTournamentTeams(changes *TeamChanges, oldTeams, newTeams [
 	}
 }
 
-func hasTeamChanged(old, new volleynet.TournamentTeam) bool {
-	return new != old
+func hasTeamChanged(old, new *volleynet.TournamentTeam) bool {
+	return *new != *old
 }
 
 func (s *Service) persistTeams(changes *TeamChanges) error {
 	for _, new := range changes.New {
-		err := s.TeamRepository.New(&new)
+		_, err := s.TeamRepo.New(new)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting new tournamentteam failed")
@@ -67,7 +67,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 	}
 
 	for _, update := range changes.Update {
-		err := s.TeamRepository.Update(&update)
+		err := s.TeamRepo.Update(update)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting updated tournamentteam failed")
@@ -75,7 +75,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 	}
 
 	for _, delete := range changes.Delete {
-		err := s.TeamRepository.Delete(&delete)
+		err := s.TeamRepo.Delete(delete)
 
 		if err != nil {
 			return errors.Wrap(err, "persisting deleted tournamentteam failed")
@@ -85,7 +85,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 	return nil
 }
 
-func (s *Service) addMissingPlayers(teams []volleynet.TournamentTeam) error {
+func (s *Service) addMissingPlayers(teams []*volleynet.TournamentTeam) error {
 	players := distinctPlayers(teams)
 
 	for _, p := range players {
@@ -99,7 +99,7 @@ func (s *Service) addMissingPlayers(teams []volleynet.TournamentTeam) error {
 	return nil
 }
 
-func distinctPlayers(teams []volleynet.TournamentTeam) []*volleynet.Player {
+func distinctPlayers(teams []*volleynet.TournamentTeam) []*volleynet.Player {
 	encountered := map[int]bool{}
 
 	distinct := []*volleynet.Player{}
@@ -120,8 +120,8 @@ func distinctPlayers(teams []volleynet.TournamentTeam) []*volleynet.Player {
 }
 
 func (s *Service) addPlayerIfNeeded(player *volleynet.Player) error {
-	if p, _ := s.PlayerRepository.Get(player.ID); p == nil {
-		err := s.PlayerRepository.New(player)
+	if p, _ := s.PlayerRepo.Get(player.ID); p == nil {
+		_, err := s.PlayerRepo.New(player)
 
 		if err != nil {
 			return err

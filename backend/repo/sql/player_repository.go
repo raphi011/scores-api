@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -13,6 +14,8 @@ import (
 type PlayerRepository struct {
 	DB *sqlx.DB
 }
+
+var _ repo.PlayerRepository = &PlayerRepository{}
 
 // Ladder gets all players of the passed gender that have a rank.
 func (s *PlayerRepository) Ladder(gender string) ([]*volleynet.Player, error) {

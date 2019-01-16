@@ -20,13 +20,13 @@ type Client interface {
 	GetTournamentLink(t *volleynet.Tournament) string
 	GetAPITournamentLink(t *volleynet.Tournament) string
 	Login(username, password string) (*volleynet.LoginData, error)
-	AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error)
-	Ladder(gender string) ([]volleynet.Player, error)
-	ComplementTournament(tournament volleynet.Tournament) (*volleynet.FullTournament, error)
-	ComplementMultipleTournaments(tournaments []volleynet.Tournament) ([]volleynet.FullTournament, error)
+	AllTournaments(gender, league string, year int) ([]*volleynet.Tournament, error)
+	Ladder(gender string) ([]*volleynet.Player, error)
+	ComplementTournament(tournament *volleynet.Tournament) (*volleynet.FullTournament, error)
+	ComplementMultipleTournaments(tournaments []*volleynet.Tournament) ([]*volleynet.FullTournament, error)
 	TournamentWithdrawal(tournamentID int) error
 	TournamentEntry(playerName string, playerID, tournamentID int) error
-	SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error)
+	SearchPlayers(firstName, lastName, birthday string) ([]*volleynet.PlayerInfo, error)
 }
 
 // Default implements the Client interface
@@ -99,7 +99,7 @@ func (c *Default) GetTournamentLink(t *volleynet.Tournament) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
-		t.Gender,
+		t.Format,
 		t.Season,
 		t.ID,
 	)
@@ -112,7 +112,7 @@ func (c *Default) GetAPITournamentLink(t *volleynet.Tournament) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
-		t.Gender,
+		t.Format,
 		t.Season,
 		t.ID,
 	)
@@ -156,7 +156,7 @@ func (c *Default) Login(username, password string) (*volleynet.LoginData, error)
 
 // AllTournaments reads all tournaments of a certain gender, league and year.
 // To get more detailed tournamnent information call `ComplementTournament`.
-func (c *Default) AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error) {
+func (c *Default) AllTournaments(gender, league string, year int) ([]*volleynet.Tournament, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/information/all",
 		league,
@@ -177,7 +177,7 @@ func (c *Default) AllTournaments(gender, league string, year int) ([]volleynet.T
 }
 
 // Ladder reads all players of a certain gender.
-func (c *Default) Ladder(gender string) ([]volleynet.Player, error) {
+func (c *Default) Ladder(gender string) ([]*volleynet.Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
 		genderLong(gender),
@@ -205,9 +205,9 @@ func genderLong(gender string) string {
 }
 
 // ComplementTournament adds the missing information from `AllTournaments`.
-func (c *Default) ComplementTournament(tournament volleynet.Tournament) (
+func (c *Default) ComplementTournament(tournament *volleynet.Tournament) (
 	*volleynet.FullTournament, error) {
-	url := c.GetAPITournamentLink(&tournament)
+	url := c.GetAPITournamentLink(tournament)
 
 	fmt.Printf("Downloading tournament: %s\n", url)
 	resp, err := http.Get(url)
@@ -222,16 +222,16 @@ func (c *Default) ComplementTournament(tournament volleynet.Tournament) (
 		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
 	}
 
-	t.Link = c.GetTournamentLink(&tournament)
+	t.Link = c.GetTournamentLink(tournament)
 
 	return t, nil
 }
 
 // ComplementMultipleTournaments adds the missing information from `AllTournaments`
-func (c *Default) ComplementMultipleTournaments(tournaments []volleynet.Tournament) (
-	[]volleynet.FullTournament, error) {
+func (c *Default) ComplementMultipleTournaments(tournaments []*volleynet.Tournament) (
+	[]*volleynet.FullTournament, error) {
 	// maybe donwload tournaments in parallel in the future?
-	fullTournaments := []volleynet.FullTournament{}
+	fullTournaments := []*volleynet.FullTournament{}
 
 	for _, t := range tournaments {
 		fullTournament, err := c.ComplementTournament(t)
@@ -239,7 +239,7 @@ func (c *Default) ComplementMultipleTournaments(tournaments []volleynet.Tourname
 			return nil, err
 		}
 
-		fullTournaments = append(fullTournaments, *fullTournament)
+		fullTournaments = append(fullTournaments, fullTournament)
 	}
 
 	return fullTournaments, nil
@@ -354,7 +354,7 @@ func (c *Default) TournamentEntry(playerName string, playerID, tournamentID int)
 }
 
 // SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
-func (c *Default) SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error) {
+func (c *Default) SearchPlayers(firstName, lastName, birthday string) ([]*volleynet.PlayerInfo, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")

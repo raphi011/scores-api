@@ -1,19 +1,23 @@
-package scores
+package services
 
 import (
 	"github.com/pkg/errors"
+
+	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/repo"
 )
 
-// UserService allows loading / mutation of user data
-type UserService struct {
-	Repository       UserRepository
-	PlayerRepository PlayerRepository
+// scores.User allows loading / mutation of user data
+type User struct {
+	Repo       repo.UserRepository
+	PlayerRepo repo.PlayerRepository
+
 	Password         Password
 }
 
 // HasRole verifies if a user has a certain role
-func (s *UserService) HasRole(userID int, roleName string) bool {
-	user, err := s.Repository.ByID(userID)
+func (s *User) HasRole(userID int, roleName string) bool {
+	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
 		return false
@@ -23,14 +27,14 @@ func (s *UserService) HasRole(userID int, roleName string) bool {
 }
 
 // New creates a new user
-func (s *UserService) New(email, password string) (*User, error) {
+func (s *User) New(email, password string) (*scores.User, error) {
 	passwordInfo, err := s.Password.Hash([]byte(password))
 
 	if err != nil {
 		return nil, errors.Wrap(err, "hashing password")
 	}
 
-	user, err := s.Repository.New(&User{
+	user, err := s.Repo.New(&scores.User{
 		Email:        email,
 		PasswordInfo: *passwordInfo,
 		Role:         "user",
@@ -40,10 +44,10 @@ func (s *UserService) New(email, password string) (*User, error) {
 		return nil, errors.Wrap(err, "creating user")
 	}
 
-	user.Player, err = s.PlayerRepository.Create(&Player{
-		Name:   "",
-		UserID: user.ID,
-	})
+	// user.Player, err = s.PlayerRepository.Create(&Player{
+	// 	Name:   "",
+	// 	UserID: user.ID,
+	// })
 
 	if err != nil {
 		return nil, errors.Wrap(err, "creating user player")
@@ -53,11 +57,11 @@ func (s *UserService) New(email, password string) (*User, error) {
 }
 
 // SetPassword sets a new password for a user
-func (s *UserService) SetPassword(
+func (s *User) SetPassword(
 	userID int,
 	password string,
 ) error {
-	user, err := s.Repository.ByID(userID)
+	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
 		return err
@@ -71,53 +75,55 @@ func (s *UserService) SetPassword(
 
 	user.PasswordInfo = *passwordInfo
 
-	err = s.Repository.Update(user)
+	err = s.Repo.Update(user)
 
 	return errors.Wrap(err, "could not update user password")
 }
 
 // ByEmail retrieves a user by email
-func (s *UserService) ByEmail(email string) (*User, error) {
-	user, err := s.Repository.ByEmail(email)
+func (s *User) ByEmail(email string) (*scores.User, error) {
+	user, err := s.Repo.ByEmail(email)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not load user by email %s", email)
 	}
 
-	return s.complementUser(user)
+	return user, nil
+	// return s.complementUser(user)
 }
 
 // ByID retrieves a user by ID
-func (s *UserService) ByID(userID int) (*User, error) {
-	user, err := s.Repository.ByID(userID)
+func (s *User) ByID(userID int) (*scores.User, error) {
+	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not load user by ID %d", userID)
 	}
 
-	return s.complementUser(user)
+	return user, nil
+	// return s.complementUser(user)
 }
 
-func (s *UserService) complementUser(user *User) (*User, error) {
-	var err error
+// func (s *User) complementUser(user *scores.User) (*scores.User, error) {
+// 	var err error
 
-	if user.PlayerID == 0 {
-		return user, nil
-	}
+// 	if user.PlayerID == 0 {
+// 		return user, nil
+// 	}
 
-	user.Player, err = s.PlayerRepository.Get(user.PlayerID)
+// 	user.Player, err = s.PlayerRepo.Get(user.PlayerID)
 
-	return user, errors.Wrapf(err, "could not load user player %d", user.PlayerID)
-}
+// 	return user, errors.Wrapf(err, "could not load user player %d", user.PlayerID)
+// }
 
 // All returns all users
-func (s *UserService) All() ([]User, error) {
-	return s.Repository.All()
+func (s *User) All() ([]*scores.User, error) {
+	return s.Repo.All()
 }
 
 // SetProfileImage updates a users profile image
-func (s *UserService) SetProfileImage(userID int, imageURL string) error {
-	user, err := s.Repository.ByID(userID)
+func (s *User) SetProfileImage(userID int, imageURL string) error {
+	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
 		return err
@@ -125,23 +131,23 @@ func (s *UserService) SetProfileImage(userID int, imageURL string) error {
 
 	user.ProfileImageURL = imageURL
 
-	err = s.Repository.Update(user)
+	err = s.Repo.Update(user)
 
 	return errors.Wrap(err, "updating profile image")
 }
 
 // SetVolleynetLogin updates the users volleynet login
-func (s *UserService) SetVolleynetLogin(loginName string, userID int) error {
-	user, err := s.Repository.ByID(userID)
+func (s *User) SetVolleynetLogin(loginName string, userID int) error {
+	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
 		return err
 	}
 
-	user.VolleynetLogin = loginName
+	user.VolleynetUser = loginName
 	user.VolleynetUserID = userID
 
-	err = s.Repository.Update(user)
+	err = s.Repo.Update(user)
 
 	return errors.Wrap(err, "updatin volleynet login")
 }

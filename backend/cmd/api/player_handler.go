@@ -2,17 +2,10 @@ package main
 
 import (
 	"net/http"
-	"time"
-	"strconv"
-
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin/binding"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet/client"
-	"github.com/raphi011/scores/cmd/api/logger"
 )
 
 func (h *volleynetHandler) getLadder(c *gin.Context) {

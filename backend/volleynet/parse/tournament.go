@@ -15,7 +15,7 @@ import (
 func FullTournament(
 	html io.Reader,
 	now time.Time,
-	tournament volleynet.Tournament) (*volleynet.FullTournament, error) {
+	tournament *volleynet.Tournament) (*volleynet.FullTournament, error) {
 
 	doc, err := parseHTML(html)
 
@@ -23,7 +23,7 @@ func FullTournament(
 		return nil, errors.Wrap(err, "parseFullTournament failed")
 	}
 
-	t := &volleynet.FullTournament{Tournament: tournament}
+	t := &volleynet.FullTournament{Tournament: *tournament}
 
 	parseTournamentNotes(doc, t)
 	parseTournamentDetails(doc, t)
@@ -100,7 +100,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		t.Email = trimmSelectionText(value)
 	},
 	"Web": func(value *goquery.Selection, t *volleynet.FullTournament) {
-		t.Web = trimmSelectionText(value)
+		t.Website = trimmSelectionText(value)
 	},
 	"Vorläufige Punkte": func(value *goquery.Selection, t *volleynet.FullTournament) {
 		t.CurrentPoints = trimmSelectionText(value)
@@ -135,14 +135,14 @@ func parseTournamentDetails(doc *goquery.Document, t *volleynet.FullTournament) 
 
 func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.FullTournament) error {
 	tables := doc.Find("tbody")
-	t.Teams = []volleynet.TournamentTeam{}
+	t.Teams = []*volleynet.TournamentTeam{}
 
 	for i := range tables.Nodes {
 		table := tables.Eq(i)
 		rows := table.Find("tr")
 
 		if rows.First().Children().Eq(0).Text() == "Nr." {
-			team := volleynet.TournamentTeam{}
+			team := &volleynet.TournamentTeam{}
 			team.TournamentID = t.ID
 
 			for j := range rows.Nodes {
@@ -150,7 +150,7 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.FullTournament
 					continue
 				}
 
-				player, err := parsePlayerRow(rows.Eq(j), &team)
+				player, err := parsePlayerRow(rows.Eq(j), team)
 
 				if err != nil {
 					log.Warnf("error parsing player: %s", err)
@@ -158,14 +158,14 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.FullTournament
 					continue
 				}
 
-				player.Gender = t.Gender
+				player.Gender = t.Format
 
 				if team.Player1 == nil {
 					team.Player1 = player
 				} else {
 					team.Player2 = player
 					t.Teams = append(t.Teams, team)
-					team = volleynet.TournamentTeam{}
+					team = &volleynet.TournamentTeam{}
 					team.TournamentID = t.ID
 
 					if !team.Deregistered {
