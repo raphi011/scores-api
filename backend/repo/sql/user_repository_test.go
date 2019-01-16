@@ -10,7 +10,7 @@ import (
 
 func TestCreateUser(t *testing.T) {
 	db := setupDB(t)
-	userRepo := &UserRepository{DB: db}
+	userRepo := &userRepository{DB: db}
 
 	email := "test@test.com"
 
@@ -46,7 +46,7 @@ func TestCreateUser(t *testing.T) {
 
 func TestUserNotFound(t *testing.T) {
 	db := setupDB(t)
-	userRepo := &UserRepository{DB: db}
+	userRepo := &userRepository{DB: db}
 
 	_, err := userRepo.ByID(1)
 
@@ -57,7 +57,7 @@ func TestUserNotFound(t *testing.T) {
 
 func TestUsers(t *testing.T) {
 	db := setupDB(t)
-	userRepo := &UserRepository{DB: db}
+	userRepo := &userRepository{DB: db}
 
 	_, err := userRepo.New(&scores.User{
 		Email: "test@test.at",
@@ -71,18 +71,18 @@ func TestUsers(t *testing.T) {
 	users, err := userRepo.All()
 
 	if err != nil {
-		t.Errorf("UserRepository.Users() err: %s", err)
+		t.Errorf("userRepository.Users() err: %s", err)
 	}
 
 	userCount := len(users)
 	if userCount != 2 {
-		t.Errorf("len(UserRepository.Users()), want 2, got %d", userCount)
+		t.Errorf("len(userRepository.Users()), want 2, got %d", userCount)
 	}
 }
 
 func TestUpdateUser(t *testing.T) {
 	db := setupDB(t)
-	userRepo := &UserRepository{DB: db}
+	userRepo := &userRepository{DB: db}
 
 	email := "test@test.com"
 	newEmail := "test2@test.com"
@@ -97,12 +97,12 @@ func TestUpdateUser(t *testing.T) {
 	err := userRepo.Update(user)
 
 	if err != nil {
-		t.Errorf("UserRepository.Update() err: %s", err)
+		t.Errorf("userRepository.Update() err: %s", err)
 	}
 
 	user, err = userRepo.ByEmail(newEmail)
 
 	if err != nil || user.Email != newEmail {
-		t.Error("UserRepository.Update(), user not updated")
+		t.Error("userRepository.Update(), user not updated")
 	}
 }

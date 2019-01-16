@@ -5,6 +5,7 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// PlayerRepository exposes CRUD operations on players.
 type PlayerRepository interface {
 	Get(id int) (*volleynet.Player, error)
 	Ladder(gender string) ([]*volleynet.Player, error)
@@ -13,6 +14,7 @@ type PlayerRepository interface {
 }
 
 
+// TeamRepository exposes CRUD operations on teams.
 type TeamRepository interface {
 	ByTournament(tournamentID int) ([]*volleynet.TournamentTeam, error)
 	Delete(t *volleynet.TournamentTeam) error
@@ -22,6 +24,7 @@ type TeamRepository interface {
 	UpdateBatch(teams []*volleynet.TournamentTeam) error
 }
 
+// TournamentRepository exposes CRUD operations on tournaments.
 type TournamentRepository interface {
 	Filter(seasons []int, leagues []string, formats []string) (
 		[]*volleynet.FullTournament, error)
@@ -31,6 +34,7 @@ type TournamentRepository interface {
 	Update(t *volleynet.FullTournament) error
 }
 
+// UserRepository exposes CRUD operations on users.
 type UserRepository interface {
 	All() ([]*scores.User, error)
 	ByEmail(email string) (*scores.User, error)
@@ -39,6 +43,7 @@ type UserRepository interface {
 	Update(user *scores.User) error
 }
 
+// Repositories is a collection of instances of all available repositories.
 type Repositories struct {
 	PlayerRepo PlayerRepository
 	TeamRepo TeamRepository

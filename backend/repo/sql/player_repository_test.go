@@ -10,7 +10,7 @@ import (
 
 func TestCreatePlayer(t *testing.T) {
 	db := setupDB(t)
-	playerRepo := &PlayerRepository{DB: db}
+	playerRepo := &playerRepository{DB: db}
 
 	player, err := playerRepo.New(&volleynet.Player{
 		PlayerInfo: volleynet.PlayerInfo{
@@ -32,7 +32,7 @@ func TestCreatePlayer(t *testing.T) {
 
 func TestUpdatePlayer(t *testing.T) {
 	db := setupDB(t)
-	playerRepo := &PlayerRepository{DB: db}
+	playerRepo := &playerRepository{DB: db}
 
 	player, err := playerRepo.New(&volleynet.Player{
 		PlayerInfo: volleynet.PlayerInfo{
@@ -56,7 +56,7 @@ func TestUpdatePlayer(t *testing.T) {
 
 func TestLadder(t *testing.T) {
 	db := setupDB(t)
-	playerRepo := &PlayerRepository{DB: db}
+	playerRepo := &playerRepository{DB: db}
 
 	players, err := playerRepo.Ladder("m")
 	assert(t, "playerRepo.Ladder() failed", err)

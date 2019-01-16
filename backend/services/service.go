@@ -10,7 +10,7 @@ import (
 type Service struct {
 	TeamRepo repo.TeamRepository
 	PlayerRepo repo.PlayerRepository
-	TournamentRepo repo.TournamentRepository
+	TournamentRepo repo.tournamentRepository
 }
 
 // ValidGender returns true if if the passed gender string is valid

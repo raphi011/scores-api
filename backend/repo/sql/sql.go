@@ -28,10 +28,10 @@ func Repositories(driverName, connectionString string) (*repo.Repositories, erro
 	}
 
 	return &repo.Repositories{
-		UserRepo: &UserRepository{DB: db},
-		PlayerRepo: &PlayerRepository{DB: db},
-		TournamentRepo: &TournamentRepository{DB: db},
-		TeamRepo: &TeamRepository{DB: db},
+		UserRepo: &userRepository{DB: db},
+		PlayerRepo: &playerRepository{DB: db},
+		TournamentRepo: &tournamentRepository{DB: db},
+		TeamRepo: &teamRepository{DB: db},
 	}, nil
 }
 

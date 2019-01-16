@@ -7,20 +7,20 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// TeamRepository implements VolleynetRepository interface.
-type TeamRepository struct {
+// teamRepository implements VolleynetRepository interface.
+type teamRepository struct {
 	DB *sqlx.DB
 }
 
 // New creates a new team.
-func (s *TeamRepository) New(t *volleynet.TournamentTeam) (*volleynet.TournamentTeam, error) {
+func (s *teamRepository) New(t *volleynet.TournamentTeam) (*volleynet.TournamentTeam, error) {
 	_, err := exec(s.DB,  "team/insert", t)
 
 	return t, errors.Wrap(err, "insert team")
 }
 
 // NewBatch creates multiple new teams.
-func (s *TeamRepository) NewBatch(teams []*volleynet.TournamentTeam) error {
+func (s *teamRepository) NewBatch(teams []*volleynet.TournamentTeam) error {
 	for _, t := range teams {
 		_, err := s.New(t)
 
@@ -33,14 +33,14 @@ func (s *TeamRepository) NewBatch(teams []*volleynet.TournamentTeam) error {
 }
 
 // Update updates a tournament team.
-func (s *TeamRepository) Update(t *volleynet.TournamentTeam) error {
+func (s *teamRepository) Update(t *volleynet.TournamentTeam) error {
 	_, err := exec(s.DB, "team/update", t)
 
 	return errors.Wrap(err, "update team")
 }
 
 // UpdateBatch updates tournament teams.
-func (s *TeamRepository) UpdateBatch(teams []*volleynet.TournamentTeam) error {
+func (s *teamRepository) UpdateBatch(teams []*volleynet.TournamentTeam) error {
 	for _, t := range teams {
 		if err := s.Update(t); err != nil {
 			return err
@@ -51,7 +51,7 @@ func (s *TeamRepository) UpdateBatch(teams []*volleynet.TournamentTeam) error {
 }
 
 // Delete deletes a team.
-func (s *TeamRepository) Delete(t *volleynet.TournamentTeam) error {
+func (s *teamRepository) Delete(t *volleynet.TournamentTeam) error {
 	_, err := exec(
 		s.DB,
 		"team/delete",
@@ -70,7 +70,7 @@ func (s *TeamRepository) Delete(t *volleynet.TournamentTeam) error {
 }
 
 // ByTournament loads all teams of a tournament.
-func (s *TeamRepository) ByTournament(tournamentID int) (
+func (s *teamRepository) ByTournament(tournamentID int) (
 	[]*volleynet.TournamentTeam, error) {
 
 	return s.scan(
@@ -79,7 +79,7 @@ func (s *TeamRepository) ByTournament(tournamentID int) (
 	)
 }
 
-func (s *TeamRepository) scan(queryName string, args ...interface{}) (
+func (s *teamRepository) scan(queryName string, args ...interface{}) (
 	[]*volleynet.TournamentTeam, error) {
 
 	teams := []*volleynet.TournamentTeam{}

@@ -53,7 +53,7 @@ type P struct {
 
 func createPlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player {
 	newPlayers := []*volleynet.Player{}
-	playerRepo := &PlayerRepository{DB: db}
+	playerRepo := &playerRepository{DB: db}
 
 	for _, p := range players {
 		persistedPlayer, err := playerRepo.New(&volleynet.Player{
@@ -78,7 +78,7 @@ type T struct {
 
 func createTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet.FullTournament {
 	newTournaments := []*volleynet.FullTournament{}
-	tournamentRepo := &TournamentRepository{DB: db}
+	tournamentRepo := &tournamentRepository{DB: db}
 
 	for _, tournament := range tournaments {
 		persistedTournament, err := tournamentRepo.New(&volleynet.FullTournament{
@@ -108,7 +108,7 @@ type TT struct {
 
 func createTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.TournamentTeam {
 	newTeams := []*volleynet.TournamentTeam{}
-	teamRepo := &TeamRepository{DB: db}
+	teamRepo := &teamRepository{DB: db}
 
 	for _, team := range teams {
 		persistedTeam, err := teamRepo.New(&volleynet.TournamentTeam{

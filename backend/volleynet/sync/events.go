@@ -8,11 +8,15 @@ import (
 )
 
 const (
+	// ScrapeEventsType TODO
 	ScrapeEventsType = "volleynet/scrape/*"
+	// StartScrapeEventType TODO
 	StartScrapeEventType = "volleynet/scrape/start"
+	// EndScrapeEventType TODO
 	EndScrapeEventType   = "volleynet/scrape/end"
 )
 
+// StartScrapeEvent TODO
 type StartScrapeEvent struct {
 	ID        string    `json:"id"`
 	Timestamp time.Time `json:"time"`
@@ -30,6 +34,7 @@ func (s *Service) publishStartScrapeEvent(scrapeType string, start time.Time) {
 	})
 }
 
+// EndScrapeEvent TODO
 type EndScrapeEvent struct {
 	ID        string    `json:"id"`
 	Timestamp time.Time `json:"time"`

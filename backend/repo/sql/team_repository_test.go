@@ -8,7 +8,7 @@ import (
 
 func TestCreateTeam(t *testing.T) {
 	db := setupDB(t)
-	teamRepo := &TeamRepository{DB: db}
+	teamRepo := &teamRepository{DB: db}
 
 	ps := createPlayers(t, db,
 		P{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
@@ -38,7 +38,7 @@ func TestCreateTeam(t *testing.T) {
 
 func TestTournamentTeams(t *testing.T) {
 	db := setupDB(t)
-	teamRepo := &TeamRepository{DB: db}
+	teamRepo := &teamRepository{DB: db}
 
 	ps := createPlayers(t, db,
 		P{ Gender: "m", ID: 1 },

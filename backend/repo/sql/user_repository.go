@@ -8,49 +8,49 @@ import (
 	"github.com/raphi011/scores/repo"
 )
 
-var _ repo.UserRepository = &UserRepository{}
+var _ repo.UserRepository = &userRepository{}
 
-// UserRepository stores users.
-type UserRepository struct {
+// userRepository stores users.
+type userRepository struct {
 	DB *sqlx.DB
 }
 
 // New persists a user and assigns a new id.
-func (s *UserRepository) New(user *scores.User) (*scores.User, error) {
+func (s *userRepository) New(user *scores.User) (*scores.User, error) {
 	err := insertSetID(s.DB, "user/insert", user)
 
 	return user, errors.Wrap(err, "new user")
 }
 
 // Update updates a user.
-func (s *UserRepository) Update(user *scores.User) error {
+func (s *userRepository) Update(user *scores.User) error {
 	err := update(s.DB, "user/update", user)
 
 	return errors.Wrap(err, "update user")
 }
 
 // All returns all user's, this is used mainly for testing.
-func (s *UserRepository) All() ([]*scores.User, error) {
+func (s *userRepository) All() ([]*scores.User, error) {
 	users, err := s.scan("user/select-all")
 
 	return users, errors.Wrap(err, "all users")
 }
 
 // ByID retrieves a user by his/her ID.
-func (s *UserRepository) ByID(userID int) (*scores.User, error) {
+func (s *userRepository) ByID(userID int) (*scores.User, error) {
 	user, err := s.scanOne("user/select-by-id", userID)
 
 	return user, errors.Wrap(err, "byID user")
 }
 
 // ByEmail retrieves a user by his/her email.
-func (s *UserRepository) ByEmail(email string) (*scores.User, error) {
+func (s *userRepository) ByEmail(email string) (*scores.User, error) {
 	user, err := s.scanOne("user/select-by-email", email)
 
 	return user, errors.Wrap(err, "byEmail user")
 }
 
-func (s *UserRepository) scan(queryName string, args ...interface{}) (
+func (s *userRepository) scan(queryName string, args ...interface{}) (
 	[]*scores.User, error) {
 
 	users := []*scores.User{}
@@ -91,7 +91,7 @@ func (s *UserRepository) scan(queryName string, args ...interface{}) (
 	return users, nil
 }
 
-func (s *UserRepository) scanOne(query string, args ...interface{}) (
+func (s *userRepository) scanOne(query string, args ...interface{}) (
 	*scores.User, error) {
 
 	users, err := s.scan(query, args...)

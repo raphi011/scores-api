@@ -10,40 +10,39 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// PlayerRepository implements the PlayerRepository interface.
-type PlayerRepository struct {
+type playerRepository struct {
 	DB *sqlx.DB
 }
 
-var _ repo.PlayerRepository = &PlayerRepository{}
+var _ repo.PlayerRepository = &playerRepository{}
 
 // Ladder gets all players of the passed gender that have a rank.
-func (s *PlayerRepository) Ladder(gender string) ([]*volleynet.Player, error) {
+func (s *playerRepository) Ladder(gender string) ([]*volleynet.Player, error) {
 	return s.scan("player/select-ladder", gender)
 }
 
 // Get loads a player.
-func (s *PlayerRepository) Get(id int) (*volleynet.Player, error) {
+func (s *playerRepository) Get(id int) (*volleynet.Player, error) {
 	player, err := s.scanOne("player/select-by-id", id)
 
 	return player, errors.Wrap(err, "get player")
 }
 
 // New creates a new player.
-func (s *PlayerRepository) New(p *volleynet.Player) (*volleynet.Player, error) {
+func (s *playerRepository) New(p *volleynet.Player) (*volleynet.Player, error) {
 	_, err := exec(s.DB, "player/insert", p)
 
 	return p, errors.Wrap(err, "new player")
 }
 
 // Update updates a player.
-func (s *PlayerRepository) Update(p *volleynet.Player) error {
+func (s *playerRepository) Update(p *volleynet.Player) error {
 	err := update(s.DB, "player/update", p)
 
 	return errors.Wrap(err, "update player")
 }
 
-func (s *PlayerRepository) scan(queryName string, args ...interface{}) (
+func (s *playerRepository) scan(queryName string, args ...interface{}) (
 	[]*volleynet.Player, error) {
 
 	players := []*volleynet.Player{}
@@ -84,7 +83,7 @@ func (s *PlayerRepository) scan(queryName string, args ...interface{}) (
 	return players, nil
 }
 
-func (s *PlayerRepository) scanOne(query string, args ...interface{}) (
+func (s *playerRepository) scanOne(query string, args ...interface{}) (
 	*volleynet.Player, error) {
 
 	players, err := s.scan(query, args...)

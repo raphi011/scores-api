@@ -7,7 +7,7 @@ import (
 	"github.com/raphi011/scores/repo"
 )
 
-// scores.User allows loading / mutation of user data
+// User allows loading / mutation of user data
 type User struct {
 	Repo       repo.UserRepository
 	PlayerRepo repo.PlayerRepository
