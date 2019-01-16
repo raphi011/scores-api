@@ -43,8 +43,8 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
-    "ci-lint": "tslint --project .",
-    "ci-build": "tsc --noEmit --project ."
+    "ci-lint": "tslint -config ../tslint.json --project .",
+    "ci-build": "tsc -config ../tslint.json --noEmit --project ."
   },
   "author": "Raphael Gruber",
   "license": "MIT"

@@ -29,8 +29,7 @@ jobs:
       go: '1.11'
       install: go get github.com/mgechev/revive
       script:
-        - cd backend
-        - revive -exclude volleynet/mocks -config ./revive.toml -formatter friendly ./...
+        - revive -exclude backend/volleynet/mocks -config ./revive.toml -formatter friendly backend/...
 
     - stage: 'Deploy'
       script: skip
