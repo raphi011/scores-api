@@ -20,7 +20,7 @@ CREATE TABLE tournaments (
 	created_at datetime NOT NULL,
 	current_points varchar(256) NOT NULL,
 	email varchar(128) NOT NULL,
-	end datetime NOT NULL,
+	end_date datetime NOT NULL,
 	end_registration datetime NOT NULL,
 	entry_link varchar(255) NOT NULL,
 	format varchar(255) NOT NULL,
@@ -40,11 +40,11 @@ CREATE TABLE tournaments (
 	registration_open integer NOT NULL,
 	season integer NOT NULL,
 	signedup_teams integer NOT NULL,
-	start datetime NOT NULL,
+	start_date datetime NOT NULL,
 	status varchar(255) NOT NULL,
 	updated_at datetime NOT NULL,
-	web varchar(128) NOT NULL
-/*	html_notes text CHARACTER SET utf8mb4 NOT NULL, */
+	website varchar(128) NOT NULL,
+	html_notes text NOT NULL
 );
 
 CREATE TABLE players (
