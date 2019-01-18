@@ -126,7 +126,7 @@ func newBroker() *events.Broker {
 type handlerServices struct {
 	JobManager *job.Manager
 	User *services.User
-	Volleynet *services.Service
+	Volleynet *services.Volleynet
 	Scrape *sync.Service
 	Password services.Password
 }
@@ -162,7 +162,7 @@ func createServices(provider string, connectionString string) (*handlerServices,
 		Password:         password,
 	}
 
-	volleynetService := &services.Service{
+	volleynetService := &services.Volleynet{
 		PlayerRepo: repos.PlayerRepo,
 		TeamRepo: repos.TeamRepo,
 		TournamentRepo: repos.TournamentRepo,

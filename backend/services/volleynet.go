@@ -6,25 +6,25 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// Service allows loading / mutation of volleynet data
-type Service struct {
+// Volleynet allows loading / mutation of volleynet data
+type Volleynet struct {
 	TeamRepo repo.TeamRepository
 	PlayerRepo repo.PlayerRepository
-	TournamentRepo repo.tournamentRepository
+	TournamentRepo repo.TournamentRepository
 }
 
 // ValidGender returns true if if the passed gender string is valid
-func (s *Service) ValidGender(gender string) bool {
+func (s *Volleynet) ValidGender(gender string) bool {
 	return gender == "M" || gender == "W"
 }
 
 // Ladder loads all players of the passed gender and with a rank > 0
-func (s *Service) Ladder(gender string) ([]*volleynet.Player, error) {
+func (s *Volleynet) Ladder(gender string) ([]*volleynet.Player, error) {
 	return s.PlayerRepo.Ladder(gender)
 }
 
 // GetTournaments loads all tournaments of a certain `gender`, `league` and `season`
-func (s *Service) GetTournaments(seasons []int, genders, leagues []string) (
+func (s *Volleynet) GetTournaments(seasons []int, genders, leagues []string) (
 	[]*volleynet.FullTournament, error) {
 	tournaments, err := s.TournamentRepo.Filter(seasons, genders, leagues)
 
@@ -35,7 +35,7 @@ func (s *Service) GetTournaments(seasons []int, genders, leagues []string) (
 	return s.addTeams(tournaments...)
 }
 
-func (s *Service) addTeams(tournaments ...*volleynet.FullTournament) ([]*volleynet.FullTournament, error) {
+func (s *Volleynet) addTeams(tournaments ...*volleynet.FullTournament) ([]*volleynet.FullTournament, error) {
 	var err error
 
 	for _, t := range tournaments {
@@ -50,7 +50,7 @@ func (s *Service) addTeams(tournaments ...*volleynet.FullTournament) ([]*volleyn
 }
 
 // Tournament loads a tournament and its teams
-func (s *Service) Tournament(tournamentID int) (
+func (s *Volleynet) Tournament(tournamentID int) (
 	*volleynet.FullTournament, error) {
 	tournament, err := s.TournamentRepo.Get(tournamentID)
 

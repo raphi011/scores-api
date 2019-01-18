@@ -16,7 +16,7 @@ import (
 )
 
 type volleynetHandler struct {
-	volleynetService *services.Service
+	volleynetService *services.Volleynet
 	userService      *services.User
 }
 
