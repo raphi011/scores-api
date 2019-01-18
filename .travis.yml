@@ -8,7 +8,7 @@ jobs:
         - cd backend
         - go test ./... -race -cover
       env:
-        - TEST_SQL_FILES=/code/scores/backend/repo/sql
+        - TEST_SQL_FILES=$TRAVIS_BUILD_DIR/backend/repo/sql
         - GO111MODULE=on
 
     - name: "frontend"
