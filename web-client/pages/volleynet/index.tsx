@@ -23,7 +23,6 @@ import {
 import { Store } from '../../redux/store';
 import { Tournament, User } from '../../types';
 import * as ArrayUtils from '../../utils/array';
-import TournamentFilters from '../../components/volleynet/filters/TournamentFilters';
 
 const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TOUR'];
 
@@ -132,7 +131,7 @@ class Volleynet extends React.Component<Props> {
   };
 
   render() {
-    const { leagues, user, tournaments, tournament, classes } = this.props;
+    const { tournaments, classes } = this.props;
 
     let leftContent = <CenteredLoading />;
 
@@ -150,9 +149,7 @@ class Volleynet extends React.Component<Props> {
     return (
       <Layout title={{ text: 'Volleynet', href: '' }}>
         <div className={classes.root}>
-          <div className={classes.left}>
-            <TournamentFilters />
-          </div>
+          <div className={classes.left}>{/* <TournamentFilters /> */}</div>
           <div className={classes.right}>{leftContent}</div>
         </div>
       </Layout>

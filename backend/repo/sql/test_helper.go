@@ -10,6 +10,9 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// RepositoriesTest creates a database that respects the `TEST_DB_PROVIDER`
+// and `TEST_DB_CONNECTION` env variables and returns it and all repositories
+// with this db.
 func RepositoriesTest(t testing.TB) (*repo.Repositories, *sqlx.DB) {
 	db := SetupDB(t)
 
@@ -21,6 +24,8 @@ func RepositoriesTest(t testing.TB) (*repo.Repositories, *sqlx.DB) {
 	}, db
 }
 
+// SetupDB sets up a database connection, runs all migrations and
+// clears any existing data.
 func SetupDB(t testing.TB) *sqlx.DB {
 	t.Helper()
 
@@ -56,6 +61,7 @@ func assert(t testing.TB, message string, err error) {
 	}
 }
 
+// P is a helper struct to create players.
 type P struct {
 	Gender string
 	TotalPoints int
@@ -63,6 +69,7 @@ type P struct {
 	ID int
 }
 
+// CreatePlayers is a handy helper to create multiple players.
 func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player {
 	newPlayers := []*volleynet.Player{}
 	playerRepo := &playerRepository{DB: db}
@@ -84,11 +91,13 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 	return newPlayers
 }
 
+// T is a helper struct to create tournaments.
 type T struct {
 	ID int
 	Status string
 }
 
+// CreateTournaments is a handy helper to create multiple tournaments.
 func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet.FullTournament {
 	newTournaments := []*volleynet.FullTournament{}
 	tournamentRepo := &tournamentRepository{DB: db}
@@ -108,6 +117,7 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 	return newTournaments
 }
 
+// TT is a helper struct to create teams.
 type TT struct {
 	TournamentID int     
 	TotalPoints  int     
@@ -120,6 +130,7 @@ type TT struct {
 	Deregistered bool    
 }
 
+// CreateTeams is a handy helper to create multiple teams.
 func CreateTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.TournamentTeam {
 	newTeams := []*volleynet.TournamentTeam{}
 	teamRepo := &teamRepository{DB: db}

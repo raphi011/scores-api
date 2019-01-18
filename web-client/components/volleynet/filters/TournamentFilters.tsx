@@ -1,7 +1,12 @@
 import React, { SyntheticEvent } from 'react';
 
+import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
+import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import {
@@ -11,12 +16,7 @@ import {
   WithStyles,
 } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import FormControl from '@material-ui/core/FormControl';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import Button from '@material-ui/core/Button';
 
 const leagues = [
   { name: 'Junior Tour', key: 'JUNIOR TOUR' },
