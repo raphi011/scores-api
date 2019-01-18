@@ -7,12 +7,12 @@ import (
 )
 
 func TestMergeTournamentTeam(t *testing.T) {
-	oldTeam := volleynet.TournamentTeam{
+	oldTeam := &volleynet.TournamentTeam{
 		Seed:        1,
 		TotalPoints: 300,
 	}
 
-	newTeam := volleynet.TournamentTeam{
+	newTeam := &volleynet.TournamentTeam{
 		PrizeMoney: 200,
 		Rank:       2,
 		WonPoints:  35,
@@ -28,13 +28,13 @@ func TestMergeTournamentTeam(t *testing.T) {
 }
 
 func TestMergeCanceledTournament(t *testing.T) {
-	old := volleynet.FullTournament{
+	old := &volleynet.FullTournament{
 		Tournament: volleynet.Tournament{
 			Status: volleynet.StatusUpcoming,
 		},
 	}
 
-	new := volleynet.FullTournament{
+	new := &volleynet.FullTournament{
 		Tournament: volleynet.Tournament{
 			Status: volleynet.StatusCanceled,
 		},

@@ -11,7 +11,7 @@ import (
 )
 
 func TestCreateTournament(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	tournamentRepo :=  &tournamentRepository{DB: db}
 
 	tournament, err := tournamentRepo.New(&volleynet.FullTournament{
@@ -38,7 +38,7 @@ func TestCreateTournament(t *testing.T) {
 }
 
 func TestFilterTournament(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	tournamentRepo :=  &tournamentRepository{DB: db}
 
 	tournament1 := &volleynet.FullTournament{
@@ -100,7 +100,7 @@ func TestFilterTournament(t *testing.T) {
 }
 
 func BenchmarkCreateTournament(b *testing.B) {
-	db := setupDB(b)
+	db := SetupDB(b)
 	tournamentRepo := &tournamentRepository{DB: db}
 	b.ResetTimer()
 
@@ -119,7 +119,7 @@ func BenchmarkCreateTournament(b *testing.B) {
 
 func BenchmarkFilterTournament(b *testing.B) {
 	b.StopTimer()
-	db := setupDB(b)
+	db := SetupDB(b)
 	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournaments := randomTournaments(1000, 0)
@@ -141,7 +141,7 @@ func BenchmarkFilterTournament(b *testing.B) {
 }
 
 func TestUpdateTournament(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournament, err := tournamentRepo.New(&volleynet.FullTournament{

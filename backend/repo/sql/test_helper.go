@@ -6,10 +6,22 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/volleynet"
 )
 
-func setupDB(t testing.TB) *sqlx.DB {
+func RepositoriesTest(t testing.TB) (*repo.Repositories, *sqlx.DB) {
+	db := SetupDB(t)
+
+	return &repo.Repositories{
+		UserRepo: &userRepository{DB: db},
+		PlayerRepo: &playerRepository{DB: db},
+		TournamentRepo: &tournamentRepository{DB: db},
+		TeamRepo: &teamRepository{DB: db},
+	}, db
+}
+
+func SetupDB(t testing.TB) *sqlx.DB {
 	t.Helper()
 
 	dbProvider := "sqlite3"
@@ -51,7 +63,7 @@ type P struct {
 	ID int
 }
 
-func createPlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player {
+func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player {
 	newPlayers := []*volleynet.Player{}
 	playerRepo := &playerRepository{DB: db}
 
@@ -74,9 +86,10 @@ func createPlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 
 type T struct {
 	ID int
+	Status string
 }
 
-func createTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet.FullTournament {
+func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet.FullTournament {
 	newTournaments := []*volleynet.FullTournament{}
 	tournamentRepo := &tournamentRepository{DB: db}
 
@@ -84,6 +97,7 @@ func createTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 		persistedTournament, err := tournamentRepo.New(&volleynet.FullTournament{
 			Tournament: volleynet.Tournament{
 				ID: tournament.ID,
+				Status: tournament.Status,
 			},
 		})
 		assert(t, "tournamentRepo.New() failed", err)
@@ -106,7 +120,7 @@ type TT struct {
 	Deregistered bool    
 }
 
-func createTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.TournamentTeam {
+func CreateTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.TournamentTeam {
 	newTeams := []*volleynet.TournamentTeam{}
 	teamRepo := &teamRepository{DB: db}
 

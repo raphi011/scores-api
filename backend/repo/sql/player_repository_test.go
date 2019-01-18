@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreatePlayer(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	playerRepo := &playerRepository{DB: db}
 
 	player, err := playerRepo.New(&volleynet.Player{
@@ -31,7 +31,7 @@ func TestCreatePlayer(t *testing.T) {
 }
 
 func TestUpdatePlayer(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	playerRepo := &playerRepository{DB: db}
 
 	player, err := playerRepo.New(&volleynet.Player{
@@ -55,7 +55,7 @@ func TestUpdatePlayer(t *testing.T) {
 }
 
 func TestLadder(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	playerRepo := &playerRepository{DB: db}
 
 	players, err := playerRepo.Ladder("m")
@@ -65,7 +65,7 @@ func TestLadder(t *testing.T) {
 		t.Fatalf("ladder should be empty: %v", err)
 	}
 
-	createPlayers(t, db,
+	CreatePlayers(t, db,
 		P{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
 		P{ Gender: "m", TotalPoints: 4, Rank: 2, ID: 2 },
 		P{ Gender: "m", TotalPoints: 0, Rank: 0, ID: 3 },

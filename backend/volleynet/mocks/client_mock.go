@@ -27,25 +27,25 @@ func (m *ClientMock) Login(username, password string) (*volleynet.LoginData, err
 	return args.Get(0).(*volleynet.LoginData), args.Error(1)
 }
 
-func (m *ClientMock) AllTournaments(gender, league string, year int) ([]volleynet.Tournament, error) {
+func (m *ClientMock) AllTournaments(gender, league string, year int) ([]*volleynet.Tournament, error) {
 	args := m.Called(gender, league, year)
 
-	return args.Get(0).([]volleynet.Tournament), args.Error(1)
+	return args.Get(0).([]*volleynet.Tournament), args.Error(1)
 }
 
-func (m *ClientMock) Ladder(gender string) ([]volleynet.Player, error) {
+func (m *ClientMock) Ladder(gender string) ([]*volleynet.Player, error) {
 	args := m.Called(gender)
 
-	return args.Get(0).([]volleynet.Player), args.Error(1)
+	return args.Get(0).([]*volleynet.Player), args.Error(1)
 }
 
-func (m *ClientMock) ComplementMultipleTournaments(tournament []volleynet.Tournament) ([]volleynet.FullTournament, error) {
+func (m *ClientMock) ComplementMultipleTournaments(tournament []*volleynet.Tournament) ([]*volleynet.FullTournament, error) {
 	args := m.Called(tournament)
 
-	return args.Get(0).([]volleynet.FullTournament), args.Error(1)
+	return args.Get(0).([]*volleynet.FullTournament), args.Error(1)
 }
 
-func (m *ClientMock) ComplementTournament(tournament volleynet.Tournament) (*volleynet.FullTournament, error) {
+func (m *ClientMock) ComplementTournament(tournament *volleynet.Tournament) (*volleynet.FullTournament, error) {
 	args := m.Called(tournament)
 
 	return args.Get(0).(*volleynet.FullTournament), args.Error(1)
@@ -63,8 +63,8 @@ func (m *ClientMock) TournamentEntry(playerName string, playerID, tournamentID i
 	return args.Error(0)
 }
 
-func (m *ClientMock) SearchPlayers(firstName, lastName, birthday string) ([]volleynet.PlayerInfo, error) {
+func (m *ClientMock) SearchPlayers(firstName, lastName, birthday string) ([]*volleynet.PlayerInfo, error) {
 	args := m.Called(firstName, lastName, birthday)
 
-	return args.Get(0).([]volleynet.PlayerInfo), args.Error(1)
+	return args.Get(0).([]*volleynet.PlayerInfo), args.Error(1)
 }

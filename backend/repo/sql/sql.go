@@ -2,6 +2,8 @@ package sql
 
 import (
 	"fmt"
+	"os"
+	"path"
 
 	"database/sql"
 	"github.com/jmoiron/sqlx"
@@ -13,10 +15,27 @@ import (
 	"github.com/raphi011/scores/repo"
 )
 
-var queries *packr.Box
+var (
+	queries *packr.Box
+	migrations *packr.Box
+)
 
 func init() {
-	queries = packr.New("sql", "./queries")
+	// this is necessary for testing since the working directory and
+	// thus the location of the SQL files changes depending on the tests
+	// that are executed
+	folder := os.Getenv("TEST_SQL_FILES")
+
+	queriesFolder := "./queries"
+	migrationsFolder := "./migrations"
+
+	if folder != "" {
+		queriesFolder = path.Join(folder, queriesFolder)
+		migrationsFolder = path.Join(folder, migrationsFolder)
+	}
+
+	queries = packr.New("sql", queriesFolder)
+	migrations = packr.New("migrations", migrationsFolder)
 }
 
 // Repositories returns a collection of all repositories with an SQL backend

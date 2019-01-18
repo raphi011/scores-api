@@ -4,25 +4,28 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+
+	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/volleynet"
 )
 
 func TestDistinctPlayers(t *testing.T) {
-	input := []volleynet.TournamentTeam{
-		volleynet.TournamentTeam{
+	input := []*volleynet.TournamentTeam{
+		&volleynet.TournamentTeam{
 			Player1: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ID: 1},
+				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
 			},
 			Player2: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ID: 2},
+				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 2 }}},
 			},
 		},
-		volleynet.TournamentTeam{
+		&volleynet.TournamentTeam{
 			Player1: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ID: 3},
+				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 3 }}},
 			},
 			Player2: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ID: 1},
+				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
 			},
 		},
 	}
@@ -41,88 +44,80 @@ func TestDistinctPlayers(t *testing.T) {
 }
 
 func TestAddMissingPlayers(t *testing.T) {
-	_, volleynetMock, Service := syncMock()
+	_, service, db := syncMock(t)
 
-	teams := []volleynet.TournamentTeam{
-		volleynet.TournamentTeam{
-			Player1: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ID: 1},
-			},
-			Player2: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ID: 2},
-			},
+	players := sql.CreatePlayers(t, db,
+		sql.P{ ID: 1 },
+		sql.P{ ID: 2 },
+	)
+
+	teams := []*volleynet.TournamentTeam{
+		&volleynet.TournamentTeam{
+			Player1: players[0],
+			Player2: players[1],
 		},
 	}
 
-	var nilPlayer *volleynet.Player
-
-	volleynetMock.On("Player", 1).Return(nilPlayer, nil)
-	volleynetMock.On("Player", 2).Return(teams[0].Player2, nil)
-
-	volleynetMock.On("NewPlayer", teams[0].Player1).Return(nil)
-
-	err := Service.addMissingPlayers(teams)
+	err := service.addMissingPlayers(teams)
 
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	volleynetMock.AssertExpectations(t)
 }
 
 func TestSyncTournamentTeams(t *testing.T) {
-	_, _, Service := syncMock()
+	_, service, _ := syncMock(t)
 
 	changes := &TeamChanges{}
 	tournamentID := 1
 
-	teamDeleted := volleynet.TournamentTeam{
+	teamDeleted := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         1,
 		Player1: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ID: 1},
+			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
 		},
 		Player2: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ID: 2},
+			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 2 }}},
 		},
 	}
 
-	teamOutdated := volleynet.TournamentTeam{
+	teamOutdated := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         2,
 		Player1: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ID: 5},
+			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 5 }}},
 		},
 		Player2: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ID: 6},
+			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 6 }}},
 		},
 	}
 
-	teamNew := volleynet.TournamentTeam{
+	teamNew := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         2,
 		Player1: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ID: 3},
+			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 3 }}},
 		},
 		Player2: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ID: 4},
+			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 4 }}},
 		},
 	}
 
-	teamUpdated := teamOutdated
+	teamUpdated := *teamOutdated
 	teamUpdated.Seed = 3
 
-	old := []volleynet.TournamentTeam{
+	old := []*volleynet.TournamentTeam{
 		teamDeleted,
 		teamOutdated,
 	}
 
-	new := []volleynet.TournamentTeam{
-		teamUpdated,
+	new := []*volleynet.TournamentTeam{
+		&teamUpdated,
 		teamNew,
 	}
 
-	Service.syncTournamentTeams(changes, old, new)
+	service.syncTournamentTeams(changes, old, new)
 
 	if len(changes.New) != 1 {
 		t.Errorf("Service.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d", len(changes.New))

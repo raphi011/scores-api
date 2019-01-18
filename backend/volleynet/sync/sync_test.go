@@ -5,38 +5,44 @@ import (
 	"testing"
 	"time"
 
+	"github.com/jmoiron/sqlx"
+	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/events"
+	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/mocks"
 	"github.com/raphi011/scores/volleynet/parse"
 )
 
-func syncMock() (*mocks.ClientMock, *mocks.VolleynetRepositoryMock, *Service) {
+func syncMock(t *testing.T) (*mocks.ClientMock, *Service, *sqlx.DB) {
+	repos, db := sql.RepositoriesTest(t)
 	clientMock := new(mocks.ClientMock)
-	volleynetMock := new(mocks.VolleynetRepositoryMock)
 
-	Service := &Service{
-		Client:           clientMock,
-		VolleynetRepository: volleynetMock,
+	service := &Service{
+		Client: clientMock,
+		PlayerRepo: repos.PlayerRepo,
+		TournamentRepo: repos.TournamentRepo,
+		TeamRepo: repos.TeamRepo,
+		Subscriptions : &events.Broker{},
 	}
 
-	return clientMock, volleynetMock, Service
+	return clientMock, service, db
 }
 
 func TestSyncLadder(t *testing.T) {
-	persistedPlayers := []volleynet.Player{volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1}, TotalPoints: 100, Rank: 96}}
-	clientPlayers := []volleynet.Player{volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ID: 1}, TotalPoints: 125, Rank: 60}}
+	clientMock, service, db := syncMock(t)
+	gender := "M"
 
-	clientMock, volleynetMock, Service := syncMock()
+	sql.CreatePlayers(t, db,
+		sql.P{ ID: 1, TotalPoints: 100, Rank: 96, Gender: gender },
+	)
 
-	clientMock.On("Ladder", "M").Return(clientPlayers, nil)
-	volleynetMock.On("AllPlayers").Return(persistedPlayers, nil)
-	volleynetMock.On("UpdatePlayer", &volleynet.Player{
-		PlayerInfo:  volleynet.PlayerInfo{ID: 1},
-		TotalPoints: 125,
-		Rank:        60,
-	}).Return(nil)
+	clientPlayers := []*volleynet.Player{&volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
+		TotalPoints: 125, Rank: 60, Gender: gender}}
 
-	report, err := Service.Ladder("M")
+	clientMock.On("Ladder", gender).Return(clientPlayers, nil)
+
+	report, err := service.Ladder(gender)
 
 	if err != nil {
 		t.Error(err)
@@ -49,7 +55,7 @@ func TestSyncLadder(t *testing.T) {
 
 func TestSyncTournamentInformation(t *testing.T) {
 	response, _ := os.Open("../testdata/upcoming.html")
-	tournament, _ := parse.FullTournament(response, time.Now(), volleynet.Tournament{Status: volleynet.StatusUpcoming, ID: 22231})
+	tournament, _ := parse.FullTournament(response, time.Now(), &volleynet.Tournament{Status: volleynet.StatusUpcoming, ID: 22231})
 
 	syncInfos := Tournaments(tournament, &volleynet.Tournament{ID: 22231, Status: volleynet.StatusUpcoming})
 
@@ -59,44 +65,37 @@ func TestSyncTournamentInformation(t *testing.T) {
 }
 
 func TestSyncTournaments(t *testing.T) {
-	clientTournaments := []volleynet.Tournament{volleynet.Tournament{
-		ID:     1,
+	clientMock, service, db := syncMock(t)
+
+	clientTournaments := []*volleynet.Tournament{ &volleynet.Tournament{
+ID:     1,
 		Status: volleynet.StatusUpcoming,
 	}}
-	persistedTournaments := []volleynet.FullTournament{
-		volleynet.FullTournament{
-			Tournament: volleynet.Tournament{ID: 1, Status: volleynet.StatusUpcoming}},
-	}
-	clientFullTournament := []volleynet.FullTournament{
-		volleynet.FullTournament{Tournament: volleynet.Tournament{
+
+	clientFullTournament := []*volleynet.FullTournament{
+		&volleynet.FullTournament{Tournament: volleynet.Tournament{
 			ID:     1,
 			Status: volleynet.StatusUpcoming,
 			Name:   "New name",
 		},
-			Teams: []volleynet.TournamentTeam{},
+			Teams: []*volleynet.TournamentTeam{},
 		},
 	}
 
-	clientMock, volleynetMock, Service := syncMock()
+	sql.CreateTournaments(t, db,
+		sql.T{ ID: 1, Status: volleynet.StatusUpcoming },
+	)
 
 	gender := "M"
 	league := "AMATEUR LEAGUE"
 	season := 2018
 
 	clientMock.On("AllTournaments", gender, league, season).Return(clientTournaments, nil)
-	volleynetMock.On("Tournament", persistedTournaments[0].ID).Return(&persistedTournaments[0], nil)
 	clientMock.On("ComplementMultipleTournaments", clientTournaments).Return(clientFullTournament, nil)
-	volleynetMock.On("UpdateTournament", &clientFullTournament[0]).Return(nil)
-	volleynetMock.On("TournamentTeams", 1).Return([]volleynet.TournamentTeam{}, nil)
-	volleynetMock.On("AllPlayers").Return([]volleynet.Player{}, nil)
 
-	report, err := Service.Tournaments("M", "AMATEUR LEAGUE", 2018)
+	err := service.Tournaments("M", "AMATEUR LEAGUE", 2018)
 
 	if err != nil {
 		t.Fatal(err)
-	}
-
-	if len(report.Tournament.Update) != 1 {
-		t.Fatalf("Service.Tournaments(\"M\") want: .UpdatedTournaments = 1, got: %d", len(report.Tournament.Update))
 	}
 }

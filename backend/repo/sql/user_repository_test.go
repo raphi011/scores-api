@@ -9,7 +9,7 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	userRepo := &userRepository{DB: db}
 
 	email := "test@test.com"
@@ -45,7 +45,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestUserNotFound(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	userRepo := &userRepository{DB: db}
 
 	_, err := userRepo.ByID(1)
@@ -56,7 +56,7 @@ func TestUserNotFound(t *testing.T) {
 }
 
 func TestUsers(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	userRepo := &userRepository{DB: db}
 
 	_, err := userRepo.New(&scores.User{
@@ -81,7 +81,7 @@ func TestUsers(t *testing.T) {
 }
 
 func TestUpdateUser(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	userRepo := &userRepository{DB: db}
 
 	email := "test@test.com"

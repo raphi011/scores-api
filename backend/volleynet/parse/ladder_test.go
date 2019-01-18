@@ -6,18 +6,19 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
 func TestParseLadderTest(t *testing.T) {
 	response, _ := os.Open("../testdata/ladder-men.html")
 
-	expected := []volleynet.Player{
-		volleynet.Player{
+	expected := []*volleynet.Player{
+		&volleynet.Player{
 			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Alexander",
 				LastName:  "Horst",
-				ID:        246,
+				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 246 }},
 				Birthday:  time.Time{},
 			},
 			Rank:         1,
@@ -26,11 +27,11 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
-		volleynet.Player{
+		&volleynet.Player{
 			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Clemens",
 				LastName:  "Doppler",
-				ID:        1050,
+				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 1050 }},
 				Birthday:  time.Time{},
 			},
 			Rank:         1,
@@ -39,11 +40,11 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
-		volleynet.Player{
+		&volleynet.Player{
 			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Robin Valentin",
 				LastName:  "Seidl",
-				ID:        5626,
+				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 5626 }},
 				Birthday:  time.Time{},
 			},
 			Rank:         3,
@@ -52,11 +53,11 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  1900,
 			Gender:       "M",
 		},
-		volleynet.Player{
+		&volleynet.Player{
 			PlayerInfo: volleynet.PlayerInfo{
 				FirstName: "Martin",
 				LastName:  "Ermacora",
-				ID:        6656,
+				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 6656 }},
 				Birthday:  time.Time{},
 			},
 			Rank:         4,

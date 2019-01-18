@@ -7,17 +7,17 @@ import (
 )
 
 func TestCreateTeam(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	teamRepo := &teamRepository{DB: db}
 
-	ps := createPlayers(t, db,
+	ps := CreatePlayers(t, db,
 		P{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
 		P{ Gender: "m", TotalPoints: 4, Rank: 2, ID: 2 },
 		P{ Gender: "m", TotalPoints: 0, Rank: 0, ID: 3 },
 		P{ Gender: "w", TotalPoints: 4, Rank: 1, ID: 4 },
 	)
 
-	ts := createTournaments(t, db,
+	ts := CreateTournaments(t, db,
 		T{ ID: 1 },
 	)
 
@@ -37,10 +37,10 @@ func TestCreateTeam(t *testing.T) {
 }
 
 func TestTournamentTeams(t *testing.T) {
-	db := setupDB(t)
+	db := SetupDB(t)
 	teamRepo := &teamRepository{DB: db}
 
-	ps := createPlayers(t, db,
+	ps := CreatePlayers(t, db,
 		P{ Gender: "m", ID: 1 },
 		P{ Gender: "m", ID: 2 },
 		P{ Gender: "m", ID: 3 },
@@ -51,11 +51,11 @@ func TestTournamentTeams(t *testing.T) {
 		P{ Gender: "m", ID: 8 },
 	)
 
-	ts := createTournaments(t, db,
+	ts := CreateTournaments(t, db,
 		T{ ID: 1 },
 	)
 
-	createTeams(t, db,
+	CreateTeams(t, db,
 		TT{TournamentID: ts[0].ID, Player1: ps[0], Player2: ps[1] },
 		TT{TournamentID: ts[0].ID, Player1: ps[2], Player2: ps[3] },
 		TT{TournamentID: ts[0].ID, Player1: ps[4], Player2: ps[5] },

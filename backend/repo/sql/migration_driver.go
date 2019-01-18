@@ -23,10 +23,8 @@ type packrDriver struct {
 var _ source.Driver = &packrDriver{}
 
 func (p * packrDriver) Open(provider string) (source.Driver, error) {
-	migrations := source.NewMigrations()
-	box := packr.New("migrations", "./migrations")
-
-	migrationPaths := box.List()
+	migrationSource := source.NewMigrations()
+	migrationPaths := migrations.List()
 
 	if len(migrationPaths) == 0 {
 		return nil, fmt.Errorf("no migrations available for %s", provider)
@@ -43,15 +41,15 @@ func (p * packrDriver) Open(provider string) (source.Driver, error) {
 			log.Fatalf("invalid migration file name: %s", migrationPath)
 		}
 
-		if !migrations.Append(m) {
+		if !migrationSource.Append(m) {
 			log.Fatalf("unable to parse file: %s", migrationPath)
 		}
 	}
 
 
 	return &packrDriver{
-		migrations: migrations,
-		box: box,
+		migrations: migrationSource,
+		box: migrations,
 		provider: provider,
 	}, nil
 }
