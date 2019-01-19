@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"time"
 	"fmt"
 	"os"
 	"path"
@@ -38,20 +39,22 @@ func init() {
 	migrations = packr.New("migrations", migrationsFolder)
 }
 
-// Repositories returns a collection of all repositories with an SQL backend
-func Repositories(driverName, connectionString string) (*repo.Repositories, error) {
-	db, err := sqlx.Open(driverName, connectionString)
+// Repositories returns a collection of all repositories with an SQL backend.
+func Repositories(provider, connectionString string) (*repo.Repositories, error) {
+	db, err := sqlx.Open(provider, connectionString)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "open db: %v")
 	}
+
+	err = migrateAll(provider, db)
 
 	return &repo.Repositories{
 		UserRepo: &userRepository{DB: db},
 		PlayerRepo: &playerRepository{DB: db},
 		TournamentRepo: &tournamentRepository{DB: db},
 		TeamRepo: &teamRepository{DB: db},
-	}, nil
+	}, err
 }
 
 func loadQuery(db *sqlx.DB, name string) string {
@@ -78,10 +81,6 @@ func namedQuery(db *sqlx.DB, name string) string {
 
 func query(db *sqlx.DB, queryName string) string {
 	return db.Rebind(loadQuery(db, queryName))
-}
-
-type model interface {
-	SetID(id int)
 }
 
 func update(db *sqlx.DB, queryName string, entity interface{}) error {
@@ -131,19 +130,41 @@ func execMultiple(db *sqlx.DB, queryName string, entities ...interface{}) error 
 	return nil
 }
 
-func insertSetID(db *sqlx.DB, queryName string, entity model) error {
-	var id int
+func insert(db *sqlx.DB, queryName string, entity interface{}) error {
 	var err error
+
+	if tracked, ok := entity.(repo.Tracked); ok {
+		now := time.Now()
+		tracked.SetCreatedAt(now)
+		tracked.SetUpdatedAt(now)
+	}
+
+	if model, ok := entity.(repo.Model); ok {
+		err = insertSetID(db, queryName, model)
+
+		return mapError(err)
+	}
+
+	_, err = db.NamedExec(
+		query(db, queryName),
+		entity,
+	)
+
+	return mapError(err)
+}
+
+func insertSetID(db *sqlx.DB, queryName string, entity repo.Model) error {
+	var id int
 
 	if db.DriverName() == "postgres" {
 		var rows *sqlx.Rows
 		// doesn't support `LastInsertID()`
-		rows, err = db.NamedQuery(
+		rows, err := db.NamedQuery(
 			namedQuery(db, queryName),
 			entity)
 
 		if err != nil {
-			return mapError(nil)
+			return mapError(err)
 		}
 
 		defer rows.Close()
@@ -155,19 +176,17 @@ func insertSetID(db *sqlx.DB, queryName string, entity model) error {
 		var result sql.Result
 		var bigID int64
 
-		result, err = db.NamedExec(
+		result, err := db.NamedExec(
 			query(db, queryName),
 			entity,
 		)
 
-		if err == nil {
-			bigID, err = result.LastInsertId()
-			id = int(bigID)
+		if err != nil {
+			return mapError(err)
 		}
-	}
 
-	if err = mapError(err); err != nil {
-		return err
+		bigID, err = result.LastInsertId()
+		id = int(bigID)
 	}
 
 	entity.SetID(id)

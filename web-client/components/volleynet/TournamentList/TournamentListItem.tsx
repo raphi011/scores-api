@@ -12,7 +12,7 @@ import ArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 import StatusMarker from './StatusMarker';
 
-import { Tournament } from '../../../types';
+import { TournamentInfo } from '../../../types';
 import TournamentAttribute from './TournamentAttribute';
 
 const styles = (theme: Theme) =>
@@ -54,9 +54,9 @@ const styles = (theme: Theme) =>
   });
 
 interface Props extends WithStyles<typeof styles> {
-  tournament: Tournament;
+  tournament: TournamentInfo;
 
-  onClick: (tournament: Tournament) => void;
+  onClick: (tournament: TournamentInfo) => void;
 }
 
 const TournamentListItem = ({ tournament, classes, onClick }: Props) => {

@@ -10,7 +10,7 @@ var ranks = []rank{
 	{percentage: 100, name: "Hacker"},
 	{percentage: 99, name: "Administrator"},
 	{percentage: 90, name: "Gigant Wall"},
-	{percentage: 85, name: "5 Star Tournament Player"},
+	{percentage: 85, name: "5 Star TournamentInfo Player"},
 	{percentage: 80, name: "Senior Beacher"},
 	{percentage: 78, name: "Supreme Master First Class"},
 	{percentage: 76, name: "Legend"},

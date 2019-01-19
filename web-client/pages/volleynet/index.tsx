@@ -21,7 +21,7 @@ import {
   tournamentSelector,
 } from '../../redux/entities/selectors';
 import { Store } from '../../redux/store';
-import { Tournament, User } from '../../types';
+import { TournamentInfo, User } from '../../types';
 import * as ArrayUtils from '../../utils/array';
 
 const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TOUR'];
@@ -40,8 +40,8 @@ const styles = createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  tournament?: Tournament;
-  tournaments: Tournament[];
+  tournament?: TournamentInfo;
+  tournaments: TournamentInfo[];
   tournamentId: string;
   leagues: string[];
   user: User;
@@ -95,7 +95,7 @@ class Volleynet extends React.Component<Props> {
     return { tournament, tournaments, user };
   }
 
-  renderList = (tournaments: Tournament[]) => {
+  renderList = (tournaments: TournamentInfo[]) => {
     return (
       <div key={tournaments[0].id}>
         <TournamentList
@@ -116,7 +116,7 @@ class Volleynet extends React.Component<Props> {
     }
   }
 
-  onTournamentClick = (t: Tournament) => {
+  onTournamentClick = (t: TournamentInfo) => {
     Router.push({
       pathname: '/volleynet/tournament',
       query: { id: t.id },
@@ -137,7 +137,7 @@ class Volleynet extends React.Component<Props> {
 
     if (tournaments) {
       leftContent = (
-        <GroupedList<Tournament>
+        <GroupedList<TournamentInfo>
           groupItems={groupTournaments}
           items={tournaments.sort(sortDescending)}
           renderHeader={renderHeader}
@@ -159,7 +159,7 @@ class Volleynet extends React.Component<Props> {
 
 const thisYear = '2018'; // new Date().getFullYear().toString();
 
-function sortDescending(a: Tournament, b: Tournament) {
+function sortDescending(a: TournamentInfo, b: TournamentInfo) {
   return new Date(b.start).getTime() - new Date(a.start).getTime();
 }
 
@@ -171,7 +171,7 @@ function sameDay(d1: Date, d2: Date): boolean {
   );
 }
 
-function groupTournaments(tournaments: Tournament[]) {
+function groupTournaments(tournaments: TournamentInfo[]) {
   const grouped = [];
 
   let previous = null;
@@ -189,7 +189,7 @@ function groupTournaments(tournaments: Tournament[]) {
   return grouped;
 }
 
-function renderHeader(tournaments: Tournament[]) {
+function renderHeader(tournaments: TournamentInfo[]) {
   return (
     <DayHeader
       key={tournaments[0].start}

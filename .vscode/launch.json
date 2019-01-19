@@ -6,13 +6,16 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceRoot}/cmd/api",
+      "program": "${workspaceRoot}/backend/cmd/api",
       "args": [
         "-provider",
-        "mysql",
+        "postgres",
         "-connection",
-        "root:test@tcp(localhost)/scores?charset=utf8mb4&parseTime=true"
+        "postgres://postgres:test@localhost?sslmode=disable"
       ],
+      "env": {
+        "TEST_SQL_FILES": "${workspaceRoot}/backend/repo/sql"
+      },
       "showLog": true,
       "apiVersion": 2
     },
@@ -22,7 +25,7 @@
       "request": "launch",
       "runtimeExecutable": "npm",
       "runtimeVersion": "10.7.0",
-      "cwd": "${workspaceRoot}/web",
+      "cwd": "${workspaceRoot}/web-client",
       "runtimeArgs": ["run-script", "debug"],
       "env": { "BACKEND_URL": "http://localhost:8080" },
       "port": 9229,

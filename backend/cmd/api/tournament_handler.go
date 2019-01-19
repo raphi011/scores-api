@@ -60,7 +60,7 @@ func (h *volleynetHandler) getTournament(c *gin.Context) {
 		return
 	}
 
-	tournament, err := h.volleynetService.Tournament(tournamentID)
+	tournament, err := h.volleynetService.TournamentInfo(tournamentID)
 
 	if err != nil {
 		responseErr(c, err)

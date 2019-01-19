@@ -33,8 +33,8 @@ func TestTournamentList(t *testing.T) {
 	}
 }
 
-var tournamentListAmateur = []*volleynet.Tournament{
-	&volleynet.Tournament{
+var tournamentListAmateur = []*volleynet.TournamentInfo{
+	&volleynet.TournamentInfo{
 		Name:             "Herren Beachvolley Wien Summer Opening",
 		Start:            mustParseDate("21.04.2018"),
 		End:              mustParseDate("21.04.2018"),
@@ -47,7 +47,7 @@ var tournamentListAmateur = []*volleynet.Tournament{
 		Phase:            "ABV Tour AMATEUR 1",
 		Link:             "http://example.com/beach/bewerbe/AMATEUR TOUR/phase/ABV Tour AMATEUR 1/sex/M/saison/2018/cup/21908",
 	},
-	&volleynet.Tournament{
+	&volleynet.TournamentInfo{
 		Name:             "Herren Graz",
 		Start:            mustParseDate("21.04.2018"),
 		End:              mustParseDate("22.04.2018"),
@@ -60,7 +60,7 @@ var tournamentListAmateur = []*volleynet.Tournament{
 		Phase:            "ABV Tour AMATEUR 1",
 		Link:             "http://example.com/beach/bewerbe/AMATEUR TOUR/phase/ABV Tour AMATEUR 1/sex/M/saison/2018/cup/21880",
 	},
-	&volleynet.Tournament{
+	&volleynet.TournamentInfo{
 		Name:             "Herren Beachvolley Grieskirchen",
 		Start:            mustParseDate("06.05.2018"),
 		End:              mustParseDate("06.05.2018"),
@@ -74,7 +74,7 @@ var tournamentListAmateur = []*volleynet.Tournament{
 		Link:             "http://example.com/beach/bewerbe/AMATEUR TOUR/phase/ABV Tour AMATEUR 1/sex/M/saison/2018/cup/22055",
 		EntryLink:        "https://beach.volleynet.at/Anmelden/21617-22055-00",
 	},
-	&volleynet.Tournament{
+	&volleynet.TournamentInfo{
 		Name:             "Herren Innsbruck",
 		Start:            mustParseDate("01.05.2018"),
 		End:              mustParseDate("01.05.2018"),

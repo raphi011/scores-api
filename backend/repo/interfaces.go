@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"time"
+
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
@@ -27,11 +29,11 @@ type TeamRepository interface {
 // TournamentRepository exposes CRUD operations on tournaments.
 type TournamentRepository interface {
 	Filter(seasons []int, leagues []string, formats []string) (
-		[]*volleynet.FullTournament, error)
-	Get(tournamentID int) (*volleynet.FullTournament, error)
-	New(t *volleynet.FullTournament) (*volleynet.FullTournament, error)
-	NewBatch(t ...*volleynet.FullTournament) error
-	Update(t *volleynet.FullTournament) error
+		[]*volleynet.Tournament, error)
+	Get(tournamentID int) (*volleynet.Tournament, error)
+	New(t *volleynet.Tournament) (*volleynet.Tournament, error)
+	NewBatch(t ...*volleynet.Tournament) error
+	Update(t *volleynet.Tournament) error
 }
 
 // UserRepository exposes CRUD operations on users.
@@ -49,4 +51,16 @@ type Repositories struct {
 	TeamRepo TeamRepository
 	TournamentRepo TournamentRepository
 	UserRepo UserRepository
+}
+
+// Model ...
+type Model interface {
+	SetID(id int)
+}
+
+// Tracked ...
+type Tracked interface {
+	SetCreatedAt(createdAt time.Time)
+	SetUpdatedAt(updatedAt time.Time)
+	SetDeletedAt(deletedAt *time.Time)
 }

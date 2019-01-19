@@ -23,8 +23,8 @@ func MergeTournamentTeam(persisted, current *volleynet.TournamentTeam) *volleyne
 }
 
 // MergeTournament merges two tournaments depending on the syncType
-// and returns the new Tournament.
-func MergeTournament(persisted, current *volleynet.FullTournament) *volleynet.FullTournament {
+// and returns the new TournamentInfo.
+func MergeTournament(persisted, current *volleynet.Tournament) *volleynet.Tournament {
 	merged := *persisted
 
 	if persisted.Status == volleynet.StatusUpcoming && current.Status == volleynet.StatusCanceled {

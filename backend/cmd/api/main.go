@@ -66,7 +66,11 @@ func main() {
 	}
 
 	router := initRouter(app, services)
-	router.Run()
+	err = router.Run()
+
+	if err != nil {
+		fmt.Print(err)
+	}
 }
 
 func setupLogger(logstashURL string) logrus.FieldLogger {

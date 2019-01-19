@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/volleynet"
 )
@@ -76,13 +75,12 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 
 	for _, p := range players {
 		persistedPlayer, err := playerRepo.New(&volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{
-				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: p.ID }},
-			},
+			ID: p.ID,
 			Gender: p.Gender,
 			TotalPoints: p.TotalPoints,
 			Rank: p.Rank,
 		})
+
 		assert(t, "playerRepo.New() failed", err)
 
 		newPlayers = append(newPlayers, persistedPlayer)
@@ -98,13 +96,13 @@ type T struct {
 }
 
 // CreateTournaments is a handy helper to create multiple tournaments.
-func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet.FullTournament {
-	newTournaments := []*volleynet.FullTournament{}
+func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet.Tournament {
+	newTournaments := []*volleynet.Tournament{}
 	tournamentRepo := &tournamentRepository{DB: db}
 
 	for _, tournament := range tournaments {
-		persistedTournament, err := tournamentRepo.New(&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		persistedTournament, err := tournamentRepo.New(&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo {
 				ID: tournament.ID,
 				Status: tournament.Status,
 			},

@@ -33,8 +33,8 @@ INSERT INTO tournaments
 VALUES
 (
 	:id,
-	:createdat,
-	:updatedat,
+	:createdAt,
+	:updatedAt,
 	:format,
 	:start,
 	:end,

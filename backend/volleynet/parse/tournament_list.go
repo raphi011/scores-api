@@ -11,14 +11,14 @@ import (
 )
 
 // TournamentList parses the list of tournaments
-func TournamentList(html io.Reader, host string) ([]*volleynet.Tournament, error) {
+func TournamentList(html io.Reader, host string) ([]*volleynet.TournamentInfo, error) {
 	doc, err := parseHTML(html)
 
 	if err != nil {
 		return nil, err
 	}
 
-	tournaments := []*volleynet.Tournament{}
+	tournaments := []*volleynet.TournamentInfo{}
 
 	rows := doc.Find("tbody>tr")
 
@@ -62,7 +62,7 @@ func TournamentList(html io.Reader, host string) ([]*volleynet.Tournament, error
 	return tournaments, nil
 }
 
-func extractTournamentLinkData(relativeLink, host string) *volleynet.Tournament {
+func extractTournamentLinkData(relativeLink, host string) *volleynet.TournamentInfo {
 	if len(relativeLink) == 0 {
 		return nil
 	}
@@ -75,7 +75,7 @@ func extractTournamentLinkData(relativeLink, host string) *volleynet.Tournament 
 
 	season, _ := strconv.Atoi(readURLPart(relativeLink, "saison/"))
 
-	return &volleynet.Tournament{
+	return &volleynet.TournamentInfo{
 		Format: readURLPart(relativeLink, "sex/"),
 		League: readURLPart(relativeLink, "bewerbe/"),
 		Phase:  readURLPart(relativeLink, "phase/"),

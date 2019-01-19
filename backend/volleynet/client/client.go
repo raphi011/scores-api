@@ -17,13 +17,13 @@ import (
 // Client is the interface to the volleynet api, use DefaultClient()
 // to get a new Client.
 type Client interface {
-	GetTournamentLink(t *volleynet.Tournament) string
-	GetAPITournamentLink(t *volleynet.Tournament) string
+	GetTournamentLink(t *volleynet.TournamentInfo) string
+	GetAPITournamentLink(t *volleynet.TournamentInfo) string
 	Login(username, password string) (*volleynet.LoginData, error)
-	AllTournaments(gender, league string, year int) ([]*volleynet.Tournament, error)
+	AllTournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error)
 	Ladder(gender string) ([]*volleynet.Player, error)
-	ComplementTournament(tournament *volleynet.Tournament) (*volleynet.FullTournament, error)
-	ComplementMultipleTournaments(tournaments []*volleynet.Tournament) ([]*volleynet.FullTournament, error)
+	ComplementTournament(tournament *volleynet.TournamentInfo) (*volleynet.Tournament, error)
+	ComplementMultipleTournaments(tournaments []*volleynet.TournamentInfo) ([]*volleynet.Tournament, error)
 	TournamentWithdrawal(tournamentID int) error
 	TournamentEntry(playerName string, playerID, tournamentID int) error
 	SearchPlayers(firstName, lastName, birthday string) ([]*volleynet.PlayerInfo, error)
@@ -95,7 +95,7 @@ func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *u
 }
 
 // GetTournamentLink returns the link for a tournament.
-func (c *Default) GetTournamentLink(t *volleynet.Tournament) string {
+func (c *Default) GetTournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -108,7 +108,7 @@ func (c *Default) GetTournamentLink(t *volleynet.Tournament) string {
 }
 
 // GetAPITournamentLink returns the API link for a tournament.
-func (c *Default) GetAPITournamentLink(t *volleynet.Tournament) string {
+func (c *Default) GetAPITournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
@@ -156,7 +156,7 @@ func (c *Default) Login(username, password string) (*volleynet.LoginData, error)
 
 // AllTournaments reads all tournaments of a certain gender, league and year.
 // To get more detailed tournamnent information call `ComplementTournament`.
-func (c *Default) AllTournaments(gender, league string, year int) ([]*volleynet.Tournament, error) {
+func (c *Default) AllTournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/information/all",
 		league,
@@ -205,8 +205,8 @@ func genderLong(gender string) string {
 }
 
 // ComplementTournament adds the missing information from `AllTournaments`.
-func (c *Default) ComplementTournament(tournament *volleynet.Tournament) (
-	*volleynet.FullTournament, error) {
+func (c *Default) ComplementTournament(tournament *volleynet.TournamentInfo) (
+	*volleynet.Tournament, error) {
 	url := c.GetAPITournamentLink(tournament)
 
 	fmt.Printf("Downloading tournament: %s\n", url)
@@ -216,7 +216,7 @@ func (c *Default) ComplementTournament(tournament *volleynet.Tournament) (
 		return nil, errors.Wrapf(err, "loading tournament %d failed", tournament.ID)
 	}
 
-	t, err := parse.FullTournament(resp.Body, time.Now(), tournament)
+	t, err := parse.Tournament(resp.Body, time.Now(), tournament)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
@@ -228,10 +228,10 @@ func (c *Default) ComplementTournament(tournament *volleynet.Tournament) (
 }
 
 // ComplementMultipleTournaments adds the missing information from `AllTournaments`
-func (c *Default) ComplementMultipleTournaments(tournaments []*volleynet.Tournament) (
-	[]*volleynet.FullTournament, error) {
+func (c *Default) ComplementMultipleTournaments(tournaments []*volleynet.TournamentInfo) (
+	[]*volleynet.Tournament, error) {
 	// maybe donwload tournaments in parallel in the future?
-	fullTournaments := []*volleynet.FullTournament{}
+	fullTournaments := []*volleynet.Tournament{}
 
 	for _, t := range tournaments {
 		fullTournament, err := c.ComplementTournament(t)

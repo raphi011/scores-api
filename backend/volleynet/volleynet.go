@@ -6,18 +6,22 @@ import (
 	"github.com/raphi011/scores"
 )
 
-// PlayerInfo contains all player information that the search player api returns
+// PlayerInfo contains all player information that the search player api returns.
 type PlayerInfo struct {
-	scores.TrackedModel
+	ID 		int `json:"id"`
 	FirstName string    `json:"firstName"`
 	LastName  string    `json:"lastName"`
 	Birthday  time.Time `json:"birthday"`
 }
 
-// Player adds additional information to `PlayerInfo`
+// Player contains all relevent volleynet player information.
 type Player struct {
-	PlayerInfo
+	scores.Tracked
 
+	ID 		int `json:"id"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Birthday  time.Time `json:"birthday"`
 	Gender       string `json:"gender"`
 	TotalPoints  int    `json:"totalPoints"`
 	Rank         int    `json:"rank"`
@@ -28,8 +32,10 @@ type Player struct {
 
 // TournamentTeam is the current status of the team entry in a
 // tournament, if the tournament is finished it may also contain
-// the seed
+// the seed.
 type TournamentTeam struct {
+	scores.Tracked 
+
 	TournamentID int     `json:"tournamentId"`
 	TotalPoints  int     `json:"totalPoints"`
 	Seed         int     `json:"seed"`
@@ -42,35 +48,36 @@ type TournamentTeam struct {
 }
 
 const (
-	// StatusUpcoming represents the state of a tournament not done yet
+	// StatusUpcoming represents the state of a tournament not done yet.
 	StatusUpcoming = "upcoming"
-	// StatusDone represents the state of a completed tournament
+	// StatusDone represents the state of a completed tournament.
 	StatusDone = "done"
-	// StatusCanceled represents the state of a canceled tournament
+	// StatusCanceled represents the state of a canceled tournament.
 	StatusCanceled = "canceled"
 )
 
-// Tournament is all the information that can be parsed from the tournament list
-type Tournament struct {
+// TournamentInfo is all the information that can be parsed from the tournament list.
+type TournamentInfo struct {
+	ID               int       `json:"id"`
+	Season           int       `json:"season"`
 	Start            time.Time `json:"start"`
 	End              time.Time `json:"end"`
 	Name             string    `json:"name" fako:"city"`
-	Season           int       `json:"season"`
 	League           string    `json:"league"`
 	Phase            string    `json:"phase"`
 	Link             string    `json:"link" fako:"domain_name"` 
 	EntryLink        string    `json:"entryLink"`
-	ID               int       `json:"id"`
 	Status           string    `json:"status"` // can be `StatusUpcoming`, `StatusDone` or `StatusCanceled`
-	RegistrationOpen bool      `json:"registrationOpen"`
 	Format 			 string    `json:"format"`
+	RegistrationOpen bool      `json:"registrationOpen"`
 }
 
-// FullTournament adds additional information to `Tournament`
-type FullTournament struct {
-	Tournament
-	CreatedAt       time.Time        `json:"createdAt"`
-	UpdatedAt       time.Time        `json:"updatedAt"`
+// Tournament adds additional information to `TournamentInfo`.
+type Tournament struct {
+	scores.Tracked
+
+	TournamentInfo
+
 	EndRegistration time.Time        `json:"endRegistration"`
 	Teams           []*TournamentTeam `json:"teams"`
 	Location        string           `json:"location"`
@@ -90,13 +97,13 @@ type FullTournament struct {
 	Longitude       float32          `json:"longitude"`
 }
 
-// LoginData contains the data of the form that is shown after a successful login
+// LoginData contains the data of the form that is shown after a successful login.
 type LoginData struct {
 	PlayerInfo
 	License License
 }
 
-// License contains the license data of a player
+// License contains the license data of a player.
 type License struct {
 	Nr        string
 	Type      string

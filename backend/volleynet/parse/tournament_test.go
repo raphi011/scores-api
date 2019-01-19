@@ -7,22 +7,21 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
 var tournamentTests = []struct {
 	file       string
 	now        time.Time
-	tournament volleynet.Tournament
-	out        *volleynet.FullTournament
+	tournament volleynet.TournamentInfo
+	out        *volleynet.Tournament
 }{
 	{
 		"../testdata/done-no-teams.html",
 		mustParseDate("02.05.2018"),
-		volleynet.Tournament{ID: 21808, Format: "M", Status: "upcoming"},
-		&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		volleynet.TournamentInfo{ID: 21808, Format: "M", Status: "upcoming"},
+		&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
 				ID:     21808,
 				Phase:  "ABV Tour AMATEUR 2",
 				Start:  mustParseDate("01.05.2018"),
@@ -45,9 +44,9 @@ var tournamentTests = []struct {
 	{
 		"../testdata/22764-done.html",
 		mustParseDate("02.09.2018"),
-		volleynet.Tournament{ID: 22764, Format: "M", Status: "upcoming"},
-		&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		volleynet.TournamentInfo{ID: 22764, Format: "M", Status: "upcoming"},
+		&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
 				ID:     22764,
 				Phase:  "ABV Tour AMATEUR 1",
 				Start:  mustParseDate("01.09.2018"),
@@ -67,80 +66,80 @@ var tournamentTests = []struct {
 			Email:         "Vorstand@12ndr.at",
 			Teams: []*volleynet.TournamentTeam{
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 22606 }}, FirstName: "Richard", LastName: "Bosse"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 41275 }}, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 22606, FirstName: "Richard", LastName: "Bosse", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 41275, FirstName: "Raphael", LastName: "Gruber", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         1,
 					TournamentID: 22764,
 					WonPoints:    36,
 				},
 				&volleynet.TournamentTeam{
-					Player1: 		&volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 28725 }}, FirstName: "Alexander", LastName: "Jäger"}, Gender: "M", CountryUnion: "WVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 20436 }} , FirstName: "Bernhard", LastName: "Metzger"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1: 	  &volleynet.Player{ ID: 28725, FirstName: "Alexander", LastName: "Jäger", Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{ ID: 20436 , FirstName: "Bernhard", LastName: "Metzger", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         2,
 					TournamentID: 22764,
 					WonPoints:    33,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 27201 }}, FirstName: "Alexander", LastName: "Jirgal"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 17623 }}, FirstName: "Luca Maxim", LastName: "Wojnar"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 27201, FirstName: "Alexander", LastName: "Jirgal", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 17623, FirstName: "Luca Maxim", LastName: "Wojnar", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         3,
 					TournamentID: 22764,
 					WonPoints:    29,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 10198 }}, FirstName: "Markus", LastName: "Mayer"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 42403 }}, FirstName: "Constantin", LastName: "Schieber"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 10198, FirstName: "Markus", LastName: "Mayer", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 42403, FirstName: "Constantin", LastName: "Schieber", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         4,
 					TournamentID: 22764,
 					WonPoints:    26,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 22913 }}, FirstName: "Herbert", LastName: "Eminger"}, Gender: "M", CountryUnion: "WVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 33125 }}, FirstName: "Stefan", LastName: "Handschmann"}, Gender: "M", CountryUnion: "WVV"},
+					Player1:      &volleynet.Player{ ID: 22913, FirstName: "Herbert", LastName: "Eminger", Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{ ID: 33125, FirstName: "Stefan", LastName: "Handschmann", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,
 					Rank:         5,
 					TournamentID: 22764,
 					WonPoints:    22,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 44906 }}, FirstName: "Reinhard", LastName: "Weiskirchner"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 13788 }}, FirstName: "Michael", LastName: "Gahler"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 44906, FirstName: "Reinhard", LastName: "Weiskirchner", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 13788, FirstName: "Michael", LastName: "Gahler", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         5,
 					TournamentID: 22764,
 					WonPoints:    22,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 18427 }}, FirstName: "Michael", LastName: "Haas"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 39945 }}, FirstName: "Werner", LastName: "Schmid"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 18427, FirstName: "Michael", LastName: "Haas", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 39945, FirstName: "Werner", LastName: "Schmid", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         7,
 					TournamentID: 22764,
 					WonPoints:    18,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 36540 }}, FirstName: "Andreas", LastName: "Zelinka"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 51104 }}, FirstName: "Simon", LastName: "Sladek"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 36540, FirstName: "Andreas", LastName: "Zelinka", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 51104, FirstName: "Simon", LastName: "Sladek", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         7,
 					TournamentID: 22764,
 					WonPoints:    18,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 55789 }}, FirstName: "Martin", LastName: "Gschweidl"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 36557 }}, FirstName: "Stefan", LastName: "Müller"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 55789, FirstName: "Martin", LastName: "Gschweidl", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 36557, FirstName: "Stefan", LastName: "Müller", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         9,
 					TournamentID: 22764,
 					WonPoints:    15,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 55596 }}, FirstName: "Thomas", LastName: "Müllner"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 43098 }}, FirstName: "Sebastian", LastName: "Lechner"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 55596, FirstName: "Thomas", LastName: "Müllner", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 43098, FirstName: "Sebastian", LastName: "Lechner", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         9,
 					TournamentID: 22764,
@@ -153,9 +152,9 @@ var tournamentTests = []struct {
 
 		"../testdata/done.html",
 		mustParseDate("22.05.2018"),
-		volleynet.Tournament{ID: 22228, Format: "M", Status: "upcoming"},
-		&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		volleynet.TournamentInfo{ID: 22228, Format: "M", Status: "upcoming"},
+		&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
 				ID:     22228,
 				Phase:  "ABV Tour AMATEUR 1",
 				Start:  mustParseDate("21.05.2018"),
@@ -174,24 +173,24 @@ var tournamentTests = []struct {
 			Email:         "tarek.mohamed@outlook.com",
 			Teams: []*volleynet.TournamentTeam{
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1043 }}, FirstName: "Peter", LastName: "Dietl"}, Gender: "M", CountryUnion: "WVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 39947 }}, FirstName: "Michael", LastName: "Seiser"}, Gender: "M", CountryUnion: "WVV"},
+					Player1:      &volleynet.Player{ ID: 1043, FirstName: "Peter", LastName: "Dietl", Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{ ID: 39947, FirstName: "Michael", LastName: "Seiser", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,
 					Rank:         1,
 					TournamentID: 22228,
 					WonPoints:    50,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 11072 }}, FirstName: "Christoph", LastName: "Brunnhofer"}, Gender: "M", CountryUnion: "STVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 27471 }}, FirstName: "Christoph", LastName: "Mittendrein"}, Gender: "M", CountryUnion: "STVV"},
+					Player1:      &volleynet.Player{ ID: 11072, FirstName: "Christoph", LastName: "Brunnhofer", Gender: "M", CountryUnion: "STVV"},
+					Player2:      &volleynet.Player{ ID: 27471, FirstName: "Christoph", LastName: "Mittendrein", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
 					Rank:         2,
 					TournamentID: 22228,
 					WonPoints:    45,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 36552 }}, FirstName: "Dominik", LastName: "Koudela"}, Gender: "M", CountryUnion: "WVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 18348 }}, FirstName: "Marian", LastName: "Schwinner"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 36552, FirstName: "Dominik", LastName: "Koudela", Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{ ID: 18348, FirstName: "Marian", LastName: "Schwinner", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         3,
 					TournamentID: 22228,
@@ -203,9 +202,9 @@ var tournamentTests = []struct {
 	{
 		"../testdata/done-tournament.html",
 		mustParseDate("19.08.2018"),
-		volleynet.Tournament{ID: 22750, Format: "M", Status: "upcoming"},
-		&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		volleynet.TournamentInfo{ID: 22750, Format: "M", Status: "upcoming"},
+		&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
 				Phase:  "LMS",
 				Status: "done",
 				ID:     22750,
@@ -223,32 +222,32 @@ var tournamentTests = []struct {
 			Phone:         "0699/81 49 1124",
 			Teams: []*volleynet.TournamentTeam{
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 4162 }}, FirstName: "Christoph", LastName: "Haas"}, Gender: "M", CountryUnion: "STVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 20158 }}, FirstName: "Dominik Karl", LastName: "Blaha"}, Gender: "M", CountryUnion: "STVV"},
+					Player1:      &volleynet.Player{ ID: 4162, FirstName: "Christoph", LastName: "Haas", Gender: "M", CountryUnion: "STVV"},
+					Player2:      &volleynet.Player{ ID: 20158, FirstName: "Dominik Karl", LastName: "Blaha", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
 					Rank:         1,
 					TournamentID: 22750,
 					WonPoints:    80,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 4523 }}, FirstName: "Josef", LastName: "Buchner"}, Gender: "M", CountryUnion: "SVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 4179 }}, FirstName: "Florian", LastName: "Tatra"}, Gender: "M", CountryUnion: "SVV"},
+					Player1:      &volleynet.Player{ ID: 4523, FirstName: "Josef", LastName: "Buchner", Gender: "M", CountryUnion: "SVV"},
+					Player2:      &volleynet.Player{ ID: 4179, FirstName: "Florian", LastName: "Tatra", Gender: "M", CountryUnion: "SVV"},
 					Deregistered: false,
 					Rank:         2,
 					TournamentID: 22750,
 					WonPoints:    70,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 13011 }}, FirstName: "Daniel", LastName: "Wimmer"}, Gender: "M", CountryUnion: "SVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 44897 }}, FirstName: "Maximilian", LastName: "Wieser"}, Gender: "M", CountryUnion: "SVV"},
+					Player1:      &volleynet.Player{ ID: 13011, FirstName: "Daniel", LastName: "Wimmer", Gender: "M", CountryUnion: "SVV"},
+					Player2:      &volleynet.Player{ ID: 44897, FirstName: "Maximilian", LastName: "Wieser", Gender: "M", CountryUnion: "SVV"},
 					Deregistered: false,
 					Rank:         3,
 					TournamentID: 22750,
 					WonPoints:    60,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 39947 }}, FirstName: "Michael", LastName: "Seiser"}, Gender: "M", CountryUnion: "WVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1991 }}, FirstName: "Wolfgang", LastName: "Ertl"}, Gender: "M", CountryUnion: "WVV"},
+					Player1:      &volleynet.Player{ ID: 39947, FirstName: "Michael", LastName: "Seiser", Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{ ID: 1991, FirstName: "Wolfgang", LastName: "Ertl", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,
 					Rank:         4,
 					TournamentID: 22750,
@@ -261,10 +260,10 @@ var tournamentTests = []struct {
 	{
 		"../testdata/upcoming.html",
 		mustParseDate("19.08.2018"),
-		volleynet.Tournament{ID: 22231, Format: "M", Status: "upcoming"},
+		volleynet.TournamentInfo{ID: 22231, Format: "M", Status: "upcoming"},
 
-		&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
 				ID:     22231,
 				Phase:  "ABV Tour AMATEUR 1",
 				Start:  mustParseDate("31.05.2018"),
@@ -283,24 +282,24 @@ var tournamentTests = []struct {
 			Email:         "ziegler@sportz.at",
 			Teams: []*volleynet.TournamentTeam{
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 10938 }}, FirstName: "Sascha", LastName: "Kosatschow"}, TotalPoints: 303, License: "1", Gender: "M", CountryUnion: "STVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 27103 }}, FirstName: "Johannes", LastName: "Pekar"}, TotalPoints: 177, License: "1", Gender: "M", CountryUnion: "STVV"},
+					Player1:      &volleynet.Player{ ID: 10938, FirstName: "Sascha", LastName: "Kosatschow", TotalPoints: 303, License: "1", Gender: "M", CountryUnion: "STVV"},
+					Player2:      &volleynet.Player{ ID: 27103, FirstName: "Johannes", LastName: "Pekar", TotalPoints: 177, License: "1", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
 					Seed:         1,
 					TournamentID: 22231,
 					TotalPoints:  480,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 18068 }}, FirstName: "Lukas", LastName: "Wimmer"}, TotalPoints: 206, License: "1", Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 22590 }}, FirstName: "Dominik", LastName: "Rieder"}, TotalPoints: 228, License: "1", Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 18068, FirstName: "Lukas", LastName: "Wimmer", TotalPoints: 206, License: "1", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 22590, FirstName: "Dominik", LastName: "Rieder", TotalPoints: 228, License: "1", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Seed:         2,
 					TournamentID: 22231,
 					TotalPoints:  434,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 42649 }}, FirstName: "Niels", LastName: "Antoni"}, TotalPoints: 162, License: "1", Gender: "M", CountryUnion: "WVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 21259 }}, FirstName: "Liam", LastName: "Ochaya"}, TotalPoints: 257, License: "1", Gender: "M", CountryUnion: "STVV"},
+					Player1:      &volleynet.Player{ ID: 42649, FirstName: "Niels", LastName: "Antoni", TotalPoints: 162, License: "1", Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{ ID: 21259, FirstName: "Liam", LastName: "Ochaya", TotalPoints: 257, License: "1", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
 					Seed:         3,
 					TournamentID: 22231,
@@ -313,9 +312,9 @@ var tournamentTests = []struct {
 	{
 		"../testdata/22764-upcoming-wildcard.html",
 		mustParseDate("02.09.2018"),
-		volleynet.Tournament{ID: 22764, Format: "M", Status: "upcoming"},
-		&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		volleynet.TournamentInfo{ID: 22764, Format: "M", Status: "upcoming"},
+		&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
 				ID:     22764,
 				Phase:  "ABV Tour AMATEUR 1",
 				Start:  mustParseDate("01.09.2018"),
@@ -335,87 +334,87 @@ var tournamentTests = []struct {
 			Email:         "Vorstand@12ndr.at",
 			Teams: []*volleynet.TournamentTeam{
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 22606 }}, FirstName: "Richard", LastName: "Bosse"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 249},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 41275 }}, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 242},
+					Player1:      &volleynet.Player{ ID: 22606, FirstName: "Richard", LastName: "Bosse", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 249},
+					Player2:      &volleynet.Player{ ID: 41275, FirstName: "Raphael", LastName: "Gruber", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 242},
 					Deregistered: false,
 					Seed:         1,
 					TournamentID: 22764,
 					TotalPoints:  491,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 27201 }}, FirstName: "Alexander", LastName: "Jirgal"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 184},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 17623 }}, FirstName: "Luca Maxim", LastName: "Wojnar"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 185},
+					Player1:      &volleynet.Player{ ID: 27201, FirstName: "Alexander", LastName: "Jirgal", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 184},
+					Player2:      &volleynet.Player{ ID: 17623, FirstName: "Luca Maxim", LastName: "Wojnar", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 185},
 					Deregistered: false,
 					Seed:         2,
 					TournamentID: 22764,
 					TotalPoints:  369,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 54595 }}, FirstName: "Maximilian", LastName: "Rauter"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 155},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 47755 }}, FirstName: "Moritz", LastName: "Hörl"}, Gender: "M", CountryUnion: "SVV", License: "1", TotalPoints: 187},
+					Player1:      &volleynet.Player{ ID: 54595, FirstName: "Maximilian", LastName: "Rauter", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 155},
+					Player2:      &volleynet.Player{ ID: 47755, FirstName: "Moritz", LastName: "Hörl", Gender: "M", CountryUnion: "SVV", License: "1", TotalPoints: 187},
 					Deregistered: false,
 					Seed:         3,
 					TournamentID: 22764,
 					TotalPoints:  342,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 44906 }}, FirstName: "Reinhard", LastName: "Weiskirchner"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 157},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 13788 }}, FirstName: "Michael", LastName: "Gahler"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 138},
+					Player1:      &volleynet.Player{ ID: 44906, FirstName: "Reinhard", LastName: "Weiskirchner", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 157},
+					Player2:      &volleynet.Player{ ID: 13788, FirstName: "Michael", LastName: "Gahler", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 138},
 					Deregistered: false,
 					Seed:         4,
 					TournamentID: 22764,
 					TotalPoints:  295,
 				},
-				&volleynet.TournamentTeam{Player1: &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 28725 }}, FirstName: "Alexander", LastName: "Jäger"}, Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 214},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 20436 }}, FirstName: "Bernhard", LastName: "Metzger"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 78},
+				&volleynet.TournamentTeam{Player1: &volleynet.Player{ ID: 28725, FirstName: "Alexander", LastName: "Jäger", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 214},
+					Player2:      &volleynet.Player{ ID: 20436, FirstName: "Bernhard", LastName: "Metzger", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 78},
 					Deregistered: false,
 					Seed:         5,
 					TournamentID: 22764,
 					TotalPoints:  292,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 22913 }}, FirstName: "Herbert", LastName: "Eminger"}, Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 102},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 33125 }}, FirstName: "Stefan", LastName: "Handschmann"}, Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 122},
+					Player1:      &volleynet.Player{ ID: 22913, FirstName: "Herbert", LastName: "Eminger", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 102},
+					Player2:      &volleynet.Player{ ID: 33125, FirstName: "Stefan", LastName: "Handschmann", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 122},
 					Deregistered: false,
 					Seed:         6,
 					TournamentID: 22764,
 					TotalPoints:  224,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 10198 }}, FirstName: "Markus", LastName: "Mayer"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 42},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 42403 }}, FirstName: "Constantin", LastName: "Schieber"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 153},
+					Player1:      &volleynet.Player{ ID: 10198, FirstName: "Markus", LastName: "Mayer", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 42},
+					Player2:      &volleynet.Player{ ID: 42403, FirstName: "Constantin", LastName: "Schieber", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 153},
 					Deregistered: false,
 					Seed:         7,
 					TournamentID: 22764,
 					TotalPoints:  195,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 36540 }}, FirstName: "Andreas", LastName: "Zelinka"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 18},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 51104 }}, FirstName: "Simon", LastName: "Sladek"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 103},
+					Player1:      &volleynet.Player{ ID: 36540, FirstName: "Andreas", LastName: "Zelinka", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 18},
+					Player2:      &volleynet.Player{ ID: 51104, FirstName: "Simon", LastName: "Sladek", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 103},
 					Deregistered: false,
 					Seed:         8,
 					TournamentID: 22764,
 					TotalPoints:  121,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 18427 }}, FirstName: "Michael", LastName: "Haas"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 98},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 39945 }}, FirstName: "Werner", LastName: "Schmid"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 11},
+					Player1:      &volleynet.Player{ ID: 18427, FirstName: "Michael", LastName: "Haas", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 98},
+					Player2:      &volleynet.Player{ ID: 39945, FirstName: "Werner", LastName: "Schmid", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 11},
 					Deregistered: false,
 					Seed:         9,
 					TournamentID: 22764,
 					TotalPoints:  109,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 55596 }}, FirstName: "Thomas", LastName: "Müllner"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 25},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 43098 }}, FirstName: "Sebastian", LastName: "Lechner"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 25},
+					Player1:      &volleynet.Player{ ID: 55596, FirstName: "Thomas", LastName: "Müllner", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 25},
+					Player2:      &volleynet.Player{ ID: 43098, FirstName: "Sebastian", LastName: "Lechner", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 25},
 					Deregistered: false,
 					Seed:         10,
 					TournamentID: 22764,
 					TotalPoints:  50,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 55789 }}, FirstName: "Martin", LastName: "Gschweidl"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 0},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 36557 }}, FirstName: "Stefan", LastName: "Müller"}, Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 0},
+					Player1:      &volleynet.Player{ ID: 55789, FirstName: "Martin", LastName: "Gschweidl", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 0},
+					Player2:      &volleynet.Player{ ID: 36557, FirstName: "Stefan", LastName: "Müller", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 0},
 					Deregistered: false,
 					Seed:         11,
 					TournamentID: 22764,
@@ -428,10 +427,10 @@ var tournamentTests = []struct {
 	{
 		"../testdata/done3.html",
 		mustParseDate("26.08.2018"),
-		volleynet.Tournament{ID: 22616, Format: "M", Status: "upcoming"},
+		volleynet.TournamentInfo{ID: 22616, Format: "M", Status: "upcoming"},
 
-		&volleynet.FullTournament{
-			Tournament: volleynet.Tournament{
+		&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
 				ID:     22616,
 				Phase:  "ABV Tour AMATEUR 1",
 				Start:  mustParseDate("25.08.2018"),
@@ -451,32 +450,32 @@ var tournamentTests = []struct {
 			Email:         "fschaffer@gmx.at",
 			Teams: []*volleynet.TournamentTeam{
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 41275 }}, FirstName: "Raphael", LastName: "Gruber"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 22590 }}, FirstName: "Dominik", LastName: "Rieder"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 41275, FirstName: "Raphael", LastName: "Gruber", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 22590, FirstName: "Dominik", LastName: "Rieder", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         1,
 					TournamentID: 22616,
 					WonPoints:    42,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 6724 }}, FirstName: "Robert", LastName: "Kirkovics"}, Gender: "M", CountryUnion: "NÖVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 13089 }}, FirstName: "Christian", LastName: "Karlin"}, Gender: "M", CountryUnion: "NÖVV"},
+					Player1:      &volleynet.Player{ ID: 6724, FirstName: "Robert", LastName: "Kirkovics", Gender: "M", CountryUnion: "NÖVV"},
+					Player2:      &volleynet.Player{ ID: 13089, FirstName: "Christian", LastName: "Karlin", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
 					Rank:         2,
 					TournamentID: 22616,
 					WonPoints:    38,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 13917 }}, FirstName: "Florian", LastName: "Böhm"}, Gender: "M", CountryUnion: "BVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 51026 }}, FirstName: "Stefan", LastName: "Dienst"}, Gender: "M", CountryUnion: "BVV"},
+					Player1:      &volleynet.Player{ ID: 13917, FirstName: "Florian", LastName: "Böhm", Gender: "M", CountryUnion: "BVV"},
+					Player2:      &volleynet.Player{ ID: 51026, FirstName: "Stefan", LastName: "Dienst", Gender: "M", CountryUnion: "BVV"},
 					Deregistered: false,
 					Rank:         3,
 					TournamentID: 22616,
 					WonPoints:    34,
 				},
 				&volleynet.TournamentTeam{
-					Player1:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 45125 }}, FirstName: "Bernhard", LastName: "Sirowy"}, Gender: "M", CountryUnion: "WVV"},
-					Player2:      &volleynet.Player{PlayerInfo: volleynet.PlayerInfo{TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 36552 }}, FirstName: "Dominik", LastName: "Koudela"}, Gender: "M", CountryUnion: "WVV"},
+					Player1:      &volleynet.Player{ ID: 45125, FirstName: "Bernhard", LastName: "Sirowy", Gender: "M", CountryUnion: "WVV"},
+					Player2:      &volleynet.Player{ ID: 36552, FirstName: "Dominik", LastName: "Koudela", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,
 					Rank:         4,
 					TournamentID: 22616,
@@ -492,10 +491,10 @@ func TestTournament(t *testing.T) {
 		t.Run(tt.file, func(t *testing.T) {
 			response, _ := os.Open(tt.file)
 
-			tournament, err := FullTournament(response, tt.now, &tt.tournament)
+			tournament, err := Tournament(response, tt.now, &tt.tournament)
 
 			if err != nil {
-				t.Fatalf("FullTournament() err: %s", err)
+				t.Fatalf("Tournament() err: %s", err)
 			}
 
 			// ignore notes
@@ -504,7 +503,7 @@ func TestTournament(t *testing.T) {
 			tournament.CurrentPoints = ""
 
 			if !cmp.Equal(tournament, tt.out) {
-				t.Errorf("FullTournament(): %+v", cmp.Diff(tournament, tt.out))
+				t.Errorf("Tournament(): %+v", cmp.Diff(tournament, tt.out))
 			}
 		})
 	}

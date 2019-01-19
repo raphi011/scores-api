@@ -26,7 +26,7 @@ import TeamList from '../../components/volleynet/TeamList';
 import { card, link, title } from '../../styles/shared';
 import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
-import { Tournament, User } from '../../types';
+import { TournamentInfo, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -55,7 +55,7 @@ const styles = (theme: Theme) =>
   });
 
 interface Props extends WithStyles<typeof styles> {
-  tournament: Tournament;
+  tournament: TournamentInfo;
   user: User;
 }
 

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/volleynet"
@@ -37,8 +36,9 @@ func TestSyncLadder(t *testing.T) {
 		sql.P{ ID: 1, TotalPoints: 100, Rank: 96, Gender: gender },
 	)
 
-	clientPlayers := []*volleynet.Player{&volleynet.Player{PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
-		TotalPoints: 125, Rank: 60, Gender: gender}}
+	clientPlayers := []*volleynet.Player{
+		&volleynet.Player{ ID: 1, TotalPoints: 125, Rank: 60, Gender: gender},
+	}
 
 	clientMock.On("Ladder", gender).Return(clientPlayers, nil)
 
@@ -55,9 +55,9 @@ func TestSyncLadder(t *testing.T) {
 
 func TestSyncTournamentInformation(t *testing.T) {
 	response, _ := os.Open("../testdata/upcoming.html")
-	tournament, _ := parse.FullTournament(response, time.Now(), &volleynet.Tournament{Status: volleynet.StatusUpcoming, ID: 22231})
+	tournament, _ := parse.Tournament(response, time.Now(), &volleynet.TournamentInfo{Status: volleynet.StatusUpcoming, ID: 22231})
 
-	syncInfos := Tournaments(tournament, &volleynet.Tournament{ID: 22231, Status: volleynet.StatusUpcoming})
+	syncInfos := Tournaments(tournament, &volleynet.TournamentInfo{ID: 22231, Status: volleynet.StatusUpcoming})
 
 	if syncInfos.Type != SyncTournamentUpcoming {
 		t.Fatalf("Service.Tournaments() want: %s, got: %s", SyncTournamentUpcoming, syncInfos.Type)
@@ -67,13 +67,13 @@ func TestSyncTournamentInformation(t *testing.T) {
 func TestSyncTournaments(t *testing.T) {
 	clientMock, service, db := syncMock(t)
 
-	clientTournaments := []*volleynet.Tournament{ &volleynet.Tournament{
+	clientTournaments := []*volleynet.TournamentInfo{ &volleynet.TournamentInfo{
 ID:     1,
 		Status: volleynet.StatusUpcoming,
 	}}
 
-	clientFullTournament := []*volleynet.FullTournament{
-		&volleynet.FullTournament{Tournament: volleynet.Tournament{
+	clientFullTournament := []*volleynet.Tournament{
+		&volleynet.Tournament{TournamentInfo: volleynet.TournamentInfo{
 			ID:     1,
 			Status: volleynet.StatusUpcoming,
 			Name:   "New name",

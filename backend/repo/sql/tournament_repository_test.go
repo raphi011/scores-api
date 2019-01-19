@@ -14,8 +14,8 @@ func TestCreateTournament(t *testing.T) {
 	db := SetupDB(t)
 	tournamentRepo :=  &tournamentRepository{DB: db}
 
-	tournament, err := tournamentRepo.New(&volleynet.FullTournament{
-		Tournament: volleynet.Tournament{ ID: 1 },
+	tournament, err := tournamentRepo.New(&volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{ ID: 1 },
 		Teams: []*volleynet.TournamentTeam{},
 	})
 
@@ -41,8 +41,8 @@ func TestFilterTournament(t *testing.T) {
 	db := SetupDB(t)
 	tournamentRepo :=  &tournamentRepository{DB: db}
 
-	tournament1 := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
+	tournament1 := &volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{
 			ID: 1,
 			Season: 2018,
 			League: "amateur-tour",
@@ -51,8 +51,8 @@ func TestFilterTournament(t *testing.T) {
 		Teams: []*volleynet.TournamentTeam{},
 	}
 
-	tournament2 := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
+	tournament2 := &volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{
 			ID: 2,
 			Season: 2018,
 			League: "amateur-tour",
@@ -61,8 +61,8 @@ func TestFilterTournament(t *testing.T) {
 		Teams: []*volleynet.TournamentTeam{},
 	}
 
-	tournament3 := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
+	tournament3 := &volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{
 			ID: 3,
 			Season: 2018,
 			League: "pro-tour",
@@ -71,8 +71,8 @@ func TestFilterTournament(t *testing.T) {
 		Teams: []*volleynet.TournamentTeam{},
 	}
 
-	tournament4 := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
+	tournament4 := &volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{
 			ID: 3,
 			Season: 2017,
 			League: "amateur-tour",
@@ -144,8 +144,8 @@ func TestUpdateTournament(t *testing.T) {
 	db := SetupDB(t)
 	tournamentRepo := &tournamentRepository{DB: db}
 
-	tournament, err := tournamentRepo.New(&volleynet.FullTournament{
-		Tournament: volleynet.Tournament{ ID: 1 },
+	tournament, err := tournamentRepo.New(&volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{ ID: 1 },
 		Teams: []*volleynet.TournamentTeam{},
 	})
 	assert(t, "couldn't persist tournament: %v", err)
@@ -163,8 +163,8 @@ func TestUpdateTournament(t *testing.T) {
 	}
 }
 
-func randomTournaments(count, run int) []*volleynet.FullTournament {
-	tournaments := make([]*volleynet.FullTournament, count)
+func randomTournaments(count, run int) []*volleynet.Tournament {
+	tournaments := make([]*volleynet.Tournament, count)
 	rand.Seed(time.Now().Unix())
 
 	leagues := []string{"amateur-tour", "pro-tour", "junior-tour"}
@@ -181,7 +181,7 @@ func randomTournaments(count, run int) []*volleynet.FullTournament {
 	for i := range tournaments {
 		id++
 
-		tournament := &volleynet.Tournament{}
+		tournament := &volleynet.TournamentInfo{}
 		tournament.ID = id
 		tournament.League = leagues[rand.Intn(len(leagues))]
 		tournament.Season  = seasons[rand.Intn(len(seasons))]
@@ -190,7 +190,7 @@ func randomTournaments(count, run int) []*volleynet.FullTournament {
 
 		fako.Fill(tournament)
 
-		fullTournament := &volleynet.FullTournament{}
+		fullTournament := &volleynet.Tournament{}
 		fullTournament.SignedupTeams = rand.Intn(32)
 		fullTournament.MaxTeams = rand.Intn(32)
 		fullTournament.MinTeams = rand.Intn(16)
@@ -198,7 +198,7 @@ func randomTournaments(count, run int) []*volleynet.FullTournament {
 		fullTournament.CreatedAt = time.Now()
 
 		fako.Fill(fullTournament)
-		fullTournament.Tournament = *tournament
+		fullTournament.TournamentInfo = *tournament
 		tournaments[i] = fullTournament
 	}
 

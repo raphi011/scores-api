@@ -25,7 +25,7 @@ func (s *Volleynet) Ladder(gender string) ([]*volleynet.Player, error) {
 
 // GetTournaments loads all tournaments of a certain `gender`, `league` and `season`
 func (s *Volleynet) GetTournaments(seasons []int, genders, leagues []string) (
-	[]*volleynet.FullTournament, error) {
+	[]*volleynet.Tournament, error) {
 	tournaments, err := s.TournamentRepo.Filter(seasons, genders, leagues)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func (s *Volleynet) GetTournaments(seasons []int, genders, leagues []string) (
 	return s.addTeams(tournaments...)
 }
 
-func (s *Volleynet) addTeams(tournaments ...*volleynet.FullTournament) ([]*volleynet.FullTournament, error) {
+func (s *Volleynet) addTeams(tournaments ...*volleynet.Tournament) ([]*volleynet.Tournament, error) {
 	var err error
 
 	for _, t := range tournaments {
@@ -49,9 +49,9 @@ func (s *Volleynet) addTeams(tournaments ...*volleynet.FullTournament) ([]*volle
 	return tournaments, nil
 }
 
-// Tournament loads a tournament and its teams
-func (s *Volleynet) Tournament(tournamentID int) (
-	*volleynet.FullTournament, error) {
+// TournamentInfo loads a tournament and its teams
+func (s *Volleynet) TournamentInfo(tournamentID int) (
+	*volleynet.Tournament, error) {
 	tournament, err := s.TournamentRepo.Get(tournamentID)
 
 	if err != nil {

@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -12,11 +11,7 @@ func TestCreatePlayer(t *testing.T) {
 	db := SetupDB(t)
 	playerRepo := &playerRepository{DB: db}
 
-	player, err := playerRepo.New(&volleynet.Player{
-		PlayerInfo: volleynet.PlayerInfo{
-			TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 1 }},
-		},
-	})
+	player, err := playerRepo.New(&volleynet.Player{ ID: 1 })
 
 	if err != nil {
 		t.Fatalf("playerRepository.New(), err: %v", err)
@@ -34,11 +29,7 @@ func TestUpdatePlayer(t *testing.T) {
 	db := SetupDB(t)
 	playerRepo := &playerRepository{DB: db}
 
-	player, err := playerRepo.New(&volleynet.Player{
-		PlayerInfo: volleynet.PlayerInfo{
-			TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 1 }},
-		},
-	})
+	player, err := playerRepo.New(&volleynet.Player{ ID: 1 })
 	assert(t, "couldn't persist player: %v", err)
 
 	player.FirstName = "test!"

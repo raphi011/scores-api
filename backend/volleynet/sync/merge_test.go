@@ -28,14 +28,14 @@ func TestMergeTournamentTeam(t *testing.T) {
 }
 
 func TestMergeCanceledTournament(t *testing.T) {
-	old := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
+	old := &volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{
 			Status: volleynet.StatusUpcoming,
 		},
 	}
 
-	new := &volleynet.FullTournament{
-		Tournament: volleynet.Tournament{
+	new := &volleynet.Tournament{
+		TournamentInfo: volleynet.TournamentInfo{
 			Status: volleynet.StatusCanceled,
 		},
 	}

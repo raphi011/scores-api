@@ -5,7 +5,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/volleynet"
 )
@@ -13,20 +12,12 @@ import (
 func TestDistinctPlayers(t *testing.T) {
 	input := []*volleynet.TournamentTeam{
 		&volleynet.TournamentTeam{
-			Player1: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
-			},
-			Player2: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 2 }}},
-			},
+			Player1: &volleynet.Player{ID: 1},
+			Player2: &volleynet.Player{ID: 2},
 		},
 		&volleynet.TournamentTeam{
-			Player1: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 3 }}},
-			},
-			Player2: &volleynet.Player{
-				PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
-			},
+			Player1: &volleynet.Player{ID: 3},
+			Player2: &volleynet.Player{ID: 1},
 		},
 	}
 
@@ -74,34 +65,22 @@ func TestSyncTournamentTeams(t *testing.T) {
 	teamDeleted := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         1,
-		Player1: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 1 }}},
-		},
-		Player2: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 2 }}},
-		},
+		Player1: &volleynet.Player{ID: 1},
+		Player2: &volleynet.Player{ID: 2},
 	}
 
 	teamOutdated := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         2,
-		Player1: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 5 }}},
-		},
-		Player2: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 6 }}},
-		},
+		Player1: &volleynet.Player{ID: 5},
+		Player2: &volleynet.Player{ID: 6},
 	}
 
 	teamNew := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         2,
-		Player1: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 3 }}},
-		},
-		Player2: &volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{ TrackedModel: scores.TrackedModel{ Model: scores.Model{ ID: 4 }}},
-		},
+		Player1: &volleynet.Player{ID: 3},
+		Player2: &volleynet.Player{ID: 4},
 	}
 
 	teamUpdated := *teamOutdated

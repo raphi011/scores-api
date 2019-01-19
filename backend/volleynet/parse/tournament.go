@@ -11,11 +11,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// FullTournament adds remaining details to the tournament (parsed by tournament_list)
-func FullTournament(
+// Tournament adds remaining details to the tournament (parsed by tournament_list)
+func Tournament(
 	html io.Reader,
 	now time.Time,
-	tournament *volleynet.Tournament) (*volleynet.FullTournament, error) {
+	tournament *volleynet.TournamentInfo) (*volleynet.Tournament, error) {
 
 	doc, err := parseHTML(html)
 
@@ -23,7 +23,7 @@ func FullTournament(
 		return nil, errors.Wrap(err, "parseFullTournament failed")
 	}
 
-	t := &volleynet.FullTournament{Tournament: *tournament}
+	t := &volleynet.Tournament{TournamentInfo: *tournament}
 
 	parseTournamentNotes(doc, t)
 	parseTournamentDetails(doc, t)
@@ -52,7 +52,7 @@ func isDateAfter(tournament, current time.Time) bool {
 	return getDate(tournament).After(getDate(current))
 }
 
-func parseTournamentNotes(doc *goquery.Document, t *volleynet.FullTournament) {
+func parseTournamentNotes(doc *goquery.Document, t *volleynet.Tournament) {
 	htmlNotes := doc.Find(".extrainfo")
 
 	if htmlNotes.Find("iframe").Length() > 0 {
@@ -62,21 +62,21 @@ func parseTournamentNotes(doc *goquery.Document, t *volleynet.FullTournament) {
 	}
 }
 
-type detailsParser func(*goquery.Selection, *volleynet.FullTournament)
+type detailsParser func(*goquery.Selection, *volleynet.Tournament)
 
 var parseTournamentDetailsMap = map[string]detailsParser{
-	"Kategorie": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Kategorie": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Phase = trimmSelectionText(value)
 	},
-	"Modus": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Modus": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Mode = trimmSelectionText(value)
 		t.MaxTeams = findInt(t.Mode)
 	},
-	"Teiln. Qual.": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Teiln. Qual.": func(value *goquery.Selection, t *volleynet.Tournament) {
 		// TODO: not min teams but min teams for qualification, this is misleading
 		t.MinTeams = findInt(value.Text())
 	},
-	"Datum": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Datum": func(value *goquery.Selection, t *volleynet.Tournament) {
 		var err error
 		t.Start, t.End, err = parseStartEndDates(value)
 
@@ -84,33 +84,33 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 			log.Warnf("error parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
 		}
 	},
-	"Ort": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Ort": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Location = trimSelectionHTML(value)
 	},
-	"Max. Punkte": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Max. Punkte": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.MaxPoints = findInt(value.Text())
 	},
-	"Veranstalter": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Veranstalter": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Organiser = trimmSelectionText(value)
 	},
-	"Telefon": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Telefon": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Phone = trimmSelectionText(value)
 	},
-	"EMail": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"EMail": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Email = trimmSelectionText(value)
 	},
-	"Web": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Web": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Website = trimmSelectionText(value)
 	},
-	"Vorläufige Punkte": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Vorläufige Punkte": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.CurrentPoints = trimmSelectionText(value)
 	},
-	"Nennschluss": func(value *goquery.Selection, t *volleynet.FullTournament) {
+	"Nennschluss": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.EndRegistration, _ = parseDate(value.Text())
 	},
 }
 
-func parseTournamentDetails(doc *goquery.Document, t *volleynet.FullTournament) {
+func parseTournamentDetails(doc *goquery.Document, t *volleynet.Tournament) {
 	table := doc.Find("tbody")
 
 	for i := range table.Nodes {
@@ -133,7 +133,7 @@ func parseTournamentDetails(doc *goquery.Document, t *volleynet.FullTournament) 
 	}
 }
 
-func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.FullTournament) error {
+func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) error {
 	tables := doc.Find("tbody")
 	t.Teams = []*volleynet.TournamentTeam{}
 

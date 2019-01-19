@@ -14,26 +14,26 @@ type tournamentRepository struct {
 }
 
 // Get loads a tournament by its id.
-func (s *tournamentRepository) Get(tournamentID int) (*volleynet.FullTournament, error) {
+func (s *tournamentRepository) Get(tournamentID int) (*volleynet.Tournament, error) {
 	return s.scanOne("tournament/select-by-id", tournamentID)
 }
 
 // New creates a new tournament.
-func (s *tournamentRepository) New(t *volleynet.FullTournament) (*volleynet.FullTournament, error) {
+func (s *tournamentRepository) New(t *volleynet.Tournament) (*volleynet.Tournament, error) {
 	err := s.exec("tournament/insert", t)
 
 	return t, errors.Wrap(err, "insert tournament")
 }
 
 // NewBatch creates multiple new tournaments
-func (s *tournamentRepository) NewBatch(t ...*volleynet.FullTournament) error {
+func (s *tournamentRepository) NewBatch(t ...*volleynet.Tournament) error {
 	err := s.exec("tournament/insert", t...)
 
 	return errors.Wrap(err, "insert tournament")
 }
 
 // Update updates a tournament.
-func (s *tournamentRepository) Update(t *volleynet.FullTournament) error {
+func (s *tournamentRepository) Update(t *volleynet.Tournament) error {
 	err := update(s.DB, "tournament/update", t)
 
 	return errors.Wrap(err, "update tournament")
@@ -43,7 +43,7 @@ func (s *tournamentRepository) Update(t *volleynet.FullTournament) error {
 func (s *tournamentRepository) Filter(
 	seasons []int,
 	leagues []string,
-	formats []string) ([]*volleynet.FullTournament, error) {
+	formats []string) ([]*volleynet.Tournament, error) {
 
 	tournaments, err := s.scan("tournament/select-by-filter",
 		formats,
@@ -55,9 +55,9 @@ func (s *tournamentRepository) Filter(
 }
 
 func (s *tournamentRepository) scan(queryName string, args ...interface{}) (
-	[]*volleynet.FullTournament, error) {
+	[]*volleynet.Tournament, error) {
 
-	tournaments := []*volleynet.FullTournament{}
+	tournaments := []*volleynet.Tournament{}
 
 	q, args, err := sqlx.In(loadQuery(s.DB, queryName), args...)
 
@@ -76,7 +76,7 @@ func (s *tournamentRepository) scan(queryName string, args ...interface{}) (
 	defer rows.Close()
 
 	for rows.Next() {
-		t := &volleynet.FullTournament{}
+		t := &volleynet.Tournament{}
 		t.Teams = []*volleynet.TournamentTeam{}
 
 		err := rows.Scan(
@@ -121,7 +121,7 @@ func (s *tournamentRepository) scan(queryName string, args ...interface{}) (
 	return tournaments, nil
 }
 
-func (s *tournamentRepository) exec(queryName string, entities ...*volleynet.FullTournament) error {
+func (s *tournamentRepository) exec(queryName string, entities ...*volleynet.Tournament) error {
 	stmt, err := s.DB.PrepareNamed(namedQuery(s.DB, queryName))
 
 	if err != nil {
@@ -140,7 +140,7 @@ func (s *tournamentRepository) exec(queryName string, entities ...*volleynet.Ful
 }
 
 func (s *tournamentRepository) scanOne(query string, args ...interface{}) (
-	*volleynet.FullTournament, error) {
+	*volleynet.Tournament, error) {
 
 	tournaments, err := s.scan(query, args...)
 

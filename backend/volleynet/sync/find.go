@@ -15,7 +15,7 @@ func FindPlayer(players []*volleynet.Player, playerID int) *volleynet.Player {
 }
 
 // FindTournament searches a tournament slice for a tournament, returns nil if not found
-func FindTournament(tournaments []*volleynet.FullTournament, tournamentID int) *volleynet.FullTournament {
+func FindTournament(tournaments []*volleynet.Tournament, tournamentID int) *volleynet.Tournament {
 	for i := range tournaments {
 		t := tournaments[i]
 

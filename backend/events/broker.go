@@ -33,11 +33,12 @@ func (b *Broker) Publish(event Event) {
 		}
 
 		subscriptions.mutex.Lock()
-		defer subscriptions.mutex.Unlock()
 
 		for _, listener := range subscriptions.listeners {
 			listener <- event
 		}
+
+		subscriptions.mutex.Unlock()
 	}
 }
 

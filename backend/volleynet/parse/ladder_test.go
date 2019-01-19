@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -15,12 +14,10 @@ func TestParseLadderTest(t *testing.T) {
 
 	expected := []*volleynet.Player{
 		&volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{
-				FirstName: "Alexander",
-				LastName:  "Horst",
-				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 246 }},
-				Birthday:  time.Time{},
-			},
+			ID: 246,
+			FirstName: "Alexander",
+			LastName:  "Horst",
+			Birthday:  time.Time{},
 			Rank:         1,
 			Club:         "Badener Beach Volleyballverein",
 			CountryUnion: "NÖVV",
@@ -28,12 +25,10 @@ func TestParseLadderTest(t *testing.T) {
 			Gender:       "M",
 		},
 		&volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{
-				FirstName: "Clemens",
-				LastName:  "Doppler",
-				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 1050 }},
-				Birthday:  time.Time{},
-			},
+			ID: 1050,
+			FirstName: "Clemens",
+			LastName:  "Doppler",
+			Birthday:  time.Time{},
 			Rank:         1,
 			Club:         "Badener Beach Volleyballverein",
 			CountryUnion: "NÖVV",
@@ -41,12 +36,10 @@ func TestParseLadderTest(t *testing.T) {
 			Gender:       "M",
 		},
 		&volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{
-				FirstName: "Robin Valentin",
-				LastName:  "Seidl",
-				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 5626 }},
-				Birthday:  time.Time{},
-			},
+			ID: 5626,
+			FirstName: "Robin Valentin",
+			LastName:  "Seidl",
+			Birthday:  time.Time{},
 			Rank:         3,
 			Club:         "ABC Wörthersee",
 			CountryUnion: "KVV",
@@ -54,12 +47,10 @@ func TestParseLadderTest(t *testing.T) {
 			Gender:       "M",
 		},
 		&volleynet.Player{
-			PlayerInfo: volleynet.PlayerInfo{
-				FirstName: "Martin",
-				LastName:  "Ermacora",
-				TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 6656 }},
-				Birthday:  time.Time{},
-			},
+			ID: 6656,
+			FirstName: "Martin",
+			LastName:  "Ermacora",
+			Birthday:  time.Time{},
 			Rank:         4,
 			Club:         "My BeachEvent",
 			CountryUnion: "ÖVV",

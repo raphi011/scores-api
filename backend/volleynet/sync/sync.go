@@ -1,6 +1,7 @@
 package sync
 
 import (
+	"github.com/raphi011/scores"
 	"time"
 
 	"github.com/pkg/errors"
@@ -12,8 +13,8 @@ import (
 
 // Changes contains metrics of a scrape job
 type Changes struct {
-	Tournament     *TournamentChanges
-	Team           *TeamChanges
+	TournamentInfo     TournamentChanges
+	Team           TeamChanges
 	ScrapeDuration time.Duration
 	Success        bool
 }
@@ -30,7 +31,7 @@ type Service struct {
 // Tournaments loads tournaments of a certain `gender`, `league` and `season` and
 // synchronizes + updates them (if necessary) in the repository.
 func (s *Service) Tournaments(gender, league string, season int) error {
-	report := &Changes{Tournament: &TournamentChanges{}, Team: &TeamChanges{}}
+	report := &Changes{TournamentInfo: TournamentChanges{}, Team: TeamChanges{}}
 	s.publishStartScrapeEvent("tournaments", time.Now())
 
 	current, err := s.Client.AllTournaments(gender, league, season)
@@ -39,13 +40,15 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 		return errors.Wrap(err, "loading the client tournament list failed")
 	}
 
-	persistedTournaments := []*volleynet.FullTournament{}
-	toDownload := []*volleynet.Tournament{}
+	persistedTournaments := []*volleynet.Tournament{}
+	toDownload := []*volleynet.TournamentInfo{}
 
 	for _, t := range current {
 		persisted, err := s.TournamentRepo.Get(t.ID)
 
-		if err != nil {
+		if errors.Cause(err) == scores.ErrNotFound {
+			persisted = nil
+		} else if err != nil {
 			return errors.Wrap(err, "loading the persisted tournament failed")
 		}
 
@@ -88,11 +91,11 @@ func (s *Service) persistChanges(report *Changes) error {
 		return err
 	}
 
-	err = s.persistTournaments(report.Tournament)
+	err = s.persistTournaments(&report.TournamentInfo)
 
 	if err != nil {
 		return err
 	}
 
-	return s.persistTeams(report.Team)
+	return s.persistTeams(&report.Team)
 }

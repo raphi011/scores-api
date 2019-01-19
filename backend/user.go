@@ -2,7 +2,8 @@ package scores
 
 // User represents a user in the repository
 type User struct {
-	TrackedModel
+	Model
+	Tracked
 	Email           string       `json:"email"`
 	ProfileImageURL string       `json:"profileImageUrl"`
 	VolleynetUserID int          `json:"volleynetUserId"`

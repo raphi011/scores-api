@@ -136,7 +136,7 @@ export const tournamentsByLeagueSelector = (
     tournaments = [
       ...tournaments,
       ...denorm(
-        EntityName.Tournament,
+        EntityName.TournamentInfo,
         entityMap,
         state.entities.tournament.by.league[league] || [],
       ),
@@ -147,7 +147,7 @@ export const tournamentsByLeagueSelector = (
 };
 
 export const tournamentSelector = (state: Store, tournamentId: number) =>
-  denorm(EntityName.Tournament, entityMapSelector(state), tournamentId);
+  denorm(EntityName.TournamentInfo, entityMapSelector(state), tournamentId);
 
 export const ladderVolleynetplayerSelector = (state: Store, gender: string) =>
   denorm(

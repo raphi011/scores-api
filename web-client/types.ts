@@ -4,7 +4,7 @@ export enum EntityName {
   Player = 'player',
   Statistic = 'statistic',
   Team = 'team',
-  Tournament = 'tournament',
+  TournamentInfo = 'tournament',
   User = 'user',
   VolleynetPlayer = 'volleynetplayer',
 }
@@ -125,7 +125,7 @@ export interface VolleynetTeam {
   deregistered: boolean;
 }
 
-export interface Tournament {
+export interface TournamentInfo {
   id: number;
   updatedAt: string;
   gender: Gender;

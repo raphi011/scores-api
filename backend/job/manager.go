@@ -69,6 +69,11 @@ func (s *Manager) schedule(exec *Execution) {
 		exec.run()
 	}
 
+	if len(exec.Errors) > 0 {
+		err := exec.Errors[len(exec.Errors)-1]
+		log.Warnf("job %q failed: %v", exec.Job.Name, err)	
+	}
+
 	s.waitGroup.Done()
 	s.executed <- exec
 }

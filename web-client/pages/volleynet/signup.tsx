@@ -20,7 +20,7 @@ import {
 import { tournamentSelector } from '../../redux/entities/selectors';
 import { card, link, title } from '../../styles/shared';
 
-import { Tournament, User, VolleynetPlayer } from '../../types';
+import { TournamentInfo, User, VolleynetPlayer } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -34,7 +34,7 @@ const styles = (theme: Theme) =>
 
 interface Props extends WithStyles<typeof styles> {
   tournamentId: number;
-  tournament?: Tournament;
+  tournament?: TournamentInfo;
   user: User;
 
   signup: (

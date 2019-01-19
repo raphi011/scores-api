@@ -9,13 +9,13 @@ type ClientMock struct {
 	mock.Mock
 }
 
-func (m *ClientMock) GetTournamentLink(t *volleynet.Tournament) string {
+func (m *ClientMock) GetTournamentLink(t *volleynet.TournamentInfo) string {
 	args := m.Called(t)
 
 	return args.String(0)
 }
 
-func (m *ClientMock) GetAPITournamentLink(t *volleynet.Tournament) string {
+func (m *ClientMock) GetAPITournamentLink(t *volleynet.TournamentInfo) string {
 	args := m.Called(t)
 
 	return args.String(0)
@@ -27,10 +27,10 @@ func (m *ClientMock) Login(username, password string) (*volleynet.LoginData, err
 	return args.Get(0).(*volleynet.LoginData), args.Error(1)
 }
 
-func (m *ClientMock) AllTournaments(gender, league string, year int) ([]*volleynet.Tournament, error) {
+func (m *ClientMock) AllTournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error) {
 	args := m.Called(gender, league, year)
 
-	return args.Get(0).([]*volleynet.Tournament), args.Error(1)
+	return args.Get(0).([]*volleynet.TournamentInfo), args.Error(1)
 }
 
 func (m *ClientMock) Ladder(gender string) ([]*volleynet.Player, error) {
@@ -39,16 +39,16 @@ func (m *ClientMock) Ladder(gender string) ([]*volleynet.Player, error) {
 	return args.Get(0).([]*volleynet.Player), args.Error(1)
 }
 
-func (m *ClientMock) ComplementMultipleTournaments(tournament []*volleynet.Tournament) ([]*volleynet.FullTournament, error) {
+func (m *ClientMock) ComplementMultipleTournaments(tournament []*volleynet.TournamentInfo) ([]*volleynet.Tournament, error) {
 	args := m.Called(tournament)
 
-	return args.Get(0).([]*volleynet.FullTournament), args.Error(1)
+	return args.Get(0).([]*volleynet.Tournament), args.Error(1)
 }
 
-func (m *ClientMock) ComplementTournament(tournament *volleynet.Tournament) (*volleynet.FullTournament, error) {
+func (m *ClientMock) ComplementTournament(tournament *volleynet.TournamentInfo) (*volleynet.Tournament, error) {
 	args := m.Called(tournament)
 
-	return args.Get(0).(*volleynet.FullTournament), args.Error(1)
+	return args.Get(0).(*volleynet.Tournament), args.Error(1)
 }
 
 func (m *ClientMock) TournamentWithdrawal(tournamentID int) error {

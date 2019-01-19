@@ -1,22 +1,22 @@
-version: '3.6'
+version: "3.6"
 
 services:
   envoy:
     build:
-      dockerfile: './dockerfiles/dev/envoy'
+      dockerfile: "./dockerfiles/dev/envoy"
       context: .
-    network_mode: 'host'
+    network_mode: "host"
     volumes:
-      - './certs:/usr/share/letsencrypt/scores.network'
+      - "./certs:/usr/share/letsencrypt/scores.network"
     ports:
-      - '80:80'
-      - '443:443'
-      - '127.0.0.1:8001:8001'
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:8001:8001"
 
   db:
-    image: 'postgres:latest'
+    image: "postgres:latest"
     ports:
-      - '127.0.0.1:5432:5432'
+      - "127.0.0.1:5432:5432"
 
   pgadmin:
     image: dpage/pgadmin4
@@ -24,44 +24,37 @@ services:
       PGADMIN_DEFAULT_EMAIL: test@test.at
       PGADMIN_DEFAULT_PASSWORD: test
     ports:
-      - '127.0.0.1:81:80'
-
-  # mariadb:
-  #   image: 'mariadb:latest'
-  #   volumes:
-  #     - './data/mariadb:/var/lib/mysql'
-  #   ports:
-  #     - '127.0.0.1:3306:3306'
+      - "127.0.0.1:81:80"
 
   elasticsearch:
     build:
-      dockerfile: './dockerfiles/deploy/elasticsearch'
+      dockerfile: "./dockerfiles/deploy/elasticsearch"
       context: .
       args:
         ELK_VERSION: $ELK_VERSION
     environment:
-      ES_JAVA_OPTS: '-Xmx256m -Xms256m'
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
 
   kibana:
     build:
-      dockerfile: './dockerfiles/deploy/kibana'
+      dockerfile: "./dockerfiles/deploy/kibana"
       context: .
       args:
         ELK_VERSION: $ELK_VERSION
     ports:
-      - '127.0.0.1:5601:5601'
+      - "127.0.0.1:5601:5601"
     depends_on:
       - elasticsearch
 
   logstash:
     build:
-      dockerfile: './dockerfiles/deploy/logstash'
+      dockerfile: "./dockerfiles/deploy/logstash"
       context: .
       args:
         ELK_VERSION: $ELK_VERSION
     environment:
-      LS_JAVA_OPTS: '-Xmx256m -Xms256m'
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     ports:
-      - '127.0.0.1:5000:5000'
+      - "127.0.0.1:5000:5000"
     depends_on:
       - elasticsearch

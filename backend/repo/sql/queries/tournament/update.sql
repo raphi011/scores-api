@@ -1,5 +1,5 @@
 UPDATE tournaments SET
-	updated_at = :updatedat,
+	updated_at = :updatedAt,
 	format = :format,
 	start_date = :start,
 	end_date = :end,

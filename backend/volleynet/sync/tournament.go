@@ -11,17 +11,17 @@ import (
 // TournamentChanges lists the tournaments that are `New`, `Delete`'d and `Update`'d
 // during a sync job
 type TournamentChanges struct {
-	New    []*volleynet.FullTournament
-	Delete []*volleynet.FullTournament
-	Update []*volleynet.FullTournament
+	New    []*volleynet.Tournament
+	Delete []*volleynet.Tournament
+	Update []*volleynet.Tournament
 }
 
-// TournamentSyncInformation contains sync information for two `Tournament`s
+// TournamentSyncInformation contains sync information for two `TournamentInfo`s
 type TournamentSyncInformation struct {
 	IsNew         bool
 	Type          string
-	OldTournament *volleynet.FullTournament
-	NewTournament *volleynet.Tournament
+	OldTournament *volleynet.Tournament
+	NewTournament *volleynet.TournamentInfo
 }
 
 // represents the various tournament sync states.
@@ -33,34 +33,39 @@ const (
 	SyncTournamentNew                = "SyncTournamentNew"
 )
 
-func (s *Service) syncTournaments(changes *Changes, oldTournaments, newTournaments []*volleynet.FullTournament) {
+func (s *Service) syncTournaments(changes *Changes, oldTournaments, newTournaments []*volleynet.Tournament) {
 	oldTournamentMap := createTournamentMap(oldTournaments)
 	newTournamentMap := createTournamentMap(newTournaments)
 
 	for key, newTournament := range newTournamentMap {
 		oldTournament, ok := oldTournamentMap[key]
 		if !ok {
-			changes.Tournament.New = append(changes.Tournament.New, newTournament)
+			changes.TournamentInfo.New = append(changes.TournamentInfo.New, newTournament)
 		} else {
 			mergedTournament := MergeTournament(oldTournament, newTournament)
 
 			if hasTournamentChanged(oldTournament, mergedTournament) {
-				changes.Tournament.Update = append(changes.Tournament.Update, mergedTournament)
+				changes.TournamentInfo.Update = append(changes.TournamentInfo.Update, mergedTournament)
 			}
 		}
 
-		s.syncTournamentTeams(changes.Team, oldTournament.Teams, newTournament.Teams)
+		oldTeams := []*volleynet.TournamentTeam{}
+		if oldTournament != nil {
+			oldTeams = oldTournament.Teams
+		}
+
+		s.syncTournamentTeams(&changes.Team, oldTeams, newTournament.Teams)
 	}
 
 	for key, oldTournament := range oldTournamentMap {
 		if _, ok := oldTournamentMap[key]; !ok {
-			changes.Tournament.Delete = append(changes.Tournament.Delete, oldTournament)
+			changes.TournamentInfo.Delete = append(changes.TournamentInfo.Delete, oldTournament)
 		}
 	}
 }
 
-func createTournamentMap(tournaments []*volleynet.FullTournament) map[int]*volleynet.FullTournament {
-	tournamentMap := make(map[int]*volleynet.FullTournament)
+func createTournamentMap(tournaments []*volleynet.Tournament) map[int]*volleynet.Tournament {
+	tournamentMap := make(map[int]*volleynet.Tournament)
 
 	for i := range tournaments {
 		t := tournaments[i]
@@ -70,7 +75,7 @@ func createTournamentMap(tournaments []*volleynet.FullTournament) map[int]*volle
 	return tournamentMap
 }
 
-func tournamentSyncType(persisted *volleynet.FullTournament, current *volleynet.Tournament) string {
+func tournamentSyncType(persisted *volleynet.Tournament, current *volleynet.TournamentInfo) string {
 	if persisted == nil {
 		return SyncTournamentNew
 	}
@@ -90,7 +95,7 @@ func tournamentSyncType(persisted *volleynet.FullTournament, current *volleynet.
 	return ""
 }
 
-func hasTournamentChanged(old, new *volleynet.FullTournament) bool {
+func hasTournamentChanged(old, new *volleynet.Tournament) bool {
 	new.UpdatedAt = time.Time{}
 	old.UpdatedAt = time.Time{}
 
@@ -98,7 +103,7 @@ func hasTournamentChanged(old, new *volleynet.FullTournament) bool {
 }
 
 // Tournaments figures out if and how a tournament needs to be synchronized
-func Tournaments(persisted *volleynet.FullTournament, current *volleynet.Tournament) TournamentSyncInformation {
+func Tournaments(persisted *volleynet.Tournament, current *volleynet.TournamentInfo) TournamentSyncInformation {
 	syncType := tournamentSyncType(persisted, current)
 
 	return TournamentSyncInformation{

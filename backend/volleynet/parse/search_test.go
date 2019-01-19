@@ -1,7 +1,6 @@
 package parse
 
 import (
-	"github.com/raphi011/scores"
 	"os"
 	"testing"
 
@@ -14,21 +13,21 @@ func TestParsePlayers(t *testing.T) {
 
 	expected := []*volleynet.PlayerInfo{
 		&volleynet.PlayerInfo{
+			ID: 34822,
 			FirstName: "Cristopher",
 			LastName:  "Pfau",
-			TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 34822 }},
 			Birthday:  mustParseDate("28.01.2000"),
 		},
 		&volleynet.PlayerInfo{
+			ID: 50427,
 			FirstName: "Hannes",
 			LastName:  "Pfau",
-			TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 50427 }},
 			Birthday:  mustParseDate("22.10.2002"),
 		},
 		&volleynet.PlayerInfo{
+			ID: 42378,
 			FirstName: "Jennifer",
 			LastName:  "Pfau",
-			TrackedModel: scores.TrackedModel{ Model: scores.Model{ID: 42378 }},
 			Birthday:  mustParseDate("26.08.1988"),
 		},
 	}
