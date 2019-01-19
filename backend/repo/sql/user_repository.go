@@ -6,103 +6,109 @@ import (
 
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/repo/sql/crud"
 )
 
 var _ repo.UserRepository = &userRepository{}
 
-// userRepository stores users.
 type userRepository struct {
 	DB *sqlx.DB
 }
 
 // New persists a user and assigns a new id.
 func (s *userRepository) New(user *scores.User) (*scores.User, error) {
-	err := insertSetID(s.DB, "user/insert", user)
+	err := crud.Create(s.DB, "user/insert", user)
 
 	return user, errors.Wrap(err, "new user")
 }
 
 // Update updates a user.
 func (s *userRepository) Update(user *scores.User) error {
-	err := update(s.DB, "user/update", user)
+	err := crud.Update(s.DB, "user/update", user)
 
 	return errors.Wrap(err, "update user")
 }
 
 // All returns all user's, this is used mainly for testing.
 func (s *userRepository) All() ([]*scores.User, error) {
-	users, err := s.scan("user/select-all")
+
+	users := []*scores.User{}
+	err := crud.Read(s.DB, "user/select-all", &users)
 
 	return users, errors.Wrap(err, "all users")
 }
 
 // ByID retrieves a user by his/her ID.
 func (s *userRepository) ByID(userID int) (*scores.User, error) {
-	user, err := s.scanOne("user/select-by-id", userID)
+
+	user := &scores.User{}
+	err := crud.ReadOne(s.DB, "user/select-by-id", user, userID)
 
 	return user, errors.Wrap(err, "byID user")
 }
 
 // ByEmail retrieves a user by his/her email.
 func (s *userRepository) ByEmail(email string) (*scores.User, error) {
-	user, err := s.scanOne("user/select-by-email", email)
+
+	user := &scores.User{}
+	err := crud.ReadOne(s.DB, "user/select-by-email", email)
 
 	return user, errors.Wrap(err, "byEmail user")
 }
 
-func (s *userRepository) scan(queryName string, args ...interface{}) (
-	[]*scores.User, error) {
+// func (s *userRepository) scan(queryName string, args ...interface{}) (
+// 	[]*scores.User, error) {
 
-	users := []*scores.User{}
+// 	users := []*scores.User{}
 
-	q := query(s.DB, queryName)
+// 	q := query(s.DB, queryName)
 
-	rows, err := s.DB.Query(q, args...)
+// 	rows, err := s.DB.Query(q, args...)
 
-	if err != nil {
-		return nil, mapError(err)
-	}
+// 	if err != nil {
+// 		return nil, mapError(err)
+// 	}
 
-	defer rows.Close()
+// 	defer rows.Close()
 
-	for rows.Next() {
-		u := &scores.User{}
+// 	for rows.Next() {
+// 		u := &scores.User{}
 
-		err := rows.Scan(
-			&u.ID,
-			&u.CreatedAt,
-			&u.Email,
-			&u.PasswordInfo.Hash,
-			&u.PasswordInfo.Iterations,
-			&u.ProfileImageURL,
-			&u.Role,
-			&u.PasswordInfo.Salt,
-			&u.VolleynetUser,
-			&u.VolleynetUserID,
-		)
+// 		err := rows.Scan(
+// 			&u.ID,
+// 			&u.CreatedAt,
+// 			&u.Email,
+// 			&u.PasswordInfo.Hash,
+// 			&u.PasswordInfo.Iterations,
+// 			&u.ProfileImageURL,
+// 			&u.Role,
+// 			&u.PasswordInfo.Salt,
+// 			&u.VolleynetUser,
+// 			&u.VolleynetUserID,
+// 		)
 
-		if err != nil {
-			return nil, mapError(err)
-		}
+// 		if err != nil {
+// 			return nil, mapError(err)
+// 		}
 
-		users = append(users, u)
-	}
+// 		users = append(users, u)
+// 	}
 
-	return users, nil
-}
+// 	return users, nil
+// }
 
-func (s *userRepository) scanOne(query string, args ...interface{}) (
-	*scores.User, error) {
+// func (s *userRepository) scanOne(query string, args ...interface{}) (
+// 	*scores.User, error) {
 
-	users, err := s.scan(query, args...)
+// 	users, err := s.scan(query, args...)
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	if len(users) >= 1 {
-		return users[0], nil
-	}
+// 	if len(users) >= 1 {
+// 		return users[0], nil
+// 	}
 
-	return nil, scores.ErrNotFound
-}
+// 	return nil, scores.ErrNotFound
+// }

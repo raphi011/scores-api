@@ -6,6 +6,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/repo/sql/crud"
+	"github.com/raphi011/scores/repo/sql/migrate"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -45,10 +47,10 @@ func SetupDB(t testing.TB) *sqlx.DB {
 	err = db.Ping()
 	assert(t, "unable to connect to db: %v", err)
 
-	err = migrateAll(dbProvider, db)
+	err = migrate.All(dbProvider, db)
 	assert(t, "migration failed: %v", err)
 
-	_, err = exec(db, "test/delete-all", make(map[string]interface{}));
+	err = crud.Update(db, "test/delete-all");
 	assert(t, "db cleanup failed: %v", err)
 
 	return db

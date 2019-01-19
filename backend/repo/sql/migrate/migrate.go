@@ -1,7 +1,8 @@
-package sql
+package migrate
 
 import (
 	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/jmoiron/sqlx"
@@ -10,10 +11,16 @@ import (
     "github.com/golang-migrate/migrate/v4/database"
     "github.com/golang-migrate/migrate/v4/database/postgres"
     "github.com/golang-migrate/migrate/v4/database/mysql"
-    "github.com/golang-migrate/migrate/v4/database/sqlite3"
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	
+	"github.com/raphi011/scores/packr"
 )
 
-func migrateAll(provider string, db *sqlx.DB) error {
+var (
+	migrations = packr.New("migrations", "./packr/sql/migrations")
+)
+
+func All(provider string, db *sqlx.DB) error {
 	var dbDriver database.Driver
 	var err error
 

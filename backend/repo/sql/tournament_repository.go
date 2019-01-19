@@ -1,40 +1,62 @@
 package sql
 
 import (
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/volleynet"
-
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+
+	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/repo/sql/crud"
+	"github.com/raphi011/scores/volleynet"
 )
 
-// tournamentRepository implements VolleynetRepository interface.
 type tournamentRepository struct {
 	DB *sqlx.DB
 }
 
+var _ repo.TournamentRepository = &tournamentRepository{}
+
 // Get loads a tournament by its id.
 func (s *tournamentRepository) Get(tournamentID int) (*volleynet.Tournament, error) {
-	return s.scanOne("tournament/select-by-id", tournamentID)
+	tournament := &volleynet.Tournament{}
+	err := crud.ReadOne(s.DB, "tournament/select-by-id", tournament, tournamentID)
+
+	return tournament, errors.Wrap(err, "get tournament")
 }
 
 // New creates a new tournament.
 func (s *tournamentRepository) New(t *volleynet.Tournament) (*volleynet.Tournament, error) {
-	err := s.exec("tournament/insert", t)
+	err := crud.Create(s.DB, "tournament/insert", t)
 
 	return t, errors.Wrap(err, "insert tournament")
 }
 
-// NewBatch creates multiple new tournaments
-func (s *tournamentRepository) NewBatch(t ...*volleynet.Tournament) error {
-	err := s.exec("tournament/insert", t...)
+// NewBatch creates a new tournament.
+func (s *tournamentRepository) NewBatch(tournaments ...*volleynet.Tournament) error {
+	ts := make([]repo.Tracked, len(tournaments))
+
+	for i, t := range tournaments {
+		ts[i] = t
+	}
+	err := crud.Create(s.DB, "tournament/insert", ts...)
 
 	return errors.Wrap(err, "insert tournament")
 }
 
 // Update updates a tournament.
 func (s *tournamentRepository) Update(t *volleynet.Tournament) error {
-	err := update(s.DB, "tournament/update", t)
+	err := crud.Update(s.DB, "tournament/update", t)
+
+	return errors.Wrap(err, "update tournament")
+}
+
+// UpdateBatch updates a tournament.
+func (s *tournamentRepository) UpdateBatch(tournaments ...*volleynet.Tournament) error {
+	ts := make([]repo.Tracked, len(tournaments))
+
+	for i, t := range tournaments {
+		ts[i] = t
+	}
+	err := crud.Update(s.DB, "tournament/update", ts...)
 
 	return errors.Wrap(err, "update tournament")
 }
@@ -45,7 +67,8 @@ func (s *tournamentRepository) Filter(
 	leagues []string,
 	formats []string) ([]*volleynet.Tournament, error) {
 
-	tournaments, err := s.scan("tournament/select-by-filter",
+	tournaments := []*volleynet.Tournament{}
+	err := crud.Read(s.DB, "tournament/select-by-filter", tournaments,
 		formats,
 		leagues, 
 		seasons,
@@ -54,6 +77,7 @@ func (s *tournamentRepository) Filter(
 	return tournaments, errors.Wrap(err, "filtered tournaments")
 }
 
+/*
 func (s *tournamentRepository) scan(queryName string, args ...interface{}) (
 	[]*volleynet.Tournament, error) {
 
@@ -121,24 +145,6 @@ func (s *tournamentRepository) scan(queryName string, args ...interface{}) (
 	return tournaments, nil
 }
 
-func (s *tournamentRepository) exec(queryName string, entities ...*volleynet.Tournament) error {
-	stmt, err := s.DB.PrepareNamed(namedQuery(s.DB, queryName))
-
-	if err != nil {
-		return mapError(err)
-	}
-
-	for _, entity := range entities {
-		_, err := stmt.Exec(entity)
-
-		if err != nil {
-			return mapError(err)
-		}
-	}
-
-	return nil
-}
-
 func (s *tournamentRepository) scanOne(query string, args ...interface{}) (
 	*volleynet.Tournament, error) {
 
@@ -154,3 +160,4 @@ func (s *tournamentRepository) scanOne(query string, args ...interface{}) (
 
 	return nil, scores.ErrNotFound
 }
+*/

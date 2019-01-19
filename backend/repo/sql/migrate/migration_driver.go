@@ -1,4 +1,4 @@
-package sql
+package migrate
 
 import (
 	"io/ioutil"
