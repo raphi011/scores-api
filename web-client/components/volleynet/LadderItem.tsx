@@ -12,7 +12,7 @@ interface Props {
 const LadderItem = ({ player }: Props) => (
   <ListItem>
     <ListItemText
-      primary={`${player.rank}. ${player.firstName} ${player.lastName}`}
+      primary={`${player.ladderRank}. ${player.firstName} ${player.lastName}`}
       secondary={`${player.totalPoints} points • ${player.club} • ${
         player.countryUnion
       }`}

@@ -1,6 +1,6 @@
 import React, { SyntheticEvent } from 'react';
 
-import Avatar from '@material-ui/core/Avatar';
+// import Avatar from '@material-ui/core/Avatar';
 import MDrawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -22,7 +22,7 @@ import Link from 'next/link';
 import AdminOnly from '../containers/AdminOnly';
 
 import { Typography } from '@material-ui/core';
-import { Player } from '../types';
+// import { Player } from '../types';
 
 const drawerWidth = 300;
 
@@ -51,17 +51,17 @@ interface Props extends WithStyles<typeof styles> {
   open: boolean;
   onOpen: (event: SyntheticEvent<{}>) => void;
   onClose: (event: SyntheticEvent<{}>) => void;
-  userPlayer: Player;
+  // userPlayer: Player;
 }
 
-function Drawer({ userPlayer, classes }: Props) {
+function Drawer({ /*userPlayer,*/ classes }: Props) {
   const sideList = (
     <div>
       <List>
-        <ListItem button>
+        {/* <ListItem button>
           <Avatar src={userPlayer.profileImageUrl} />
           <ListItemText inset primary={userPlayer.name} />
-        </ListItem>
+        </ListItem> */}
         <ListItem button>
           <ListItemIcon>
             <InfoIcon />

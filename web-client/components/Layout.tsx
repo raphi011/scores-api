@@ -9,7 +9,7 @@ import React, { ReactNode } from 'react';
 import AppBar from '../containers/AppBarContainer';
 import Drawer from './Drawer';
 
-import { Player } from '../types';
+// import { Player } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -29,7 +29,7 @@ const styles = (theme: Theme) =>
 interface Props extends WithStyles<typeof styles> {
   title: { text: string; href: string };
   children: ReactNode;
-  userPlayer: Player;
+  // userPlayer: Player;
   drawerOpen: boolean;
   onCloseDrawer: () => void;
   onOpenDrawer: () => void;
@@ -37,7 +37,7 @@ interface Props extends WithStyles<typeof styles> {
 
 const Layout = ({
   title,
-  userPlayer,
+  // userPlayer,
   children,
   drawerOpen,
   onCloseDrawer,
@@ -47,7 +47,7 @@ const Layout = ({
   <div className={classes.root}>
     <AppBar onOpenMenu={onOpenDrawer} title={title} />
     <Drawer
-      userPlayer={userPlayer}
+      // userPlayer={userPlayer}
       onClose={onCloseDrawer}
       onOpen={onOpenDrawer}
       open={drawerOpen}

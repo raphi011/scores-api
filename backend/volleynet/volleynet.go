@@ -16,18 +16,18 @@ type PlayerInfo struct {
 
 // Player contains all relevent volleynet player information.
 type Player struct {
+	ID int `json:"id"`
 	scores.Track
 
-	ID           int        `json:"id"`
-	FirstName    string     `json:"firstName" db:"first_name"`
-	LastName     string     `json:"lastName" db:"last_name"`
 	Birthday     *time.Time `json:"birthday"`
-	Gender       string     `json:"gender"`
-	TotalPoints  int        `json:"totalPoints" db:"total_points"`
-	LadderRank   int        `json:"ladderRank" db:"ladder_rank"`
 	Club         string     `json:"club"`
 	CountryUnion string     `json:"countryUnion" db:"country_union"`
+	FirstName    string     `json:"firstName" db:"first_name"`
+	Gender       string     `json:"gender"`
+	LadderRank   int        `json:"ladderRank" db:"ladder_rank"`
+	LastName     string     `json:"lastName" db:"last_name"`
 	License      string     `json:"license"`
+	TotalPoints  int        `json:"totalPoints" db:"total_points"`
 }
 
 // TournamentTeam is the current status of the team entry in a
@@ -37,14 +37,15 @@ type TournamentTeam struct {
 	scores.Track
 
 	TournamentID int     `json:"tournamentId" db:"tournament_id"`
-	TotalPoints  int     `json:"totalPoints" db:"total_points"`
-	Seed         int     `json:"seed"`
-	Result       int     `json:"result"`
-	WonPoints    int     `json:"wonPoints" db:"won_points"`
 	Player1      *Player `json:"player1"`
 	Player2      *Player `json:"player2"`
-	PrizeMoney   float32 `json:"prizeMoney" db:"prize_money"`
+
 	Deregistered bool    `json:"deregistered"`
+	PrizeMoney   float32 `json:"prizeMoney" db:"prize_money"`
+	Result       int     `json:"result"`
+	Seed         int     `json:"seed"`
+	TotalPoints  int     `json:"totalPoints" db:"total_points"`
+	WonPoints    int     `json:"wonPoints" db:"won_points"`
 }
 
 const (

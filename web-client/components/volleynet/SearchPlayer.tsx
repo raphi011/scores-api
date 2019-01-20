@@ -9,7 +9,7 @@ import { searchVolleynetPlayersAction } from '../../redux/entities/actions';
 import { searchVolleynetplayerSelector } from '../../redux/entities/selectors';
 import SearchPlayerList from './SearchPlayerList';
 
-import { Gender, VolleynetSearchPlayer } from '../../types';
+import { Gender, SearchPlayer } from '../../types';
 import LoadingButton from '../LoadingButton';
 
 const styles = createStyles({
@@ -20,9 +20,9 @@ const styles = createStyles({
 
 interface Props extends WithStyles<typeof styles> {
   gender: Gender;
-  foundPlayers: VolleynetSearchPlayer[];
+  foundPlayers: SearchPlayer[];
 
-  onSelectPlayer: (player: VolleynetSearchPlayer) => void;
+  onSelectPlayer: (player: SearchPlayer) => void;
   searchVolleynetPlayers: (
     params: { fname: string; lname: string; bday: string },
   ) => void;
@@ -35,7 +35,7 @@ interface State {
   searching: boolean;
 }
 
-class SearchPlayer extends React.Component<Props, State> {
+class PlayerSearch extends React.Component<Props, State> {
   state = {
     birthday: '',
     firstName: '',
@@ -131,4 +131,4 @@ function mapStateToProps(state) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withStyles(styles)(SearchPlayer));
+)(withStyles(styles)(PlayerSearch));

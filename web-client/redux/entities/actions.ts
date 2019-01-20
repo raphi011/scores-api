@@ -20,7 +20,7 @@ export const searchVolleynetPlayersAction = (filters: {
     },
   },
   type: actionNames.API,
-  url: 'volleynet/players/search',
+  url: 'players/search',
 });
 
 export const loadTournamentAction = (tournamentId: string): ApiAction => ({
@@ -30,7 +30,7 @@ export const loadTournamentAction = (tournamentId: string): ApiAction => ({
     entityName: 'tournament',
   },
   type: actionNames.API,
-  url: `volleynet/tournaments/${tournamentId}`,
+  url: `tournaments/${tournamentId}`,
 });
 
 export const loadTournamentsAction = (filters: {
@@ -52,7 +52,7 @@ export const loadTournamentsAction = (filters: {
     },
   },
   type: actionNames.API,
-  url: 'volleynet/tournaments',
+  url: 'tournaments',
 });
 
 export const loadLadderAction = (gender: 'M' | 'W'): ApiAction => ({
@@ -70,7 +70,7 @@ export const loadLadderAction = (gender: 'M' | 'W'): ApiAction => ({
     },
   },
   type: actionNames.API,
-  url: 'volleynet/ladder',
+  url: 'ladder',
 });
 
 export const tournamentSignupAction = (form: {
@@ -85,5 +85,5 @@ export const tournamentSignupAction = (form: {
   method: 'POST',
   successStatus: '🎉 Successfully signed up',
   type: actionNames.API,
-  url: 'volleynet/signup',
+  url: 'signup',
 });

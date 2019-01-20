@@ -111,11 +111,11 @@ class TournamentView extends React.Component<Props, State> {
       {
         icon: <LinkIcon className={classes.infoElement} />,
         info: (
-          <a href={`//${tournament.web}`} target="_blank">
-            {tournament.web}
+          <a href={`//${tournament.website}`} target="_blank">
+            {tournament.website}
           </a>
         ),
-        show: !!tournament.web,
+        show: !!tournament.website,
       },
     ].filter(detail => detail.show);
 

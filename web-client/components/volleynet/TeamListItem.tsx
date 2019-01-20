@@ -10,10 +10,10 @@ interface Props {
 }
 
 function rankOrSeed(team: Team) {
-  if (!team.rank) {
+  if (!team.result) {
     return `${team.seed}.`;
   }
-  switch (team.rank) {
+  switch (team.result) {
     case 1:
       return '1. 🥇';
     case 2:
@@ -21,7 +21,7 @@ function rankOrSeed(team: Team) {
     case 3:
       return '3. 🥉';
     default:
-      return `${team.rank}.`;
+      return `${team.result}.`;
   }
 }
 

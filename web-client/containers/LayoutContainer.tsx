@@ -46,10 +46,10 @@ class LayoutContainer extends React.Component<Props, State> {
   };
 
   render() {
-    const { title, userPlayer, children } = this.props;
+    const { title, children } = this.props;
     return (
       <Layout
-        userPlayer={userPlayer}
+        // userPlayer={userPlayer}
         onCloseDrawer={this.onCloseDrawer}
         onOpenDrawer={this.onOpenDrawer}
         drawerOpen={this.state.drawerOpen}

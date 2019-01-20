@@ -18,8 +18,8 @@ interface Props extends WithStyles<typeof styles> {
   emptyMessage?: string;
 }
 
-const sortByRankOrSeed = (a: Team, b: Team) =>
-  (a.rank || a.seed) - (b.rank || b.seed);
+const sortByResultOrSeed = (a: Team, b: Team) =>
+  (a.result || a.seed) - (b.result || b.seed);
 
 class TeamList extends React.PureComponent<Props> {
   render() {
@@ -31,7 +31,7 @@ class TeamList extends React.PureComponent<Props> {
 
     return (
       <List className={classes.root}>
-        {teams.sort(sortByRankOrSeed).map(t => (
+        {teams.sort(sortByResultOrSeed).map(t => (
           <TeamListItem key={t.player1.id + t.player2.id} team={t} />
         ))}
       </List>
