@@ -15,6 +15,13 @@ var (
 	queries = packr.New("queries", "../queries")
 )
 
+// Execute executes a query.
+func Execute(db *sqlx.DB, queryName string) error {
+	_, err := db.Exec(loadQuery(db, queryName))
+
+	return err
+}
+
 func loadQuery(db *sqlx.DB, name string) string {
 	var q string
 	var err error
@@ -53,9 +60,3 @@ func mapError(err error) error {
 	return err
 }
 
-
-func Execute(db *sqlx.DB, queryName string) error {
-	_, err := db.Exec(loadQuery(db, queryName))
-
-	return err
-}

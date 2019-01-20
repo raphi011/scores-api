@@ -93,7 +93,7 @@ func TestSyncTournamentTeams(t *testing.T) {
 
 	service.syncTournamentTeams(changes, old, new)
 
-	test.Assert(t,"Service.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d",len(changes.New) != 1 , len(changes.New))
-	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update) != 1, len(changes.Update) )
-	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete) != 1,len(changes.Delete))
+	test.Assert(t,"Service.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d",len(changes.New) == 1 , len(changes.New))
+	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update) == 1, len(changes.Update) )
+	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete) == 1,len(changes.Delete))
 }

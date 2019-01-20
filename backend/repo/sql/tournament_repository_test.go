@@ -84,7 +84,7 @@ func TestFilterTournament(t *testing.T) {
 	)
 
 	test.Check(t, "tournamentRepository.Filter(), err: %s", err)
-	test.Assert(t, "tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(tournaments) != 3, len(tournaments))
+	test.Assert(t, "tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(tournaments) == 3, len(tournaments))
 }
 
 func BenchmarkCreateTournament(b *testing.B) {

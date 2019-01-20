@@ -63,5 +63,5 @@ func TestTournamentTeams(t *testing.T) {
 	tournamentTeams, err := teamRepo.ByTournament(ts[0].ID)
 
 	test.Check(t, "teamRepo.ByTournament() failed: %v", err)
-	test.Assert(t, "teamRepository.ByTournament(), want len(tournaments) == 3, got: %d", len(tournamentTeams) != 3, len(tournamentTeams))
+	test.Assert(t, "teamRepository.ByTournament(), want len(tournaments) == 3, got: %d", len(tournamentTeams) == 3, len(tournamentTeams))
 }

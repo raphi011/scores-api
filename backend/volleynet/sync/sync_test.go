@@ -46,7 +46,7 @@ func TestSyncLadder(t *testing.T) {
 	report, err := service.Ladder(gender)
 
 	test.Check(t, "service.Ladder() err: %v", err)
-	test.Assert(t, "Service.Ladder(\"M\") want: .UpdatedPlayers = 1, got: %d",report.UpdatedPlayers != 1, report.UpdatedPlayers)
+	test.Assert(t, "Service.Ladder(\"M\") want: .UpdatedPlayers = 1, got: %d",report.UpdatedPlayers == 1, report.UpdatedPlayers)
 }
 
 func TestSyncTournamentInformation(t *testing.T) {

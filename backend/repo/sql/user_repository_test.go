@@ -21,7 +21,7 @@ func TestCreateUser(t *testing.T) {
 	})
 
 	test.Check(t, "userRepository.New() err: %v", err)
-	test.Assert(t, "userRepository.New(): want ID != 0, got 0",user.ID == 0 )
+	test.Assert(t, "userRepository.New(): want ID != 0, got 0", user.ID != 0)
 
 	userByEmail, err := userRepo.ByEmail(email)
 

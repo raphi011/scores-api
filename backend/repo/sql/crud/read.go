@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// ReadIn reads rows into `dest` and expands the query's `IN` parameters.
 func ReadIn(db *sqlx.DB, queryName string, dest interface{}, args ...interface{}) error {
 	q, args, err := sqlx.In(loadQuery(db, queryName), args...)
 
@@ -19,6 +20,7 @@ func ReadIn(db *sqlx.DB, queryName string, dest interface{}, args ...interface{}
 	return mapError(err)
 }
 
+// Read reads rows into `dest`.
 func Read(db *sqlx.DB, queryName string, dest interface{}, args ...interface{}) error {
 	q := query(db, queryName)
 
@@ -27,6 +29,7 @@ func Read(db *sqlx.DB, queryName string, dest interface{}, args ...interface{}) 
 	return mapError(err)
 }
 
+// ReadOne reads  one row into `dest`.
 func ReadOne(db *sqlx.DB, queryName string, dest interface{}, args ...interface{}) error {
 	q := query(db, queryName)
 

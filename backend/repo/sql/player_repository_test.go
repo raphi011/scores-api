@@ -51,7 +51,7 @@ func TestLadder(t *testing.T) {
 	players, err := playerRepo.Ladder("m")
 
 	test.Check(t, "playerRepo.Ladder() failed: %v", err)
-	test.Assert(t, "ladder should be empty", len(players) != 0)
+	test.Assert(t, "ladder should be empty", len(players) == 0)
 
 	CreatePlayers(t, db,
 		P{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
@@ -63,5 +63,5 @@ func TestLadder(t *testing.T) {
 	players, err = playerRepo.Ladder("m")
 
 	test.Check(t, "playerRepo.Ladder() failed: %v", err)
-	test.Assert(t, "len(ladder) should be 2 but is: %d", len(players) != 2, len(players))
+	test.Assert(t, "len(ladder) should be 2 but is: %d", len(players) == 2, len(players))
 }

@@ -20,6 +20,7 @@ var (
 	migrations = packr.New("migrations", "../migrations")
 )
 
+// All runs all available migrations on the db connection.
 func All(provider string, db *sqlx.DB) error {
 	var dbDriver database.Driver
 	var err error

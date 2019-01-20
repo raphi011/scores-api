@@ -48,6 +48,9 @@ func (t *Tracked) SetDeletedAt(deleted *time.Time) {
 	t.DeletedAt = deleted
 }
 
+// SetTestTime sets testTime which overrides the arguments
+// to other Set* functions, which allows us to test the structs
+// by equality which otherwise would not be possible.
 func (t *Tracked) SetTestTime(time *time.Time) {
 	t.testTime = time
 }

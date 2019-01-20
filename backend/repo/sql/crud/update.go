@@ -9,6 +9,7 @@ import (
 	"github.com/raphi011/scores/repo"
 )
 
+// Update updates multiple entities and updates the `UpdatedAt` field.
 func Update(db *sqlx.DB, queryName string, entities ...repo.Tracked) error {
 	stmt, err := db.PrepareNamed(namedQuery(db, queryName))
 

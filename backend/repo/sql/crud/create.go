@@ -7,6 +7,7 @@ import (
 	"github.com/raphi011/scores/repo"
 )
 
+// Create creates a new entity.
 func Create(db *sqlx.DB, queryName string, entities ...repo.Tracked) error {
 	var err error
 
@@ -31,6 +32,7 @@ func Create(db *sqlx.DB, queryName string, entities ...repo.Tracked) error {
 	return nil
 }
 
+// CreateSetID creates a new entity and sets the newly assigned primary key.
 func CreateSetID(db *sqlx.DB, queryName string, entities ...repo.Model) error {
 	var err error
 
