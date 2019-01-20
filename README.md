@@ -3,7 +3,7 @@
 # scores
 
 ## Motivation
-This is mainly a hobby project of mine to improve my skills creating a modern javascript SPA + GO backend with all the bells and whistles.
+This is mainly a hobby project of mine to improve my skills creating a modern javascript SPA + GO backend with all the newest bells and whistles.
 
 ### Incomplete list of features / tools:
 * Serverside Rending (courtesy of the awesome [nextjs](https://nextjs.org/) framework).
