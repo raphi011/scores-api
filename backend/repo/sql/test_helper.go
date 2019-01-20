@@ -78,7 +78,7 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 			LadderRank:  p.LadderRank,
 		})
 
-		test.Check(t, "playerRepo.New() failed", err)
+		test.Check(t, "playerRepo.New() failed: %v", err)
 
 		newPlayers = append(newPlayers, persistedPlayer)
 	}
@@ -104,7 +104,7 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 				Status: tournament.Status,
 			},
 		})
-		test.Check(t, "tournamentRepo.New() failed", err)
+		test.Check(t, "tournamentRepo.New() failed: %v", err)
 
 		newTournaments = append(newTournaments, persistedTournament)
 	}
@@ -143,7 +143,7 @@ func CreateTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.Tournament
 			Deregistered: team.Deregistered,
 		})
 
-		test.Check(t, "teamRepo.New() failed", err)
+		test.Check(t, "teamRepo.New() failed: %v", err)
 
 		newTeams = append(newTeams, persistedTeam)
 	}
