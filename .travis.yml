@@ -4,11 +4,16 @@ jobs:
       name: "backend"
       language: go
       go: "1.11"
+      services:
+        - docker
+      before_install:
+        - docker run -d -p 127.0.0.1:3306:3306 postgres:latest
       script:
         - cd backend
         - go test ./... -race -cover
       env:
-        - TEST_SQL_FILES=$TRAVIS_BUILD_DIR/backend/repo/sql
+        - TEST_DB_PROVIDER=postgres
+        - TEST_DB_CONNECTION=postgres://postgres:test@localhost?sslmode=disable
         - GO111MODULE=on
 
     - name: "frontend"
