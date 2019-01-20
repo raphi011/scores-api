@@ -11,9 +11,11 @@ jobs:
         - mysql
       before_install:
         - mysql -e 'CREATE DATABASE scores;'
+      install:
+        - cd backend
+        - go mod download &> /dev/null # hide the downloading of modules
       script:
         - cd backend
-        - go mod download > /dev/null # hide the downloading of modules
         - TEST_DB_PROVIDER=postgres TEST_DB_CONNECTION="postgres://postgres@localhost?sslmode=disable" go test ./... -race -cover
         - TEST_DB_PROVIDER=mysql TEST_DB_CONNECTION="root@tcp(localhost)/scores?charset=utf8mb4&parseTime=true&multiStatements=true" go test ./... -race -cover
         - go test ./... -race -cover # test sqlite3 (default provider)
