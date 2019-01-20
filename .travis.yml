@@ -7,10 +7,12 @@ jobs:
       services:
         - postgresql
         - mysql
+      before_install:
+        - mysql -e 'CREATE DATABASE scores;'
       script:
         - cd backend
         - TEST_DB_PROVIDER=postgres TEST_DB_CONNECTION="postgres://postgres@localhost?sslmode=disable" go test ./... -race -cover
-        - TEST_DB_PROVIDER=mysql TEST_DB_CONNECTION="root@tcp(localhost)?charset=utf8mb4&parseTime=true" go test ./... -race -cover
+        - TEST_DB_PROVIDER=mysql TEST_DB_CONNECTION="root@tcp(localhost)/scores?charset=utf8mb4&parseTime=true" go test ./... -race -cover
         - go test ./... -race -cover # test sqlite3 (default provider)
       env:
         - GO111MODULE=on
