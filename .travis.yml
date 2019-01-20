@@ -5,15 +5,14 @@ jobs:
       language: go
       go: "1.11"
       services:
-        - docker
-      before_install:
-        - docker run -d -p 127.0.0.1:5432:5432 postgres:latest
+        - postgresql
+        - mysql
       script:
         - cd backend
         - go test ./... -race -cover
       env:
         - TEST_DB_PROVIDER=postgres
-        - TEST_DB_CONNECTION=postgres://postgres:test@localhost?sslmode=disable
+        - TEST_DB_CONNECTION=postgres://postgres@localhost?sslmode=disable
         - GO111MODULE=on
 
     - name: "frontend"
