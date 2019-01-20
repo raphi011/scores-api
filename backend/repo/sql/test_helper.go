@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"time"
 	"os"
 	"testing"
 
@@ -16,6 +17,8 @@ import (
 // and `TEST_DB_CONNECTION` env variables and returns it and all repositories
 // with this db.
 func RepositoriesTest(t testing.TB) (*repo.Repositories, *sqlx.DB) {
+	t.Helper()
+
 	db := SetupDB(t)
 
 	return &repo.Repositories{
@@ -67,6 +70,8 @@ type P struct {
 
 // CreatePlayers is a handy helper to create multiple players.
 func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player {
+	t.Helper()
+
 	newPlayers := []*volleynet.Player{}
 	playerRepo := &playerRepository{DB: db}
 
@@ -94,6 +99,8 @@ type T struct {
 
 // CreateTournaments is a handy helper to create multiple tournaments.
 func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet.Tournament {
+	t.Helper()
+
 	newTournaments := []*volleynet.Tournament{}
 	tournamentRepo := &tournamentRepository{DB: db}
 
@@ -102,6 +109,8 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:     tournament.ID,
 				Status: tournament.Status,
+				Start: time.Now(),
+				End: time.Now(),
 			},
 		})
 		test.Check(t, "tournamentRepo.New() failed: %v", err)
@@ -127,6 +136,8 @@ type TT struct {
 
 // CreateTeams is a handy helper to create multiple teams.
 func CreateTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.TournamentTeam {
+	t.Helper()
+
 	newTeams := []*volleynet.TournamentTeam{}
 	teamRepo := &teamRepository{DB: db}
 

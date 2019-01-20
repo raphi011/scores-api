@@ -16,8 +16,12 @@ func TestCreateTournament(t *testing.T) {
 	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournament, err := tournamentRepo.New(&volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{ID: 1},
-		Teams:          []*volleynet.TournamentTeam{},
+		TournamentInfo: volleynet.TournamentInfo{
+			ID: 1,
+			Start: time.Now(),
+			End: time.Now(),
+		},
+		Teams: []*volleynet.TournamentTeam{},
 	})
 
 	if err != nil {
@@ -34,57 +38,66 @@ func TestFilterTournament(t *testing.T) {
 	db := SetupDB(t)
 	tournamentRepo := &tournamentRepository{DB: db}
 
-	tournament1 := &volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{
+	tournaments := []struct{
+		ID int
+		Season int
+		League string
+		Gender string
+	}{
+		{
 			ID:     1,
 			Season: 2018,
 			League: "amateur-tour",
 			Gender: "m",
 		},
-		Teams: []*volleynet.TournamentTeam{},
-	}
-
-	tournament2 := &volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{
+		{
 			ID:     2,
 			Season: 2018,
 			League: "amateur-tour",
 			Gender: "m",
 		},
-		Teams: []*volleynet.TournamentTeam{},
-	}
-
-	tournament3 := &volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{
+		{
 			ID:     3,
 			Season: 2018,
 			League: "pro-tour",
 			Gender: "m",
 		},
-		Teams: []*volleynet.TournamentTeam{},
-	}
-
-	tournament4 := &volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{
-			ID:     3,
+		{
+			ID:     4,
 			Season: 2017,
 			League: "amateur-tour",
+			Gender: "w",
+		},
+		{
+			ID:     5,
+			Season: 2017,
+			League: "junior-tour",
 			Gender: "m",
 		},
-		Teams: []*volleynet.TournamentTeam{},
 	}
 
-	tournamentRepo.New(tournament1)
-	tournamentRepo.New(tournament2)
-	tournamentRepo.New(tournament3)
-	tournamentRepo.New(tournament4)
+	for _, tournament := range tournaments {
+		_, err := tournamentRepo.New(&volleynet.Tournament{
+			TournamentInfo: volleynet.TournamentInfo{
+				ID: tournament.ID,
+				Season: tournament.Season,
+				League: tournament.League,
+				Gender: tournament.Gender,
+				Start: time.Now(),
+				End: time.Now(),
+			},
+			Teams: []*volleynet.TournamentTeam{},
+		})
 
-	tournaments, err := tournamentRepo.Filter(
+		test.Check(t, "tournamentRepo.New() failed: %v", err)
+	}
+
+	got, err := tournamentRepo.Filter(
 		[]int{2018}, []string{"amateur-tour", "pro-tour"}, []string{"m"},
 	)
 
 	test.Check(t, "tournamentRepository.Filter(), err: %s", err)
-	test.Assert(t, "tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(tournaments) == 3, len(tournaments))
+	test.Assert(t, "tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(got) == 3, len(got))
 }
 
 func BenchmarkCreateTournament(b *testing.B) {
@@ -130,7 +143,11 @@ func TestUpdateTournament(t *testing.T) {
 	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournament, err := tournamentRepo.New(&volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{ID: 1},
+		TournamentInfo: volleynet.TournamentInfo{
+			ID: 1,
+			Start: time.Now(),
+			End: time.Now(),
+		},
 		Teams:          []*volleynet.TournamentTeam{},
 	})
 	test.Check(t, "couldn't persist tournament: %v", err)
@@ -169,6 +186,8 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 		tournament.Season = seasons[rand.Intn(len(seasons))]
 		tournament.Gender = genders[rand.Intn(len(genders))]
 		tournament.Status = status[rand.Intn(len(status))]
+		tournament.Start = time.Now()
+		tournament.End = time.Now()
 
 		fako.Fill(tournament)
 

@@ -106,7 +106,8 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		t.CurrentPoints = trimmSelectionText(value)
 	},
 	"Nennschluss": func(value *goquery.Selection, t *volleynet.Tournament) {
-		t.EndRegistration, _ = parseDate(value.Text())
+		endRegistration, _ := parseDate(value.Text())
+		t.EndRegistration = &endRegistration
 	},
 }
 

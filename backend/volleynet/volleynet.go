@@ -18,16 +18,16 @@ type PlayerInfo struct {
 type Player struct {
 	scores.Tracked
 
-	ID           int       `json:"id"`
-	FirstName    string    `json:"firstName" db:"first_name"`
-	LastName     string    `json:"lastName" db:"last_name"`
-	Birthday     time.Time `json:"birthday"`
-	Gender       string    `json:"gender"`
-	TotalPoints  int       `json:"totalPoints" db:"total_points"`
-	LadderRank   int       `json:"ladderRank" db:"ladder_rank"`
-	Club         string    `json:"club"`
-	CountryUnion string    `json:"countryUnion" db:"country_union"`
-	License      string    `json:"license"`
+	ID           int        `json:"id"`
+	FirstName    string     `json:"firstName" db:"first_name"`
+	LastName     string     `json:"lastName" db:"last_name"`
+	Birthday     *time.Time `json:"birthday"`
+	Gender       string     `json:"gender"`
+	TotalPoints  int        `json:"totalPoints" db:"total_points"`
+	LadderRank   int        `json:"ladderRank" db:"ladder_rank"`
+	Club         string     `json:"club"`
+	CountryUnion string     `json:"countryUnion" db:"country_union"`
+	License      string     `json:"license"`
 }
 
 // TournamentTeam is the current status of the team entry in a
@@ -78,7 +78,7 @@ type Tournament struct {
 
 	TournamentInfo
 
-	EndRegistration time.Time         `json:"endRegistration" db:"end_registration"`
+	EndRegistration *time.Time        `json:"endRegistration" db:"end_registration"`
 	Teams           []*TournamentTeam `json:"teams"`
 	Location        string            `json:"location"`
 	HTMLNotes       string            `json:"htmlNotes" db:"html_notes" fako:"paragraph"`

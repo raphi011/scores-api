@@ -34,7 +34,7 @@ CREATE TABLE tournaments (
     max_points          smallint    NOT NULL,
 	min_teams           smallint    NOT NULL,
 	max_teams           smallint    NOT NULL,
-	end_registration    timestamptz NOT NULL,
+	end_registration    timestamptz,
 	organiser           text        NOT NULL,
 	phone               text        NOT NULL,
 	email               text        NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE players (
 	ladder_rank     smallint    NOT NULL,
 	country_union   text        NOT NULL,
 	club            text        NOT NULL,
-	birthday        date        NOT NULL,
+	birthday        date,
 	license         text        NOT NULL,
 	gender          varchar(1)  NOT NULL
 );

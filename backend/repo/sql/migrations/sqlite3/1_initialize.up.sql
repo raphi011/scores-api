@@ -19,7 +19,7 @@ CREATE TABLE tournaments (
 	current_points varchar(256) NOT NULL,
 	email varchar(128) NOT NULL,
 	end_date datetime NOT NULL,
-	end_registration datetime NOT NULL,
+	end_registration datetime,
 	entry_link varchar(255) NOT NULL,
 	gender varchar(16) NOT NULL,
 	league varchar(128) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE players (
 	ladder_rank integer NOT NULL,
 	country_union varchar(255) NOT NULL,
 	club varchar(255) NOT NULL,
-	birthday date NOT NULL,
+	birthday date,
 	license varchar(32) NOT NULL,
 	gender varchar(1) NOT NULL
 );
