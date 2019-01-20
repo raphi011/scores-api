@@ -1,40 +1,52 @@
-[![Build Status](https://travis-ci.org/raphi011/scores.svg?branch=master)](https://travis-ci.org/raphi011/scores)
+[![Build Status](https://travis-ci.org/raphi011/scores.svg?branch=development)](https://travis-ci.org/raphi011/scores)
 
 # scores
 
 ## Motivation
+This is mainly a hobby project of mine to improve my skills creating a modern javascript SPA + GO backend with all the bells and whistles.
 
-Collect data about our hobby volleyball matches to get to know more about who's my best partner / what was my best day / etc.
-
-Support for other sports is planned but as of yet only picking teams of 2 is possible.
+### Incomplete list of features / tools:
+* Serverside Rending (courtesy of the awesome [nextjs](https://nextjs.org/) framework).
+* Automated builds / tests / deployments with [travis-ci](https://travis-ci.org).
+* Debugging of Front + Backend (via VS-Code).
+* Automated database migrations.
+* Logging to the ELK stack.
+* Webscraping of the http://www.volleynet.at/beach.
+* Plugable persistance architecture, currently it's possible to store the data with Postgresql, MySQL and Sqlite3. No-SQL db's could also be supported.
+* Well tested against all supported data stores
+  * Integration tests
+  * Unit tests
+  * Browser E2E tests (TODO)
 
 ## Components
 
 ### Backend
-
-Collect the data and present it as a REST api.
+Srape the data from the official Austrian beach volleynet homepage and present it as a REST api.
 
 ### Web Frontend
-
-Create new / show past matches and statistics to authenticated users
+Signup/out of Tournaments, browse and filter through tournaments. Get notifications, ...
 
 ### Teleram BOT
-
-Get your statistics directly in your Telegram (Group) Chat!
+TODO
 
 ## Build locally
+Development is done on Linux with VS-Code.
 
-1. Install [Docker](https://docs.docker.com/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
+To get up and running follow these steps:
+1. Install Node / Go 1.11+ / Docker + Docker Compose
+1. Run npm install in ./web-client
+1. Run docker-compose up
+1. Start Frontend / Backend in VS-Code
+1. Create test admin account by navigating to `localhost/api/debug/new-admin`
+1. Open `localhost` in your browser of choice and login
 
-1. Start Docker service.
+## FAQ
+* *Do you plan to earn money with this project?*   
+Nope I'm doing this purely for educational and practical reasons :).
 
-1. Run `docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
-`.
-
-1. Go to `http://localhost`
+* *Do you store volleynet passwords when logging in to tournaments?*   
+No, the only time you need to enter the volleynet password is when signing up/out of tournaments - since there is no offical API I'm unable to authenticate without having the user provide his/her cleartext password. But rest assured (or look at the sourcecode ;) ) that I will not do anything evil with it.
 
 
-### Missing:
-
-* How to seed database
-* Run without attaching delve debugger
+## Contributing
+To contribute just open an issue and tell me how you would like to help!
