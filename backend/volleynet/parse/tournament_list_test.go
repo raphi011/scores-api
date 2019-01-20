@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -24,13 +24,8 @@ func TestTournamentList(t *testing.T) {
 
 	tournaments, err := TournamentList(response, "http://example.com")
 
-	if err != nil {
-		t.Errorf("Tournaments() err: %s", err)
-	}
-
-	if !cmp.Equal(tournaments, tournamentListAmateur) {
-		t.Errorf("TournamentList() err: mismatch of tournament list")
-	}
+	test.Check(t, "Tournaments() err: %s", err)
+	test.Compare(t, "TournamentList() err: mismatch of tournament list\n%s", tournaments, tournamentListAmateur)
 }
 
 var tournamentListAmateur = []*volleynet.TournamentInfo{

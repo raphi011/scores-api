@@ -1,10 +1,13 @@
 package sync
 
 import (
+	"github.com/raphi011/scores"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"time"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
+
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -99,7 +102,7 @@ func hasTournamentChanged(old, new *volleynet.Tournament) bool {
 	new.UpdatedAt = time.Time{}
 	old.UpdatedAt = time.Time{}
 
-	return !cmp.Equal(new, old)
+	return !cmp.Equal(new, old, cmp.Options{ cmpopts.IgnoreUnexported(scores.Tracked{}) })
 }
 
 // Tournaments figures out if and how a tournament needs to be synchronized

@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -34,11 +34,6 @@ func TestParsePlayers(t *testing.T) {
 
 	players, err := Players(response)
 
-	if err != nil {
-		t.Errorf("Players() err: %s", err)
-	}
-
-	if !cmp.Equal(players, expected) {
-		t.Errorf("Players(): %s", cmp.Diff(expected, players))
-	}
+	test.Check(t, "Players() err: %v", err)
+	test.Compare(t, "Players():\n%s", players, expected)
 }

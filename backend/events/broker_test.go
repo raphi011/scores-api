@@ -3,7 +3,7 @@ package events
 import (
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/test"
 )
 
 func TestExpandPossibleHandlers(t *testing.T) {
@@ -17,8 +17,5 @@ func TestExpandPossibleHandlers(t *testing.T) {
 
 	output := expandPossibleHandlers(eventName)
 
-	if !cmp.Equal(eventHandlers, output) {
-		t.Errorf("expandPossibleHandlers() err: wrong output:\n%s", cmp.Diff(eventHandlers, output))
-	}
-
+	test.Compare(t, "expandPossibleHandlers() err: wrong output:\n%s", eventHandlers, output)
 }
