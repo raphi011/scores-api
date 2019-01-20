@@ -255,7 +255,6 @@ github.com/gocql/gocql v0.0.0-20181012100315-44e29ed5b8a4/go.mod h1:4Fw1eo5iaEhD
 github.com/gofrs/uuid v3.1.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/gogo/protobuf v1.1.1 h1:72R+M5VuhED/KujmZVcIquuo8mBgX4oVda//DQb3PXo=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
-github.com/golang-migrate/migrate v3.5.4+incompatible h1:R7OzwvCJTCgwapPCiX6DyBiu2czIUMDCB118gFTKTUA=
 github.com/golang-migrate/migrate/v4 v4.2.1 h1:LfAwxzPCTdTr3ec3May3d93gE/oo4ljsxYzd7uuMW5U=
 github.com/golang-migrate/migrate/v4 v4.2.1/go.mod h1:Jg9FRUjqM7gthk1c8lSnSZlQ+2PL0rQEJQhVunIbwqA=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=

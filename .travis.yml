@@ -13,7 +13,7 @@ jobs:
         - mysql -e 'CREATE DATABASE scores;'
       install:
         - cd backend
-        - go mod download &> /dev/null # hide the downloading of modules
+        - go mod download
       script:
         - cd backend
         - TEST_DB_PROVIDER=postgres TEST_DB_CONNECTION="postgres://postgres@localhost?sslmode=disable" go test ./... -race -cover
