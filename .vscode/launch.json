@@ -8,10 +8,14 @@
       "mode": "debug",
       "program": "${workspaceRoot}/backend/cmd/api",
       "args": [
+        // "-provider",
+        // "postgres",
+        // "-connection",
+        // "postgres://postgres:test@localhost?sslmode=disable"
         "-provider",
-        "postgres",
+        "mysql",
         "-connection",
-        "postgres://postgres:test@localhost?sslmode=disable"
+        "root@tcp(localhost)/scores?charset=utf8mb4&parseTime=true&multiStatements=true"
       ],
       "env": {
         "TEST_SQL_FILES": "${workspaceRoot}/backend/repo/sql"
