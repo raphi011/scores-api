@@ -2,11 +2,12 @@ package test
 
 import (
 	"testing"
+	"time"
 
-	// "github.com/google/go-cmp/cmp"
-	// "github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 
-	// "github.com/raphi011/scores"
+	"github.com/raphi011/scores"
 )
 
 // Check fails the test if `err` != `nil` with the `message` and arg `err`.
@@ -25,13 +26,28 @@ func Assert(t testing.TB, message string, condition bool, args ...interface{}) {
 	}
 }
 
-// var compareOptions = cmp.Options{ cmpopts.IgnoreUnexported(volleynet.Player) }
+func abs(n int64) int64 {
+	if n < 0 {
+		return -n
+	}
+	return n
+}
+
+var compareOptions = cmp.Options{
+	cmpopts.IgnoreUnexported(scores.Track{}),
+	cmp.Comparer(func(x, y time.Time) bool {
+		// since some databases don't have the same time precision
+		// as go's time.Time we will only compare the Unix timestamps
+		// ignoring rounding errors
+		return abs(x.Unix()-y.Unix()) <= 1
+	}),
+}
 
 // Compare fails the test if `first` does not deep equal `second` and fails
 // with `message` and diff(first, second) as arg.
 func Compare(t testing.TB, message string, first, second interface{}) {
 	t.Helper()
-	// if diff := cmp.Diff(first, second, cmp.Options{ cmpopts.IgnoreUnexported(scores.Tracked{}) }); diff != "" {
-	// 	t.Fatalf(message, diff)
-	// }
+	if equal := cmp.Equal(first, second, compareOptions); !equal {
+		t.Fatalf(message, cmp.Diff(first, second, compareOptions))
+	}
 }

@@ -44,11 +44,6 @@ func (s *User) New(email, password string) (*scores.User, error) {
 		return nil, errors.Wrap(err, "creating user")
 	}
 
-	// user.Player, err = s.PlayerRepository.Create(&Player{
-	// 	Name:   "",
-	// 	UserID: user.ID,
-	// })
-
 	if err != nil {
 		return nil, errors.Wrap(err, "creating user player")
 	}
@@ -89,7 +84,6 @@ func (s *User) ByEmail(email string) (*scores.User, error) {
 	}
 
 	return user, nil
-	// return s.complementUser(user)
 }
 
 // ByID retrieves a user by ID
@@ -101,20 +95,7 @@ func (s *User) ByID(userID int) (*scores.User, error) {
 	}
 
 	return user, nil
-	// return s.complementUser(user)
 }
-
-// func (s *User) complementUser(user *scores.User) (*scores.User, error) {
-// 	var err error
-
-// 	if user.PlayerID == 0 {
-// 		return user, nil
-// 	}
-
-// 	user.Player, err = s.PlayerRepo.Get(user.PlayerID)
-
-// 	return user, errors.Wrapf(err, "could not load user player %d", user.PlayerID)
-// }
 
 // All returns all users
 func (s *User) All() ([]*scores.User, error) {

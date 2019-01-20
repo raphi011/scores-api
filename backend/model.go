@@ -4,53 +4,79 @@ import (
 	"time"
 )
 
-// Model is an entity with a primary key `ID` that gets auto
-// assigned by the repository when set.
-type Model struct {
-	ID        int       `json:"id" db:"id"`
+// Model adds an auto assignable ID to models.
+type Model interface {
+	SetID(id int)
 }
-	
+
+// M is an entity with a primary key `ID` that gets auto
+// assigned by the repository when set.
+type M struct {
+	ID int `json:"id" db:"id"`
+}
+
 // SetID sets the ID on the model
-func (m *Model) SetID(id int) {
+func (m *M) SetID(id int) {
 	m.ID = id
 }
 
-// Tracked adds timestamps `CreatedAt`, `UpdatedAt`,
+// Tracked adds Created / Updated / Deleted metadata to models.
+type Tracked interface {
+	Create(when time.Time) Tracked
+	Update(when time.Time) Tracked
+	Delete(when time.Time) Tracked
+	MockUpdates(when *time.Time)
+}
+
+// Track adds timestamps `CreatedAt`, `UpdatedAt`,
 // `DeletedAt` to the model.
-type Tracked struct {
+type Track struct {
 	CreatedAt time.Time  `json:"createdAt" db:"created_at"`
-	UpdatedAt time.Time  `json:"-" db:"updated_at"`
+	UpdatedAt time.Time  `json:"updatedAt" db:"updated_at"`
 	DeletedAt *time.Time `json:"-" db:"deleted_at"`
-	testTime  *time.Time /*`db:"-"`*/
+	mockTime  *time.Time
 }
 
-// SetCreatedAt sets the `CreatedAt` field.
-func (t *Tracked) SetCreatedAt(created time.Time) {
-	if t.testTime != nil {
-		created = *t.testTime
+// Create sets the `CreatedAt` and `UpdatedAt` fields.
+func (t *Track) Create(when time.Time) Tracked {
+	if t.mockTime != nil {
+		when = *t.mockTime
 	}
-	t.CreatedAt = created
+
+	t.CreatedAt = when
+	t.UpdatedAt = when
+
+	return t
 }
 
-// SetUpdatedAt sets the `UpdatedAt` field.
-func (t *Tracked) SetUpdatedAt(updated time.Time) {
-	if t.testTime != nil {
-		updated = *t.testTime
+// Update sets the `UpdatedAt` field.
+func (t *Track) Update(when time.Time) Tracked {
+	if t.mockTime != nil {
+		when = *t.mockTime
 	}
-	t.UpdatedAt = updated
+	t.UpdatedAt = when
+
+	return t
 }
 
-// SetDeletedAt sets the `DeletedAt` field.
-func (t *Tracked) SetDeletedAt(deleted *time.Time) {
-	if t.testTime != nil {
-		deleted = t.testTime
+// Delete sets the `DeletedAt` field.
+func (t *Track) Delete(when time.Time) Tracked {
+	if t.mockTime != nil {
+		when = *t.mockTime
 	}
-	t.DeletedAt = deleted
+
+	t.UpdatedAt = when
+	t.DeletedAt = &when
+
+	return t
 }
 
-// SetTestTime sets testTime which overrides the arguments
-// to other Set* functions, which allows us to test the structs
-// by equality which otherwise would not be possible.
-func (t *Tracked) SetTestTime(time *time.Time) {
-	t.testTime = time
+/* --- METHODS FOR TESTING ONLY--- */
+
+// MockUpdates sets mockTime which overrides the arguments
+// to other Set* functions and allows us to test the structs
+// by equality which otherwise would not be possible (because)
+// CreatesAt, UpdatedAt and DeletedAt are set in Repository functions.
+func (t *Track) MockUpdates(time *time.Time) {
+	t.mockTime = time
 }

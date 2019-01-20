@@ -1,5 +1,7 @@
 SELECT
 	p.id,
+	p.created_at,
+	p.updated_at,
 	p.first_name,
 	p.last_name,
 	p.birthday,

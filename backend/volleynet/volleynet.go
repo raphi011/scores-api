@@ -16,7 +16,7 @@ type PlayerInfo struct {
 
 // Player contains all relevent volleynet player information.
 type Player struct {
-	scores.Tracked
+	scores.Track
 
 	ID           int        `json:"id"`
 	FirstName    string     `json:"firstName" db:"first_name"`
@@ -34,7 +34,7 @@ type Player struct {
 // tournament, if the tournament is finished it may also contain
 // the seed.
 type TournamentTeam struct {
-	scores.Tracked
+	scores.Track
 
 	TournamentID int     `json:"tournamentId" db:"tournament_id"`
 	TotalPoints  int     `json:"totalPoints" db:"total_points"`
@@ -74,7 +74,7 @@ type TournamentInfo struct {
 
 // Tournament adds additional information to `TournamentInfo`.
 type Tournament struct {
-	scores.Tracked
+	scores.Track
 
 	TournamentInfo
 

@@ -1,8 +1,6 @@
 package repo
 
 import (
-	"time"
-
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
@@ -49,20 +47,8 @@ type UserRepository interface {
 
 // Repositories is a collection of instances of all available repositories.
 type Repositories struct {
-	PlayerRepo PlayerRepository
-	TeamRepo TeamRepository
+	PlayerRepo     PlayerRepository
+	TeamRepo       TeamRepository
 	TournamentRepo TournamentRepository
-	UserRepo UserRepository
-}
-
-// Model ...
-type Model interface {
-	SetID(id int)
-}
-
-// Tracked ...
-type Tracked interface {
-	SetCreatedAt(createdAt time.Time)
-	SetUpdatedAt(updatedAt time.Time)
-	SetDeletedAt(deletedAt *time.Time)
+	UserRepo       UserRepository
 }

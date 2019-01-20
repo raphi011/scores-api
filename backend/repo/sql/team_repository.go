@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sql/crud"
 	"github.com/raphi011/scores/volleynet"
@@ -17,20 +18,20 @@ type teamRepository struct {
 
 // New creates a new team.
 func (s *teamRepository) New(t *volleynet.TournamentTeam) (*volleynet.TournamentTeam, error) {
-	err := crud.Create(s.DB,  "team/insert", t)
+	err := crud.Create(s.DB, "team/insert", t)
 
 	return t, errors.Wrap(err, "insert team")
 }
 
 // NewBatch creates a new team.
 func (s *teamRepository) NewBatch(teams ...*volleynet.TournamentTeam) error {
-	ts := make([]repo.Tracked, len(teams))
+	ts := make([]scores.Tracked, len(teams))
 
 	for i, t := range teams {
 		ts[i] = t
 	}
 
-	err := crud.Create(s.DB,  "team/insert", ts...)
+	err := crud.Create(s.DB, "team/insert", ts...)
 
 	return errors.Wrap(err, "batch insert team")
 }
@@ -44,7 +45,7 @@ func (s *teamRepository) Update(t *volleynet.TournamentTeam) error {
 
 // UpdateBatch updates a tournament team.
 func (s *teamRepository) UpdateBatch(teams ...*volleynet.TournamentTeam) error {
-	ts := make([]repo.Tracked, len(teams))
+	ts := make([]scores.Tracked, len(teams))
 
 	for i, t := range teams {
 		ts[i] = t

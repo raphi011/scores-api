@@ -3,7 +3,6 @@ package parse
 import (
 	"os"
 	"testing"
-	"time"
 
 	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
@@ -14,44 +13,40 @@ func TestParseLadderTest(t *testing.T) {
 
 	expected := []*volleynet.Player{
 		&volleynet.Player{
-			ID: 246,
-			FirstName: "Alexander",
-			LastName:  "Horst",
-			Birthday:  &time.Time{},
-			LadderRank:         1,
+			ID:           246,
+			FirstName:    "Alexander",
+			LastName:     "Horst",
+			LadderRank:   1,
 			Club:         "Badener Beach Volleyballverein",
 			CountryUnion: "NÖVV",
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
 		&volleynet.Player{
-			ID: 1050,
-			FirstName: "Clemens",
-			LastName:  "Doppler",
-			Birthday:  &time.Time{},
-			LadderRank:         1,
+			ID:           1050,
+			FirstName:    "Clemens",
+			LastName:     "Doppler",
+			LadderRank:   1,
 			Club:         "Badener Beach Volleyballverein",
 			CountryUnion: "NÖVV",
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
 		&volleynet.Player{
-			ID: 5626,
-			FirstName: "Robin Valentin",
-			LastName:  "Seidl",
-			Birthday:  &time.Time{},
-			LadderRank:         3,
+			ID:           5626,
+			FirstName:    "Robin Valentin",
+			LastName:     "Seidl",
+			LadderRank:   3,
 			Club:         "ABC Wörthersee",
 			CountryUnion: "KVV",
 			TotalPoints:  1900,
 			Gender:       "M",
 		},
 		&volleynet.Player{
-			ID: 6656,
-			FirstName: "Martin",
-			LastName:  "Ermacora",
-			Birthday:  &time.Time{},
-			LadderRank:         4,
+			ID:           6656,
+			FirstName:    "Martin",
+			LastName:     "Ermacora",
+			LadderRank:   4,
 			Club:         "My BeachEvent",
 			CountryUnion: "ÖVV",
 			TotalPoints:  1710,

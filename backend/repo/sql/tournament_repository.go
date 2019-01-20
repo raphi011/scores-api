@@ -4,6 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sql/crud"
 	"github.com/raphi011/scores/volleynet"
@@ -17,7 +18,9 @@ var _ repo.TournamentRepository = &tournamentRepository{}
 
 // Get loads a tournament by its id.
 func (s *tournamentRepository) Get(tournamentID int) (*volleynet.Tournament, error) {
-	tournament := &volleynet.Tournament{}
+	tournament := &volleynet.Tournament{
+		Teams: []*volleynet.TournamentTeam{},
+	}
 	err := crud.ReadOne(s.DB, "tournament/select-by-id", tournament, tournamentID)
 
 	return tournament, errors.Wrap(err, "get tournament")
@@ -32,7 +35,7 @@ func (s *tournamentRepository) New(t *volleynet.Tournament) (*volleynet.Tourname
 
 // NewBatch creates a new tournament.
 func (s *tournamentRepository) NewBatch(tournaments ...*volleynet.Tournament) error {
-	ts := make([]repo.Tracked, len(tournaments))
+	ts := make([]scores.Tracked, len(tournaments))
 
 	for i, t := range tournaments {
 		ts[i] = t
@@ -51,7 +54,7 @@ func (s *tournamentRepository) Update(t *volleynet.Tournament) error {
 
 // UpdateBatch updates a tournament.
 func (s *tournamentRepository) UpdateBatch(tournaments ...*volleynet.Tournament) error {
-	ts := make([]repo.Tracked, len(tournaments))
+	ts := make([]scores.Tracked, len(tournaments))
 
 	for i, t := range tournaments {
 		ts[i] = t
@@ -70,7 +73,7 @@ func (s *tournamentRepository) Filter(
 	tournaments := []*volleynet.Tournament{}
 	err := crud.ReadIn(s.DB, "tournament/select-by-filter", &tournaments,
 		formats,
-		leagues, 
+		leagues,
 		seasons,
 	)
 

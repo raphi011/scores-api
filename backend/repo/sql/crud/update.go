@@ -6,11 +6,10 @@ import (
 	"github.com/jmoiron/sqlx"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/repo"
 )
 
 // Update updates multiple entities and updates the `UpdatedAt` field.
-func Update(db *sqlx.DB, queryName string, entities ...repo.Tracked) error {
+func Update(db *sqlx.DB, queryName string, entities ...scores.Tracked) error {
 	stmt, err := db.PrepareNamed(namedQuery(db, queryName))
 
 	if err != nil {
@@ -20,7 +19,7 @@ func Update(db *sqlx.DB, queryName string, entities ...repo.Tracked) error {
 	now := time.Now()
 
 	for _, entity := range entities {
-		entity.SetUpdatedAt(now)
+		entity.Update(now)
 
 		result, err := stmt.Exec(entity)
 
@@ -38,6 +37,6 @@ func Update(db *sqlx.DB, queryName string, entities ...repo.Tracked) error {
 			return scores.ErrNotFound
 		}
 	}
-	
+
 	return nil
 }

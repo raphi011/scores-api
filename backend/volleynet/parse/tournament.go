@@ -107,7 +107,11 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 	},
 	"Nennschluss": func(value *goquery.Selection, t *volleynet.Tournament) {
 		endRegistration, _ := parseDate(value.Text())
-		t.EndRegistration = &endRegistration
+		if endRegistration.IsZero() {
+			t.EndRegistration = nil
+		} else {
+			t.EndRegistration = &endRegistration
+		}
 	},
 }
 

@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"time"
 	"testing"
 
 	"github.com/raphi011/scores/test"
@@ -11,14 +10,11 @@ import (
 func TestCreatePlayer(t *testing.T) {
 	db := SetupDB(t)
 	playerRepo := &playerRepository{DB: db}
-	now := time.Now()
 
-	player, err := playerRepo.New(&volleynet.Player{ ID: 1 })
-	player.SetTestTime(&now)
+	player := &volleynet.Player{ID: 1}
 
-	if err != nil {
-		t.Fatalf("playerRepository.New(), err: %v", err)
-	}
+	_, err := playerRepo.New(player)
+	test.Check(t, "playerRepository.New(), err: %v", err)
 
 	persistedPlayer, err := playerRepo.Get(1)
 
@@ -30,7 +26,7 @@ func TestUpdatePlayer(t *testing.T) {
 	db := SetupDB(t)
 	playerRepo := &playerRepository{DB: db}
 
-	player, err := playerRepo.New(&volleynet.Player{ ID: 1 })
+	player, err := playerRepo.New(&volleynet.Player{ID: 1})
 	test.Check(t, "couldn't persist player: %v", err)
 
 	player.FirstName = "test!"
@@ -41,7 +37,7 @@ func TestUpdatePlayer(t *testing.T) {
 	updatedPlayer, err := playerRepo.Get(player.ID)
 
 	test.Check(t, "couldnt get player: %v", err)
-	test.Compare(t,"players are not equal:\n%s", player, updatedPlayer)
+	test.Compare(t, "players are not equal:\n%s", player, updatedPlayer)
 }
 
 func TestLadder(t *testing.T) {
@@ -54,10 +50,10 @@ func TestLadder(t *testing.T) {
 	test.Assert(t, "ladder should be empty", len(players) == 0)
 
 	CreatePlayers(t, db,
-		P{ Gender: "m", TotalPoints: 5, LadderRank: 1, ID: 1 },
-		P{ Gender: "m", TotalPoints: 4, LadderRank: 2, ID: 2 },
-		P{ Gender: "m", TotalPoints: 0, LadderRank: 0, ID: 3 },
-		P{ Gender: "w", TotalPoints: 4, LadderRank: 1, ID: 4 },
+		P{Gender: "m", TotalPoints: 5, LadderRank: 1, ID: 1},
+		P{Gender: "m", TotalPoints: 4, LadderRank: 2, ID: 2},
+		P{Gender: "m", TotalPoints: 0, LadderRank: 0, ID: 3},
+		P{Gender: "w", TotalPoints: 4, LadderRank: 1, ID: 4},
 	)
 
 	players, err = playerRepo.Ladder("m")
