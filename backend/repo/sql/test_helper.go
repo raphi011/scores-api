@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sql/crud"
 	"github.com/raphi011/scores/repo/sql/migrate"
@@ -42,24 +43,18 @@ func SetupDB(t testing.TB) *sqlx.DB {
 	}
 
 	db, err := sqlx.Open(dbProvider, connectionString)
-	assert(t, "unable to open db: %v", err)
+	test.Check(t, "unable to open db: %v", err)
 
 	err = db.Ping()
-	assert(t, "unable to connect to db: %v", err)
+	test.Check(t, "unable to connect to db: %v", err)
 
 	err = migrate.All(dbProvider, db)
-	assert(t, "migration failed: %v", err)
+	test.Check(t, "migration failed: %v", err)
 
-	err = crud.Update(db, "test/delete-all");
-	assert(t, "db cleanup failed: %v", err)
+	err = crud.Execute(db, "test/delete-all");
+	test.Check(t, "db cleanup failed: %v", err)
 
 	return db
-}
-
-func assert(t testing.TB, message string, err error) {
-	if err != nil {
-		t.Fatalf(message, err)
-	}
 }
 
 // P is a helper struct to create players.
@@ -83,7 +78,7 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 			Rank: p.Rank,
 		})
 
-		assert(t, "playerRepo.New() failed", err)
+		test.Check(t, "playerRepo.New() failed", err)
 
 		newPlayers = append(newPlayers, persistedPlayer)
 	}
@@ -109,7 +104,7 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 				Status: tournament.Status,
 			},
 		})
-		assert(t, "tournamentRepo.New() failed", err)
+		test.Check(t, "tournamentRepo.New() failed", err)
 
 		newTournaments = append(newTournaments, persistedTournament)
 	}
@@ -148,7 +143,7 @@ func CreateTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.Tournament
 			Deregistered: team.Deregistered,
 		})
 
-		assert(t, "teamRepo.New() failed", err)
+		test.Check(t, "teamRepo.New() failed", err)
 
 		newTeams = append(newTeams, persistedTeam)
 	}

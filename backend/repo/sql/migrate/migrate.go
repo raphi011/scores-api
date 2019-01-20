@@ -13,11 +13,11 @@ import (
     "github.com/golang-migrate/migrate/v4/database/mysql"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	
-	"github.com/raphi011/scores/packr"
+	"github.com/gobuffalo/packr/v2"
 )
 
 var (
-	migrations = packr.New("migrations", "./packr/sql/migrations")
+	migrations = packr.New("migrations", "../migrations")
 )
 
 func All(provider string, db *sqlx.DB) error {

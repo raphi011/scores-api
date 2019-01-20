@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -61,11 +61,6 @@ func TestParseLadderTest(t *testing.T) {
 
 	ladder, err := Ladder(response)
 
-	if err != nil {
-		t.Errorf("Ladder() err: %s", err)
-	}
-
-	if !cmp.Equal(ladder, expected) {
-		t.Errorf("Ladder(): %s", cmp.Diff(expected, ladder))
-	}
+	test.Check(t, "Ladder() err: %v", err)
+	test.Compare(t, "Ladder(): %s", ladder, expected)
 }

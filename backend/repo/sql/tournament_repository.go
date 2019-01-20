@@ -68,7 +68,7 @@ func (s *tournamentRepository) Filter(
 	formats []string) ([]*volleynet.Tournament, error) {
 
 	tournaments := []*volleynet.Tournament{}
-	err := crud.Read(s.DB, "tournament/select-by-filter", tournaments,
+	err := crud.ReadIn(s.DB, "tournament/select-by-filter", &tournaments,
 		formats,
 		leagues, 
 		seasons,
@@ -76,88 +76,3 @@ func (s *tournamentRepository) Filter(
 
 	return tournaments, errors.Wrap(err, "filtered tournaments")
 }
-
-/*
-func (s *tournamentRepository) scan(queryName string, args ...interface{}) (
-	[]*volleynet.Tournament, error) {
-
-	tournaments := []*volleynet.Tournament{}
-
-	q, args, err := sqlx.In(loadQuery(s.DB, queryName), args...)
-
-	if err != nil {
-		return tournaments, errors.Wrap(err, "creating query")
-	}
-
-	q = s.DB.Rebind(q)
-
-	rows, err := s.DB.Query(q, args...)
-
-	if err != nil {
-		return tournaments, mapError(err)
-	}
-
-	defer rows.Close()
-
-	for rows.Next() {
-		t := &volleynet.Tournament{}
-		t.Teams = []*volleynet.TournamentTeam{}
-
-		err := rows.Scan(
-			&t.ID,
-			&t.CreatedAt,
-			&t.UpdatedAt,
-			&t.Format,
-			&t.Start,
-			&t.End,
-			&t.Name,
-			&t.League,
-			&t.Link,
-			&t.EntryLink,
-			&t.Status,
-			&t.RegistrationOpen,
-			&t.Location,
-			&t.HTMLNotes,
-			&t.Mode,
-			&t.MaxPoints,
-			&t.MinTeams,
-			&t.MaxTeams,
-			&t.EndRegistration,
-			&t.Organiser,
-			&t.Phone,
-			&t.Email,
-			&t.Website,
-			&t.CurrentPoints,
-			&t.LivescoringLink,
-			&t.Latitude,
-			&t.Longitude,
-			&t.Season,
-			&t.SignedupTeams,
-		)
-
-		if err != nil {
-			return tournaments, mapError(err)
-		}
-
-		tournaments = append(tournaments, t)
-	}
-
-	return tournaments, nil
-}
-
-func (s *tournamentRepository) scanOne(query string, args ...interface{}) (
-	*volleynet.Tournament, error) {
-
-	tournaments, err := s.scan(query, args...)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if len(tournaments) >= 1 {
-		return tournaments[0], nil
-	}
-
-	return nil, scores.ErrNotFound
-}
-*/

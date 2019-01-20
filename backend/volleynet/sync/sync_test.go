@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/volleynet"
@@ -44,13 +45,8 @@ func TestSyncLadder(t *testing.T) {
 
 	report, err := service.Ladder(gender)
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	if report.UpdatedPlayers != 1 {
-		t.Errorf("Service.Ladder(\"M\") want: .UpdatedPlayers = 1, got: %d", report.UpdatedPlayers)
-	}
+	test.Check(t, "service.Ladder() err: %v", err)
+	test.Assert(t, "Service.Ladder(\"M\") want: .UpdatedPlayers = 1, got: %d",report.UpdatedPlayers != 1, report.UpdatedPlayers)
 }
 
 func TestSyncTournamentInformation(t *testing.T) {
@@ -95,7 +91,5 @@ ID:     1,
 
 	err := service.Tournaments("M", "AMATEUR LEAGUE", 2018)
 
-	if err != nil {
-		t.Fatal(err)
-	}
+	test.Check(t, "service.Tournaments() err: %v", err)
 }

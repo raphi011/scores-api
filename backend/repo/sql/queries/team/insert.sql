@@ -12,13 +12,13 @@ INSERT INTO tournament_teams
 )
 VALUES
 (
-	:tournamentid,
+	:tournament_id,
 	:player1.id,
 	:player2.id,
 	:rank,
 	:seed,
-	:totalpoints,
-	:wonpoints,
-	:prizemoney,
+	:total_points,
+	:won_points,
+	:prize_money,
 	:deregistered
 )

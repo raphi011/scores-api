@@ -3,6 +3,7 @@ package sql
 import (
 	"testing"
 
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -31,9 +32,7 @@ func TestCreateTeam(t *testing.T) {
 		WonPoints: 25,
 	})
 
-	if err != nil {
-		t.Fatalf("tournamentTeamRepository.New(), err: %s", err)
-	}
+	test.Check(t, "teamRepository.New(), err: %v", err)
 }
 
 func TestTournamentTeams(t *testing.T) {
@@ -62,9 +61,7 @@ func TestTournamentTeams(t *testing.T) {
 	)
 
 	tournamentTeams, err := teamRepo.ByTournament(ts[0].ID)
-	assert(t, "teamRepo.ByTournament() failed: %v", err)
 
-	if len(tournamentTeams) != 3 {
-		t.Fatalf("teamRepository.ByTournament(), want len(tournaments) == 3, got: %d", len(tournamentTeams))
-	}
+	test.Check(t, "teamRepo.ByTournament() failed: %v", err)
+	test.Assert(t, "teamRepository.ByTournament(), want len(tournaments) == 3, got: %d", len(tournamentTeams) != 3, len(tournamentTeams))
 }

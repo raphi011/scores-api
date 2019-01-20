@@ -18,22 +18,36 @@ func (m *Model) SetID(id int) {
 // Tracked adds timestamps `CreatedAt`, `UpdatedAt`,
 // `DeletedAt` to the model.
 type Tracked struct {
-	CreatedAt time.Time  `json:"createdAt" db:"createdAt"`
-	UpdatedAt time.Time  `json:"-" db:"updatedAt"`
-	DeletedAt *time.Time `json:"-" db:"deletedAt"`
+	CreatedAt time.Time  `json:"createdAt" db:"created_at"`
+	UpdatedAt time.Time  `json:"-" db:"updated_at"`
+	DeletedAt *time.Time `json:"-" db:"deleted_at"`
+	testTime  *time.Time /*`db:"-"`*/
 }
 
 // SetCreatedAt sets the `CreatedAt` field.
 func (t *Tracked) SetCreatedAt(created time.Time) {
+	if t.testTime != nil {
+		created = *t.testTime
+	}
 	t.CreatedAt = created
 }
 
 // SetUpdatedAt sets the `UpdatedAt` field.
 func (t *Tracked) SetUpdatedAt(updated time.Time) {
+	if t.testTime != nil {
+		updated = *t.testTime
+	}
 	t.UpdatedAt = updated
 }
 
 // SetDeletedAt sets the `DeletedAt` field.
 func (t *Tracked) SetDeletedAt(deleted *time.Time) {
+	if t.testTime != nil {
+		deleted = t.testTime
+	}
 	t.DeletedAt = deleted
+}
+
+func (t *Tracked) SetTestTime(time *time.Time) {
+	t.testTime = time
 }

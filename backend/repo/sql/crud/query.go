@@ -8,11 +8,11 @@ import (
 	"github.com/raphi011/scores"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores/packr"
+	"github.com/gobuffalo/packr/v2"
 )
 
 var (
-	queries = packr.New("queries", "./packr/sql/queries")
+	queries = packr.New("queries", "../queries")
 )
 
 func loadQuery(db *sqlx.DB, name string) string {
@@ -49,6 +49,13 @@ func mapError(err error) error {
 	if err == sql.ErrNoRows {
 		return scores.ErrNotFound
 	}
+
+	return err
+}
+
+
+func Execute(db *sqlx.DB, queryName string) error {
+	_, err := db.Exec(loadQuery(db, queryName))
 
 	return err
 }

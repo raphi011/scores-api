@@ -5,8 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/go-cmp/cmp"
-
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -502,9 +501,7 @@ func TestTournament(t *testing.T) {
 			// ignoe currentpoints... TODO
 			tournament.CurrentPoints = ""
 
-			if !cmp.Equal(tournament, tt.out) {
-				t.Errorf("Tournament(): %+v", cmp.Diff(tournament, tt.out))
-			}
+			test.Compare(t, "Tournament(): %+v", tournament, tt.out)
 		})
 	}
 }

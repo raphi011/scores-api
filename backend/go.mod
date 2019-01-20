@@ -11,8 +11,7 @@ require (
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/flect v0.0.0-20190104225346-d687a3953028 // indirect
-	github.com/gobuffalo/genny v0.0.0-20190112155932-f31a84fcacf5 // indirect
-	github.com/gobuffalo/packr/v2 v2.0.0-rc.13
+	github.com/gobuffalo/packr/v2 v2.0.0-rc.14
 	github.com/golang-migrate/migrate/v4 v4.2.1
 	github.com/google/go-cmp v0.2.0
 	github.com/google/uuid v1.0.0
@@ -28,13 +27,13 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/sirupsen/logrus v1.3.0
-	github.com/spf13/afero v1.2.0 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/wawandco/fako v0.0.0-20180828010250-c36a0bc97398
 	golang.org/x/crypto v0.0.0-20190103213133-ff983b9c42bc
 	golang.org/x/net v0.0.0-20190110200230-915654e7eabc // indirect
 	golang.org/x/oauth2 v0.0.0-20181003184128-c57b0facaced
 	golang.org/x/sys v0.0.0-20190109145017-48ac38b7c8cb // indirect
+	golang.org/x/tools v0.0.0-20190118193359-16909d206f00 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 )

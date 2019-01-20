@@ -28,7 +28,7 @@ func (s *playerRepository) Ladder(gender string) ([]*volleynet.Player, error) {
 func (s *playerRepository) Get(id int) (*volleynet.Player, error) {
 
 	player := &volleynet.Player{}
-	err := crud.ReadOne(s.DB, "player/select-by-id", &player, id)
+	err := crud.ReadOne(s.DB, "player/select-by-id", player, id)
 
 	return player, errors.Wrap(err, "get player")
 }

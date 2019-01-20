@@ -1,11 +1,12 @@
 package sql
 
 import (
-	"github.com/pkg/errors"
-	"github.com/google/go-cmp/cmp"
 	"testing"
 
+	"github.com/pkg/errors"
+
 	"github.com/raphi011/scores"
+	"github.com/raphi011/scores/test"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -19,29 +20,17 @@ func TestCreateUser(t *testing.T) {
 		ProfileImageURL: "image.url",
 	})
 
-	if err != nil {
-		t.Fatalf("userRepository.New() err: %s", err)
-	}
-
-	if user.ID == 0 {
-		t.Fatalf("userRepository.New(), want ID != 0, got 0")
-	}
+	test.Check(t, "userRepository.New() err: %v", err)
+	test.Assert(t, "userRepository.New(): want ID != 0, got 0",user.ID == 0 )
 
 	userByEmail, err := userRepo.ByEmail(email)
 
-	if err != nil {
-		t.Fatalf("userRepository.ByEmail() err: %s", err)
-	}
+	test.Check(t, "userRepository.ByEmail() err: %v", err)
 
 	userByID, err := userRepo.ByID(user.ID)
 
-	if err != nil {
-		t.Fatalf("userRepository.ByID() err: %s", err)
-	}
-
-	if !cmp.Equal(userByEmail, userByID) {
-		t.Fatal("user byID and byEmail is not equal")
-	}
+	test.Check(t, "userRepository.ByID() err: %v", err)
+	test.Compare(t, "user byID and byEmail is not equal\n%s", userByEmail, userByID)
 }
 
 func TestUserNotFound(t *testing.T) {

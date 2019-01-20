@@ -1,22 +1,23 @@
 package sql
 
 import (
+	"math/rand"
 	"testing"
 	"time"
-	"math/rand"
 
-	"github.com/wawandco/fako"
-	"github.com/google/go-cmp/cmp"
+	"github.com/raphi011/scores/test"
+
 	"github.com/raphi011/scores/volleynet"
+	"github.com/wawandco/fako"
 )
 
 func TestCreateTournament(t *testing.T) {
 	db := SetupDB(t)
-	tournamentRepo :=  &tournamentRepository{DB: db}
+	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournament, err := tournamentRepo.New(&volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{ ID: 1 },
-		Teams: []*volleynet.TournamentTeam{},
+		TournamentInfo: volleynet.TournamentInfo{ID: 1},
+		Teams:          []*volleynet.TournamentTeam{},
 	})
 
 	if err != nil {
@@ -25,25 +26,17 @@ func TestCreateTournament(t *testing.T) {
 
 	persistedTournament, err := tournamentRepo.Get(tournament.ID)
 
-	if err != nil {
-		t.Fatalf("tournamentRepository.Get(), err: %s", err)
-	}
-
-	if !cmp.Equal(tournament, persistedTournament) {
-		t.Fatalf(
-			"tournaments are not equal:\n%s",
-			cmp.Diff(tournament, persistedTournament),
-		)
-	}
+	test.Check(t, "tournamentRepository.Get(), err: %v", err)
+	test.Compare(t, "tournaments are not equal:\n%s", tournament, persistedTournament)
 }
 
 func TestFilterTournament(t *testing.T) {
 	db := SetupDB(t)
-	tournamentRepo :=  &tournamentRepository{DB: db}
+	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournament1 := &volleynet.Tournament{
 		TournamentInfo: volleynet.TournamentInfo{
-			ID: 1,
+			ID:     1,
 			Season: 2018,
 			League: "amateur-tour",
 			Format: "m",
@@ -53,7 +46,7 @@ func TestFilterTournament(t *testing.T) {
 
 	tournament2 := &volleynet.Tournament{
 		TournamentInfo: volleynet.TournamentInfo{
-			ID: 2,
+			ID:     2,
 			Season: 2018,
 			League: "amateur-tour",
 			Format: "m",
@@ -63,7 +56,7 @@ func TestFilterTournament(t *testing.T) {
 
 	tournament3 := &volleynet.Tournament{
 		TournamentInfo: volleynet.TournamentInfo{
-			ID: 3,
+			ID:     3,
 			Season: 2018,
 			League: "pro-tour",
 			Format: "m",
@@ -73,7 +66,7 @@ func TestFilterTournament(t *testing.T) {
 
 	tournament4 := &volleynet.Tournament{
 		TournamentInfo: volleynet.TournamentInfo{
-			ID: 3,
+			ID:     3,
 			Season: 2017,
 			League: "amateur-tour",
 			Format: "m",
@@ -90,13 +83,8 @@ func TestFilterTournament(t *testing.T) {
 		[]int{2018}, []string{"amateur-tour", "pro-tour"}, []string{"m"},
 	)
 
-	if err != nil {
-		t.Fatalf("tournamentRepository.Filter(), err: %s", err)
-	}
-
-	if len(tournaments) != 3 {
-		t.Fatalf("tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(tournaments))
-	}
+	test.Check(t, "tournamentRepository.Filter(), err: %s", err)
+	test.Assert(t, "tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(tournaments) != 3, len(tournaments))
 }
 
 func BenchmarkCreateTournament(b *testing.B) {
@@ -110,10 +98,7 @@ func BenchmarkCreateTournament(b *testing.B) {
 		b.StartTimer()
 
 		err := tournamentRepo.NewBatch(tournaments...)
-
-		if err != nil {
-			assert(b, "failed to create random tournaments: %v", err)
-		}
+		test.Check(b, "failed to create random tournaments: %v", err)
 	}
 }
 
@@ -124,7 +109,7 @@ func BenchmarkFilterTournament(b *testing.B) {
 
 	tournaments := randomTournaments(1000, 0)
 	err := tournamentRepo.NewBatch(tournaments...)
-	assert(b, "failed to create random tournaments: %v", err)
+	test.Check(b, "failed to create random tournaments: %v", err)
 	b.StartTimer()
 
 	for n := 0; n < b.N; n++ {
@@ -136,7 +121,7 @@ func BenchmarkFilterTournament(b *testing.B) {
 
 		b.Logf("found %d tournaments", len(ts))
 
-		assert(b, "failed to filter tournaemnts: %v", err)
+		test.Check(b, "failed to filter tournaemnts: %v", err)
 	}
 }
 
@@ -145,22 +130,19 @@ func TestUpdateTournament(t *testing.T) {
 	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournament, err := tournamentRepo.New(&volleynet.Tournament{
-		TournamentInfo: volleynet.TournamentInfo{ ID: 1 },
-		Teams: []*volleynet.TournamentTeam{},
+		TournamentInfo: volleynet.TournamentInfo{ID: 1},
+		Teams:          []*volleynet.TournamentTeam{},
 	})
-	assert(t, "couldn't persist tournament: %v", err)
+	test.Check(t, "couldn't persist tournament: %v", err)
 
 	tournament.Email = "test!"
 
 	err = tournamentRepo.Update(tournament)
-	assert(t, "couldnt update tournament: %v", err)
+	test.Check(t, "couldnt update tournament: %v", err)
 
 	updatedTournament, err := tournamentRepo.Get(tournament.ID)
-	assert(t, "couldnt get tournament: %v", err)
-
-	if diff := cmp.Diff(tournament, updatedTournament); diff != "" {
-		t.Fatalf("tournaments are not equal:\n%s", diff)
-	}
+	test.Check(t, "couldnt get tournament: %v", err)
+	test.Compare(t,"tournaments are not equal:\n%s", tournament, updatedTournament)
 }
 
 func randomTournaments(count, run int) []*volleynet.Tournament {
@@ -168,7 +150,7 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 	rand.Seed(time.Now().Unix())
 
 	leagues := []string{"amateur-tour", "pro-tour", "junior-tour"}
-	seasons := []int{2017,2018, 2019}
+	seasons := []int{2017, 2018, 2019}
 	formats := []string{"m", "w"}
 	status := []string{
 		volleynet.StatusUpcoming,
@@ -184,7 +166,7 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 		tournament := &volleynet.TournamentInfo{}
 		tournament.ID = id
 		tournament.League = leagues[rand.Intn(len(leagues))]
-		tournament.Season  = seasons[rand.Intn(len(seasons))]
+		tournament.Season = seasons[rand.Intn(len(seasons))]
 		tournament.Format = formats[rand.Intn(len(formats))]
 		tournament.Status = status[rand.Intn(len(status))]
 

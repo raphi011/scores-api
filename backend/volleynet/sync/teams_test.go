@@ -3,10 +3,9 @@ package sync
 import (
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-
 	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores/test"
 )
 
 func TestDistinctPlayers(t *testing.T) {
@@ -29,9 +28,7 @@ func TestDistinctPlayers(t *testing.T) {
 
 	output := distinctPlayers(input)
 
-	if !cmp.Equal(output, expected) {
-		t.Errorf("distinctPlayers() diff:\n%s", cmp.Diff(output, expected))
-	}
+	test.Compare(t, "distinctPlayers() diff:\n%s", output,expected)
 }
 
 func TestAddMissingPlayers(t *testing.T) {
@@ -51,9 +48,7 @@ func TestAddMissingPlayers(t *testing.T) {
 
 	err := service.addMissingPlayers(teams)
 
-	if err != nil {
-		t.Fatal(err)
-	}
+	test.Check(t, "addMissingPlayers() failed: %v", err)
 }
 
 func TestSyncTournamentTeams(t *testing.T) {
@@ -98,13 +93,7 @@ func TestSyncTournamentTeams(t *testing.T) {
 
 	service.syncTournamentTeams(changes, old, new)
 
-	if len(changes.New) != 1 {
-		t.Errorf("Service.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d", len(changes.New))
-	}
-	if len(changes.Update) != 1 {
-		t.Errorf("Service.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update))
-	}
-	if len(changes.Delete) != 1 {
-		t.Errorf("Service.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete))
-	}
+	test.Assert(t,"Service.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d",len(changes.New) != 1 , len(changes.New))
+	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update) != 1, len(changes.Update) )
+	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete) != 1,len(changes.Delete))
 }

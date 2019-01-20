@@ -16,15 +16,15 @@ INSERT INTO players
 VALUES
 (
 	:id,
-	:createdAt,
-	:updatedAt,
-	:firstname,
-	:lastname,
+	:created_at,
+	:updated_at,
+	:first_name,
+	:last_name,
 	:birthday,
 	:gender,
-	:totalpoints,
+	:total_points,
 	:rank,
 	:club,
-	:countryunion,
+	:country_union,
 	:license
 )
