@@ -3,7 +3,7 @@ import React from 'react';
 import List from '@material-ui/core/List';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
-import { VolleynetPlayer } from '../../types';
+import { Player } from '../../types';
 import LadderItem from './LadderItem';
 
 const styles = createStyles({
@@ -13,7 +13,7 @@ const styles = createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  players: VolleynetPlayer[];
+  players: Player[];
 }
 
 class SearchPlayerList extends React.PureComponent<Props> {

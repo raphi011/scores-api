@@ -5,7 +5,7 @@ import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import TeamListItem from './TeamListItem';
 
-import { VolleynetTeam } from '../../types';
+import { Team } from '../../types';
 
 const styles = createStyles({
   root: {
@@ -14,11 +14,11 @@ const styles = createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  teams: VolleynetTeam[];
+  teams: Team[];
   emptyMessage?: string;
 }
 
-const sortByRankOrSeed = (a: VolleynetTeam, b: VolleynetTeam) =>
+const sortByRankOrSeed = (a: Team, b: Team) =>
   (a.rank || a.seed) - (b.rank || b.seed);
 
 class TeamList extends React.PureComponent<Props> {

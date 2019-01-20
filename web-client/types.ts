@@ -1,50 +1,8 @@
 export enum EntityName {
-  Group = 'group',
-  Match = 'match',
   Player = 'player',
-  Statistic = 'statistic',
   Team = 'team',
-  TournamentInfo = 'tournament',
+  Tournament = 'tournament',
   User = 'user',
-  VolleynetPlayer = 'volleynetplayer',
-}
-
-export interface Player {
-  id: number;
-  name: string;
-  userId?: number;
-  profileImageUrl?: string;
-  groups: Group[];
-}
-
-export interface Team {
-  name: string;
-  id: number;
-  player1: Player;
-  player1Id: number;
-  player2: Player;
-  player2Id: number;
-}
-
-export interface Match {
-  id: number;
-  groupId: number;
-  scoreTeam1: number;
-  scoreTeam2: number;
-  createdAt: string;
-  team1: Team;
-  team2: Team;
-}
-
-export interface NewMatch {
-  groupId: number;
-  player1Id: number;
-  player2Id: number;
-  player3Id: number;
-  player4Id: number;
-  scoreTeam1: number;
-  scoreTeam2: number;
-  targetScore: number;
 }
 
 export interface User {
@@ -58,38 +16,7 @@ export interface User {
   volleynetLogin: string;
 }
 
-export interface Statistic {
-  played: number;
-  gamesWon: number;
-  gamesLost: number;
-  pointsWon: number;
-  pointsLost: number;
-  percentageWon: number;
-  rank: string;
-}
-
-export interface TeamStatistic extends Statistic {
-  player1Id: number;
-  player2Id: number;
-  team: Team;
-}
-
-export type StatisticFilter = 'today' | 'month' | 'thisyear' | 'all';
-
-export interface PlayerStatistic extends Statistic {
-  playerId: number;
-  player: Player;
-}
-
-export interface Group {
-  id: number;
-  name: string;
-  imageUrl: string;
-  players: Player[];
-  matches: Match[];
-}
-
-export interface VolleynetSearchPlayer {
+export interface SearchPlayer {
   firstName: string;
   lastName: string;
   id: number;
@@ -99,7 +26,7 @@ export interface VolleynetSearchPlayer {
 
 export type Gender = 'M' | 'W';
 
-export interface VolleynetPlayer {
+export interface Player {
   id: number;
   firstName: string;
   lastName: string;
@@ -113,10 +40,10 @@ export interface VolleynetPlayer {
   license: string;
 }
 
-export interface VolleynetTeam {
+export interface Team {
   tournamentId: number;
-  player1: VolleynetPlayer;
-  player2: VolleynetPlayer;
+  player1: Player;
+  player2: Player;
   totalPoints: string;
   seed: number;
   rank: number;
@@ -125,7 +52,7 @@ export interface VolleynetTeam {
   deregistered: boolean;
 }
 
-export interface TournamentInfo {
+export interface Tournament {
   id: number;
   updatedAt: string;
   gender: Gender;
@@ -136,7 +63,7 @@ export interface TournamentInfo {
   league: string;
   link: string;
   entryLink: string;
-  teams: VolleynetTeam[];
+  teams: Team[];
   status: string;
   location: string;
   htmlNotes: string;
@@ -172,15 +99,11 @@ export interface ScrapeJob {
   state: number;
 }
 
-export type GenericStatistic = PlayerStatistic | TeamStatistic;
-
 export type EntityType =
   | User
-  | Group
   | Player
   | Team
-  | Match
-  | GenericStatistic;
+  | Tournament;
 
 export interface Classes {
   [key: string]: string;

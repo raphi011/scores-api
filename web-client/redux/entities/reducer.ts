@@ -37,34 +37,13 @@ export interface IDeleteEntityAction {
 }
 
 export const initialEntitiesState: EntityStore = {
-  group: { values: {} },
-  match: {
-    by: {
-      group: {},
-      player: {},
-    },
-    list: {
-      all: [],
-    },
-    values: {},
-  },
   player: {
     by: {
-      group: {},
+      ladder: {},
     },
     list: {
       all: [],
-    },
-    values: {},
-  },
-  statistic: {
-    by: {
-      group: {},
-      player: {},
-      playerTeam: {},
-    },
-    list: {
-      all: [],
+      search: [],
     },
     values: {},
   },
@@ -86,16 +65,6 @@ export const initialEntitiesState: EntityStore = {
   user: {
     list: {
       all: [],
-    },
-    values: {},
-  },
-  volleynetplayer: {
-    by: {
-      ladder: {},
-    },
-    list: {
-      all: [],
-      search: [],
     },
     values: {},
   },

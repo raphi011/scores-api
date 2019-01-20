@@ -3,13 +3,13 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { VolleynetTeam } from '../../types';
+import { Team } from '../../types';
 
 interface Props {
-  team: VolleynetTeam;
+  team: Team;
 }
 
-function rankOrSeed(team: VolleynetTeam) {
+function rankOrSeed(team: Team) {
   if (!team.rank) {
     return `${team.seed}.`;
   }

@@ -8,11 +8,11 @@ import Layout from '../../containers/LayoutContainer';
 import { loadLadderAction } from '../../redux/entities/actions';
 import { ladderVolleynetplayerSelector } from '../../redux/entities/selectors';
 
-import { VolleynetPlayer } from '../../types';
+import { Player } from '../../types';
 
 interface Props {
   gender: 'M' | 'W';
-  ladder: VolleynetPlayer[];
+  ladder: Player[];
 
   loadLadder: (gender: string) => void;
 }

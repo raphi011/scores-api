@@ -7,10 +7,10 @@ import Layout from '../../containers/LayoutContainer';
 import { userSelector } from '../../redux/auth/selectors';
 import { loadTournamentAction } from '../../redux/entities/actions';
 import { tournamentSelector } from '../../redux/entities/selectors';
-import { TournamentInfo, User } from '../../types';
+import { Tournament, User } from '../../types';
 
 interface Props {
-  tournament?: TournamentInfo;
+  tournament?: Tournament;
   user: User;
 }
 

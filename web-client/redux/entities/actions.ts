@@ -1,164 +1,6 @@
 import { ApiAction } from '../../redux/api/actions';
-import { NewMatch, StatisticFilter } from '../../types';
 
 import * as actionNames from '../actionNames';
-
-export const loadMatchesAction = (
-  groupId: number,
-  after?: string,
-): ApiAction => ({
-  method: 'GET',
-  params: { after },
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    entityName: 'match',
-    listOptions: {
-      match: {
-        key: groupId,
-        mode: after ? 'append' : 'replace',
-        name: 'group',
-      },
-    },
-  },
-  type: actionNames.API,
-  url: `groups/${groupId}/matches`,
-});
-
-export const loadPlayerMatchesAction = (
-  playerId: number,
-  after?: string,
-): ApiAction => ({
-  method: 'GET',
-  params: { after },
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    entityName: 'match',
-    listOptions: {
-      match: {
-        key: playerId,
-        mode: after ? 'append' : 'replace',
-        name: 'player',
-      },
-    },
-  },
-  type: actionNames.API,
-  url: `players/${playerId}/matches`,
-});
-
-export const loadPlayerAction = (id: number): ApiAction => ({
-  method: 'GET',
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    entityName: 'player',
-    listOptions: {
-      player: {
-        mode: 'replace',
-        name: 'all',
-      },
-    },
-  },
-  type: actionNames.API,
-  url: `players/${id}`,
-});
-
-export const loadPlayerTeamStatisticAction = (playerId: number): ApiAction => ({
-  method: 'GET',
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    assignId: true,
-    entityName: 'statistic',
-    listOptions: {
-      statistic: {
-        key: playerId,
-        mode: 'replace',
-        name: 'playerTeam',
-      },
-    },
-  },
-  type: actionNames.API,
-  url: `players/${playerId}/team-statistics`,
-});
-
-export const loadPlayerStatisticAction = (playerId: number): ApiAction => ({
-  method: 'GET',
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    assignId: true,
-    entityName: 'statistic',
-    listOptions: {
-      statistic: {
-        key: playerId,
-        mode: 'replace',
-        name: 'player',
-      },
-    },
-  },
-  type: actionNames.API,
-  url: `players/${playerId}/player-statistics`,
-});
-
-export const loadGroupAction = (groupId: number): ApiAction => ({
-  method: 'GET',
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    entityName: 'group',
-    listOptions: {
-      group: {
-        key: groupId,
-        name: 'all',
-      },
-      match: {
-        key: groupId,
-        name: 'group',
-      },
-      player: {
-        key: groupId,
-        name: 'group',
-      },
-    },
-  },
-  type: actionNames.API,
-  url: `groups/${groupId}`,
-});
-
-export const loadGroupStatisticsAction = (
-  groupId: number,
-  filter: StatisticFilter,
-): ApiAction => ({
-  method: 'GET',
-  params: { filter },
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    assignId: true,
-    entityName: 'statistic',
-    listOptions: {
-      statistic: {
-        key: groupId,
-        mode: 'replace',
-        name: 'group',
-      },
-    },
-  },
-  type: actionNames.API,
-  url: `groups/${groupId}/player-statistics`,
-});
-
-export const loadMatchAction = (id: number): ApiAction => ({
-  method: 'GET',
-  success: actionNames.RECEIVE_ENTITIES,
-  successParams: {
-    entityName: 'match',
-  },
-  type: actionNames.API,
-  url: `matches/${id}`,
-});
-
-export const createNewMatchAction = (match: NewMatch): ApiAction => ({
-  body: JSON.stringify(match),
-  method: 'POST',
-  type: actionNames.API,
-  url: `groups/${match.groupId}/matches`,
-});
 
 export const searchVolleynetPlayersAction = (filters: {
   fname: string;
@@ -169,7 +11,7 @@ export const searchVolleynetPlayersAction = (filters: {
   params: filters,
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
-    entityName: 'volleynetplayer',
+    entityName: 'player',
     listOptions: {
       volleynetplayer: {
         mode: 'replace',
@@ -218,7 +60,7 @@ export const loadLadderAction = (gender: 'M' | 'W'): ApiAction => ({
   params: { gender },
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
-    entityName: 'volleynetplayer',
+    entityName: 'player',
     listOptions: {
       volleynetplayer: {
         key: gender,

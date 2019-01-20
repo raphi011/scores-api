@@ -3,10 +3,10 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-import { VolleynetPlayer } from '../../types';
+import { Player } from '../../types';
 
 interface Props {
-  player: VolleynetPlayer;
+  player: Player;
 }
 
 const LadderItem = ({ player }: Props) => (
