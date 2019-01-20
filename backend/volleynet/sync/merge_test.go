@@ -14,14 +14,14 @@ func TestMergeTournamentTeam(t *testing.T) {
 
 	newTeam := &volleynet.TournamentTeam{
 		PrizeMoney: 200,
-		Rank:       2,
+		Result:       2,
 		WonPoints:  35,
 	}
 
 	result := MergeTournamentTeam(oldTeam, newTeam)
 
 	if result.PrizeMoney != newTeam.PrizeMoney ||
-		result.Rank != newTeam.Rank ||
+		result.Result != newTeam.Result ||
 		result.WonPoints != newTeam.WonPoints {
 		t.Errorf("MergeTournamentTeam(oldTeam, newTeam) did not update correctly")
 	}

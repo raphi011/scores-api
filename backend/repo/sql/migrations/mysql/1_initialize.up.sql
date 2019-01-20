@@ -1,14 +1,13 @@
 CREATE TABLE users (
-	id integer PRIMARY KEY AUTO_INCREMENT,
-
+	id integer AUTO_INCREMENT PRIMARY KEY,
 	created_at datetime NOT NULL,
 	deleted_at datetime,
 	email varchar(255) NOT NULL UNIQUE,
-	hash blob,
-	iterations integer,
 	profile_image_url varchar(255) NOT NULL,
+	pw_hash blob,
+	pw_iterations integer,
+	pw_salt blob,
 	role varchar(32) NOT NULL,
-	salt blob,
 	updated_at datetime,
 	volleynet_user varchar(64),
 	volleynet_user_id integer
@@ -18,10 +17,10 @@ CREATE TABLE tournaments (
 	id integer PRIMARY KEY,
 	created_at datetime NOT NULL,
 	updated_at datetime NOT NULL,
-	format varchar(255) NOT NULL,
+	gender varchar(255) NOT NULL,
 	signedup_teams integer NOT NULL,
-	start datetime NOT NULL,
-	end datetime NOT NULL,
+	start_date datetime NOT NULL,
+	end_date datetime NOT NULL,
 	name varchar(255) CHARSET utf8mb4 NOT NULL,
 	league varchar(255) NOT NULL,
 	link varchar(255) NOT NULL,
@@ -48,7 +47,8 @@ CREATE TABLE tournaments (
 	INDEX(gender),
 	INDEX(league),
 	INDEX(name),
-	INDEX(start)
+	INDEX(start_date),
+	INDEX(end_date)
 );
 
 CREATE TABLE players (
@@ -58,7 +58,7 @@ CREATE TABLE players (
 	first_name varchar(255) CHARSET utf8mb4 NOT NULL,
 	last_name varchar(255) CHARSET utf8mb4 NOT NULL,
 	total_points integer NOT NULL,
-	rank integer NOT NULL,
+	ladder_rank integer NOT NULL,
 	country_union varchar(255) NOT NULL,
 	club varchar(255) NOT NULL,
 	birthday date NOT NULL,
@@ -68,14 +68,14 @@ CREATE TABLE players (
 	INDEX(last_name),
 	INDEX(birthday),
 	INDEX(gender),
-	INDEX(rank)
+	INDEX(ladder_rank)
 );
 
 CREATE TABLE tournament_teams (
 	tournament_id integer NOT NULL,
 	player_1_id integer NOT NULL,
 	player_2_id integer NOT NULL,
-	rank integer NOT NULL,
+	result integer NOT NULL,
 	seed integer NOT NULL,
 	total_points integer NOT NULL,
 	won_points integer NOT NULL,

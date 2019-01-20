@@ -1,5 +1,5 @@
 UPDATE tournament_teams SET
-	rank = :rank,
+	result = :result,
 	seed = :seed,
 	total_points = :total_points,
 	won_points = :won_points,

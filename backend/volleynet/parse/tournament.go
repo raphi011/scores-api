@@ -35,7 +35,7 @@ func Tournament(
 	}
 
 	if len(t.Teams) == 0 && isDateAfter(now, t.End) ||
-		len(t.Teams) > 0 && t.Teams[0].Rank > 0 {
+		len(t.Teams) > 0 && t.Teams[0].Result > 0 {
 		t.Status = volleynet.StatusDone
 	}
 
@@ -158,7 +158,7 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) er
 					continue
 				}
 
-				player.Gender = t.Format
+				player.Gender = t.Gender
 
 				if team.Player1 == nil {
 					team.Player1 = player
@@ -193,7 +193,7 @@ func parsePlayerRow(row *goquery.Selection, team *volleynet.TournamentTeam) (pla
 		if columnsCount == 5 {
 			switch k {
 			case 0:
-				team.Rank = findInt(column.Text())
+				team.Result = findInt(column.Text())
 			case 1:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
 				player.FirstName, player.LastName = parsePlayerName(column)

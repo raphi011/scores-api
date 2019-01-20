@@ -8,11 +8,11 @@ func MergeTournamentTeam(persisted, current *volleynet.TournamentTeam) *volleyne
 	merged := *persisted
 	merged.Deregistered = current.Deregistered
 
-	isTournamentDone := persisted.Rank == 0 && current.Rank > 0
+	isTournamentDone := persisted.Result == 0 && current.Result > 0
 
 	if isTournamentDone {
 		merged.PrizeMoney = current.PrizeMoney
-		merged.Rank = current.Rank
+		merged.Result = current.Result
 		merged.WonPoints = current.WonPoints
 	} else {
 		merged.Seed = current.Seed
@@ -76,7 +76,7 @@ func MergePlayer(persisted, current *volleynet.Player) *volleynet.Player {
 	merged.Birthday = current.Birthday
 	merged.Gender = current.Gender
 	merged.TotalPoints = current.TotalPoints
-	merged.Rank = current.Rank
+	merged.LadderRank = current.LadderRank
 	merged.Club = current.Club
 	merged.CountryUnion = current.CountryUnion
 	merged.License = current.License

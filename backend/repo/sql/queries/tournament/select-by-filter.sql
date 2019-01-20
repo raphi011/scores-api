@@ -2,7 +2,7 @@ SELECT
 	t.id,
 	t.created_at,
 	t.updated_at,
-	t.format,
+	t.gender,
 	t.start_date,
 	t.end_date,
 	t.name,
@@ -30,6 +30,6 @@ SELECT
 	t.signedup_teams
 FROM tournaments t
 WHERE
-	t.format IN (?) AND
+	t.gender IN (?) AND
 	t.league IN (?) AND
 	t.season IN (?)

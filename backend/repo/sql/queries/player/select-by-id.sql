@@ -5,7 +5,7 @@ SELECT
 	p.birthday,
 	p.gender,
 	p.total_points,
-	p.rank,
+	p.ladder_rank,
 	p.club,
 	p.country_union,
 	p.license

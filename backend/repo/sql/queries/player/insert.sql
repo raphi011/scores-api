@@ -8,7 +8,7 @@ INSERT INTO players
 	birthday,
 	gender,
 	total_points,
-	rank,
+	ladder_rank,
 	club,
 	country_union,
 	license
@@ -23,7 +23,7 @@ VALUES
 	:birthday,
 	:gender,
 	:total_points,
-	:rank,
+	:ladder_rank,
 	:club,
 	:country_union,
 	:license

@@ -39,7 +39,7 @@ func TestFilterTournament(t *testing.T) {
 			ID:     1,
 			Season: 2018,
 			League: "amateur-tour",
-			Format: "m",
+			Gender: "m",
 		},
 		Teams: []*volleynet.TournamentTeam{},
 	}
@@ -49,7 +49,7 @@ func TestFilterTournament(t *testing.T) {
 			ID:     2,
 			Season: 2018,
 			League: "amateur-tour",
-			Format: "m",
+			Gender: "m",
 		},
 		Teams: []*volleynet.TournamentTeam{},
 	}
@@ -59,7 +59,7 @@ func TestFilterTournament(t *testing.T) {
 			ID:     3,
 			Season: 2018,
 			League: "pro-tour",
-			Format: "m",
+			Gender: "m",
 		},
 		Teams: []*volleynet.TournamentTeam{},
 	}
@@ -69,7 +69,7 @@ func TestFilterTournament(t *testing.T) {
 			ID:     3,
 			Season: 2017,
 			League: "amateur-tour",
-			Format: "m",
+			Gender: "m",
 		},
 		Teams: []*volleynet.TournamentTeam{},
 	}
@@ -151,7 +151,7 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 
 	leagues := []string{"amateur-tour", "pro-tour", "junior-tour"}
 	seasons := []int{2017, 2018, 2019}
-	formats := []string{"m", "w"}
+	genders := []string{"m", "w"}
 	status := []string{
 		volleynet.StatusUpcoming,
 		volleynet.StatusDone,
@@ -167,7 +167,7 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 		tournament.ID = id
 		tournament.League = leagues[rand.Intn(len(leagues))]
 		tournament.Season = seasons[rand.Intn(len(seasons))]
-		tournament.Format = formats[rand.Intn(len(formats))]
+		tournament.Gender = genders[rand.Intn(len(genders))]
 		tournament.Status = status[rand.Intn(len(status))]
 
 		fako.Fill(tournament)

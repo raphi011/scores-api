@@ -99,7 +99,7 @@ func (c *Default) GetTournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
-		t.Format,
+		t.Gender,
 		t.Season,
 		t.ID,
 	)
@@ -112,7 +112,7 @@ func (c *Default) GetAPITournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
 		t.League,
 		t.League,
-		t.Format,
+		t.Gender,
 		t.Season,
 		t.ID,
 	)

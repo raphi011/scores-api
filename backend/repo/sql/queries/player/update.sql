@@ -5,7 +5,7 @@ UPDATE players SET
 	birthday = :birthday,
 	gender = :gender,
 	total_points = :total_points,
-	rank = :rank,
+	ladder_rank = :ladder_rank,
 	club = :club,
 	country_union = :country_union,
 	license = :license

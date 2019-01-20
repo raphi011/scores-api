@@ -2,7 +2,7 @@ SELECT
 	t.id,
 	t.created_at,
 	t.updated_at,
-	t.format,
+	t.gender,
 	t.start_date,
 	t.end_date,
 	t.name,

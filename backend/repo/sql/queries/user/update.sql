@@ -5,7 +5,7 @@ SET
     volleynet_user_id = :volleynet_user_id,
     volleynet_user = :volleynet_user,
     role = :role,
-    salt = :salt,
-    hash = :hash,
-    iterations = :iterations
+    pw_salt = :pw_salt,
+    pw_hash = :pw_hash,
+    pw_iterations = :pw_iterations
 WHERE id = :id

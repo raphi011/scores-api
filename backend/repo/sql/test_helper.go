@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sql/crud"
 	"github.com/raphi011/scores/repo/sql/migrate"
+	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -19,10 +19,10 @@ func RepositoriesTest(t testing.TB) (*repo.Repositories, *sqlx.DB) {
 	db := SetupDB(t)
 
 	return &repo.Repositories{
-		UserRepo: &userRepository{DB: db},
-		PlayerRepo: &playerRepository{DB: db},
+		UserRepo:       &userRepository{DB: db},
+		PlayerRepo:     &playerRepository{DB: db},
 		TournamentRepo: &tournamentRepository{DB: db},
-		TeamRepo: &teamRepository{DB: db},
+		TeamRepo:       &teamRepository{DB: db},
 	}, db
 }
 
@@ -51,7 +51,7 @@ func SetupDB(t testing.TB) *sqlx.DB {
 	err = migrate.All(dbProvider, db)
 	test.Check(t, "migration failed: %v", err)
 
-	err = crud.Execute(db, "test/delete-all");
+	err = crud.Execute(db, "test/delete-all")
 	test.Check(t, "db cleanup failed: %v", err)
 
 	return db
@@ -59,10 +59,10 @@ func SetupDB(t testing.TB) *sqlx.DB {
 
 // P is a helper struct to create players.
 type P struct {
-	Gender string
+	Gender      string
 	TotalPoints int
-	Rank int
-	ID int
+	LadderRank  int
+	ID          int
 }
 
 // CreatePlayers is a handy helper to create multiple players.
@@ -72,10 +72,10 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 
 	for _, p := range players {
 		persistedPlayer, err := playerRepo.New(&volleynet.Player{
-			ID: p.ID,
-			Gender: p.Gender,
+			ID:          p.ID,
+			Gender:      p.Gender,
 			TotalPoints: p.TotalPoints,
-			Rank: p.Rank,
+			LadderRank:  p.LadderRank,
 		})
 
 		test.Check(t, "playerRepo.New() failed", err)
@@ -88,7 +88,7 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 
 // T is a helper struct to create tournaments.
 type T struct {
-	ID int
+	ID     int
 	Status string
 }
 
@@ -99,8 +99,8 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 
 	for _, tournament := range tournaments {
 		persistedTournament, err := tournamentRepo.New(&volleynet.Tournament{
-			TournamentInfo: volleynet.TournamentInfo {
-				ID: tournament.ID,
+			TournamentInfo: volleynet.TournamentInfo{
+				ID:     tournament.ID,
 				Status: tournament.Status,
 			},
 		})
@@ -114,15 +114,15 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 
 // TT is a helper struct to create teams.
 type TT struct {
-	TournamentID int     
-	TotalPoints  int     
-	Seed         int     
-	Rank         int     
-	WonPoints    int     
-	Player1      *volleynet.Player 
-	Player2      *volleynet.Player 
-	PrizeMoney   float32 
-	Deregistered bool    
+	TournamentID int
+	TotalPoints  int
+	Seed         int
+	Result       int
+	WonPoints    int
+	Player1      *volleynet.Player
+	Player2      *volleynet.Player
+	PrizeMoney   float32
+	Deregistered bool
 }
 
 // CreateTeams is a handy helper to create multiple teams.
@@ -133,13 +133,13 @@ func CreateTeams(t testing.TB, db *sqlx.DB, teams ...TT) []*volleynet.Tournament
 	for _, team := range teams {
 		persistedTeam, err := teamRepo.New(&volleynet.TournamentTeam{
 			TournamentID: team.TournamentID,
-			TotalPoints: team.TotalPoints,
-			Seed: team.Seed,
-			Rank: team.Rank,
-			WonPoints: team.WonPoints,
-			Player1: team.Player1,
-			Player2: team.Player2,
-			PrizeMoney: team.PrizeMoney,
+			TotalPoints:  team.TotalPoints,
+			Seed:         team.Seed,
+			Result:       team.Result,
+			WonPoints:    team.WonPoints,
+			Player1:      team.Player1,
+			Player2:      team.Player2,
+			PrizeMoney:   team.PrizeMoney,
 			Deregistered: team.Deregistered,
 		})
 

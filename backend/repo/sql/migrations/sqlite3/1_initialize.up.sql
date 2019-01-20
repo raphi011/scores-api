@@ -1,14 +1,13 @@
 CREATE TABLE users (
 	id integer PRIMARY KEY autoincrement,
-
 	created_at datetime NOT NULL,
 	deleted_at datetime,
 	email varchar(255) NOT NULL UNIQUE,
-	hash blob,
-	iterations integer,
 	profile_image_url varchar(255) NOT NULL,
 	role varchar(32) NOT NULL,
-	salt blob,
+	pw_iterations integer,
+	pw_hash blob,
+	pw_salt blob,
 	updated_at datetime,
 	volleynet_user varchar(64),
 	volleynet_user_id integer
@@ -16,14 +15,13 @@ CREATE TABLE users (
 
 CREATE TABLE tournaments (
 	id integer PRIMARY KEY,
-
 	created_at datetime NOT NULL,
 	current_points varchar(256) NOT NULL,
 	email varchar(128) NOT NULL,
 	end_date datetime NOT NULL,
 	end_registration datetime NOT NULL,
 	entry_link varchar(255) NOT NULL,
-	format varchar(255) NOT NULL,
+	gender varchar(255) NOT NULL,
 	league varchar(255) NOT NULL,
 	link varchar(255) NOT NULL,
 	live_scoring_link varchar(255) NOT NULL,
@@ -54,7 +52,7 @@ CREATE TABLE players (
 	first_name varchar(255) NOT NULL,
 	last_name varchar(255) NOT NULL,
 	total_points integer NOT NULL,
-	rank integer NOT NULL,
+	ladder_rank integer NOT NULL,
 	country_union varchar(255) NOT NULL,
 	club varchar(255) NOT NULL,
 	birthday date NOT NULL,
@@ -66,7 +64,7 @@ CREATE TABLE tournament_teams (
 	tournament_id integer NOT NULL,
 	player_1_id integer NOT NULL,
 	player_2_id integer NOT NULL,
-	rank integer NOT NULL,
+	result integer NOT NULL,
 	seed integer NOT NULL,
 	total_points integer NOT NULL,
 	won_points integer NOT NULL,

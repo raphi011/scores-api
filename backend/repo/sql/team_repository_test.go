@@ -12,10 +12,10 @@ func TestCreateTeam(t *testing.T) {
 	teamRepo := &teamRepository{DB: db}
 
 	ps := CreatePlayers(t, db,
-		P{ Gender: "m", TotalPoints: 5, Rank: 1, ID: 1 },
-		P{ Gender: "m", TotalPoints: 4, Rank: 2, ID: 2 },
-		P{ Gender: "m", TotalPoints: 0, Rank: 0, ID: 3 },
-		P{ Gender: "w", TotalPoints: 4, Rank: 1, ID: 4 },
+		P{ Gender: "m", TotalPoints: 5, LadderRank: 1, ID: 1 },
+		P{ Gender: "m", TotalPoints: 4, LadderRank: 2, ID: 2 },
+		P{ Gender: "m", TotalPoints: 0, LadderRank: 0, ID: 3 },
+		P{ Gender: "w", TotalPoints: 4, LadderRank: 1, ID: 4 },
 	)
 
 	ts := CreateTournaments(t, db,
@@ -27,7 +27,7 @@ func TestCreateTeam(t *testing.T) {
 		Player1: ps[0],
 		Player2: ps[1],
 		PrizeMoney: 4,
-		Rank: 1,
+		Result: 1,
 		Seed: 3,
 		WonPoints: 25,
 	})

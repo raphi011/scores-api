@@ -42,7 +42,7 @@ func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 
 			switch j {
 			case 1:
-				p.Rank = findInt(c.Text())
+				p.LadderRank = findInt(c.Text())
 			case 2:
 				p.FirstName, p.LastName = parsePlayerName(c)
 				p.ID, err = parsePlayerIDFromSteckbrief(c.Find("a"))

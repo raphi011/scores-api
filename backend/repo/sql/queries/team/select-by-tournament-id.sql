@@ -16,7 +16,7 @@ SELECT
 	p2.birthday as "player2.birthday",
 	p2.license as "player2.license",
 	p2.gender as "player2.gender",
-	t.rank,
+	t.result,
 	t.seed,
 	t.total_points,
 	t.won_points,

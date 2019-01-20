@@ -2,9 +2,7 @@
 .next
 
 data
-nginx-config
 node_modules
-playground
 
 secrets.tar.enc
 README.md

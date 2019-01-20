@@ -5,9 +5,9 @@ SELECT
 	p.birthday,
 	p.gender,
 	p.total_points,
-	p.rank,
+	p.ladder_rank,
 	p.club,
 	p.country_union,
 	p.license
 FROM players p
-WHERE p.rank > 0 AND p.gender = ? ORDER BY p.rank
+WHERE p.ladder_rank > 0 AND p.gender = ? ORDER BY p.ladder_rank

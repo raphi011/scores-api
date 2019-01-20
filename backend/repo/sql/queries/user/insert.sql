@@ -6,9 +6,9 @@ INSERT INTO users (
     volleynet_user_id,
     volleynet_user,
     role,
-    salt,
-    hash,
-    iterations
+    pw_salt,
+    pw_hash,
+    pw_iterations
 )
 VALUES (
     :created_at,
@@ -18,7 +18,7 @@ VALUES (
     :volleynet_user_id,
     :volleynet_user,
     :role,
-    :salt,
-    :hash,
-    :iterations
+    :pw_salt,
+    :pw_hash,
+    :pw_iterations
 )

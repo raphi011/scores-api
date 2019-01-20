@@ -34,11 +34,11 @@ func TestSyncLadder(t *testing.T) {
 	gender := "M"
 
 	sql.CreatePlayers(t, db,
-		sql.P{ ID: 1, TotalPoints: 100, Rank: 96, Gender: gender },
+		sql.P{ ID: 1, TotalPoints: 100, LadderRank: 96, Gender: gender },
 	)
 
 	clientPlayers := []*volleynet.Player{
-		&volleynet.Player{ ID: 1, TotalPoints: 125, Rank: 60, Gender: gender},
+		&volleynet.Player{ ID: 1, TotalPoints: 125, LadderRank: 60, Gender: gender},
 	}
 
 	clientMock.On("Ladder", gender).Return(clientPlayers, nil)
