@@ -10,13 +10,12 @@ import (
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/services"
 	"github.com/raphi011/scores/cmd/api/logger"
+	"github.com/raphi011/scores/services"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
-
 )
 
 type loginRouteOrUserDto struct {
@@ -25,11 +24,11 @@ type loginRouteOrUserDto struct {
 }
 
 type userDto struct {
-	ID              int          `json:"id"`
-	Email           string        `json:"email"`
+	ID    int    `json:"id"`
+	Email string `json:"email"`
 	// Player          scores.Player `json:"player"`
-	PlayerID        int          `json:"playerId"`
-	ProfileImageURL string        `json:"profileImageUrl"`
+	PlayerID        int    `json:"playerId"`
+	ProfileImageURL string `json:"profileImageUrl"`
 }
 
 type credentialsDto struct {
@@ -45,9 +44,9 @@ func randToken() string {
 
 type authHandler struct {
 	userService *services.User
-	password services.Password
+	password    services.Password
 
-	conf     *oauth2.Config
+	conf *oauth2.Config
 }
 
 func (a *authHandler) passwordAuthenticate(c *gin.Context) {
@@ -150,8 +149,8 @@ func successfullLogin(session sessions.Session, user *scores.User) {
 func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
-	if userID := session.Get("user-id"); userID != nil {
-		user, err := a.userService.ByID(userID.(int))
+	if userID, ok := session.Get("user-id").(int); ok {
+		user, err := a.userService.ByID(userID)
 
 		if err != nil {
 			session.Delete("user-id")
