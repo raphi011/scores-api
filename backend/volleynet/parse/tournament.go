@@ -7,8 +7,9 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores/volleynet"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/raphi011/scores/volleynet"
 )
 
 // Tournament adds remaining details to the tournament (parsed by tournament_list)
