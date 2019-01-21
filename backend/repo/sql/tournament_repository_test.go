@@ -17,9 +17,9 @@ func TestCreateTournament(t *testing.T) {
 
 	tournament, err := tournamentRepo.New(&volleynet.Tournament{
 		TournamentInfo: volleynet.TournamentInfo{
-			ID: 1,
+			ID:    1,
 			Start: time.Now(),
-			End: time.Now(),
+			End:   time.Now(),
 		},
 		Teams: []*volleynet.TournamentTeam{},
 	})
@@ -38,8 +38,8 @@ func TestFilterTournament(t *testing.T) {
 	db := SetupDB(t)
 	tournamentRepo := &tournamentRepository{DB: db}
 
-	tournaments := []struct{
-		ID int
+	tournaments := []struct {
+		ID     int
 		Season int
 		League string
 		Gender string
@@ -79,12 +79,12 @@ func TestFilterTournament(t *testing.T) {
 	for _, tournament := range tournaments {
 		_, err := tournamentRepo.New(&volleynet.Tournament{
 			TournamentInfo: volleynet.TournamentInfo{
-				ID: tournament.ID,
+				ID:     tournament.ID,
 				Season: tournament.Season,
 				League: tournament.League,
 				Gender: tournament.Gender,
-				Start: time.Now(),
-				End: time.Now(),
+				Start:  time.Now(),
+				End:    time.Now(),
 			},
 			Teams: []*volleynet.TournamentTeam{},
 		})
@@ -144,11 +144,11 @@ func TestUpdateTournament(t *testing.T) {
 
 	tournament, err := tournamentRepo.New(&volleynet.Tournament{
 		TournamentInfo: volleynet.TournamentInfo{
-			ID: 1,
+			ID:    1,
 			Start: time.Now(),
-			End: time.Now(),
+			End:   time.Now(),
 		},
-		Teams:          []*volleynet.TournamentTeam{},
+		Teams: []*volleynet.TournamentTeam{},
 	})
 	test.Check(t, "couldn't persist tournament: %v", err)
 
@@ -159,7 +159,7 @@ func TestUpdateTournament(t *testing.T) {
 
 	updatedTournament, err := tournamentRepo.Get(tournament.ID)
 	test.Check(t, "couldnt get tournament: %v", err)
-	test.Compare(t,"tournaments are not equal:\n%s", tournament, updatedTournament)
+	test.Compare(t, "tournaments are not equal:\n%s", tournament, updatedTournament)
 }
 
 func randomTournaments(count, run int) []*volleynet.Tournament {

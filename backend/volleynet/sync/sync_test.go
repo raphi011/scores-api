@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+
 	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/repo/sql"
 	"github.com/raphi011/scores/test"
@@ -87,13 +88,13 @@ func TestSyncTournaments(t *testing.T) {
 	)
 
 	gender := "M"
-	league := "AMATEUR LEAGUE"
+	league := "amateur-league"
 	season := 2018
 
 	clientMock.On("AllTournaments", gender, league, season).Return(clientTournaments, nil)
 	clientMock.On("ComplementMultipleTournaments", clientTournaments).Return(clientFullTournament, nil)
 
-	err := service.Tournaments("M", "AMATEUR LEAGUE", 2018)
+	err := service.Tournaments("M", "amateur-league", 2018)
 
 	test.Check(t, "service.Tournaments() err: %v", err)
 }

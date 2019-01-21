@@ -64,8 +64,10 @@ type TournamentInfo struct {
 	Start            time.Time `json:"start" db:"start_date"`
 	End              time.Time `json:"end" db:"end_date"`
 	Name             string    `json:"name" fako:"city"`
-	League           string    `json:"league"`
-	Phase            string    `json:"phase"`
+	League           string    `json:"league" db:"league"`
+	LeagueSlug       string    `json:"leagueSlug" db:"league_slug"`
+	SubLeague        string    `json:"subLeague" db:"sub_league"`
+	SubLeagueSlug    string    `json:"phaseSlug" db:"sub_league_slug"`
 	Link             string    `json:"link" fako:"domain_name"`
 	EntryLink        string    `json:"entryLink" db:"entry_link"`
 	Status           string    `json:"status"` // can be `StatusUpcoming`, `StatusDone` or `StatusCanceled`

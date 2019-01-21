@@ -76,12 +76,14 @@ func extractTournamentLinkData(relativeLink, host string) *volleynet.TournamentI
 	season, _ := strconv.Atoi(readURLPart(relativeLink, "saison/"))
 
 	return &volleynet.TournamentInfo{
-		Gender: readURLPart(relativeLink, "sex/"),
-		League: readURLPart(relativeLink, "bewerbe/"),
-		Phase:  readURLPart(relativeLink, "phase/"),
-		ID:     id,
-		Season: season,
-		Link:   host + "/" + relativeLink,
+		Gender:        readURLPart(relativeLink, "sex/"),
+		League:        readURLPart(relativeLink, "bewerbe/"),
+		LeagueSlug:    sluggify(readURLPart(relativeLink, "bewerbe/")),
+		SubLeague:     readURLPart(relativeLink, "phase/"),
+		SubLeagueSlug: sluggify(readURLPart(relativeLink, "phase/")),
+		ID:            id,
+		Season:        season,
+		Link:          host + "/" + relativeLink,
 	}
 }
 

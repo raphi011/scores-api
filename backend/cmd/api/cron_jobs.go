@@ -30,7 +30,7 @@ func (j *ladderJob) do() error {
 	return nil
 }
 
-var leagues = []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"}
+var leagues = []string{"amateur-tour", "pro-tour", "junior-tour"}
 var genders = []string{"M", "W"}
 
 type tournamentsJob struct {
