@@ -11,7 +11,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/raphi011/scores/volleynet"
-	"github.com/raphi011/scores/volleynet/parse"
+	"github.com/raphi011/scores/volleynet/scrape"
 )
 
 // Client is the interface to the volleynet api, use DefaultClient()
@@ -44,82 +44,6 @@ func DefaultClient() Client {
 	}
 }
 
-func (c *Default) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
-	return buildGetAPIURL(c.GetURL, "/api", relativePath, routeArgs...)
-}
-
-func (c *Default) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
-	return buildGetAPIURL(c.GetURL, "", relativePath, routeArgs...)
-}
-
-func escapeArgs(path string, routeArgs ...interface{}) string {
-	escapedArgs := make([]interface{}, len(routeArgs))
-
-	for i, val := range routeArgs {
-		str, ok := val.(string)
-
-		if ok {
-			escapedArgs[i] = url.PathEscape(str)
-		} else if stringer, ok := val.(fmt.Stringer); ok {
-			escapedArgs[i] = stringer.String()
-		} else {
-			escapedArgs[i] = val
-		}
-	}
-
-	return fmt.Sprintf(path, escapedArgs...)
-}
-
-func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interface{}) *url.URL {
-	path := escapeArgs(relativePath, routeArgs...)
-
-	link, err := url.Parse(host + prefixedPath + path)
-
-	if err != nil {
-		panic("cannot parse client GetUrl")
-	}
-
-	return link
-}
-
-func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
-	path := escapeArgs(relativePath, routeArgs...)
-
-	link, err := url.Parse(c.PostURL + path)
-
-	if err != nil {
-		panic("cannot parse client GetUrl")
-	}
-
-	return link
-}
-
-// GetTournamentLink returns the link for a tournament.
-func (c *Default) GetTournamentLink(t *volleynet.TournamentInfo) string {
-	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
-		t.League,
-		t.League,
-		t.Gender,
-		t.Season,
-		t.ID,
-	)
-
-	return url.String()
-}
-
-// GetAPITournamentLink returns the API link for a tournament.
-func (c *Default) GetAPITournamentLink(t *volleynet.TournamentInfo) string {
-	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
-		t.League,
-		t.League,
-		t.Gender,
-		t.Season,
-		t.ID,
-	)
-
-	return url.String()
-}
-
 // Login authenticates the user against the volleynet page, if
 // successfull the Client cookie is set, else an error is returned.
 func (c *Default) Login(username, password string) (*volleynet.LoginData, error) {
@@ -134,14 +58,20 @@ func (c *Default) Login(username, password string) (*volleynet.LoginData, error)
 	resp, err := http.PostForm(url, form)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "client login")
 	}
+
 	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("unauthorized")
+		return nil, fmt.Errorf("login status: %d", resp.StatusCode)
 	}
+
 	defer resp.Body.Close()
 
-	loginData, err := parse.Login(resp.Body)
+	loginData, err := scrape.Login(resp.Body)
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.Wrap(err, "parse login")
+	}
 
 	c.Cookie = resp.Header.Get("Set-Cookie")
 
@@ -173,7 +103,7 @@ func (c *Default) AllTournaments(gender, league string, year int) ([]*volleynet.
 
 	defer resp.Body.Close()
 
-	return parse.TournamentList(resp.Body, c.GetURL)
+	return scrape.TournamentList(resp.Body, c.GetURL)
 }
 
 // Ladder reads all players of a certain gender.
@@ -191,7 +121,7 @@ func (c *Default) Ladder(gender string) ([]*volleynet.Player, error) {
 
 	defer resp.Body.Close()
 
-	return parse.Ladder(resp.Body)
+	return scrape.Ladder(resp.Body)
 }
 
 func genderLong(gender string) string {
@@ -216,7 +146,7 @@ func (c *Default) ComplementTournament(tournament *volleynet.TournamentInfo) (
 		return nil, errors.Wrapf(err, "loading tournament %d failed", tournament.ID)
 	}
 
-	t, err := parse.Tournament(resp.Body, time.Now(), tournament)
+	t, err := scrape.Tournament(resp.Body, time.Now(), tournament)
 
 	if err != nil {
 		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
@@ -269,7 +199,7 @@ func (c *Default) loadUniqueWriteCode(tournamentID int) (string, error) {
 		return "", errors.Wrap(err, "loading unique writecode failed")
 	}
 
-	code, err := parse.UniqueWriteCode(resp.Body)
+	code, err := scrape.UniqueWriteCode(resp.Body)
 
 	return code, errors.Wrap(err, "parsing unique writecode failed")
 }
@@ -380,5 +310,5 @@ func (c *Default) SearchPlayers(firstName, lastName, birthday string) ([]*volley
 		return nil, err
 	}
 
-	return parse.Players(response.Body)
+	return scrape.Players(response.Body)
 }

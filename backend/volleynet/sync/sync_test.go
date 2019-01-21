@@ -11,7 +11,7 @@ import (
 	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/mocks"
-	"github.com/raphi011/scores/volleynet/parse"
+	"github.com/raphi011/scores/volleynet/scrape"
 )
 
 func syncMock(t *testing.T) (*mocks.ClientMock, *Service, *sqlx.DB) {
@@ -51,7 +51,7 @@ func TestSyncLadder(t *testing.T) {
 
 func TestSyncTournamentInformation(t *testing.T) {
 	response, _ := os.Open("../testdata/upcoming.html")
-	tournament, _ := parse.Tournament(response, time.Now(), &volleynet.TournamentInfo{Status: volleynet.StatusUpcoming, ID: 22231})
+	tournament, _ := scrape.Tournament(response, time.Now(), &volleynet.TournamentInfo{Status: volleynet.StatusUpcoming, ID: 22231})
 
 	syncInfos := Tournaments(tournament, &volleynet.TournamentInfo{ID: 22231, Status: volleynet.StatusUpcoming})
 
@@ -66,8 +66,8 @@ func TestSyncTournaments(t *testing.T) {
 	clientTournaments := []*volleynet.TournamentInfo{&volleynet.TournamentInfo{
 		ID:     1,
 		Status: volleynet.StatusUpcoming,
-		Start: time.Now(),
-		End: time.Now(),
+		Start:  time.Now(),
+		End:    time.Now(),
 	}}
 
 	clientFullTournament := []*volleynet.Tournament{
