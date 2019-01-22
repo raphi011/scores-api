@@ -1,7 +1,10 @@
 package services
 
 import (
+	"time"
+
 	"github.com/pkg/errors"
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/volleynet"
 )
@@ -26,6 +29,17 @@ func (s *Volleynet) Ladder(gender string) ([]*volleynet.Player, error) {
 // GetTournaments loads all tournaments of a certain `gender`, `league` and `season`
 func (s *Volleynet) GetTournaments(seasons []int, leagues, genders []string) (
 	[]*volleynet.Tournament, error) {
+	if len(seasons) == 0 {
+		seasons = append(seasons, time.Now().Year())
+	}
+	if len(leagues) == 0 {
+		// todo read this from DB
+		leagues = append(leagues, "amateur-tour")
+	}
+	if len(genders) == 0 {
+		genders = append(genders, "M", "W")
+	}
+
 	tournaments, err := s.TournamentRepo.Filter(seasons, leagues, genders)
 
 	if err != nil {
@@ -33,6 +47,27 @@ func (s *Volleynet) GetTournaments(seasons []int, leagues, genders []string) (
 	}
 
 	return s.addTeams(tournaments...)
+}
+
+// Leagues loads all available Leagues as Name/Value pairs.
+func (s *Volleynet) Leagues() ([]scores.NameValue, error) {
+	leagues, err := s.TournamentRepo.Leagues()
+
+	return leagues, errors.Wrap(err, "loading leagues")
+}
+
+// SubLeagues loads all available SubLeagues as Name/Value pairs.
+func (s *Volleynet) SubLeagues() ([]scores.NameValue, error) {
+	leagues, err := s.TournamentRepo.Leagues()
+
+	return leagues, errors.Wrap(err, "loading leagues")
+}
+
+// Seasons loads all available seasons.
+func (s *Volleynet) Seasons() ([]scores.NameValue, error) {
+	leagues, err := s.TournamentRepo.Leagues()
+
+	return leagues, errors.Wrap(err, "loading leagues")
 }
 
 func (s *Volleynet) addTeams(tournaments ...*volleynet.Tournament) ([]*volleynet.Tournament, error) {

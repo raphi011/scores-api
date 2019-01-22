@@ -31,11 +31,6 @@ type userDto struct {
 	ProfileImageURL string `json:"profileImageUrl"`
 }
 
-type credentialsDto struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 func randToken() string {
 	b := make([]byte, 32)
 	rand.Read(b)
@@ -47,6 +42,11 @@ type authHandler struct {
 	password    services.Password
 
 	conf *oauth2.Config
+}
+
+type credentialsDto struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 func (a *authHandler) passwordAuthenticate(c *gin.Context) {

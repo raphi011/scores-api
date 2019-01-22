@@ -137,7 +137,6 @@ type handlerServices struct {
 
 func createServices(provider string, connectionString string) (*handlerServices, error) {
 	var repos *repo.Repositories
-	var s *handlerServices
 	var err error
 
 	switch provider {
@@ -155,6 +154,10 @@ func createServices(provider string, connectionString string) (*handlerServices,
 		return nil, err
 	}
 
+	return servicesFromRepositories(repos, true), nil
+}
+
+func servicesFromRepositories(repos *repo.Repositories, startManager bool) *handlerServices {
 	password := &services.PBKDF2Password{
 		SaltBytes:  16,
 		Iterations: 10000,
@@ -195,26 +198,27 @@ func createServices(provider string, connectionString string) (*handlerServices,
 		leagues: []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
 	}
 
-	manager.Start(
-		job.Job{
-			Name:        "Players",
-			MaxFailures: 3,
-			Interval:    1 * time.Hour,
+	if startManager {
+		manager.Start(
+			job.Job{
+				Name:        "Players",
+				MaxFailures: 3,
+				Interval:    1 * time.Hour,
 
-			Do:          ladderJob.do,
-		},
-		job.Job{
-			Name:        "Tournaments",
-			MaxFailures: 3,
-			Interval:    5 * time.Minute,
-			Delay:       1 * time.Minute,
+				Do:          ladderJob.do,
+			},
+			job.Job{
+				Name:        "Tournaments",
+				MaxFailures: 3,
+				Interval:    5 * time.Minute,
+				Delay:       1 * time.Minute,
 
-			Do:          tournamentsJob.do,
-		},
-	)
+				Do:          tournamentsJob.do,
+			},
+		)
+	}
 
-
-	s = &handlerServices{
+	s := &handlerServices{
 		JobManager: manager,
 		Scrape: scrapeService,
 		Volleynet: volleynetService,
@@ -222,5 +226,5 @@ func createServices(provider string, connectionString string) (*handlerServices,
 		User:      userService,
 	}
 
-	return s, nil
+	return s
 }

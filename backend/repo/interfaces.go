@@ -34,6 +34,10 @@ type TournamentRepository interface {
 	NewBatch(t ...*volleynet.Tournament) error
 	Update(t *volleynet.Tournament) error
 	UpdateBatch(t ...*volleynet.Tournament) error
+
+	Leagues() ([]scores.NameValue, error)
+	SubLeagues() ([]scores.NameValue, error)
+	Seasons() ([]int, error)
 }
 
 // UserRepository exposes CRUD operations on users.

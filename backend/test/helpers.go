@@ -51,3 +51,11 @@ func Compare(t testing.TB, message string, first, second interface{}) {
 		t.Fatalf(message, cmp.Diff(first, second, compareOptions))
 	}
 }
+
+// Equal compares `expected` and `actual` and fails with message `message` and args `expected` and `actual` if they are not equal.
+func Equal(t testing.TB, message string, expected, actual interface{}, args ...interface{}) {
+	t.Helper()
+	if expected != actual {
+		t.Fatalf(message, expected, actual)
+	}
+}

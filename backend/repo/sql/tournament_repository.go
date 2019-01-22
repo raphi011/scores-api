@@ -91,8 +91,8 @@ func (s *tournamentRepository) Seasons() ([]int, error) {
 	return seasons, errors.Wrap(err, "available seasons")
 }
 
-func (s *tournamentRepository) Leagues() ([]scores.KeyValue, error) {
-	leagues := []scores.KeyValue{}
+func (s *tournamentRepository) Leagues() ([]scores.NameValue, error) {
+	leagues := []scores.NameValue{}
 	err := crud.ReadIn(s.DB, "tournament/select-leagues", &leagues)
 
 	// sort.Strings(leagues)
@@ -100,8 +100,8 @@ func (s *tournamentRepository) Leagues() ([]scores.KeyValue, error) {
 	return leagues, errors.Wrap(err, "leagues")
 }
 
-func (s *tournamentRepository) SubLeagues() ([]scores.KeyValue, error) {
-	subLeagues := []scores.KeyValue{}
+func (s *tournamentRepository) SubLeagues() ([]scores.NameValue, error) {
+	subLeagues := []scores.NameValue{}
 	err := crud.ReadIn(s.DB, "tournament/select-sub-leagues", &subLeagues)
 
 	// sort.Strings(subLeagues)
