@@ -60,7 +60,7 @@ class PlayerSearch extends React.Component<Props, State> {
     this.setState({ birthday });
   };
 
-  onSearch = async e => {
+  onSearch = async (e: React.FormEvent<HTMLFormElement>)  => {
     const { firstName: fname, lastName: lname, birthday: bday } = this.state;
     const { searchVolleynetPlayers } = this.props;
 

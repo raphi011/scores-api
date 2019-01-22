@@ -19,9 +19,9 @@ import Typography from '@material-ui/core/Typography';
 import SearchIcon from '@material-ui/icons/Search';
 
 const leagues = [
-  { name: 'Junior Tour', key: 'JUNIOR TOUR' },
-  { name: 'Amateur Tour', key: 'AMATEUR TOUR' },
-  { name: 'Pro Tour', key: 'PRO TOUR' },
+  { name: 'Junior Tour', key: 'junior-tour' },
+  { name: 'Amateur Tour', key: 'amateur-tour' },
+  { name: 'Pro Tour', key: 'pro-tour' },
 ];
 
 const genders = [{ name: 'Female', key: 'W' }, { name: 'Male', key: 'M' }];
@@ -62,10 +62,11 @@ interface Props extends WithStyles<typeof styles> {
   leagues?: League[];
 
   onChange: (event: SyntheticEvent<{}>, league: string[]) => void;
+  onSubmit: () => void;
 }
 
-const TournamentFilters = ({ classes }: Props) => (
-  <form autoComplete="off" className={classes.form}>
+const TournamentFilters = ({ onSubmit, classes }: Props) => (
+  <form onSubmit={onSubmit} autoComplete="off" className={classes.form}>
     <div className={classes.filterGroup}>
       <Typography className={classes.filterHeader}>Name</Typography>
       <FormControl>
@@ -118,7 +119,7 @@ const TournamentFilters = ({ classes }: Props) => (
       ))}
     </div>
     <Button fullWidth variant="contained" color="primary">
-      Primary
+    Search
     </Button>
   </form>
 );

@@ -85,7 +85,7 @@ class Login extends React.Component<Props, State> {
     this.setState({ password: e.target.value });
   };
 
-  loginWithPassword = async e => {
+  loginWithPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const { setStatus, loginWithPassword, r } = this.props;

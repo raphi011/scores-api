@@ -11,6 +11,7 @@ import GroupedList from '../../components/GroupedList';
 import TournamentList from '../../components/volleynet/TournamentList';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
+import TournamentFilters from '../../containers/volleynet/TournamentFilters';
 import { userSelector } from '../../redux/auth/selectors';
 import {
   loadTournamentAction,
@@ -24,7 +25,7 @@ import { Store } from '../../redux/store';
 import { Tournament, User } from '../../types';
 import * as ArrayUtils from '../../utils/array';
 
-const defaultLeagues = ['AMATEUR TOUR', 'PRO TOUR', 'JUNIOR TOUR'];
+const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
 const styles = createStyles({
   left: {
@@ -76,7 +77,7 @@ class Volleynet extends React.Component<Props> {
 
   static getParameters(query: QueryStringMapObject) {
     const { tournamentId } = query;
-    let { leagues = ['AMATEUR TOUR'] } = query;
+    let { leagues = ['amateur-tour'] } = query;
 
     if (!Array.isArray(leagues)) {
       leagues = [leagues];
@@ -149,7 +150,7 @@ class Volleynet extends React.Component<Props> {
     return (
       <Layout title={{ text: 'Volleynet', href: '' }}>
         <div className={classes.root}>
-          <div className={classes.left}>{/* <TournamentFilters /> */}</div>
+          <div className={classes.left}><TournamentFilters /></div>
           <div className={classes.right}>{leftContent}</div>
         </div>
       </Layout>

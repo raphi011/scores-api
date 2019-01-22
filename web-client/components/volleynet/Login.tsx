@@ -55,7 +55,7 @@ class Login extends React.Component<Props, State> {
     this.setState({ password });
   };
 
-  onLogin = e => {
+  onLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const { onLogin } = this.props;
