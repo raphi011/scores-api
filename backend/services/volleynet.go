@@ -8,8 +8,8 @@ import (
 
 // Volleynet allows loading / mutation of volleynet data
 type Volleynet struct {
-	TeamRepo repo.TeamRepository
-	PlayerRepo repo.PlayerRepository
+	TeamRepo       repo.TeamRepository
+	PlayerRepo     repo.PlayerRepository
 	TournamentRepo repo.TournamentRepository
 }
 
@@ -24,9 +24,9 @@ func (s *Volleynet) Ladder(gender string) ([]*volleynet.Player, error) {
 }
 
 // GetTournaments loads all tournaments of a certain `gender`, `league` and `season`
-func (s *Volleynet) GetTournaments(seasons []int, genders, leagues []string) (
+func (s *Volleynet) GetTournaments(seasons []int, leagues, genders []string) (
 	[]*volleynet.Tournament, error) {
-	tournaments, err := s.TournamentRepo.Filter(seasons, genders, leagues)
+	tournaments, err := s.TournamentRepo.Filter(seasons, leagues, genders)
 
 	if err != nil {
 		return nil, err

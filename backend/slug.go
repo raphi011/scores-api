@@ -1,11 +1,11 @@
-package scrape
+package scores
 
 import (
 	"strings"
 	"unicode"
 )
 
-func sluggify(text string) string {
+func Sluggify(text string) string {
 	builder := strings.Builder{}
 	builder.Grow(len(text))
 

@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -68,7 +69,7 @@ type detailsParser func(*goquery.Selection, *volleynet.Tournament)
 var parseTournamentDetailsMap = map[string]detailsParser{
 	"Kategorie": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.SubLeague = trimmSelectionText(value)
-		t.SubLeagueSlug = sluggify(trimmSelectionText(value))
+		t.SubLeagueSlug = scores.Sluggify(trimmSelectionText(value))
 	},
 	"Modus": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Mode = trimmSelectionText(value)

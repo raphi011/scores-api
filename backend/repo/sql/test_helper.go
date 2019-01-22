@@ -1,11 +1,12 @@
 package sql
 
 import (
-	"time"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sql/crud"
 	"github.com/raphi011/scores/repo/sql/migrate"
@@ -93,8 +94,13 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 
 // T is a helper struct to create tournaments.
 type T struct {
-	ID     int
-	Status string
+	ID            int
+	Season        int
+	Status        string
+	League        string
+	LeagueSlug    string
+	SubLeague     string
+	SubLeagueSlug string
 }
 
 // CreateTournaments is a handy helper to create multiple tournaments.
@@ -107,10 +113,15 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 	for _, tournament := range tournaments {
 		persistedTournament, err := tournamentRepo.New(&volleynet.Tournament{
 			TournamentInfo: volleynet.TournamentInfo{
-				ID:     tournament.ID,
-				Status: tournament.Status,
-				Start: time.Now(),
-				End: time.Now(),
+				ID:            tournament.ID,
+				Season:        tournament.Season,
+				Status:        tournament.Status,
+				Start:         time.Now(),
+				End:           time.Now(),
+				League:        tournament.League,
+				LeagueSlug:    scores.Sluggify(tournament.League),
+				SubLeague:     tournament.SubLeague,
+				SubLeagueSlug: scores.Sluggify(tournament.SubLeague),
 			},
 		})
 		test.Check(t, "tournamentRepo.New() failed: %v", err)

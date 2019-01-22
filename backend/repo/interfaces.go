@@ -27,7 +27,7 @@ type TeamRepository interface {
 
 // TournamentRepository exposes CRUD operations on tournaments.
 type TournamentRepository interface {
-	Filter(seasons []int, leagues []string, formats []string) (
+	Filter(seasons []int, leagues []string, gender []string) (
 		[]*volleynet.Tournament, error)
 	Get(tournamentID int) (*volleynet.Tournament, error)
 	New(t *volleynet.Tournament) (*volleynet.Tournament, error)

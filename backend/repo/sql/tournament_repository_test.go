@@ -11,6 +11,57 @@ import (
 	"github.com/wawandco/fako"
 )
 
+func TestSeasons(t *testing.T) {
+	db := SetupDB(t)
+	tournamentRepo := &tournamentRepository{DB: db}
+
+	expected := []int{2017, 2018}
+
+	CreateTournaments(t, db,
+		T{ID: 1, Season: 2017},
+		T{ID: 2, Season: 2018},
+		T{ID: 3, Season: 2018},
+	)
+
+	actual, err := tournamentRepo.Seasons()
+
+	test.Check(t, "tournamentRepository.Seasons(), err: %v", err)
+	test.Compare(t, "Seasons are not equal:\n%s", expected, actual)
+}
+
+func TestSubLeagues(t *testing.T) {
+	db := SetupDB(t)
+	tournamentRepo := &tournamentRepository{DB: db}
+
+	CreateTournaments(t, db,
+		T{ID: 1, SubLeague: "Amateur Tour 1"},
+		T{ID: 2, SubLeague: "Amateur Tour 2"},
+		T{ID: 3, SubLeague: "LMS"},
+		T{ID: 4, SubLeague: "Pro Tour 80"},
+	)
+
+	actual, err := tournamentRepo.SubLeagues()
+
+	test.Check(t, "tournamentRepository.SubLeagues(), err: %v", err)
+	test.Assert(t, "SubLeagues() expected len() == 4, got: %d", len(actual) == 4, len(actual))
+}
+func TestLeagues(t *testing.T) {
+	db := SetupDB(t)
+	tournamentRepo := &tournamentRepository{DB: db}
+
+	CreateTournaments(t, db,
+		T{ID: 1, League: "Amateur Tour"},
+		T{ID: 2, League: "Amateur Tour"},
+		T{ID: 3, League: "Pro Tour"},
+		T{ID: 4, League: "Amateur Tour"},
+	)
+
+	actual, err := tournamentRepo.Leagues()
+
+	test.Check(t, "tournamentRepository.Leagues(), err: %v", err)
+	test.Assert(t, "Leagues() expected len() == 2, got: %d", len(actual) == 2, len(actual))
+}
+
 func TestCreateTournament(t *testing.T) {
 	db := SetupDB(t)
 	tournamentRepo := &tournamentRepository{DB: db}
@@ -39,52 +90,52 @@ func TestFilterTournament(t *testing.T) {
 	tournamentRepo := &tournamentRepository{DB: db}
 
 	tournaments := []struct {
-		ID     int
-		Season int
-		League string
-		Gender string
+		ID         int
+		Season     int
+		LeagueSlug string
+		Gender     string
 	}{
 		{
-			ID:     1,
-			Season: 2018,
-			League: "amateur-tour",
-			Gender: "m",
+			ID:         1,
+			Season:     2018,
+			LeagueSlug: "amateur-tour",
+			Gender:     "M",
 		},
 		{
-			ID:     2,
-			Season: 2018,
-			League: "amateur-tour",
-			Gender: "m",
+			ID:         2,
+			Season:     2018,
+			LeagueSlug: "amateur-tour",
+			Gender:     "M",
 		},
 		{
-			ID:     3,
-			Season: 2018,
-			League: "pro-tour",
-			Gender: "m",
+			ID:         3,
+			Season:     2018,
+			LeagueSlug: "pro-tour",
+			Gender:     "M",
 		},
 		{
-			ID:     4,
-			Season: 2017,
-			League: "amateur-tour",
-			Gender: "w",
+			ID:         4,
+			Season:     2017,
+			LeagueSlug: "amateur-tour",
+			Gender:     "W",
 		},
 		{
-			ID:     5,
-			Season: 2017,
-			League: "junior-tour",
-			Gender: "m",
+			ID:         5,
+			Season:     2017,
+			LeagueSlug: "junior-tour",
+			Gender:     "M",
 		},
 	}
 
 	for _, tournament := range tournaments {
 		_, err := tournamentRepo.New(&volleynet.Tournament{
 			TournamentInfo: volleynet.TournamentInfo{
-				ID:     tournament.ID,
-				Season: tournament.Season,
-				League: tournament.League,
-				Gender: tournament.Gender,
-				Start:  time.Now(),
-				End:    time.Now(),
+				ID:         tournament.ID,
+				Season:     tournament.Season,
+				LeagueSlug: tournament.LeagueSlug,
+				Gender:     tournament.Gender,
+				Start:      time.Now(),
+				End:        time.Now(),
 			},
 			Teams: []*volleynet.TournamentTeam{},
 		})
@@ -93,7 +144,7 @@ func TestFilterTournament(t *testing.T) {
 	}
 
 	got, err := tournamentRepo.Filter(
-		[]int{2018}, []string{"amateur-tour", "pro-tour"}, []string{"m"},
+		[]int{2018}, []string{"amateur-tour", "pro-tour"}, []string{"M"},
 	)
 
 	test.Check(t, "tournamentRepository.Filter(), err: %s", err)
@@ -129,7 +180,7 @@ func BenchmarkFilterTournament(b *testing.B) {
 		ts, err := tournamentRepo.Filter(
 			[]int{2018},
 			[]string{"amateur-tour"},
-			[]string{"m"},
+			[]string{"M"},
 		)
 
 		b.Logf("found %d tournaments", len(ts))
@@ -168,7 +219,7 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 
 	leagues := []string{"amateur-tour", "pro-tour", "junior-tour"}
 	seasons := []int{2017, 2018, 2019}
-	genders := []string{"m", "w"}
+	genders := []string{"M", "W"}
 	status := []string{
 		volleynet.StatusUpcoming,
 		volleynet.StatusDone,
@@ -182,7 +233,7 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 
 		tournament := &volleynet.TournamentInfo{}
 		tournament.ID = id
-		tournament.League = leagues[rand.Intn(len(leagues))]
+		tournament.LeagueSlug = leagues[rand.Intn(len(leagues))]
 		tournament.Season = seasons[rand.Intn(len(seasons))]
 		tournament.Gender = genders[rand.Intn(len(genders))]
 		tournament.Status = status[rand.Intn(len(status))]

@@ -1,0 +1,1 @@
+SELECT distinct league as value, league_slug as key FROM tournaments

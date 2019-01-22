@@ -48,7 +48,7 @@ CREATE TABLE tournaments (
 	loc_lon double NOT NULL,
 	INDEX(season),
 	INDEX(gender),
-	INDEX(league),
+	INDEX(league_slug),
 	INDEX(name),
 	INDEX(start_date),
 	INDEX(end_date)

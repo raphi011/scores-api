@@ -1,6 +1,8 @@
 package sql
 
 import (
+	"sort"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
@@ -68,14 +70,41 @@ func (s *tournamentRepository) UpdateBatch(tournaments ...*volleynet.Tournament)
 func (s *tournamentRepository) Filter(
 	seasons []int,
 	leagues []string,
-	formats []string) ([]*volleynet.Tournament, error) {
+	gender []string) ([]*volleynet.Tournament, error) {
 
 	tournaments := []*volleynet.Tournament{}
 	err := crud.ReadIn(s.DB, "tournament/select-by-filter", &tournaments,
-		formats,
-		leagues,
 		seasons,
+		leagues,
+		gender,
 	)
 
 	return tournaments, errors.Wrap(err, "filtered tournaments")
+}
+
+func (s *tournamentRepository) Seasons() ([]int, error) {
+	seasons := []int{}
+	err := crud.ReadIn(s.DB, "tournament/select-seasons", &seasons)
+
+	sort.Ints(seasons)
+
+	return seasons, errors.Wrap(err, "available seasons")
+}
+
+func (s *tournamentRepository) Leagues() ([]scores.KeyValue, error) {
+	leagues := []scores.KeyValue{}
+	err := crud.ReadIn(s.DB, "tournament/select-leagues", &leagues)
+
+	// sort.Strings(leagues)
+
+	return leagues, errors.Wrap(err, "leagues")
+}
+
+func (s *tournamentRepository) SubLeagues() ([]scores.KeyValue, error) {
+	subLeagues := []scores.KeyValue{}
+	err := crud.ReadIn(s.DB, "tournament/select-sub-leagues", &subLeagues)
+
+	// sort.Strings(subLeagues)
+
+	return subLeagues, errors.Wrap(err, "subleagues")
 }

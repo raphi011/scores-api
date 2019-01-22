@@ -33,6 +33,6 @@ SELECT
 	t.signedup_teams
 FROM tournaments t
 WHERE
-	t.gender IN (?) AND
-	t.league IN (?) AND
-	t.season IN (?)
+	t.season IN (?) AND
+	t.league_slug IN (?) AND
+	t.gender IN (?)

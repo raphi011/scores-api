@@ -1,4 +1,4 @@
-package scrape
+package scores
 
 import "testing"
 
@@ -28,7 +28,7 @@ func TestSlug(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.Expected, func(t *testing.T) {
-			result := sluggify(tt.Input)
+			result := Sluggify(tt.Input)
 			if result != tt.Expected {
 				t.Fatalf("sluggify(%s) should be %q, got: %q", tt.Input, tt.Expected, result)
 			}

@@ -2,24 +2,22 @@ package main
 
 import (
 	"net/http"
-	"time"
 	"strconv"
+	"time"
 
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 
-	"github.com/gin-gonic/gin"
-
+	"github.com/raphi011/scores/cmd/api/logger"
 	"github.com/raphi011/scores/services"
 	"github.com/raphi011/scores/volleynet/client"
-	"github.com/raphi011/scores/cmd/api/logger"
 )
 
 type volleynetHandler struct {
 	volleynetService *services.Volleynet
 	userService      *services.User
 }
-
 
 func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
@@ -33,15 +31,15 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 
 	seasonNumber, err := strconv.Atoi(season)
 
-	// if err != nil {
-	// 	responseBadRequest(c)
-	// 	return
-	// }
+	if err != nil {
+		responseBadRequest(c)
+		return
+	}
 
 	tournaments, err := h.volleynetService.GetTournaments(
 		[]int{seasonNumber},
-		gender,
 		league,
+		gender,
 	)
 
 	if err != nil {

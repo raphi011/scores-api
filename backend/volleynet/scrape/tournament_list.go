@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -78,9 +80,9 @@ func extractTournamentLinkData(relativeLink, host string) *volleynet.TournamentI
 	return &volleynet.TournamentInfo{
 		Gender:        readURLPart(relativeLink, "sex/"),
 		League:        readURLPart(relativeLink, "bewerbe/"),
-		LeagueSlug:    sluggify(readURLPart(relativeLink, "bewerbe/")),
+		LeagueSlug:    scores.Sluggify(readURLPart(relativeLink, "bewerbe/")),
 		SubLeague:     readURLPart(relativeLink, "phase/"),
-		SubLeagueSlug: sluggify(readURLPart(relativeLink, "phase/")),
+		SubLeagueSlug: scores.Sluggify(readURLPart(relativeLink, "phase/")),
 		ID:            id,
 		Season:        season,
 		Link:          host + "/" + relativeLink,
