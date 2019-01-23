@@ -54,11 +54,9 @@ export const initialEntitiesState: EntityStore = {
     values: {},
   },
   tournament: {
-    by: {
-      league: {},
-    },
     list: {
       all: [],
+      filter: [],
     },
     values: {},
   },

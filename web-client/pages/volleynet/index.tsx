@@ -8,22 +8,18 @@ import { QueryStringMapObject } from 'next';
 import CenteredLoading from '../../components/CenteredLoading';
 import DayHeader from '../../components/DayHeader';
 import GroupedList from '../../components/GroupedList';
+import TournamentFilters from '../../components/volleynet/filters/TournamentFilters';
 import TournamentList from '../../components/volleynet/TournamentList';
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
-import TournamentFilters from '../../containers/volleynet/TournamentFilters';
 import { userSelector } from '../../redux/auth/selectors';
 import {
   loadTournamentAction,
   loadTournamentsAction,
 } from '../../redux/entities/actions';
-import {
-  tournamentsByLeagueSelector,
-  tournamentSelector,
-} from '../../redux/entities/selectors';
+import { filteredTournamentsSelector } from '../../redux/entities/selectors';
 import { Store } from '../../redux/store';
 import { Tournament, User } from '../../types';
-import * as ArrayUtils from '../../utils/array';
 
 const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
@@ -41,13 +37,10 @@ const styles = createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  tournament?: Tournament;
   tournaments: Tournament[];
-  tournamentId: string;
   leagues: string[];
   user: User;
 
-  loadTournament: (tournamentId: string) => void;
   loadTournaments: (
     filters: { gender: string; league: string; season: string },
   ) => void;
@@ -59,41 +52,46 @@ class Volleynet extends React.Component<Props> {
     loadTournaments: loadTournamentsAction,
   };
 
-  static buildActions({ leagues = [], tournamentId }: Props) {
-    const actions = leagues.map(league =>
-      loadTournamentsAction({
-        gender: 'M',
+  static buildActions({ genders: gender, season, leagues: league = [] }: Props) {
+      return [loadTournamentsAction({
+        gender,
         league,
-        season: thisYear,
-      }),
-    );
-
-    if (tournamentId) {
-      actions.push(loadTournamentAction(tournamentId));
-    }
-
-    return actions;
+        season,
+      })];
   }
 
   static getParameters(query: QueryStringMapObject) {
-    const { tournamentId } = query;
-    let { leagues = ['amateur-tour'] } = query;
+    let { season = "2018", genders = ['M', 'W'], leagues = ['amateur-tour'] } = query;
 
     if (!Array.isArray(leagues)) {
       leagues = [leagues];
     }
+    if (!Array.isArray(genders)) {
+      genders = [genders];
+    }
 
     leagues = leagues.filter((l: string) => defaultLeagues.includes(l));
 
-    return { leagues, tournamentId };
+    return { leagues, genders, season };
   }
 
-  static mapStateToProps(state: Store, { leagues, tournamentId }: Props) {
-    const tournaments = tournamentsByLeagueSelector(state, leagues);
-    const tournament = tournamentSelector(state, Number(tournamentId));
+  static mapStateToProps(state: Store) {
+    const tournaments = filteredTournamentsSelector(state);
     const { user } = userSelector(state);
 
-    return { tournament, tournaments, user };
+    return { tournaments, user };
+  }
+
+  constructor(props) {
+    super(props);
+
+    const { leagues, genders, season } = this.props;
+
+    this.state = {
+      leagues,
+      genders,
+      season: Number(season),
+    };
   }
 
   renderList = (tournaments: Tournament[]) => {
@@ -107,16 +105,6 @@ class Volleynet extends React.Component<Props> {
     );
   };
 
-  componentDidUpdate(prevProps) {
-    const { loadTournaments, leagues } = this.props;
-
-    if (!ArrayUtils.equals(leagues, prevProps.leagues) && leagues) {
-      leagues.forEach(league => {
-        loadTournaments({ gender: 'M', league, season: thisYear });
-      });
-    }
-  }
-
   onTournamentClick = (t: Tournament) => {
     Router.push({
       pathname: '/volleynet/tournament',
@@ -124,15 +112,38 @@ class Volleynet extends React.Component<Props> {
     });
   };
 
-  onLeagueChange = (_, selectedLeagues) => {
+  onFilter = (filters) => {
+    this.setState(filters);
+  }
+
+  onSubmit = () => {
+    const { loadTournaments } = this.props;
+    const { leagues: league, season, genders: gender } = this.state;
+
+    const query = {
+      league,
+      season,
+      gender,
+    };
+
     Router.push({
       pathname: '/volleynet',
-      query: { leagues: selectedLeagues },
+      query,
     });
-  };
+    
+    loadTournaments(query);
+  }
+
+  onLeaguesChange = (leagues: string[]) => {
+    Router.push({
+      pathname: '/volleynet',
+      query: { leagues },
+    });
+  }
 
   render() {
     const { tournaments, classes } = this.props;
+    const { leagues, genders, season } = this.state;
 
     let leftContent = <CenteredLoading />;
 
@@ -150,15 +161,21 @@ class Volleynet extends React.Component<Props> {
     return (
       <Layout title={{ text: 'Volleynet', href: '' }}>
         <div className={classes.root}>
-          <div className={classes.left}><TournamentFilters /></div>
+          <div className={classes.left}>
+            <TournamentFilters
+              leagues={leagues}
+              genders={genders}
+              season={season}
+              onChange={this.onFilter}
+              onSubmit={this.onSubmit}
+            />
+          </div>
           <div className={classes.right}>{leftContent}</div>
         </div>
       </Layout>
     );
   }
 }
-
-const thisYear = '2018'; // new Date().getFullYear().toString();
 
 function sortDescending(a: Tournament, b: Tournament) {
   return new Date(b.start).getTime() - new Date(a.start).getTime();

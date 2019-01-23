@@ -45,26 +45,12 @@ export const allPlayersSelector = (state: Store) =>
 export const playerSelector = (state: Store, playerId: number) =>
   denorm(EntityName.Player, entityMapSelector(state), playerId);
 
-export const tournamentsByLeagueSelector = (
-  state: Store,
-  leagues: string[],
-) => {
-  let tournaments = [];
-  const entityMap = entityMapSelector(state);
-
-  leagues.forEach(league => {
-    tournaments = [
-      ...tournaments,
-      ...denorm(
-        EntityName.Tournament,
-        entityMap,
-        state.entities.tournament.by.league[league] || [],
-      ),
-    ];
-  });
-
-  return tournaments;
-};
+export const filteredTournamentsSelector = (state: Store) =>
+  denorm(
+    EntityName.Tournament,
+    entityMapSelector(state),
+    state.entities.tournament.list.filter || [],
+  );
 
 export const tournamentSelector = (state: Store, tournamentId: number) =>
   denorm(EntityName.Tournament, entityMapSelector(state), tournamentId);
