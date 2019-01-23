@@ -1,6 +1,7 @@
 package scores
 
+// NameValue is a tuple that contains a name and value.
 type NameValue struct {
-	Key   string `db:"key"`
+	Name  string `db:"name"`
 	Value string `db:"value"`
 }

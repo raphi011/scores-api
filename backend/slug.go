@@ -5,6 +5,8 @@ import (
 	"unicode"
 )
 
+// Sluggify transforms a string into a normalized representation.
+// e.g. "whitespace and Capitalized" -> "whitespace-and-capitalized".
 func Sluggify(text string) string {
 	builder := strings.Builder{}
 	builder.Grow(len(text))

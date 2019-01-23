@@ -22,12 +22,7 @@ func testServices(t testing.TB) *handlerServices {
 	return servicesFromRepositories(repos, false)
 }
 
-type testConfig struct {
-	EnableJobs       bool
-	AuthorizedUserID int
-}
-
-func SetupTestServer(t testing.TB, config testConfig) *gin.Engine {
+func SetupTestServer(t testing.TB) *gin.Engine {
 	a := app{
 		production: false,
 		conf:       nil,
@@ -47,7 +42,7 @@ type testClient struct {
 func newTestClient(t testing.TB) *testClient {
 	return &testClient{
 		t:      t,
-		router: SetupTestServer(t, testConfig{}),
+		router: SetupTestServer(t),
 	}
 }
 

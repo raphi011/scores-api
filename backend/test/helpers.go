@@ -53,7 +53,7 @@ func Compare(t testing.TB, message string, first, second interface{}) {
 }
 
 // Equal compares `expected` and `actual` and fails with message `message` and args `expected` and `actual` if they are not equal.
-func Equal(t testing.TB, message string, expected, actual interface{}, args ...interface{}) {
+func Equal(t testing.TB, message string, expected, actual interface{}) {
 	t.Helper()
 	if expected != actual {
 		t.Fatalf(message, expected, actual)
