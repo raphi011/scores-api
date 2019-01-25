@@ -2,6 +2,7 @@ package mocks
 
 import (
 	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores/volleynet/scrape"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -21,10 +22,10 @@ func (m *ClientMock) GetAPITournamentLink(t *volleynet.TournamentInfo) string {
 	return args.String(0)
 }
 
-func (m *ClientMock) Login(username, password string) (*volleynet.LoginData, error) {
+func (m *ClientMock) Login(username, password string) (*scrape.LoginData, error) {
 	args := m.Called(username, password)
 
-	return args.Get(0).(*volleynet.LoginData), args.Error(1)
+	return args.Get(0).(*scrape.LoginData), args.Error(1)
 }
 
 func (m *ClientMock) AllTournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error) {
@@ -63,8 +64,8 @@ func (m *ClientMock) TournamentEntry(playerName string, playerID, tournamentID i
 	return args.Error(0)
 }
 
-func (m *ClientMock) SearchPlayers(firstName, lastName, birthday string) ([]*volleynet.PlayerInfo, error) {
+func (m *ClientMock) SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error) {
 	args := m.Called(firstName, lastName, birthday)
 
-	return args.Get(0).([]*volleynet.PlayerInfo), args.Error(1)
+	return args.Get(0).([]*scrape.PlayerInfo), args.Error(1)
 }

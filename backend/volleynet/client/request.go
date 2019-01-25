@@ -19,14 +19,14 @@ import (
 type Client interface {
 	GetTournamentLink(t *volleynet.TournamentInfo) string
 	GetAPITournamentLink(t *volleynet.TournamentInfo) string
-	Login(username, password string) (*volleynet.LoginData, error)
+	Login(username, password string) (*scrape.LoginData, error)
 	AllTournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error)
 	Ladder(gender string) ([]*volleynet.Player, error)
 	ComplementTournament(tournament *volleynet.TournamentInfo) (*volleynet.Tournament, error)
 	ComplementMultipleTournaments(tournaments []*volleynet.TournamentInfo) ([]*volleynet.Tournament, error)
 	TournamentWithdrawal(tournamentID int) error
 	TournamentEntry(playerName string, playerID, tournamentID int) error
-	SearchPlayers(firstName, lastName, birthday string) ([]*volleynet.PlayerInfo, error)
+	SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error)
 }
 
 // Default implements the Client interface
@@ -46,7 +46,7 @@ func DefaultClient() Client {
 
 // Login authenticates the user against the volleynet page, if
 // successfull the Client cookie is set, else an error is returned.
-func (c *Default) Login(username, password string) (*volleynet.LoginData, error) {
+func (c *Default) Login(username, password string) (*scrape.LoginData, error) {
 	form := url.Values{}
 	form.Add("login_name", username)
 	form.Add("login_pass", password)
@@ -284,7 +284,7 @@ func (c *Default) TournamentEntry(playerName string, playerID, tournamentID int)
 }
 
 // SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
-func (c *Default) SearchPlayers(firstName, lastName, birthday string) ([]*volleynet.PlayerInfo, error) {
+func (c *Default) SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")

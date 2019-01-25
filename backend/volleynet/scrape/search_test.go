@@ -5,26 +5,25 @@ import (
 	"testing"
 
 	"github.com/raphi011/scores/test"
-	"github.com/raphi011/scores/volleynet"
 )
 
 func TestParsePlayers(t *testing.T) {
 	response, _ := os.Open("../testdata/search.html")
 
-	expected := []*volleynet.PlayerInfo{
-		&volleynet.PlayerInfo{
+	expected := []*PlayerInfo{
+		&PlayerInfo{
 			ID:        34822,
 			FirstName: "Cristopher",
 			LastName:  "Pfau",
 			Birthday:  mustParseDate("28.01.2000"),
 		},
-		&volleynet.PlayerInfo{
+		&PlayerInfo{
 			ID:        50427,
 			FirstName: "Hannes",
 			LastName:  "Pfau",
 			Birthday:  mustParseDate("22.10.2002"),
 		},
-		&volleynet.PlayerInfo{
+		&PlayerInfo{
 			ID:        42378,
 			FirstName: "Jennifer",
 			LastName:  "Pfau",

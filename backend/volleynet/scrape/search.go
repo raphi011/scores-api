@@ -3,13 +3,20 @@ package scrape
 import (
 	"fmt"
 	"io"
-
-	"github.com/raphi011/scores/volleynet"
+	"time"
 )
 
+// PlayerInfo contains all player information that the search player api returns.
+type PlayerInfo struct {
+	ID        int       `json:"id"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Birthday  time.Time `json:"birthday"`
+}
+
 // Players parses the list of players found in the search query.
-func Players(html io.Reader) ([]*volleynet.PlayerInfo, error) {
-	players := []*volleynet.PlayerInfo{}
+func Players(html io.Reader) ([]*PlayerInfo, error) {
+	players := []*PlayerInfo{}
 	doc, err := parseHTML(html)
 
 	if err != nil {
@@ -21,7 +28,7 @@ func Players(html io.Reader) ([]*volleynet.PlayerInfo, error) {
 	for i := range rows.Nodes {
 		r := rows.Eq(i)
 
-		player := &volleynet.PlayerInfo{}
+		player := &PlayerInfo{}
 
 		columns := r.Find("td")
 

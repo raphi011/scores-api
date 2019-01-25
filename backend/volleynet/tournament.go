@@ -6,48 +6,6 @@ import (
 	"github.com/raphi011/scores"
 )
 
-// PlayerInfo contains all player information that the search player api returns.
-type PlayerInfo struct {
-	ID        int       `json:"id"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	Birthday  time.Time `json:"birthday"`
-}
-
-// Player contains all relevent volleynet player information.
-type Player struct {
-	ID int `json:"id"`
-	scores.Track
-
-	Birthday     *time.Time `json:"birthday"`
-	Club         string     `json:"club"`
-	CountryUnion string     `json:"countryUnion" db:"country_union"`
-	FirstName    string     `json:"firstName" db:"first_name"`
-	Gender       string     `json:"gender"`
-	LadderRank   int        `json:"ladderRank" db:"ladder_rank"`
-	LastName     string     `json:"lastName" db:"last_name"`
-	License      string     `json:"license"`
-	TotalPoints  int        `json:"totalPoints" db:"total_points"`
-}
-
-// TournamentTeam is the current status of the team entry in a
-// tournament, if the tournament is finished it may also contain
-// the seed.
-type TournamentTeam struct {
-	scores.Track
-
-	TournamentID int     `json:"tournamentId" db:"tournament_id"`
-	Player1      *Player `json:"player1"`
-	Player2      *Player `json:"player2"`
-
-	Deregistered bool    `json:"deregistered"`
-	PrizeMoney   float32 `json:"prizeMoney" db:"prize_money"`
-	Result       int     `json:"result"`
-	Seed         int     `json:"seed"`
-	TotalPoints  int     `json:"totalPoints" db:"total_points"`
-	WonPoints    int     `json:"wonPoints" db:"won_points"`
-}
-
 const (
 	// StatusUpcoming represents the state of a tournament not done yet.
 	StatusUpcoming = "upcoming"
@@ -65,10 +23,11 @@ type TournamentInfo struct {
 	End              time.Time `json:"end" db:"end_date"`
 	Name             string    `json:"name" fako:"city"`
 	League           string    `json:"league" db:"league"`
-	LeagueKey       string    `json:"leagueKey" db:"league_key"`
+	LeagueKey        string    `json:"leagueKey" db:"league_key"`
 	SubLeague        string    `json:"subLeague" db:"sub_league"`
-	SubLeagueKey    string    `json:"phaseKey" db:"sub_league_key"`
+	SubLeagueKey     string    `json:"phaseKey" db:"sub_league_key"`
 	Link             string    `json:"link" fako:"domain_name"`
+	EntryLink        string    `json:"entryLink" db:"entry_link"`
 	Status           string    `json:"status"` // can be `StatusUpcoming`, `StatusDone` or `StatusCanceled`
 	Gender           string    `json:"gender"`
 	RegistrationOpen bool      `json:"registrationOpen" db:"registration_open"`
@@ -97,17 +56,4 @@ type Tournament struct {
 	MaxPoints       int               `json:"maxPoints" db:"max_points"`
 	Latitude        float32           `json:"latitude" db:"loc_lat"`
 	Longitude       float32           `json:"longitude" db:"loc_lon"`
-}
-
-// LoginData contains the data of the form that is shown after a successful login.
-type LoginData struct {
-	PlayerInfo
-	License License
-}
-
-// License contains the license data of a player.
-type License struct {
-	Nr        string
-	Type      string
-	Requested string
 }
