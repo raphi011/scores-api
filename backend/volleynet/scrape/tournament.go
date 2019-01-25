@@ -69,7 +69,7 @@ type detailsParser func(*goquery.Selection, *volleynet.Tournament)
 var parseTournamentDetailsMap = map[string]detailsParser{
 	"Kategorie": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.SubLeague = trimmSelectionText(value)
-		t.SubLeagueSlug = scores.Sluggify(trimmSelectionText(value))
+		t.SubLeagueKey = scores.Sluggify(trimmSelectionText(value))
 	},
 	"Modus": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Mode = trimmSelectionText(value)

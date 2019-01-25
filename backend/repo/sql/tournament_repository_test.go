@@ -92,37 +92,37 @@ func TestFilterTournament(t *testing.T) {
 	tournaments := []struct {
 		ID         int
 		Season     int
-		LeagueSlug string
+		LeagueKey string
 		Gender     string
 	}{
 		{
 			ID:         1,
 			Season:     2018,
-			LeagueSlug: "amateur-tour",
+			LeagueKey: "amateur-tour",
 			Gender:     "M",
 		},
 		{
 			ID:         2,
 			Season:     2018,
-			LeagueSlug: "amateur-tour",
+			LeagueKey: "amateur-tour",
 			Gender:     "M",
 		},
 		{
 			ID:         3,
 			Season:     2018,
-			LeagueSlug: "pro-tour",
+			LeagueKey: "pro-tour",
 			Gender:     "M",
 		},
 		{
 			ID:         4,
 			Season:     2017,
-			LeagueSlug: "amateur-tour",
+			LeagueKey: "amateur-tour",
 			Gender:     "W",
 		},
 		{
 			ID:         5,
 			Season:     2017,
-			LeagueSlug: "junior-tour",
+			LeagueKey: "junior-tour",
 			Gender:     "M",
 		},
 	}
@@ -132,7 +132,7 @@ func TestFilterTournament(t *testing.T) {
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:         tournament.ID,
 				Season:     tournament.Season,
-				LeagueSlug: tournament.LeagueSlug,
+				LeagueKey: tournament.LeagueKey,
 				Gender:     tournament.Gender,
 				Start:      time.Now(),
 				End:        time.Now(),
@@ -233,7 +233,7 @@ func randomTournaments(count, run int) []*volleynet.Tournament {
 
 		tournament := &volleynet.TournamentInfo{}
 		tournament.ID = id
-		tournament.LeagueSlug = leagues[rand.Intn(len(leagues))]
+		tournament.LeagueKey = leagues[rand.Intn(len(leagues))]
 		tournament.Season = seasons[rand.Intn(len(seasons))]
 		tournament.Gender = genders[rand.Intn(len(genders))]
 		tournament.Status = status[rand.Intn(len(status))]

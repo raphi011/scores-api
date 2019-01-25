@@ -80,9 +80,9 @@ func extractTournamentLinkData(relativeLink, host string) *volleynet.TournamentI
 	return &volleynet.TournamentInfo{
 		Gender:        readURLPart(relativeLink, "sex/"),
 		League:        readURLPart(relativeLink, "bewerbe/"),
-		LeagueSlug:    scores.Sluggify(readURLPart(relativeLink, "bewerbe/")),
+		LeagueKey:    scores.Sluggify(readURLPart(relativeLink, "bewerbe/")),
 		SubLeague:     readURLPart(relativeLink, "phase/"),
-		SubLeagueSlug: scores.Sluggify(readURLPart(relativeLink, "phase/")),
+		SubLeagueKey: scores.Sluggify(readURLPart(relativeLink, "phase/")),
 		ID:            id,
 		Season:        season,
 		Link:          host + "/" + relativeLink,

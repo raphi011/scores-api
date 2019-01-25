@@ -98,9 +98,9 @@ type T struct {
 	Season        int
 	Status        string
 	League        string
-	LeagueSlug    string
+	LeagueKey    string
 	SubLeague     string
-	SubLeagueSlug string
+	SubLeagueKey string
 }
 
 // CreateTournaments is a handy helper to create multiple tournaments.
@@ -119,9 +119,9 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 				Start:         time.Now(),
 				End:           time.Now(),
 				League:        tournament.League,
-				LeagueSlug:    scores.Sluggify(tournament.League),
+				LeagueKey:    scores.Sluggify(tournament.League),
 				SubLeague:     tournament.SubLeague,
-				SubLeagueSlug: scores.Sluggify(tournament.SubLeague),
+				SubLeagueKey: scores.Sluggify(tournament.SubLeague),
 			},
 		})
 		test.Check(t, "tournamentRepo.New() failed: %v", err)

@@ -23,7 +23,7 @@ var tournamentTests = []struct {
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:            21808,
 				SubLeague:     "ABV Tour AMATEUR 2",
-				SubLeagueSlug: "abv-tour-amateur-2",
+				SubLeagueKey: "abv-tour-amateur-2",
 				Start:         mustParseDate("01.05.2018"),
 				End:           mustParseDate("01.05.2018"),
 				Gender:        "M",
@@ -49,7 +49,7 @@ var tournamentTests = []struct {
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:            22764,
 				SubLeague:     "ABV Tour AMATEUR 1",
-				SubLeagueSlug: "abv-tour-amateur-1",
+				SubLeagueKey: "abv-tour-amateur-1",
 				Start:         mustParseDate("01.09.2018"),
 				End:           mustParseDate("01.09.2018"),
 				Gender:        "M",
@@ -158,7 +158,7 @@ var tournamentTests = []struct {
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:            22228,
 				SubLeague:     "ABV Tour AMATEUR 1",
-				SubLeagueSlug: "abv-tour-amateur-1",
+				SubLeagueKey: "abv-tour-amateur-1",
 				Start:         mustParseDate("21.05.2018"),
 				End:           mustParseDate("21.05.2018"),
 				Gender:        "M",
@@ -208,7 +208,7 @@ var tournamentTests = []struct {
 		&volleynet.Tournament{
 			TournamentInfo: volleynet.TournamentInfo{
 				SubLeague:     "LMS",
-				SubLeagueSlug: "lms",
+				SubLeagueKey: "lms",
 				Status:        "done",
 				ID:            22750,
 				Gender:        "M",
@@ -269,7 +269,7 @@ var tournamentTests = []struct {
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:            22231,
 				SubLeague:     "ABV Tour AMATEUR 1",
-				SubLeagueSlug: "abv-tour-amateur-1",
+				SubLeagueKey: "abv-tour-amateur-1",
 				Start:         mustParseDate("31.05.2018"),
 				End:           mustParseDate("31.05.2018"),
 				Gender:        "M",
@@ -321,7 +321,7 @@ var tournamentTests = []struct {
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:            22764,
 				SubLeague:     "ABV Tour AMATEUR 1",
-				SubLeagueSlug: "abv-tour-amateur-1",
+				SubLeagueKey: "abv-tour-amateur-1",
 				Start:         mustParseDate("01.09.2018"),
 				End:           mustParseDate("01.09.2018"),
 				Gender:        "M",
@@ -438,7 +438,7 @@ var tournamentTests = []struct {
 			TournamentInfo: volleynet.TournamentInfo{
 				ID:            22616,
 				SubLeague:     "ABV Tour AMATEUR 1",
-				SubLeagueSlug: "abv-tour-amateur-1",
+				SubLeagueKey: "abv-tour-amateur-1",
 				Start:         mustParseDate("25.08.2018"),
 				End:           mustParseDate("25.08.2018"),
 				Gender:        "M",

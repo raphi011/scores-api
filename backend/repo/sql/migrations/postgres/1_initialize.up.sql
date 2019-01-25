@@ -23,9 +23,9 @@ CREATE TABLE tournaments (
 	end_date            timestamptz NOT NULL,
 	name                text        NOT NULL,
     league              text        NOT NULL,
-    league_slug         text        NOT NULL,
+    league_key         text        NOT NULL,
     sub_league          text        NOT NULL,
-    sub_league_slug     text        NOT NULL,
+    sub_league_key     text        NOT NULL,
 	link                text        NOT NULL,
 	entry_link          text        NOT NULL,
 	status              text        NOT NULL,
@@ -48,12 +48,12 @@ CREATE TABLE tournaments (
 	loc_lon             float8      NOT NULL
 );
 
-CREATE INDEX tournaments_name       	ON tournaments USING btree  (name);
-CREATE INDEX tournaments_start_date 	ON tournaments USING btree  (start_date);
-CREATE INDEX tournaments_end_date   	ON tournaments USING btree  (end_date);
-CREATE INDEX tournaments_gender			ON tournaments USING hash   (gender);
-CREATE INDEX tournaments_league_slug    ON tournaments USING hash   (league_slug);
-CREATE INDEX tournaments_season     	ON tournaments USING hash   (season);
+CREATE INDEX tournaments_name       	ON tournaments (name);
+CREATE INDEX tournaments_start_date 	ON tournaments (start_date);
+CREATE INDEX tournaments_end_date   	ON tournaments (end_date);
+CREATE INDEX tournaments_gender			ON tournaments (gender);
+CREATE INDEX tournaments_league_key    ON tournaments (league_key);
+CREATE INDEX tournaments_season     	ON tournaments (season);
 
 CREATE TABLE players (
 	id              int         PRIMARY KEY,

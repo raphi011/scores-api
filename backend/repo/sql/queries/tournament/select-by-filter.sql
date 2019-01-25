@@ -7,9 +7,9 @@ SELECT
 	t.end_date,
 	t.name,
 	t.league,
-	t.league_slug,
+	t.league_key,
 	t.sub_league,
-	t.sub_league_slug,
+	t.sub_league_key,
 	t.link,
 	t.entry_link,
 	t.status,
@@ -34,5 +34,6 @@ SELECT
 FROM tournaments t
 WHERE
 	t.season IN (?) AND
-	t.league_slug IN (?) AND
+	t.league_key IN (?) AND
 	t.gender IN (?)
+LIMIT 100
