@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/volleynet"
 )
 
@@ -120,12 +121,14 @@ func distinctPlayers(teams []*volleynet.TournamentTeam) []*volleynet.Player {
 }
 
 func (s *Service) addPlayerIfNeeded(player *volleynet.Player) error {
-	if p, _ := s.PlayerRepo.Get(player.ID); p == nil {
-		_, err := s.PlayerRepo.New(player)
+	_, err := s.PlayerRepo.Get(player.ID)
 
-		if err != nil {
-			return err
-		}
+	if errors.Cause(err) == scores.ErrNotFound {
+		_, err = s.PlayerRepo.New(player)
+
+		return errors.Wrap(err, "addPlayerIfNeeded")
+	} else if err != nil {
+		return errors.Wrap(err, "addPlayerIfNeeded")
 	}
 
 	return nil
