@@ -1,5 +1,5 @@
 import * as http from 'http';
-import { IParams } from '../../api';
+import { Params } from '../../api';
 import * as actionNames from '../actionNames';
 import { Action } from '../actions';
 
@@ -14,7 +14,7 @@ export interface ApiAction extends Action {
   url: string;
   success?: string;
   isServer?: boolean;
-  params?: IParams;
+  params?: Params;
   req?: http.IncomingMessage;
   res?: http.ServerResponse;
   headers?: { [key: string]: string };

@@ -36,11 +36,13 @@ function createPageContext() {
   };
 }
 
+declare const process;
+declare const global;
 
 export default function getPageContext() {
   // Make sure to create a new context for every server-side request so that data
   // isn't shared between connections (which would be bad).
-  if (!process.browser) {
+  if (!process.browser) { 
     return createPageContext();
   }
 

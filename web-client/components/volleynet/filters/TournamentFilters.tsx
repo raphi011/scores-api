@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -18,13 +17,14 @@ import {
 import Typography from '@material-ui/core/Typography';
 import SearchIcon from '@material-ui/icons/Search';
 import { Gender } from '../../../types';
+import LoadingButton from '../../LoadingButton';
 
 const availableLeagues = [
   { name: 'Junior Tour', key: 'junior-tour' },
   { name: 'Amateur Tour', key: 'amateur-tour' },
   { name: 'Pro Tour', key: 'pro-tour' },
 ];
-const availableGenders = [{ name: 'Female', key: 'W' }, { name: 'Male', key: 'M' }];
+const availableGenders: Array<{name: string, key: Gender }> = [{ name: 'Female', key: 'W' }, { name: 'Male', key: 'M' }];
 const availableSeasons = [2018, 2019];
 
 const styles = (theme: Theme) =>
@@ -51,33 +51,43 @@ const styles = (theme: Theme) =>
     },
   });
 
-interface League {
-  name: string;
-  key: string;
-}
-
-interface Filters {
-  leagues: League[];
-  genders: Gender[];
+export interface Filters {
+  league: string[];
+  gender: Gender[];
   season: number;
 }
 
 interface Props extends WithStyles<typeof styles> {
-  // leagues: League[];
-  // genders: Gender[];
-  // seasons: number[];
+  // availableLeagues: League[];
+  // availableGenders: Gender[];
+  // availableSeasons: number[];
 
-  leagues: League[];
-  genders: Gender[];
+  league: string[];
+  gender: Gender[];
   season: number;
+  
+  loading: boolean;
 
-  onChange: (filters: Filters) => void;
-  onSubmit: () => void;
+  onFilter: (filters: Filters) => void;
 }
 
-class TournamentFilters extends React.Component<Props> {
+type State = Filters;
+
+class TournamentFilters extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+
+    const { league, gender, season } = this.props;
+
+    this.state = {
+      gender,
+      league,
+      season,
+    };
+  }
+
   onSelectSeason = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { genders, season, leagues, onChange } = this.props;
+    const { gender, season, league } = this.state;
 
     const selectedSeason = Number(event.target.value);
 
@@ -85,53 +95,53 @@ class TournamentFilters extends React.Component<Props> {
       return;
     }
 
-    onChange({
-      genders,
-      leagues,
+    this.setState({
+      gender,
+      league,
       season: selectedSeason,
     });
   }
 
-  onSelectLeague = (league: League) => {
-    const { genders, season, leagues, onChange } = this.props;
+  onSelectLeague = (selected: string) => {
+    const { gender, season, league } = this.state;
 
-    if (leagues.length === 1 && leagues[0] === league) {
+    if (league.length === 1 && league[0] === selected) {
       return;
     }
 
-    let newSelected = leagues;
+    let newSelected = league;
 
-    if (leagues.includes(league)) {
-      newSelected = newSelected.filter(l => l !== league);
+    if (league.includes(selected)) {
+      newSelected = newSelected.filter(l => l !== selected);
     } else {
-      newSelected.push(league);
+      newSelected.push(selected);
     }
 
-    onChange({
-      genders,
-      leagues: newSelected,
+    this.setState({
+      gender,
+      league: newSelected,
       season,
     });
   }
 
-  onSelectGenders = (gender: Gender) => {
-    const { genders, season, leagues, onChange } = this.props;
+  onSelectGenders = (selected: Gender) => {
+    const { gender, season, league } = this.state;
 
-    if (genders.length === 1 && genders[0] === gender) {
+    if (gender.length === 1 && gender[0] === selected) {
       return;
     }
 
-    let newSelected = genders;
+    let newSelected = gender;
 
-    if (genders.includes(gender)) {
-      newSelected = newSelected.filter(g => g !== gender);
+    if (gender.includes(selected)) {
+      newSelected = newSelected.filter(g => g !== selected);
     } else {
-      newSelected.push(gender);
+      newSelected.push(selected);
     }
 
-    onChange({
-      genders: newSelected,
-      leagues,
+    this.setState({
+      gender: newSelected,
+      league,
       season,
     });
   }
@@ -139,13 +149,14 @@ class TournamentFilters extends React.Component<Props> {
   onSubmit = (e) => {
     e.preventDefault();
 
-    const { onSubmit } = this.props;
+    const { onFilter } = this.props;
 
-    onSubmit(); 
+    onFilter(this.state); 
   }
 
   render() {
-    const { classes, genders, leagues, season } = this.props;
+    const { classes, loading = false } = this.props;
+    const { gender, league, season } = this.state;
 
     return (
       <form onSubmit={this.onSubmit} autoComplete="off" className={classes.form}>
@@ -168,7 +179,7 @@ class TournamentFilters extends React.Component<Props> {
           <Typography className={classes.filterHeader}>Season</Typography>
           <Select value={season} onChange={this.onSelectSeason}>
             {availableSeasons.map(s => (
-              <MenuItem value={s}>{s}</MenuItem>
+              <MenuItem key={s} value={s}>{s}</MenuItem>
             ))}
           </Select>
         </div>
@@ -176,9 +187,10 @@ class TournamentFilters extends React.Component<Props> {
           <Typography className={classes.filterHeader}>Gender</Typography>
           {availableGenders.map(g => (
             <FormControlLabel
+              key={g.key}
               control={
                 <Checkbox
-                  checked={genders.includes(g.key)}
+                  checked={gender.includes(g.key)}
                   onChange={() => this.onSelectGenders(g.key)}
                   className={`${classes.checkbox} ${classes.checkboxes}`}
                   value={g.key}
@@ -192,9 +204,10 @@ class TournamentFilters extends React.Component<Props> {
           <Typography className={classes.filterHeader}>Tour</Typography>
           {availableLeagues.map(l => (
             <FormControlLabel
+              key={l.key}
               control={
                 <Checkbox
-                  checked={leagues.includes(l.key)}
+                  checked={league.includes(l.key)}
                   onChange={() => this.onSelectLeague(l.key)}
                   className={`${classes.checkbox} ${classes.checkboxes}`}
                   value={l.key}
@@ -204,9 +217,9 @@ class TournamentFilters extends React.Component<Props> {
             />
           ))}
         </div>
-        <Button fullWidth type="submit" variant="contained" color="primary">
+        <LoadingButton loading={loading}>
           Search
-        </Button>
+        </LoadingButton>
       </form>
     );
   }

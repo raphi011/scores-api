@@ -1,19 +1,27 @@
-export interface IParams {
-  [key: string]: string;
+export interface Params {
+  [key: string]: ParamValue;
 }
 
-export function buildUrl(host: string, endpoint: string, params: IParams = {}) {
+type ParamValue = number | string | string[]
+
+export function buildUrl(host: string, endpoint: string, params: Params = {}) {
   let paramUrl = '';
 
   const paramList = Object.keys(params)
     .filter(key => params[key])
-    .map(key => `${key}=${params[key]}`);
+    .map(key => keyValue(key, params[key]));
 
   paramUrl = paramList.length ? `?${paramList.join('&')}` : '';
 
   const url = `${host}/${endpoint}${paramUrl}`;
 
   return encodeURI(url);
+}
+
+function keyValue(key: string, value: ParamValue): string {
+  return Array.isArray(value)
+    ? value.map(v => `${key}=${v}`).join('&')
+    : `${key}=${value}`
 }
 
 export function isJson(response: {

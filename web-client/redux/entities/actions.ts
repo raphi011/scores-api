@@ -1,5 +1,6 @@
 import { ApiAction } from '../../redux/api/actions';
 
+import { Gender } from '../../types';
 import * as actionNames from '../actionNames';
 
 export const searchVolleynetPlayersAction = (filters: {
@@ -34,9 +35,9 @@ export const loadTournamentAction = (tournamentId: string): ApiAction => ({
 });
 
 export const loadTournamentsAction = (filters: {
-  gender: string;
+  gender: Gender[];
   league: string[];
-  season: string[];
+  season: number;
 }): ApiAction => ({
   method: 'GET',
   params: filters,
