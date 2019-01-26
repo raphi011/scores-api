@@ -52,7 +52,7 @@ func TestSyncLadder(t *testing.T) {
 
 func TestSyncTournamentInformation(t *testing.T) {
 	response, _ := os.Open("../testdata/upcoming.html")
-	tournament, _ := scrape.Tournament(response, time.Now(), &volleynet.TournamentInfo{Status: volleynet.StatusUpcoming, ID: 22231})
+	tournament, _ := scrape.Tournament(response, test.MustParseDate("30.05.2018"), &volleynet.TournamentInfo{Status: volleynet.StatusUpcoming, ID: 22231})
 
 	syncInfos := Tournaments(tournament, &volleynet.TournamentInfo{ID: 22231, Status: volleynet.StatusUpcoming})
 

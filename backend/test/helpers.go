@@ -59,3 +59,14 @@ func Equal(t testing.TB, message string, expected, actual interface{}) {
 		t.Fatalf(message, expected, actual)
 	}
 }
+
+// MustParseDate parses a date or panics if not possible.
+func MustParseDate(date string) time.Time {
+	result, err := time.Parse("02.01.2006", date)
+
+	if err != nil {
+		panic("date could not be parsed")
+	}
+
+	return result
+}

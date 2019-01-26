@@ -15,7 +15,6 @@ SELECT
 	t.status,
 	t.registration_open,
 	t.location,
-	t.html_notes,
 	t.mode,
 	t.max_points,
 	t.min_teams,
@@ -36,4 +35,4 @@ WHERE
 	t.season IN (?) AND
 	t.league_key IN (?) AND
 	t.gender IN (?)
-LIMIT 100
+ORDER BY t.start_date desc

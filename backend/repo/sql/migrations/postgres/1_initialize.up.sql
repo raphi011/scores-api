@@ -52,7 +52,7 @@ CREATE INDEX tournaments_name       	ON tournaments (name);
 CREATE INDEX tournaments_start_date 	ON tournaments (start_date);
 CREATE INDEX tournaments_end_date   	ON tournaments (end_date);
 CREATE INDEX tournaments_gender			ON tournaments (gender);
-CREATE INDEX tournaments_league_key    ON tournaments (league_key);
+CREATE INDEX tournaments_league_key    	ON tournaments (league_key);
 CREATE INDEX tournaments_season     	ON tournaments (season);
 
 CREATE TABLE players (

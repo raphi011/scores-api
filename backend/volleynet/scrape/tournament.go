@@ -36,17 +36,38 @@ func Tournament(
 		return nil, errors.Wrap(err, "error parsing tournament teams")
 	}
 
-	if len(t.Teams) == 0 && isDateAfter(now, t.End) ||
-		len(t.Teams) > 0 && t.Teams[0].Result > 0 {
+	if isDone(t, now) {
 		t.Status = volleynet.StatusDone
 	}
 
 	return t, nil
 }
 
+// isDone returns true if the results for the tournament are in
+// or the tournament has not taken place.
+func isDone(t *volleynet.Tournament, now time.Time) bool {
+	if t.Status != volleynet.StatusUpcoming {
+		// nothing to do here
+		return false
+	}
+
+	if len(t.Teams) > 0 && t.Teams[0].Result > 0 {
+		return true
+	}
+
+	return hasNotTookPlace(t, now)
+}
+
+// hasNotTookPlace returns true if no results were added a week after the
+// tournament has ended - thus assuming that the tournament has not taken place.
+func hasNotTookPlace(t *volleynet.Tournament, now time.Time) bool {
+	updateDeadline := t.End.AddDate(0, 0, 7)
+
+	return isDateAfter(now, updateDeadline)
+}
+
 func getDate(d time.Time) time.Time {
 	date := time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
-	log.Print(date)
 	return date
 }
 
@@ -172,13 +193,16 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) er
 					team.Player1 = player
 				} else {
 					team.Player2 = player
-					t.Teams = append(t.Teams, team)
-					team = &volleynet.TournamentTeam{}
-					team.TournamentID = t.ID
 
 					if !team.Deregistered {
 						t.SignedupTeams++
 					}
+
+					t.Teams = append(t.Teams, team)
+
+					team = &volleynet.TournamentTeam{}
+					team.TournamentID = t.ID
+
 				}
 			}
 		}
