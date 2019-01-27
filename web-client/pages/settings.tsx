@@ -23,6 +23,7 @@ import {
 } from '../redux/admin/actions';
 import { scrapeJobsSelector } from '../redux/admin/selectors';
 import { allUsersSelector } from '../redux/entities/selectors';
+import { Store } from '../redux/store';
 import { ScrapeJob, User } from '../types';
 
 const styles = (theme: Theme) =>
@@ -66,7 +67,7 @@ class Home extends React.Component<Props, State> {
     return [loadVolleynetScrapeJobsAction(), loadUsersAction()];
   }
 
-  static mapStateToProps(state) {
+  static mapStateToProps(state: Store) {
     const jobs = scrapeJobsSelector(state);
     const users = allUsersSelector(state);
 

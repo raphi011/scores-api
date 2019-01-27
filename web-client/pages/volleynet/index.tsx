@@ -1,11 +1,18 @@
 import React from 'react';
 
+import { QueryStringMapObject } from 'next';
 import Router from 'next/router';
 
-import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import Hidden from '@material-ui/core/Hidden';
+import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import withWidth from '@material-ui/core/withWidth';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { QueryStringMapObject } from 'next';
-import CenteredLoading from '../../components/CenteredLoading';
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 import DayHeader from '../../components/DayHeader';
 import GroupedList from '../../components/GroupedList';
 import TournamentFilters, { Filters } from '../../components/volleynet/filters/TournamentFilters';
@@ -23,27 +30,34 @@ import { Gender, Tournament, User } from '../../types';
 
 const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
-const styles = createStyles({
-  left: {
-    width: '300px',
-  },
-  right: {
+const styles = (theme: Theme) => createStyles({
+  primary: {
     flexGrow: 1,
   },
   root: {
     display: 'flex',
+
     flexDirection: 'row',
+
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
+    }
+  },
+  secondary: {
+    [theme.breakpoints.up('sm')]: {
+      paddingRight: '30px',
+      width: '300px',
+    }
   },
 });
 
 interface Props extends WithStyles<typeof styles> {
   tournaments: Tournament[];
-
   league: string[];
   season: number;
   gender: Gender[];
-
   user: User;
+  width: Breakpoint;
 
   loadTournaments: (
     filters: { gender: Gender[]; league: string[]; season: number },
@@ -132,46 +146,58 @@ class Volleynet extends React.Component<Props, State> {
     this.setState({ loading: false })
   }
 
-  render() {
-    const { league, gender, season, tournaments, classes } = this.props;
+  renderFilters = () => {
+    const { league, gender, season, width } = this.props;
     const { loading } = this.state;
 
-    let leftContent = <CenteredLoading />;
+    const filters = (
+      <TournamentFilters
+        loading={loading}
+        league={league}
+        gender={gender}
+        season={season}
+        onFilter={this.onFilter}
+      />
+    )
 
-    if (tournaments) {
-      leftContent = (
-        <GroupedList<Tournament>
-          groupItems={groupTournaments}
-          items={tournaments}
-          // items={tournaments.sort(sortDescending)}
-          renderHeader={renderHeader}
-          renderList={this.renderList}
-        />
+    if (width === "xs") {
+      return (
+        <ExpansionPanel style={{ marginTop: '10px' }}>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography style={{ fontSize: '20px' }}>Filters</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails >
+            {filters}
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
       );
     }
 
+    return filters;
+  }
+
+  render() {
+    const { tournaments, classes } = this.props;
+
     return (
-      <Layout title={{ text: 'Volleynet', href: '' }}>
+      <Layout title={{ text: 'Tournaments', href: '' }}>
         <div className={classes.root}>
-          <div className={classes.left}>
-            <TournamentFilters
-              loading={loading}
-              league={league}
-              gender={gender}
-              season={season}
-              onFilter={this.onFilter}
+          <div className={classes.secondary}>
+            {this.renderFilters()}
+          </div>
+          <div className={classes.primary}>
+            <GroupedList<Tournament>
+              groupItems={groupTournaments}
+              items={tournaments}
+              renderHeader={renderHeader}
+              renderList={this.renderList}
             />
           </div>
-          <div className={classes.right}>{leftContent}</div>
         </div>
       </Layout>
     );
   }
 }
-
-// function sortDescending(a: Tournament, b: Tournament) {
-//   return new Date(b.start).getTime() - new Date(a.start).getTime();
-// }
 
 function sameDay(d1: Date, d2: Date): boolean {
   return (
@@ -209,4 +235,4 @@ function renderHeader(tournaments: Tournament[]) {
   );
 }
 
-export default withStyles(styles)(withAuth(Volleynet));
+export default withStyles(styles)(withAuth(withWidth()(Volleynet)));

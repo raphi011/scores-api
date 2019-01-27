@@ -29,6 +29,7 @@ function loggedOut(state: AuthStore, action): AuthStore {
 
 function setUserOrLoginroute(state: AuthStore, action): AuthStore {
   const { user, loginRoute } = action.payload;
+
   return {
     ...state,
     loginRoute,

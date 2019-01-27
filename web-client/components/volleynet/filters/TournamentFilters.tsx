@@ -1,11 +1,7 @@
 import React from 'react';
 
 import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Input from '@material-ui/core/Input';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import {
@@ -15,7 +11,6 @@ import {
   WithStyles,
 } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import SearchIcon from '@material-ui/icons/Search';
 import { Gender } from '../../../types';
 import LoadingButton from '../../LoadingButton';
 
@@ -47,8 +42,8 @@ const styles = (theme: Theme) =>
       marginBottom: '3px',
     },
     form: {
-      maxWidth: '200px',
-    },
+      width: '100%',
+    }
   });
 
 export interface Filters {
@@ -58,10 +53,6 @@ export interface Filters {
 }
 
 interface Props extends WithStyles<typeof styles> {
-  // availableLeagues: League[];
-  // availableGenders: Gender[];
-  // availableSeasons: number[];
-
   league: string[];
   gender: Gender[];
   season: number;
@@ -160,21 +151,6 @@ class TournamentFilters extends React.Component<Props, State> {
 
     return (
       <form onSubmit={this.onSubmit} autoComplete="off" className={classes.form}>
-        <div className={classes.filterGroup}>
-          <Typography className={classes.filterHeader}>Name</Typography>
-          <FormControl>
-            <InputLabel htmlFor="input-with-icon-adornment">Name</InputLabel>
-            <Input
-              id="input-with-icon-adornment"
-              endAdornment={
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-        </div>
-
         <div className={classes.filterGroup}>
           <Typography className={classes.filterHeader}>Season</Typography>
           <Select value={season} onChange={this.onSelectSeason}>

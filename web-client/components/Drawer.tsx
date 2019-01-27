@@ -1,7 +1,6 @@
 import React, { SyntheticEvent } from 'react';
 
-// import Avatar from '@material-ui/core/Avatar';
-import MDrawer from '@material-ui/core/Drawer';
+import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -22,7 +21,6 @@ import Link from 'next/link';
 import AdminOnly from '../containers/AdminOnly';
 
 import { Typography } from '@material-ui/core';
-// import { Player } from '../types';
 
 const drawerWidth = 300;
 
@@ -31,108 +29,119 @@ declare var VERSION: string;
 
 const styles = (theme: Theme) =>
   createStyles({
-    drawer: {
-      flexShrink: 0,
-      width: drawerWidth,
-    },
-    drawerPaper: {
-      width: drawerWidth,
-    },
     header: {
       lineHeight: 'inherit',
       marginBottom: '5px',
       marginTop: '25px',
       textTransform: 'uppercase',
     },
+    permanentDrawer: {
+      flexShrink: 0,
+      width: drawerWidth,
+    },
+    permanentDrawerPaper: {
+      width: drawerWidth,
+    },
     toolbar: theme.mixins.toolbar,
   });
 
 interface Props extends WithStyles<typeof styles> {
   open: boolean;
-  onOpen: (event: SyntheticEvent<{}>) => void;
-  onClose: (event: SyntheticEvent<{}>) => void;
-  // userPlayer: Player;
+  mobile: boolean;
+
+  onClose?: (event: SyntheticEvent<{}>) => void;
 }
 
-function Drawer({ /*userPlayer,*/ classes }: Props) {
-  const sideList = (
-    <div>
-      <List>
-        {/* <ListItem button>
-          <Avatar src={userPlayer.profileImageUrl} />
-          <ListItemText inset primary={userPlayer.name} />
-        </ListItem> */}
-        <ListItem button>
-          <ListItemIcon>
-            <InfoIcon />
-          </ListItemIcon>
-          <ListItemText inset primary="What's new?" />
-        </ListItem>
-        <Link href="/home">
+export default withStyles(styles)(
+  ({ mobile, onClose, open, classes }: Props) => {
+    const sideList = (
+      <div>
+        <List>
           <ListItem button>
             <ListItemIcon>
-              <HomeIcon />
+              <InfoIcon />
             </ListItemIcon>
-            <ListItemText inset primary="Home" />
+            <ListItemText inset primary="What's new?" />
           </ListItem>
-        </Link>
-        <AdminOnly>
-          <Link href="/settings">
+          <Link href="/home">
             <ListItem button>
               <ListItemIcon>
-                <SettingsIcon />
+                <HomeIcon />
               </ListItemIcon>
-              <ListItemText inset primary="Settings" />
+              <ListItemText inset primary="Home" />
             </ListItem>
           </Link>
-        </AdminOnly>
-        <Link prefetch href="/volleynet">
+          <AdminOnly>
+            <Link href="/settings">
+              <ListItem button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Settings" />
+              </ListItem>
+            </Link>
+          </AdminOnly>
+          <Link prefetch href="/volleynet">
+            <ListItem button>
+              <ListItemIcon>
+                <TournamentIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Tournaments" />
+            </ListItem>
+          </Link>
+          <Link prefetch href="/volleynet/ranking">
+            <ListItem button>
+              <ListItemIcon>
+                <LadderIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Rankings" />
+            </ListItem>
+          </Link>
           <ListItem button>
             <ListItemIcon>
-              <TournamentIcon />
+              <SeasonIcon />
             </ListItemIcon>
-            <ListItemText inset primary="Tournaments" />
+            <ListItemText inset primary="My Season" />
           </ListItem>
-        </Link>
-        <Link prefetch href="/volleynet/ranking">
-          <ListItem button>
-            <ListItemIcon>
-              <LadderIcon />
-            </ListItemIcon>
-            <ListItemText inset primary="Rankings" />
-          </ListItem>
-        </Link>
-        <ListItem button>
-          <ListItemIcon>
-            <SeasonIcon />
-          </ListItemIcon>
-          <ListItemText inset primary="My Season" />
-        </ListItem>
-      </List>
-    </div>
-  );
+        </List>
+      </div>
+    );
 
-  const content = (
-    <div tabIndex={0} role="button">
-      {sideList}
-      <Typography align="center" variant="caption">
-        {VERSION}
-      </Typography>
-    </div>
-  );
+    const content = (
+      <div tabIndex={0} role="button">
+        {sideList}
+        <Typography align="center" variant="caption">
+          {VERSION}
+        </Typography>
+      </div>
+    );
 
-  return (
-    <MDrawer
-      className={classes.drawer}
-      variant="permanent"
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-    >
-      <div className={classes.toolbar} />
-      {content}
-    </MDrawer>
-  );
-}
+    if (mobile) {
+      return (
+        <Drawer
+          open={open}
+          variant="temporary"
+          anchor="top"
+          onClose={onClose}
+        >
+          {content}
+        </Drawer>
+      );
+    }
 
-export default withStyles(styles)(Drawer);
+    return (
+      <Drawer
+        open={open}
+        variant="permanent"
+        anchor="left"
+        className={classes.permanentDrawer}
+        classes={{
+          paper: classes.permanentDrawerPaper,
+        }}
+      >
+        <div className={classes.toolbar} />
+        {content}
+      </Drawer>
+    );
+  },
+);

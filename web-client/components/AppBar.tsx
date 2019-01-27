@@ -1,6 +1,13 @@
+import React from 'react';
+
+import Link from 'next/link';
+
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import {
   createStyles,
   Theme,
@@ -10,8 +17,8 @@ import {
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
-import Link from 'next/link';
-import React from 'react';
+
+import { User } from '../types';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -43,25 +50,26 @@ interface Props extends WithStyles<typeof styles> {
   bodyScrolled: boolean;
   title: { text: string; href: string };
   isLoggedIn: boolean;
+  user: User;
+  anchorEl: HTMLElement;
 
-  onOpenMenu: () => void;
+  onToggleDrawer: () => void;
+  onMenuOpen: (event: React.SyntheticEvent) => void;
+  onMenuClose: () => void;
   onLogout: () => Promise<void>;
 }
 
 function ButtonAppBar({
-  onOpenMenu,
+  onToggleDrawer,
   title,
-  isLoggedIn,
+  user,
   onLogout,
   bodyScrolled,
+  anchorEl,
+  onMenuOpen,
+  onMenuClose,
   classes,
 }: Props) {
-  const button = isLoggedIn ? (
-    <Button color="inherit" onClick={onLogout}>
-      Logout
-    </Button>
-  ) : null;
-
   let className = classes.appBar;
 
   if (!bodyScrolled) {
@@ -71,22 +79,38 @@ function ButtonAppBar({
   return (
     <AppBar position="fixed" className={className}>
       <Toolbar>
-        <IconButton
-          color="inherit"
-          onClick={onOpenMenu}
-          className={classes.menuButton}
-          aria-label="Menu"
-        >
-          <MenuIcon />
-        </IconButton>
+        <Hidden mdUp>
+          <IconButton
+            color="inherit"
+            onClick={onToggleDrawer}
+            className={classes.menuButton}
+            aria-label="Menu"
+          >
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
         <Link href={title.href}>
           <Typography variant="h6" className={classes.logo} color="inherit">
             {title.text}
           </Typography>
         </Link>
         <div className={classes.flex} />
-
-        {button}
+        <IconButton onClick={onMenuOpen}>
+          <Avatar src={user ? user.profileImageUrl : ''} />
+        </IconButton>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={onMenuClose}
+        >
+          <Link href="/settings">
+            <MenuItem onClick={onMenuClose}>
+                Settings
+            </MenuItem>
+          </Link>
+          <MenuItem onClick={onLogout}>Logout</MenuItem>
+        </Menu>
       </Toolbar>
     </AppBar>
   );

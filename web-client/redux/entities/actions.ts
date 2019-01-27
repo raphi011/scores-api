@@ -14,7 +14,7 @@ export const searchVolleynetPlayersAction = (filters: {
   successParams: {
     entityName: 'player',
     listOptions: {
-      volleynetplayer: {
+      player: {
         mode: 'replace',
         name: 'search',
       },
@@ -55,14 +55,14 @@ export const loadTournamentsAction = (filters: {
   url: 'tournaments',
 });
 
-export const loadLadderAction = (gender: 'M' | 'W'): ApiAction => ({
+export const loadLadderAction = (gender: Gender): ApiAction => ({
   method: 'GET',
   params: { gender },
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
     entityName: 'player',
     listOptions: {
-      volleynetplayer: {
+      player: {
         key: gender,
         mode: 'replace',
         name: 'ladder',

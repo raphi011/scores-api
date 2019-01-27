@@ -7,9 +7,7 @@ import {
 import React, { ReactNode } from 'react';
 
 import AppBar from '../containers/AppBarContainer';
-import Drawer from './Drawer';
-
-// import { Player } from '../types';
+import Drawer from '../containers/DrawerContainer';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -18,7 +16,7 @@ const styles = (theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing.unit * 3,
+      padding: theme.spacing.unit * 1,
     },
     root: {
       display: 'flex',
@@ -29,27 +27,21 @@ const styles = (theme: Theme) =>
 interface Props extends WithStyles<typeof styles> {
   title: { text: string; href: string };
   children: ReactNode;
-  // userPlayer: Player;
   drawerOpen: boolean;
-  onCloseDrawer: () => void;
-  onOpenDrawer: () => void;
+
+  onToggleDrawer: () => void;
 }
 
 const Layout = ({
   title,
-  // userPlayer,
   children,
   drawerOpen,
-  onCloseDrawer,
-  onOpenDrawer,
+  onToggleDrawer,
   classes,
 }: Props) => (
   <div className={classes.root}>
-    <AppBar onOpenMenu={onOpenDrawer} title={title} />
+    <AppBar onToggleDrawer={onToggleDrawer} title={title} />
     <Drawer
-      // userPlayer={userPlayer}
-      onClose={onCloseDrawer}
-      onOpen={onOpenDrawer}
       open={drawerOpen}
     />
     <main className={classes.content}>
