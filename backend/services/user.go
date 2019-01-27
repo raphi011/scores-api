@@ -12,7 +12,7 @@ type User struct {
 	Repo       repo.UserRepository
 	PlayerRepo repo.PlayerRepository
 
-	Password         Password
+	Password Password
 }
 
 // HasRole verifies if a user has a certain role
@@ -27,7 +27,7 @@ func (s *User) HasRole(userID int, roleName string) bool {
 }
 
 // New creates a new user
-func (s *User) New(email, password string) (*scores.User, error) {
+func (s *User) New(email, password string, role string) (*scores.User, error) {
 	passwordInfo, err := s.Password.Hash([]byte(password))
 
 	if err != nil {
@@ -37,7 +37,7 @@ func (s *User) New(email, password string) (*scores.User, error) {
 	user, err := s.Repo.New(&scores.User{
 		Email:        email,
 		PasswordInfo: *passwordInfo,
-		Role:         "user",
+		Role:         role,
 	})
 
 	if err != nil {

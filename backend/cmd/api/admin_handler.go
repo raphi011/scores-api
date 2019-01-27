@@ -31,7 +31,7 @@ func (a *adminHandler) postUser(c *gin.Context) {
 	user, err := a.userService.ByEmail(userChanges.Email)
 
 	if errors.Cause(err) == scores.ErrNotFound {
-		user, err = a.userService.New(userChanges.Email, userChanges.Password)
+		user, err = a.userService.New(userChanges.Email, userChanges.Password, "user")
 
 		if err != nil {
 			responseErr(c, err)
