@@ -16,7 +16,11 @@ const styles = (theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing.unit * 1,
+      padding: theme.spacing.unit * 3,
+
+      [theme.breakpoints.down('xs')]: {
+        padding: theme.spacing.unit * 1,
+      }
     },
     root: {
       display: 'flex',

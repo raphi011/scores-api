@@ -13,7 +13,6 @@ const styles = (theme: Theme) =>
       top: '50%',
     },
     wrapper: {
-      margin: theme.spacing.unit,
       position: 'relative',
     },
   });
