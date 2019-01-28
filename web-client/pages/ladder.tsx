@@ -2,13 +2,13 @@ import React from 'react';
 
 import Card from '@material-ui/core/Card';
 
-import Ladder from '../../components/volleynet/Ladder';
-import withAuth from '../../containers/AuthContainer';
-import Layout from '../../containers/LayoutContainer';
-import { loadLadderAction } from '../../redux/entities/actions';
-import { ladderVolleynetplayerSelector } from '../../redux/entities/selectors';
+import Ladder from '../components/volleynet/Ladder';
+import withAuth from '../containers/AuthContainer';
+import Layout from '../containers/LayoutContainer';
+import { loadLadderAction } from '../redux/entities/actions';
+import { ladderVolleynetplayerSelector } from '../redux/entities/selectors';
 
-import { Player } from '../../types';
+import { Player } from '../types';
 
 interface Props {
   gender: 'M' | 'W';

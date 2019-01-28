@@ -12,20 +12,20 @@ import withWidth from '@material-ui/core/withWidth';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
-import DayHeader from '../../components/DayHeader';
-import GroupedList from '../../components/GroupedList';
-import TournamentFilters, { Filters } from '../../components/volleynet/filters/TournamentFilters';
-import TournamentList from '../../components/volleynet/TournamentList';
-import withAuth from '../../containers/AuthContainer';
-import Layout from '../../containers/LayoutContainer';
-import { userSelector } from '../../redux/auth/selectors';
+import DayHeader from '../components/DayHeader';
+import GroupedList from '../components/GroupedList';
+import TournamentFilters, { Filters } from '../components/volleynet/filters/TournamentFilters';
+import TournamentList from '../components/volleynet/TournamentList';
+import withAuth from '../containers/AuthContainer';
+import Layout from '../containers/LayoutContainer';
+import { userSelector } from '../redux/auth/selectors';
 import {
   loadTournamentAction,
   loadTournamentsAction,
-} from '../../redux/entities/actions';
-import { filteredTournamentsSelector } from '../../redux/entities/selectors';
-import { Store } from '../../redux/store';
-import { Gender, Tournament, User } from '../../types';
+} from '../redux/entities/actions';
+import { filteredTournamentsSelector } from '../redux/entities/selectors';
+import { Store } from '../redux/store';
+import { Gender, Tournament, User } from '../types';
 
 const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
@@ -122,7 +122,7 @@ class Volleynet extends React.Component<Props, State> {
 
   onTournamentClick = (t: Tournament) => {
     Router.push({
-      pathname: '/volleynet/tournament',
+      pathname: '/tournament',
       query: { id: t.id },
     });
   };
@@ -135,7 +135,7 @@ class Volleynet extends React.Component<Props, State> {
     const query = filters; 
 
     Router.push({
-      pathname: '/volleynet',
+      pathname: '/',
       query,
     });
 
@@ -161,7 +161,7 @@ class Volleynet extends React.Component<Props, State> {
 
     if (width === "xs") {
       return (
-        <ExpansionPanel style={{ marginTop: '10px' }}>
+        <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography style={{ fontSize: '20px' }}>Filters</Typography>
           </ExpansionPanelSummary>

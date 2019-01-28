@@ -1,10 +1,9 @@
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { createStyles, Theme, withStyles } from '@material-ui/core/styles';
+import { createStyles, withStyles } from '@material-ui/core/styles';
 import React from 'react';
 
-const styles = (theme: Theme) =>
-  createStyles({
+const styles = createStyles({
     buttonProgress: {
       left: '50%',
       marginLeft: -12,

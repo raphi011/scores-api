@@ -11,20 +11,20 @@ import {
 import Typography from '@material-ui/core/Typography';
 import AddIcon from '@material-ui/icons/Add';
 
-import JobList from '../components/admin/JobList';
-import UserList from '../components/admin/UserList';
-import EditUserDialog from '../containers/admin/EditUserDialogContainer';
-import withAuth from '../containers/AuthContainer';
-import Layout from '../containers/LayoutContainer';
+import JobList from '../../components/admin/JobList';
+import UserList from '../../components/admin/UserList';
+import EditUserDialog from '../../containers/admin/EditUserDialogContainer';
+import withAuth from '../../containers/AuthContainer';
+import Layout from '../../containers/LayoutContainer';
 import {
   loadUsersAction,
   loadVolleynetScrapeJobsAction,
   runJobAction,
-} from '../redux/admin/actions';
-import { scrapeJobsSelector } from '../redux/admin/selectors';
-import { allUsersSelector } from '../redux/entities/selectors';
-import { Store } from '../redux/store';
-import { ScrapeJob, User } from '../types';
+} from '../../redux/admin/actions';
+import { scrapeJobsSelector } from '../../redux/admin/selectors';
+import { allUsersSelector } from '../../redux/entities/selectors';
+import { Store } from '../../redux/store';
+import { ScrapeJob, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({

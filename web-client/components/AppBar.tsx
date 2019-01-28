@@ -106,7 +106,7 @@ function ButtonAppBar({
           onClose={onMenuClose}
         >
           <AdminOnly>
-            <Link href="/settings">
+            <Link href="/user/settings">
               <MenuItem onClick={onMenuClose}>
                   Settings
               </MenuItem>

@@ -11,14 +11,13 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core/styles';
-import SeasonIcon from '@material-ui/icons/CalendarToday';
-import HomeIcon from '@material-ui/icons/Home';
-import InfoIcon from '@material-ui/icons/Info';
+// import SeasonIcon from '@material-ui/icons/CalendarToday';
+// import HomeIcon from '@material-ui/icons/Home';
+// import InfoIcon from '@material-ui/icons/Info';
 import LadderIcon from '@material-ui/icons/LooksOne';
-import SettingsIcon from '@material-ui/icons/SettingsRounded';
+// import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import TournamentIcon from '@material-ui/icons/Star';
 import Link from 'next/link';
-import AdminOnly from '../containers/AdminOnly';
 
 import { Typography } from '@material-ui/core';
 
@@ -71,7 +70,7 @@ export default withStyles(styles)(
               <ListItemText inset primary="Home" />
             </ListItem>
           </Link> */}
-          <Link prefetch href="/volleynet">
+          <Link prefetch href="/">
             <ListItem button>
               <ListItemIcon>
                 <TournamentIcon />
@@ -79,12 +78,12 @@ export default withStyles(styles)(
               <ListItemText inset primary="Tournaments" />
             </ListItem>
           </Link>
-          <Link prefetch href="/volleynet/ranking">
+          <Link prefetch href="/ladder">
             <ListItem button>
               <ListItemIcon>
                 <LadderIcon />
               </ListItemIcon>
-              <ListItemText inset primary="Rankings" />
+              <ListItemText inset primary="Ladder" />
             </ListItem>
           </Link>
           {/* <ListItem button>

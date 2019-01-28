@@ -16,6 +16,7 @@ const styles = (theme: Theme) =>
     },
     content: {
       flexGrow: 1,
+      marginTop: '64px',
       padding: theme.spacing.unit * 3,
 
       [theme.breakpoints.down('xs')]: {
@@ -25,7 +26,7 @@ const styles = (theme: Theme) =>
     root: {
       display: 'flex',
     },
-    toolbar: theme.mixins.toolbar,
+    // toolbar: theme.mixins.toolbar,
   });
 
 interface Props extends WithStyles<typeof styles> {
@@ -49,7 +50,7 @@ const Layout = ({
       open={drawerOpen}
     />
     <main className={classes.content}>
-      <div className={classes.toolbar} />
+      {/* <div className={classes.toolbar} /> */}
       {children}
     </main>
   </div>

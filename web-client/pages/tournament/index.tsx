@@ -1,6 +1,7 @@
 import React from 'react';
 
-import TournamentView from '../../components/volleynet/TournamentView';
+import { Typography } from '@material-ui/core';
+
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
 
@@ -35,11 +36,11 @@ class ShowTournament extends React.Component<Props> {
   }
 
   render() {
-    const { tournament, user } = this.props;
+    const { tournament } = this.props;
 
     return (
-      <Layout title={{ text: 'Tournaments', href: '/volleynet' }}>
-        <TournamentView tournament={tournament} user={user} />
+      <Layout title={{ text: 'Tournaments', href: '/' }}>
+        <Typography variant="h2">{tournament.name}</Typography>
       </Layout>
     );
   }

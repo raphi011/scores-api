@@ -134,13 +134,13 @@ class Signup extends React.Component<Props, State> {
     return (
       <Layout
         title={{
-          href: `/volleynet/tournament?id=${tournament.id}`,
+          href: `/tournament?id=${tournament.id}`,
           text: 'Signup',
         }}
       >
         <div className={classes.container}>
           <div className={`${classes.title} ${classes.link}`}>
-            <Link href={`/volleynet/tournament?id=${tournament.id}`}>
+            <Link href={`/tournament?id=${tournament.id}`}>
               <a className={classes.link}>
                 <Typography variant="h4">{tournament.name}</Typography>
               </a>
