@@ -23,7 +23,7 @@ services:
       - "postgres://postgres:test@localhost?sslmode=disable"
       - "-provider"
       - "postgres"
-      - "-goauth"
+      - "-gauth"
       - "/srv/scores/client_secret.json"
     environment:
       - GIN_MODE=release
