@@ -1,6 +1,6 @@
 UPDATE users
 SET 
-    profile_image_url = :created_at,
+    profile_image_url = :profile_image_url,
     email = :email,
     volleynet_user_id = :volleynet_user_id,
     volleynet_user = :volleynet_user,
