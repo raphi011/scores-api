@@ -63,14 +63,14 @@ export default withStyles(styles)(
             </ListItemIcon>
             <ListItemText inset primary="What's new?" />
           </ListItem> */}
-          <Link href="/home">
+          {/* <Link href="/home">
             <ListItem button>
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
               <ListItemText inset primary="Home" />
             </ListItem>
-          </Link>
+          </Link> */}
           <Link prefetch href="/volleynet">
             <ListItem button>
               <ListItemIcon>
