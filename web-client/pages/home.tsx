@@ -12,7 +12,6 @@ import withAuth from '../containers/AuthContainer';
 
 import Layout from '../containers/LayoutContainer';
 import { userSelector } from '../redux/auth/selectors';
-import { playerSelector } from '../redux/entities/selectors';
 import { Player } from '../types';
 
 const styles = (theme: Theme) =>
@@ -50,12 +49,7 @@ class Home extends React.Component<Props> {
       return {};
     }
 
-    const { playerId } = user;
-
-    const player = playerSelector(state, playerId);
-
     return {
-      player,
       user,
     };
   }
