@@ -16,9 +16,9 @@ services:
       - "~/data/api:/srv/scores"
     command:
       - "-connection"
-      - "root:test@tcp(mariadb)/scores?charset=utf8mb4&parseTime=true"
+      - "postgres://postgres:test@localhost?sslmode=disable"
       - "-provider"
-      - "mysql"
+      - "postgres"
       - "-goauth"
       - "/srv/scores/client_secret.json"
     environment:
@@ -37,14 +37,17 @@ services:
       - "443:443"
       - "127.0.0.1:8001:8001"
 
-  mariadb:
-    image: mariadb:latest
+  db:
     volumes:
-      - "~/data/mariadb:/var/lib/mysql"
+      - "~/data/postgres:/var/lib/postgresql/data"
+
+  pgadmin:
+    image: dpage/pgadmin4
     environment:
-      - MYSQL_ROOT_PASSWORD=test
+      PGADMIN_DEFAULT_EMAIL: test@test.at
+      PGADMIN_DEFAULT_PASSWORD: test
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:81:80"
 
   elasticsearch:
     build:
