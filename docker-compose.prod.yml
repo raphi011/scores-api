@@ -38,6 +38,9 @@ services:
       - "127.0.0.1:8001:8001"
 
   db:
+    image: "postgres:latest"
+    ports:
+      - "127.0.0.1:5432:5432"
     volumes:
       - "~/data/postgres:/var/lib/postgresql/data"
 
