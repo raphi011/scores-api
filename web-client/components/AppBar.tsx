@@ -18,6 +18,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 
+import AdminOnly from '../containers/AdminOnly';
 import { User } from '../types';
 
 const styles = (theme: Theme) =>
@@ -104,11 +105,13 @@ function ButtonAppBar({
           open={Boolean(anchorEl)}
           onClose={onMenuClose}
         >
-          <Link href="/settings">
-            <MenuItem onClick={onMenuClose}>
-                Settings
-            </MenuItem>
-          </Link>
+          <AdminOnly>
+            <Link href="/settings">
+              <MenuItem onClick={onMenuClose}>
+                  Settings
+              </MenuItem>
+            </Link>
+          </AdminOnly>
           <MenuItem onClick={onLogout}>Logout</MenuItem>
         </Menu>
       </Toolbar>

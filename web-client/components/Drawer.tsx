@@ -57,12 +57,12 @@ export default withStyles(styles)(
     const sideList = (
       <div>
         <List>
-          <ListItem button>
+          {/* <ListItem button>
             <ListItemIcon>
               <InfoIcon />
             </ListItemIcon>
             <ListItemText inset primary="What's new?" />
-          </ListItem>
+          </ListItem> */}
           <Link href="/home">
             <ListItem button>
               <ListItemIcon>
@@ -71,16 +71,6 @@ export default withStyles(styles)(
               <ListItemText inset primary="Home" />
             </ListItem>
           </Link>
-          <AdminOnly>
-            <Link href="/settings">
-              <ListItem button>
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText inset primary="Settings" />
-              </ListItem>
-            </Link>
-          </AdminOnly>
           <Link prefetch href="/volleynet">
             <ListItem button>
               <ListItemIcon>
@@ -97,12 +87,12 @@ export default withStyles(styles)(
               <ListItemText inset primary="Rankings" />
             </ListItem>
           </Link>
-          <ListItem button>
+          {/* <ListItem button>
             <ListItemIcon>
               <SeasonIcon />
             </ListItemIcon>
             <ListItemText inset primary="My Season" />
-          </ListItem>
+          </ListItem> */}
         </List>
       </div>
     );
