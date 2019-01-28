@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"github.com/sirupsen/logrus"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 )
 
 // Logger middleware populates a logger with request specific fields
@@ -14,7 +15,7 @@ func Logger(log logrus.FieldLogger) gin.HandlerFunc {
 		log = log.WithFields(logrus.Fields{
 			"method":     c.Request.Method,
 			"url":        c.Request.URL.String(),
-			"ip":         c.Request.RemoteAddr,
+			"ip":         ipFromRequest(c.Request),
 			"user-agent": c.Request.UserAgent(),
 			"request-id": uuid.New().String(),
 		})
@@ -23,4 +24,12 @@ func Logger(log logrus.FieldLogger) gin.HandlerFunc {
 
 		c.Next()
 	}
+}
+
+func ipFromRequest(request *http.Request) string {
+	if ip, ok := request.Header["x-forwarded-for"]; ok {
+		return ip[0]
+	}
+
+	return request.RemoteAddr
 }
