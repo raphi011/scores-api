@@ -3,15 +3,19 @@ version: "3.6"
 services:
   frontend:
     build:
-      dockerfile: ./dockerfiles/deploy/frontend
-      context: .
+      dockerfile: ../dockerfiles/deploy/frontend
+      context: ./web-client
+      args:
+        version: ${VERSION}
     environment:
       - BACKEND_URL=http://backend:8080 # Internal Docker Backend
 
   backend:
     build:
-      dockerfile: ./dockerfiles/deploy/backend
-      context: .
+      dockerfile: ../dockerfiles/deploy/backend
+      context: ./backend
+      args:
+        version: ${VERSION}
     volumes:
       - "~/data/api:/srv/scores"
     command:

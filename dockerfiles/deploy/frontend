@@ -1,13 +1,15 @@
 FROM node:latest
 
-WORKDIR /scores/web
-COPY ./web/package*.json ./
+ARG version
+ENV VERSION $version
+
+WORKDIR /scores/web-client
+
+COPY ./package*.json ./
 RUN npm install
 
-WORKDIR /scores
 COPY . .
 
-WORKDIR /scores/web
 RUN npm run build
 
 EXPOSE 3000 
