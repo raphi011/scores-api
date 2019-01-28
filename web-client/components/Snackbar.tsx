@@ -13,8 +13,7 @@ import CloseIcon from '@material-ui/icons/Close';
 const styles = (theme: Theme) =>
   createStyles({
     close: {
-      height: theme.spacing.unit * 4,
-      width: theme.spacing.unit * 4,
+      padding: theme.spacing.unit / 2,
     },
   });
 
@@ -35,7 +34,7 @@ const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
     autoHideDuration={6000}
     onClose={handleRequestClose(onClose)}
     message={<span id="message-id">{status}</span>}
-    action={[
+    action={
       <IconButton
         key="close"
         aria-label="Close"
@@ -44,8 +43,8 @@ const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
         onClick={onClose}
       >
         <CloseIcon />
-      </IconButton>,
-    ]}
+      </IconButton>
+    }
   />
 );
 
