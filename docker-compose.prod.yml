@@ -20,7 +20,7 @@ services:
       - "~/data/api:/srv/scores"
     command:
       - "-connection"
-      - "postgres://postgres:test@localhost?sslmode=disable"
+      - "postgres://postgres:test@db?sslmode=disable"
       - "-provider"
       - "postgres"
       - "-gauth"
