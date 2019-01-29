@@ -19,8 +19,36 @@ type Props = {
   error: any;
 };
 
-interface Context extends NextContext {
+export interface Context extends NextContext {
   store: Store;
+}
+
+export async function dispatchWithContext(ctx: Context, action) {
+  const { store, res, req } = ctx;
+
+  const isServer = !!req;
+  const dispatch = store.dispatch;
+
+  return await dispatchAction(dispatch, action, isServer, req, res);
+}
+
+export function redirectWithContext(ctx: Context, path: string) {
+  const { res, req } = ctx;
+
+  const isServer = !!req;
+
+  if (isServer) {
+    const protocol = 'https';
+    const host = req.headers.host;
+    const loginUrl = `${protocol}://${host}${path}`;
+    res.writeHead(302, {
+      Location: loginUrl,
+    });
+    res.end();
+    res.finished = true;
+  } else {
+    Router.push(path);
+  }
 }
 
 export default (Component): NextComponentClass<Props> => {
@@ -33,62 +61,40 @@ export default (Component): NextComponentClass<Props> => {
 
         const dispatch = store.dispatch;
 
-        let user;
-        let url;
-        let isLoggedIn;
-        let loginRoute = '';
+        let url: string;
+        let isLoggedIn: boolean;
 
         if (isServer) {
-          const result = await dispatchAction(
-            dispatch,
+          const result = await dispatchWithContext(
+            ctx,
             userOrLoginRouteAction(),
-            isServer,
-            req,
-            res,
           );
 
-          user = result.response.user;
-          loginRoute = result.response.loginRoute;
           url = req.url;
-          isLoggedIn = !!user;
+          isLoggedIn = !!result.response.user;
         } else {
           const authState = userSelector(store.getState());
 
           url = Router.asPath;
           isLoggedIn = authState.isLoggedIn;
-          user = authState.user;
         }
 
         let props = {
           dispatch,
           fromServer: isServer,
           isLoggedIn,
-          loginRoute: '',
-          user,
         };
 
         if (!isLoggedIn) {
           if (!url.includes('/login')) {
-            // redirect to '/login'
             const redir = url ? `?r=${encodeURIComponent(url)}` : '';
 
-            if (isServer) {
-              const protocol = 'https';
-              const host = req.headers.host;
-              const loginUrl = `${protocol}://${host}/login${redir}`;
-              res.writeHead(302, {
-                Location: loginUrl,
-              });
-              res.end();
-              res.finished = true;
-            } else {
-              Router.push(`/login${redir}`);
-            }
+            const path = `/login${redir}`;
+
+            redirectWithContext(ctx, path);
 
             return {};
           }
-
-          props.loginRoute = loginRoute;
         }
 
         // All good, return props!
@@ -98,6 +104,15 @@ export default (Component): NextComponentClass<Props> => {
           props = {
             ...props,
             ...parameters,
+          };
+        }
+
+        if (Component.getInitialProps) {
+          const initialProps = await Component.getInitialProps(ctx);
+
+          props = {
+            ...print,
+            ...initialProps,
           };
         }
 
@@ -126,11 +141,11 @@ export default (Component): NextComponentClass<Props> => {
       await dispatchActions(dispatch, actions, false);
     }
 
-    async componentWillUpdate(nextProps) {
+    async componentWillUpdate(nextProps, nextState) {
       if (
         !Component.shouldComponentUpdate ||
         !Component.buildActions ||
-        !Component.shouldComponentUpdate(this.props, nextProps)
+        !Component.shouldComponentUpdate(nextProps, nextState)
       ) {
         return;
       }

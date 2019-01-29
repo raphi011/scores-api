@@ -1,5 +1,8 @@
 import React, { SyntheticEvent } from 'react';
 
+import Link from 'next/link';
+
+import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,15 +14,13 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core/styles';
-// import SeasonIcon from '@material-ui/icons/CalendarToday';
-// import HomeIcon from '@material-ui/icons/Home';
-// import InfoIcon from '@material-ui/icons/Info';
+import Typography from '@material-ui/core/Typography';
+import LogoutIcon from '@material-ui/icons/ExitToApp';
 import LadderIcon from '@material-ui/icons/LooksOne';
-// import SettingsIcon from '@material-ui/icons/SettingsRounded';
+import SettingsIcon from '@material-ui/icons/SettingsRounded';
 import TournamentIcon from '@material-ui/icons/Star';
-import Link from 'next/link';
 
-import { Typography } from '@material-ui/core';
+import AdminOnly from '../containers/AdminOnly';
 
 const drawerWidth = 300;
 
@@ -56,20 +57,6 @@ export default withStyles(styles)(
     const sideList = (
       <div>
         <List>
-          {/* <ListItem button>
-            <ListItemIcon>
-              <InfoIcon />
-            </ListItemIcon>
-            <ListItemText inset primary="What's new?" />
-          </ListItem> */}
-          {/* <Link href="/home">
-            <ListItem button>
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Home" />
-            </ListItem>
-          </Link> */}
           <Link prefetch href="/">
             <ListItem button>
               <ListItemIcon>
@@ -86,33 +73,42 @@ export default withStyles(styles)(
               <ListItemText inset primary="Ladder" />
             </ListItem>
           </Link>
-          {/* <ListItem button>
-            <ListItemIcon>
-              <SeasonIcon />
-            </ListItemIcon>
-            <ListItemText inset primary="My Season" />
-          </ListItem> */}
+          <AdminOnly>
+            <Link href="/admin">
+              <ListItem button>
+                <ListItemIcon>
+                  <SettingsIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Admin" />
+              </ListItem>
+            </Link>
+          </AdminOnly>
         </List>
       </div>
     );
 
     const content = (
-      <div tabIndex={0} role="button">
+      <>
         {sideList}
+        <div style={{ flex: 1 }} />
+        <Divider />
+        <Link href="/logout">
+          <ListItem button>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText inset primary="Logout" />
+          </ListItem>
+        </Link>
         <Typography align="center" variant="caption">
           {VERSION}
         </Typography>
-      </div>
+      </>
     );
 
     if (mobile) {
       return (
-        <Drawer
-          open={open}
-          variant="temporary"
-          anchor="top"
-          onClose={onClose}
-        >
+        <Drawer open={open} variant="temporary" anchor="top" onClose={onClose}>
           {content}
         </Drawer>
       );

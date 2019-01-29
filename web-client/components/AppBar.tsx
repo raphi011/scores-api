@@ -6,8 +6,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import {
   createStyles,
   Theme,
@@ -18,7 +16,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import AdminOnly from '../containers/AdminOnly';
 import { User } from '../types';
 
 const styles = (theme: Theme) =>
@@ -52,23 +49,15 @@ interface Props extends WithStyles<typeof styles> {
   title: { text: string; href: string };
   isLoggedIn: boolean;
   user: User;
-  anchorEl: HTMLElement;
 
   onToggleDrawer: () => void;
-  onMenuOpen: (event: React.SyntheticEvent) => void;
-  onMenuClose: () => void;
-  onLogout: () => Promise<void>;
 }
 
 function ButtonAppBar({
   onToggleDrawer,
   title,
   user,
-  onLogout,
   bodyScrolled,
-  anchorEl,
-  onMenuOpen,
-  onMenuClose,
   classes,
 }: Props) {
   let className = classes.appBar;
@@ -96,24 +85,11 @@ function ButtonAppBar({
           </Typography>
         </Link>
         <div className={classes.flex} />
-        <IconButton onClick={onMenuOpen}>
-          <Avatar src={user ? user.profileImageUrl : ''} />
-        </IconButton>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={onMenuClose}
-        >
-          <AdminOnly>
-            <Link href="/user/settings">
-              <MenuItem onClick={onMenuClose}>
-                  Settings
-              </MenuItem>
-            </Link>
-          </AdminOnly>
-          <MenuItem onClick={onLogout}>Logout</MenuItem>
-        </Menu>
+        <Link href={{ pathname: '/user', query: { id: user.id } }}>
+          <IconButton>
+            <Avatar src={user.profileImageUrl} />
+          </IconButton>
+        </Link>
       </Toolbar>
     </AppBar>
   );

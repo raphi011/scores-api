@@ -1,39 +1,35 @@
 import React from 'react';
 
-import Drawer from '../components/Drawer';
-
 import { withWidth } from '@material-ui/core';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
+import Drawer from '../components/Drawer';
+
 interface Props {
-    width: Breakpoint;
-    open: boolean;
+  width: Breakpoint;
+  open: boolean;
 }
 
 interface State {
-    open: boolean;
+  open: boolean;
 }
 
 class DrawerContainer extends React.Component<Props, State> {
-  state = {
-    open: false,
-  };
-
   constructor(props) {
-      super(props);
+    super(props);
 
-      this.state = {
-          open: props.open,
-      }
+    this.state = {
+      open: props.open,
+    };
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.width === "xs" && this.props.width !== "xs") {
-        this.setState({ open: false });
+    if (prevProps.width === 'xs' && this.props.width !== 'xs') {
+      this.setState({ open: false });
     } else if (prevProps.open !== this.props.open) {
-        this.setState({
-            open: !this.state.open,
-        });
+      this.setState({
+        open: !this.state.open,
+      });
     }
   }
 
@@ -51,14 +47,14 @@ class DrawerContainer extends React.Component<Props, State> {
 
   render() {
     const { width } = this.props;
-    const { open } = this.state
+    const { open } = this.state;
 
     return (
-        <Drawer
-            mobile={["xs", "sm"].includes(width)}
-            open={open}
-            onClose={this.onClose}
-        />
+      <Drawer
+        mobile={['xs', 'sm'].includes(width)}
+        open={open}
+        onClose={this.onClose}
+      />
     );
   }
 }

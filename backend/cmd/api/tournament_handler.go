@@ -105,7 +105,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 	if su.RememberMe {
 		session := sessions.Default(c)
 		userID := session.Get("user-id")
-		user, err := h.userService.ByEmail(userID.(string))
+		user, err := h.userService.ByID(userID.(int))
 
 		if err != nil {
 			logger.Get(c).Warnf("loading user by email: %s failed", userID.(string))

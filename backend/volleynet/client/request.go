@@ -69,7 +69,7 @@ func (c *Default) Login(username, password string) (*scrape.LoginData, error) {
 
 	loginData, err := scrape.Login(resp.Body)
 
-	if resp.StatusCode != http.StatusOK {
+	if err != nil {
 		return nil, errors.Wrap(err, "parse login")
 	}
 

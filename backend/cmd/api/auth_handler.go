@@ -7,26 +7,24 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"golang.org/x/oauth2"
 
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/cmd/api/logger"
 	"github.com/raphi011/scores/services"
-
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/oauth2"
 )
 
 type loginRouteOrUserDto struct {
-	LoginRoute string       `json:"loginRoute"`
-	User       *scores.User `json:"user"`
+	LoginRoute string       `json:"loginRoute,omitempty"`
+	User       *scores.User `json:"user" `
 }
 
 type userDto struct {
-	ID    int    `json:"id"`
-	Email string `json:"email"`
-	// Player          scores.Player `json:"player"`
+	ID              int    `json:"id"`
+	Email           string `json:"email"`
 	PlayerID        int    `json:"playerId"`
 	ProfileImageURL string `json:"profileImageUrl"`
 }
@@ -102,18 +100,21 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 	}
 
 	client := a.conf.Client(oauth2.NoContext, tok)
-	email, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
+	userinfo, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
 
 	if err != nil {
 		responseBadRequest(c)
 		return
 	}
 
-	defer email.Body.Close()
+	defer userinfo.Body.Close()
+
+	// since the client successfully logged in reset the state token
+	newStateToken(session)
 
 	googleUser := oauthUser{}
 
-	data, _ := ioutil.ReadAll(email.Body)
+	data, _ := ioutil.ReadAll(userinfo.Body)
 
 	if err := json.Unmarshal(data, &googleUser); err != nil {
 		responseBadRequest(c)
@@ -160,26 +161,40 @@ func (a *authHandler) loginRouteOrUser(c *gin.Context) {
 		}
 	}
 
-	state := randToken()
-	session.Set("state", state)
-	session.Save()
-
 	loginRoute := ""
+
 	if a.conf != nil {
+		state := ""
+		var ok bool
+
+		if state, ok = session.Get("state").(string); !ok {
+			state = newStateToken(session)
+		}
+
 		loginRoute = a.conf.AuthCodeURL(state)
 	}
 
 	response(c, http.StatusOK, loginRouteOrUserDto{LoginRoute: loginRoute})
 }
 
-func (a *authHandler) logout(c *gin.Context) {
+func newStateToken(session sessions.Session) string {
 	state := randToken()
-	session := sessions.Default(c)
-	session.Delete("user-id")
 	session.Set("state", state)
 	session.Save()
 
-	loginRoute := a.conf.AuthCodeURL(state)
+	return state
+}
+
+func (a *authHandler) logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+
+	loginRoute := ""
+
+	if a.conf != nil {
+		state := newStateToken(session)
+		loginRoute = a.conf.AuthCodeURL(state)
+	}
 
 	logger.Get(c).Info("user logged out")
 

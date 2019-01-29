@@ -15,7 +15,9 @@ import LoadingButton from '../components/LoadingButton';
 import withAuth from '../containers/AuthContainer';
 import Snackbar from '../containers/SnackbarContainer';
 import { loginWithPasswordAction } from '../redux/auth/actions';
+import { loginRouteSelector } from '../redux/auth/selectors';
 import { setStatusAction } from '../redux/status/actions';
+import { Store } from '../redux/store';
 
 interface Props extends WithStyles<typeof styles> {
   r: string;
@@ -62,6 +64,12 @@ class Login extends React.Component<Props, State> {
     return { error, r };
   }
 
+  static mapStateToProps(state: Store) {
+    const loginRoute = loginRouteSelector(state);
+
+    return { loginRoute };
+  }
+
   state = {
     email: '',
     loggingIn: false,
@@ -69,7 +77,6 @@ class Login extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    // TODO: load new loginRoute after logout
     const { fromServer } = this.props;
 
     if (!fromServer) {

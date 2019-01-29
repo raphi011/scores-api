@@ -3,22 +3,17 @@ import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
 
 export const initialAuthState = {
-  loginRoute: null,
+  loginRoute: '',
   user: null,
 };
 
 export type AuthStore = {
-  user?: User;
-  loginRoute?: string;
+  user: User;
+  loginRoute: string;
 };
 
 function loggedOut(state: AuthStore, action): AuthStore {
-  // todo
-  let loginRoute = '';
-
-  if (action.payload) {
-    loginRoute = action.payload.loginRoute || '';
-  }
+  const { loginRoute = '' } = action.payload;
 
   return {
     ...state,
