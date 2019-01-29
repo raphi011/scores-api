@@ -22,6 +22,7 @@
     "@types/classnames": "^2.2.7",
     "@types/jest": "^23.3.13",
     "@types/next": "^7.0.6",
+    "@types/normalizr": "^2.0.18",
     "@types/react": "^16.7.21",
     "@types/react-dom": "^16.0.11",
     "@types/react-redux": "^7.0.1",

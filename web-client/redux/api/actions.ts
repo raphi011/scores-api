@@ -2,6 +2,7 @@ import * as http from 'http';
 import { Params } from '../../api';
 import * as actionNames from '../actionNames';
 import { Action } from '../actions';
+import { ReceiveEntityParams } from '../entities/reducer';
 
 export const multiApiAction = (actions: ApiAction[]): ApiActions => ({
   actions,
@@ -21,7 +22,7 @@ export interface ApiAction extends Action {
   error?: string;
   body?: string;
   successStatus?: string;
-  successParams?: object;
+  successParams?: ReceiveEntityParams;
 }
 
 export interface ApiActions extends Action {

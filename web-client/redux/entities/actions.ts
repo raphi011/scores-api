@@ -1,9 +1,9 @@
 import { ApiAction } from '../../redux/api/actions';
 
-import { Gender } from '../../types';
+import { EntityName, Gender } from '../../types';
 import * as actionNames from '../actionNames';
 
-export const searchVolleynetPlayersAction = (filters: {
+export const searchPlayersAction = (filters: {
   fname: string;
   lname: string;
   bday: string;
@@ -12,9 +12,9 @@ export const searchVolleynetPlayersAction = (filters: {
   params: filters,
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
-    entityName: 'player',
+    entityName: EntityName.Player,
     listOptions: {
-      player: {
+      [EntityName.Player]: {
         mode: 'replace',
         name: 'search',
       },
@@ -28,7 +28,7 @@ export const loadTournamentAction = (tournamentId: string): ApiAction => ({
   method: 'GET',
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
-    entityName: 'tournament',
+    entityName: EntityName.Tournament,
   },
   type: actionNames.API,
   url: `tournaments/${tournamentId}`,
@@ -43,9 +43,9 @@ export const loadTournamentsAction = (filters: {
   params: filters,
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
-    entityName: 'tournament',
+    entityName: EntityName.Tournament,
     listOptions: {
-      tournament: {
+      [EntityName.Tournament]: {
         mode: 'replace',
         name: 'filter',
       },
@@ -60,9 +60,9 @@ export const loadLadderAction = (gender: Gender): ApiAction => ({
   params: { gender },
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
-    entityName: 'player',
+    entityName: EntityName.Player,
     listOptions: {
-      player: {
+      [EntityName.Player]: {
         key: gender,
         mode: 'replace',
         name: 'ladder',

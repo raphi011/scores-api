@@ -1,6 +1,5 @@
 export enum EntityName {
   Player = 'player',
-  Team = 'team',
   Tournament = 'tournament',
   User = 'user',
 }
@@ -108,7 +107,6 @@ export interface ScrapeJob {
     maxFailures: number;
     interval: string;
   };
-  // errors:       []error TODO
   runs: number;
   state: number;
 }

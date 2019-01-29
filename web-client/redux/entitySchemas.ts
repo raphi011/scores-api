@@ -11,23 +11,9 @@ const tournamentList = new schema.Array(tournament);
 const user = new schema.Entity('user');
 const userList = new schema.Array(user);
 
-const team = new schema.Entity(
-  'team',
-  {
-    player1: player,
-    player2: player,
-  },
-  {
-    idAttribute: (t: any) => `${t.player1Id}${t.player2Id}`,
-  },
-);
-const teamList = new schema.Array(team);
-
 const entitySchemaMap = {
   player,
   playerList,
-  team,
-  teamList,
   tournament,
   tournamentList,
   user,
@@ -45,10 +31,9 @@ function getSchemaMap(entityName: string, isList: boolean) {
   return entitySchema;
 }
 
-function getArtificialId(): number {
+function getArtificialId() {
   const id = Math.floor(Math.random() * Math.floor(100000));
-  // TODO: fix this, id collisions possible
-  return id;
+  return id.toString();
 }
 
 function assignArtificialId(entities: any[] | any) {
@@ -63,11 +48,11 @@ function assignArtificialId(entities: any[] | any) {
 
 export function norm(
   entityName: EntityName,
-  data,
+  data: any,
   assignId: boolean,
 ): {
-  result: number[];
-  entities: { [key in EntityName]: EntityType };
+  result: string[];
+  entities: { [entity in EntityName]?: { [id: string]: EntityType }};
 } {
   const isList = Array.isArray(data);
 
@@ -85,7 +70,7 @@ export function norm(
 export function denorm(
   entityName: EntityName,
   entities,
-  ids: number[] | number = [],
+  ids: string[] | string,
 ) {
   const isList = Array.isArray(ids);
 

@@ -2,33 +2,29 @@ import { createSelector } from 'reselect';
 
 import { denorm } from '../entitySchemas';
 
-import { EntityName } from '../../types';
+import { EntityName, User } from '../../types';
 import { Store } from '../store';
 
-const teamMap = (state: Store) => state.entities.team.values;
 const tournamentMap = (state: Store) => state.entities.tournament.values;
 const userMap = (state: Store) => state.entities.user.values;
 const playerMap = (state: Store) => state.entities.player.values;
 
 export const entityMapSelector = createSelector(
   playerMap,
-  teamMap,
   tournamentMap,
   userMap,
   (
     player,
-    team,
     tournament,
     user,
   ) => ({
     player,
-    team,
     tournament,
     user,
   }),
 );
 
-export const allUsersSelector = (state: Store) =>
+export const allUsersSelector = (state: Store): User[] =>
   denorm(
     EntityName.User,
     entityMapSelector(state),
@@ -43,7 +39,7 @@ export const allPlayersSelector = (state: Store) =>
   );
 
 export const playerSelector = (state: Store, playerId: number) =>
-  denorm(EntityName.Player, entityMapSelector(state), playerId);
+  denorm(EntityName.Player, entityMapSelector(state), playerId.toString());
 
 export const filteredTournamentsSelector = (state: Store) =>
   denorm(
@@ -53,7 +49,7 @@ export const filteredTournamentsSelector = (state: Store) =>
   );
 
 export const tournamentSelector = (state: Store, tournamentId: number) =>
-  denorm(EntityName.Tournament, entityMapSelector(state), tournamentId);
+  denorm(EntityName.Tournament, entityMapSelector(state), tournamentId.toString());
 
 export const ladderVolleynetplayerSelector = (state: Store, gender: string) =>
   denorm(

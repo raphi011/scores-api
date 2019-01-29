@@ -8,6 +8,7 @@ import Layout from '../containers/LayoutContainer';
 import { loadLadderAction } from '../redux/entities/actions';
 import { ladderVolleynetplayerSelector } from '../redux/entities/selectors';
 
+import { Store } from '../redux/store';
 import { Player } from '../types';
 
 interface Props {
@@ -38,7 +39,7 @@ class Ranking extends React.Component<Props> {
     return { gender };
   }
 
-  static mapStateToProps(state, { gender }: Props) {
+  static mapStateToProps(state: Store, { gender }: Props) {
     const ladder = ladderVolleynetplayerSelector(state, gender);
 
     return { ladder };

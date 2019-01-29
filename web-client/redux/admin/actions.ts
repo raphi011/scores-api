@@ -1,4 +1,5 @@
 import { ApiAction } from '../../redux/api/actions';
+import { EntityName } from '../../types';
 import * as actionNames from '../actionNames';
 
 export const loadVolleynetScrapeJobsAction = (): ApiAction => ({
@@ -30,9 +31,9 @@ export const loadUsersAction = (): ApiAction => ({
   method: 'GET',
   success: actionNames.RECEIVE_ENTITIES,
   successParams: {
-    entityName: 'user',
+    entityName: EntityName.User,
     listOptions: {
-      user: {
+      [EntityName.User]: {
         mode: 'replace',
         name: 'all',
       },

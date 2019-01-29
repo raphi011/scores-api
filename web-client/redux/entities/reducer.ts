@@ -4,33 +4,35 @@ import { createReducer } from '../reduxHelper';
 
 import { EntityName, EntityType } from '../../types';
 
+export type EntityStoreValues = { [key: string]: EntityType };
+
 export type EntityStore = {
   [key in EntityName]: {
-    values: { [key: number]: EntityType };
+    values: EntityStoreValues;
     list?: {
-      all: number[];
-      [listName: string]: number[];
+      all: string[];
+      [listName: string]: string[];
     };
     by?: {
-      [listName: string]: { [key: number]: number[] };
+      [listName: string]: { [key: string]: string[] };
     };
   }
 };
 
-export interface IReceiveEntityAction {
-  payload: EntityType[];
+export interface ReceiveEntityParams {
+  payload?: EntityType[];
   entityName: EntityName;
   assignId?: boolean;
   listOptions?: {
-    [key in EntityName]: {
+    [key in EntityName]?: {
       name: string;
-      key?: number;
+      key?: string;
       mode?: 'replace' | 'append';
     }
   };
 }
 
-export interface IDeleteEntityAction {
+export interface DeleteEntityAction {
   payload: any;
   entityName: EntityName;
   listNames: string[];
@@ -39,17 +41,14 @@ export interface IDeleteEntityAction {
 export const initialEntitiesState: EntityStore = {
   player: {
     by: {
-      ladder: {},
+      ladder: {
+        M: [],
+        W: [],
+      },
     },
     list: {
       all: [],
       search: [],
-    },
-    values: {},
-  },
-  team: {
-    list: {
-      all: [],
     },
     values: {},
   },
@@ -68,7 +67,7 @@ export const initialEntitiesState: EntityStore = {
   },
 };
 
-function receiveEntities(state: EntityStore, action: IReceiveEntityAction) {
+function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
   // STEP 1: normalize entites
   const { entityName, payload, assignId = false, listOptions = {} } = action;
 
@@ -80,12 +79,12 @@ function receiveEntities(state: EntityStore, action: IReceiveEntityAction) {
   Object.keys(entities).forEach((entityKey: EntityName) => {
     const statePart = { ...state[entityKey] };
 
-    let newIds;
+    let newIds: string[];
 
     if (entityKey === action.entityName) {
       newIds = result;
     } else {
-      newIds = Object.keys(entities[entityKey]).map(n => Number(n));
+      newIds = Object.keys(entities[entityKey]);
     }
 
     statePart.values = {

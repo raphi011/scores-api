@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import SearchIcon from '@material-ui/icons/Search';
 import { connect } from 'react-redux';
 
-import { searchVolleynetPlayersAction } from '../../redux/entities/actions';
+import { searchPlayersAction } from '../../redux/entities/actions';
 import { searchVolleynetplayerSelector } from '../../redux/entities/selectors';
 import SearchPlayerList from './SearchPlayerList';
 
@@ -119,7 +119,7 @@ class PlayerSearch extends React.Component<Props, State> {
 }
 
 const mapDispatchToProps = {
-  searchVolleynetPlayers: searchVolleynetPlayersAction,
+  searchVolleynetPlayers: searchPlayersAction,
 };
 
 function mapStateToProps(state) {
