@@ -2,6 +2,7 @@ import React from 'react';
 
 import Router from 'next/router';
 
+import { createStyles, withStyles, WithStyles } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Red from '@material-ui/core/colors/red';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -10,7 +11,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import WarningIcon from '@material-ui/icons/Warning';
 
-import { createStyles, withStyles, WithStyles } from '@material-ui/core';
 import LoadingButton from '../components/LoadingButton';
 import withAuth from '../containers/AuthContainer';
 import Snackbar from '../containers/SnackbarContainer';

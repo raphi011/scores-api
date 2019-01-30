@@ -55,13 +55,12 @@ export default (Component): NextComponentClass<Props> => {
   class Auth extends React.Component<Props> {
     static async getInitialProps(ctx: Context) {
       try {
-        const { store, res, req, query } = ctx;
+        const { store, res, req, query, pathname, asPath } = ctx;
 
         const isServer = !!req;
 
         const dispatch = store.dispatch;
 
-        let url: string;
         let isLoggedIn: boolean;
 
         if (isServer) {
@@ -70,12 +69,10 @@ export default (Component): NextComponentClass<Props> => {
             userOrLoginRouteAction(),
           );
 
-          url = req.url;
           isLoggedIn = !!result.response.user;
         } else {
           const authState = userSelector(store.getState());
 
-          url = Router.asPath;
           isLoggedIn = authState.isLoggedIn;
         }
 
@@ -86,8 +83,8 @@ export default (Component): NextComponentClass<Props> => {
         };
 
         if (!isLoggedIn) {
-          if (!url.includes('/login')) {
-            const redir = url ? `?r=${encodeURIComponent(url)}` : '';
+          if (pathname !== '/login') {
+            const redir = asPath ? `?r=${encodeURIComponent(asPath)}` : '';
 
             const path = `/login${redir}`;
 
