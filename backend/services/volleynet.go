@@ -40,13 +40,7 @@ func (s *Volleynet) GetTournaments(seasons []int, leagues, genders []string) (
 		genders = append(genders, "M", "W")
 	}
 
-	tournaments, err := s.TournamentRepo.Filter(seasons, leagues, genders)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return s.addTeams(tournaments...)
+	return s.TournamentRepo.Filter(seasons, leagues, genders)
 }
 
 // Leagues loads all available Leagues as Name/Value pairs.
