@@ -74,9 +74,9 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
   const { entities, result } = norm(entityName, payload, assignId);
 
   /* tslint:disable:no-console */
-  console.log('Payload: ', payload);
-  console.log('Entities: ', entities);
-  console.log('Result: ', result);
+  // console.log('Payload: ', payload);
+  // console.log('Entities: ', entities);
+  // console.log('Result: ', result);
 
   const newState = { ...state };
 
@@ -88,10 +88,10 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
 
     if (entityKey === action.entityName) {
       newIds = result;
-      console.log('Receive result ids: ', newIds);
+      // console.log('Receive result ids: ', newIds);
     } else {
       newIds = Object.keys(entities[entityKey]);
-      console.log('Receive entity ids: ', newIds);
+      // console.log('Receive entity ids: ', newIds);
     }
 
     statePart.values = {
@@ -99,7 +99,7 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
       ...entities[entityKey],
     };
 
-    console.log('New State: ', statePart.values);
+    // console.log('New State: ', statePart.values);
 
     const options = listOptions[entityKey];
 
