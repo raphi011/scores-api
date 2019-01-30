@@ -1,6 +1,5 @@
 import React from 'react';
 
-import withRedux from 'next-redux-wrapper';
 import App, { Container } from 'next/app';
 import JssProvider from 'react-jss/lib/JssProvider';
 import { Provider } from 'react-redux';
@@ -11,7 +10,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import Snackbar from '../containers/SnackbarContainer';
 import getPageContext from '../getPageContext';
-import initStore from '../redux/store';
+import withReduxStore from '../redux/withReduxStore';
 
 type Props = {
   store: Store;
@@ -65,4 +64,4 @@ class MyApp extends App<Props> {
   }
 }
 
-export default withRedux(initStore)(MyApp);
+export default withReduxStore(MyApp);
