@@ -1,5 +1,6 @@
 import * as http from 'http';
 import fetch from 'isomorphic-unfetch';
+import { Store } from 'redux';
 import { BACKEND_URL, buildUrl, isJson } from '../api';
 import { ApiAction, ApiActions } from '../redux/api/actions';
 import * as actionNames from './actionNames';
@@ -13,7 +14,11 @@ function getHost(req?: http.IncomingMessage): string {
   return `${window.location.origin}/api`;
 }
 
-export function serverAction(action, req, res) {
+export function serverAction(
+  action: ApiAction,
+  req: http.IncomingMessage,
+  res: http.OutgoingMessage,
+) {
   return {
     ...action,
     isServer: true,
@@ -23,13 +28,14 @@ export function serverAction(action, req, res) {
 }
 
 async function doAction(
-  store,
+  store: Store,
   action: ApiAction,
   isServer = false,
   req?: http.IncomingMessage,
   res?: http.ServerResponse,
 ) {
   let { headers = {} } = action;
+
   const {
     success,
     successParams = {},
@@ -129,7 +135,7 @@ async function doAction(
   return Promise.reject({ responseCode });
 }
 
-const apiMiddleware = store => next => async action => {
+const apiMiddleware = (store: Store) => next => async action => {
   if (
     action.type !== actionNames.API &&
     action.type !== actionNames.API_MULTI
