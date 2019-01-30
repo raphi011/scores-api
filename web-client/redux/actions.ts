@@ -11,8 +11,8 @@ export async function dispatchActions(
   dispatch: Dispatch,
   actions = [],
   isServer: boolean,
-  req?: object,
-  res?: object,
+  req?: http.IncomingMessage,
+  res?: http.OutgoingMessage,
 ) {
   for (const a of actions) {
     const action = isServer ? serverAction(a, req, res) : a;
