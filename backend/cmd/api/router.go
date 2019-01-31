@@ -4,11 +4,10 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/securecookie"
 
 	"github.com/raphi011/scores/cmd/api/middleware"
 )
-
-var store = cookie.NewStore([]byte("ultrasecret"))
 
 func initRouter(app app, services *handlerServices) *gin.Engine {
 	var router *gin.Engine
@@ -44,6 +43,20 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	debugHandler := debugHandler{
 		userService: services.User,
 	}
+
+	// Generate keys on startup for HMAC signing + encryption.
+	// This means that on every restart previously authenticated
+	// users are logged out and have to login again, for now this is good enough.
+	var store = cookie.NewStore(
+		securecookie.GenerateRandomKey(64),
+		securecookie.GenerateRandomKey(32),
+	)
+
+	store.Options(sessions.Options{
+		MaxAge:   60 * 60 * 24, // 1 day
+		HttpOnly: true,
+		Secure:   true,
+	})
 
 	router.Use(sessions.Sessions("session", store), middleware.Logger(app.log), middleware.Metric())
 
