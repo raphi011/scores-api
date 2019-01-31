@@ -49,7 +49,6 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	// users are logged out and have to login again, for now this is good enough.
 	var store = cookie.NewStore(
 		securecookie.GenerateRandomKey(64),
-		securecookie.GenerateRandomKey(32),
 	)
 
 	store.Options(sessions.Options{
