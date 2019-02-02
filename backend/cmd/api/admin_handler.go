@@ -3,10 +3,10 @@ package main
 import (
 	"net/http"
 
-	"github.com/pkg/errors"
-
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/pkg/errors"
+
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/services"
 )
@@ -16,8 +16,8 @@ type adminHandler struct {
 }
 
 type postUserDto struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func (a *adminHandler) postUser(c *gin.Context) {
