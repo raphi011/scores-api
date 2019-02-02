@@ -28,6 +28,11 @@ class MyDocument extends Document<{
               'minimum-scale=1, width=device-width, height=device-height'
             }
           />
+          <meta
+            http-equiv="Content-Security-Policy"
+            // TODO: remove script-src 'unsafe-inline' as soon as all evals are removed from next
+            content="default-src 'self'; img-src 'self' https://*.googleusercontent.com; child-src 'none'; script-src 'unsafe-inline' 'self'; object-src 'none'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com"
+          />
           <meta name="theme-color" content={themeColor} />
           <link
             rel="stylesheet"
