@@ -87,7 +87,7 @@ function ButtonAppBar({
         <div className={classes.flex} />
         <Link href={{ pathname: '/user', query: { id: user.id } }}>
           <IconButton>
-            <Avatar src={user.profileImageUrl} />
+            <Avatar alt="Your profile picture" src={user.profileImageUrl} />
           </IconButton>
         </Link>
       </Toolbar>
