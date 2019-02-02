@@ -37,6 +37,7 @@ type testClient struct {
 	t             testing.TB
 	router        *gin.Engine
 	sessionCookie string
+	ip            string
 }
 
 func newTestClient(t testing.TB) *testClient {
@@ -47,7 +48,10 @@ func newTestClient(t testing.TB) *testClient {
 }
 
 func (c *testClient) login() {
+	oldIP := c.ip
+	c.ip = "127.0.0.1"
 	w := c.post("/debug/new-admin", nil)
+	c.ip = oldIP
 
 	test.Equal(c.t, "/debug/new-admin expected code %d, got %d", http.StatusNoContent, w.Code)
 
@@ -60,11 +64,18 @@ func (c *testClient) login() {
 
 	headers := w.Header()
 
-	setCookie := headers["Set-Cookie"][0]
+	c.sessionCookie = parseCookie(headers["Set-Cookie"][0])
 
-	keyValue := strings.Split(setCookie, "=")
+}
 
-	c.sessionCookie = keyValue[0] + "=" + keyValue[1]
+func parseCookie(setCookie string) (cookie string) {
+	parts := strings.Split(setCookie, ";")
+
+	keyValue := strings.SplitN(parts[0], "=", 2)
+
+	cookie = keyValue[0] + "=" + keyValue[1]
+
+	return
 }
 
 func (c *testClient) post(path string, body interface{}) *httptest.ResponseRecorder {
@@ -81,6 +92,7 @@ func (c *testClient) post(path string, body interface{}) *httptest.ResponseRecor
 	req, err := http.NewRequest("POST", path, jsonBody)
 
 	test.Check(c.t, "new post-request: %v", err)
+	fillRequest(req, path)
 
 	c.setCookie(req)
 	w := httptest.NewRecorder()
@@ -94,11 +106,20 @@ func (c *testClient) setCookie(req *http.Request) {
 	}
 }
 
+func fillRequest(r *http.Request, path string) {
+	r.Proto = "HTTP/1.1"
+	r.RemoteAddr = "192.168.1.1:80"
+	r.Host = "scores.network"
+	r.RequestURI = path
+}
+
 func (c *testClient) get(path string) *httptest.ResponseRecorder {
 	c.t.Helper()
 
 	req, err := http.NewRequest("GET", path, nil)
+
 	test.Check(c.t, "new get-request: %v", err)
+	fillRequest(req, path)
 
 	c.setCookie(req)
 	w := httptest.NewRecorder()
@@ -114,11 +135,11 @@ func TestGetUnauthorizedTournament(t *testing.T) {
 	test.Equal(t, "/tournaments expected status %d, got %d", http.StatusUnauthorized, w.Code)
 }
 
-// func TestGetTournamentsWithoutFilters(t *testing.T) {
-// 	client := newTestClient(t)
-// 	client.login()
+func TestGetTournamentsWithoutFilters(t *testing.T) {
+	client := newTestClient(t)
+	client.login()
 
-// 	w := client.get("/tournaments")
+	w := client.get("/tournaments")
 
-// 	test.Equal(t, "/tournaments expected status %d, got %d", http.StatusOK, w.Code)
-// }
+	test.Equal(t, "/tournaments expected status %d, got %d", http.StatusOK, w.Code)
+}
