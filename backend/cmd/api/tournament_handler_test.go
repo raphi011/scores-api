@@ -114,11 +114,11 @@ func TestGetUnauthorizedTournament(t *testing.T) {
 	test.Equal(t, "/tournaments expected status %d, got %d", http.StatusUnauthorized, w.Code)
 }
 
-func TestGetTournamentsWithoutFilters(t *testing.T) {
-	client := newTestClient(t)
-	client.login()
+// func TestGetTournamentsWithoutFilters(t *testing.T) {
+// 	client := newTestClient(t)
+// 	client.login()
 
-	w := client.get("/tournaments")
+// 	w := client.get("/tournaments")
 
-	test.Equal(t, "/tournaments expected status %d, got %d", http.StatusOK, w.Code)
-}
+// 	test.Equal(t, "/tournaments expected status %d, got %d", http.StatusOK, w.Code)
+// }
