@@ -40,7 +40,7 @@ type tournamentsJob struct {
 }
 
 func (j *tournamentsJob) do() error {
-	season := 2018 // time.Now().Year()
+	season := time.Now().Year()
 
 	for _, league := range j.leagues {
 		for _, gender := range j.genders {
