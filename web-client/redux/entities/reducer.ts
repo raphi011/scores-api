@@ -6,18 +6,18 @@ import { EntityName, EntityType } from '../../types';
 
 export type EntityStoreValues = { [key: string]: EntityType };
 
-export type EntityStore = {
-  [key in EntityName]: {
-    values: EntityStoreValues;
-    list?: {
-      all: string[];
-      [listName: string]: string[];
-    };
-    by?: {
-      [listName: string]: { [key: string]: string[] };
-    };
-  }
+export type EntityStorePart = {
+  values: EntityStoreValues;
+  list?: {
+    all: string[];
+    [listName: string]: string[];
+  };
+  by?: {
+    [listName: string]: { [key: string]: string[] };
+  };
 };
+
+export type EntityStore = { [key in EntityName]: EntityStorePart };
 
 export interface ReceiveEntityParams {
   payload?: EntityType[];
@@ -77,7 +77,7 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
 
   // STEP 2: add entities to entity map(s)
   Object.keys(entities).forEach((entityKey: EntityName) => {
-    const statePart = { ...state[entityKey] };
+    let { values, by, list } = state[entityKey];
 
     let newIds: string[];
 
@@ -87,8 +87,8 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
       newIds = Object.keys(entities[entityKey]);
     }
 
-    statePart.values = {
-      ...state[entityKey].values,
+    values = {
+      ...values,
       ...entities[entityKey],
     };
 
@@ -96,7 +96,7 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
 
     // STEP 3: append or replace ids
     if (options) {
-      let list = [];
+      let newList = [];
 
       if (options.mode === 'append') {
         const previousList = options.key
@@ -104,23 +104,33 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
           : state[entityKey].list[options.name];
 
         if (previousList) {
-          list = previousList;
+          newList = previousList;
         }
       }
 
-      list = [...list, ...newIds];
+      newList = [...newList, ...newIds];
 
       if (options.key) {
-        statePart.by[options.name] = {
-          ...(state[entityKey].by[options.name] || {}),
-          [options.key]: list,
+        by = {
+          ...by,
+          [options.name]: {
+            ...(by[options.name] || {}),
+            [options.key]: newList,
+          },
         };
       } else {
-        statePart.list[options.name] = list;
+        list = {
+          ...list,
+          [options.name]: newList,
+        };
       }
     }
 
-    newState[entityKey] = statePart;
+    newState[entityKey] = {
+      by,
+      list,
+      values,
+    };
   });
 
   return newState;

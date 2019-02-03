@@ -25,9 +25,10 @@ interface Props extends WithStyles<typeof styles> {
   fromServer: boolean;
   error: string;
 
-  loginWithPassword: (
-    credentials: { email: string; password: string },
-  ) => Promise<any>;
+  loginWithPassword: (credentials: {
+    email: string;
+    password: string;
+  }) => Promise<any>;
   setStatus: (status: string) => void;
 }
 
@@ -77,11 +78,7 @@ class Login extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const { fromServer } = this.props;
-
-    if (!fromServer) {
-      Router.prefetch('/');
-    }
+    Router.prefetch('/');
   }
 
   onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
