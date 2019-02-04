@@ -5,6 +5,8 @@ services:
     build:
       dockerfile: "./dockerfiles/dev/envoy"
       context: .
+      args:
+        ENVOY_VERSION: $ENVOY_VERSION
     network_mode: "host"
     volumes:
       - "./certs:/usr/share/letsencrypt/scores.network"
@@ -14,12 +16,12 @@ services:
       - "127.0.0.1:8001:8001"
 
   db:
-    image: "postgres:latest"
+    image: "postgres:${POSTGRES_VERSION}"
     ports:
       - "127.0.0.1:5432:5432"
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:${PGADMIN_VERSION}
     environment:
       PGADMIN_DEFAULT_EMAIL: test@test.at
       PGADMIN_DEFAULT_PASSWORD: test

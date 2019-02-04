@@ -1,4 +1,6 @@
-FROM node:latest
+ARG NODE_VERSION
+
+FROM node:$NODE_VERSION
 
 WORKDIR /scores/web
 

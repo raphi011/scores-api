@@ -1,3 +1,5 @@
-FROM envoyproxy/envoy:latest
+ARG ENVOY_VERSION
+
+FROM envoyproxy/envoy:$ENVOY_VERSION
 
 COPY conf/envoy.prod.yaml /etc/envoy/envoy.yaml

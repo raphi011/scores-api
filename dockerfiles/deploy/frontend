@@ -1,4 +1,6 @@
-FROM node:latest
+ARG NODE_VERSION
+
+FROM node:$NODE_VERSION
 
 ARG version
 ENV VERSION $version
