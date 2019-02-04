@@ -8,14 +8,16 @@
       "mode": "debug",
       "program": "${workspaceRoot}/backend/cmd/api",
       "args": [
-        // "-provider",
-        // "postgres",
-        // "-connection",
-        // "postgres://postgres:test@localhost?sslmode=disable"
+        "-gauth",
+        "${workspaceRoot}/data/backend/client_secret.json",
         "-provider",
-        "mysql",
+        "postgres",
         "-connection",
-        "root@tcp(localhost)/scores?charset=utf8mb4&parseTime=true&multiStatements=true"
+        "postgres://postgres:test@localhost?sslmode=disable"
+        // "-provider",
+        // "mysql",
+        // "-connection",
+        // "root@tcp(localhost)/scores?charset=utf8mb4&parseTime=true&multiStatements=true"
       ],
       "env": {
         "TEST_SQL_FILES": "${workspaceRoot}/backend/repo/sql"
