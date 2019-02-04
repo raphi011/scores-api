@@ -17,6 +17,18 @@ class MyDocument extends Document<{
 
     const themeColor = theme.palette.primary.main;
 
+    let csp: string;
+
+    if (process.env.NODE_ENV === 'development') {
+      // webpack needs 'unsafe-evel'
+      csp =
+        "default-src 'self'; img-src 'self' https://*.googleusercontent.com; child-src 'none'; script-src 'unsafe-eval' 'unsafe-inline' 'self'; object-src 'none'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com";
+    } else {
+      // TODO: remove script-src 'unsafe-inline' as soon this does not break next.js anymore
+      csp =
+        "default-src 'self'; img-src 'self' https://*.googleusercontent.com; child-src 'none'; script-src 'unsafe-inline' 'self'; object-src 'none'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com";
+    }
+
     return (
       <html lang="en" dir="ltr">
         <Head>
@@ -28,11 +40,7 @@ class MyDocument extends Document<{
               'minimum-scale=1, width=device-width, height=device-height'
             }
           />
-          <meta
-            http-equiv="Content-Security-Policy"
-            // TODO: remove script-src 'unsafe-inline' as soon as all evals are removed from next
-            content="default-src 'self'; img-src 'self' https://*.googleusercontent.com; child-src 'none'; script-src 'unsafe-inline' 'self'; object-src 'none'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com"
-          />
+          <meta http-equiv="Content-Security-Policy" content={csp} />
           <meta name="theme-color" content={themeColor} />
           <link
             rel="stylesheet"
