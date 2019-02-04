@@ -3,13 +3,16 @@ package client
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/pkg/errors"
+
 	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/scrape"
 )
@@ -281,6 +284,18 @@ func (c *Default) TournamentEntry(playerName string, playerID, tournamentID int)
 	}
 
 	return nil
+}
+
+func traceResponse(resp *http.Response) {
+	outFile, err := os.Create("/home/raphi/login-response.html")
+	if err != nil {
+		return
+	}
+	defer outFile.Close()
+	_, err = io.Copy(outFile, resp.Body)
+	if err != nil {
+		return
+	}
 }
 
 // SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
