@@ -1,6 +1,13 @@
 {
   "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Both",
+      "configurations": ["Frontend", "Backend"]
+    }
+  ],
   "configurations": [
+    {},
     {
       "name": "Backend",
       "type": "go",
