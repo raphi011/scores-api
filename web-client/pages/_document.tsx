@@ -17,17 +17,23 @@ class MyDocument extends Document<{
 
     const themeColor = theme.palette.primary.main;
 
-    let csp: string;
+    const directives = [
+      "default-src 'self'",
+      "script-src 'unsafe-inline' 'self'",
+      "img-src 'self' https://*.googleusercontent.com",
+      "child-src 'none'",
+      "object-src 'none'",
+      "font-src 'self' https://fonts.gstatic.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      'report-uri /api/csp-violation-report',
+    ];
 
     if (process.env.NODE_ENV === 'development') {
-      // webpack needs 'unsafe-evel'
-      csp =
-        "default-src 'self'; img-src 'self' https://*.googleusercontent.com; child-src 'none'; script-src 'unsafe-eval' 'unsafe-inline' 'self'; object-src 'none'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com";
-    } else {
-      // TODO: remove script-src 'unsafe-inline' as soon this does not break next.js anymore
-      csp =
-        "default-src 'self'; img-src 'self' https://*.googleusercontent.com; child-src 'none'; script-src 'unsafe-inline' 'self'; object-src 'none'; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com";
+      // webpack needs 'unsafe-eval'
+      directives[1] = "script-src 'unsafe-eval' 'unsafe-inline' 'self'";
     }
+
+    const csp = directives.join(';');
 
     return (
       <html lang="en" dir="ltr">

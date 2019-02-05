@@ -44,6 +44,8 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 		userService: services.User,
 	}
 
+	cspHandler := cspHandler{}
+
 	// Generate keys on startup for HMAC signing + encryption.
 	// This means that on every restart previously authenticated
 	// users are logged out and have to login again, for now this is good enough.
@@ -70,6 +72,8 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	auth := router.Group("/")
 	auth.Use(middleware.Auth())
 	auth.POST("/logout", authHandler.logout)
+
+	auth.POST("/csp-violation-report", cspHandler.violationReportHandler)
 
 	auth.GET("/ladder", volleynetHandler.getLadder)
 	auth.GET("/tournaments", volleynetHandler.getTournaments)
