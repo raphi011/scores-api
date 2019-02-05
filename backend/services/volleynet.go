@@ -26,21 +26,28 @@ func (s *Volleynet) Ladder(gender string) ([]*volleynet.Player, error) {
 	return s.PlayerRepo.Ladder(gender)
 }
 
-// GetTournaments loads all tournaments of a certain `gender`, `league` and `season`
-func (s *Volleynet) GetTournaments(seasons []int, leagues, genders []string) (
+// TournamentFilters contains all available Tournament filters.
+type TournamentFilters struct {
+	Seasons []int
+	Leagues []string
+	Genders []string
+}
+
+// SearchTournaments loads all tournaments of a certain `gender`, `league` and `season`
+func (s *Volleynet) SearchTournaments(filters TournamentFilters) (
 	[]*volleynet.Tournament, error) {
-	if len(seasons) == 0 {
-		seasons = append(seasons, time.Now().Year())
+	if len(filters.Seasons) == 0 {
+		filters.Seasons = append(filters.Seasons, time.Now().Year())
 	}
-	if len(leagues) == 0 {
-		// todo read this from DB
-		leagues = append(leagues, "amateur-tour")
+	if len(filters.Leagues) == 0 {
+		// TODO read this from DB
+		filters.Leagues = append(filters.Leagues, "amateur-tour")
 	}
-	if len(genders) == 0 {
-		genders = append(genders, "M", "W")
+	if len(filters.Genders) == 0 {
+		filters.Genders = append(filters.Genders, "M", "W")
 	}
 
-	return s.TournamentRepo.Filter(seasons, leagues, genders)
+	return s.TournamentRepo.Filter(filters.Seasons, filters.Leagues, filters.Genders)
 }
 
 // Leagues loads all available Leagues as Name/Value pairs.

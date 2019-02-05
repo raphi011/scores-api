@@ -24,11 +24,6 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	gender := c.QueryArray("gender")
 	league := c.QueryArray("league")
 
-	// if !h.volleynetService.ValidGender(gender) {
-	// 	responseBadRequest(c)
-	// 	return
-	// }
-
 	seasonNumber, err := strconv.Atoi(season)
 
 	if err != nil {
@@ -36,11 +31,11 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 		return
 	}
 
-	tournaments, err := h.volleynetService.GetTournaments(
-		[]int{seasonNumber},
-		league,
-		gender,
-	)
+	tournaments, err := h.volleynetService.SearchTournaments(services.TournamentFilters{
+		Seasons: []int{seasonNumber},
+		Leagues: league,
+		Genders: gender,
+	})
 
 	if err != nil {
 		responseErr(c, err)
