@@ -25,7 +25,7 @@ class MyDocument extends Document<{
       "object-src 'none'",
       "font-src 'self' https://fonts.gstatic.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      'report-uri /api/csp-violation-report',
+      // 'report-uri /api/csp-violation-report', TODO .. this does not work via <meta> elements
     ];
 
     if (process.env.NODE_ENV === 'development') {
@@ -46,7 +46,7 @@ class MyDocument extends Document<{
               'minimum-scale=1, width=device-width, height=device-height'
             }
           />
-          <meta http-equiv="Content-Security-Policy" content={csp} />
+          <meta httpEquiv="Content-Security-Policy" content={csp} />
           <meta name="theme-color" content={themeColor} />
           <link
             rel="stylesheet"
