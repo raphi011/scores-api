@@ -75,6 +75,7 @@ static_resources:
                 - name: envoy.file_access_log
                   config:
                     path: "/dev/stdout"
+              request_timeout: 0s
               http_filters:
                 - name: envoy.gzip
                   config:
@@ -98,6 +99,7 @@ static_resources:
                           prefix: "/"
                         route:
                           cluster: frontend
+                          timeout: 0s
         tls_context:
           common_tls_context:
             tls_certificates:
@@ -110,7 +112,6 @@ static_resources:
       connect_timeout: 60s # long timeouts for debugging
       type: strict_dns
       lb_policy: round_robin
-      http2_protocol_options: {}
       hosts:
         - socket_address:
             address: 127.0.0.1
