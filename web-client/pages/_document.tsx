@@ -19,7 +19,6 @@ class MyDocument extends Document<{
 
     const directives = [
       "default-src 'self'",
-      "script-src 'unsafe-inline' 'self'",
       "img-src 'self' https://*.googleusercontent.com",
       "child-src 'none'",
       "object-src 'none'",
@@ -31,6 +30,7 @@ class MyDocument extends Document<{
     if (process.env.NODE_ENV === 'development') {
       // webpack needs 'unsafe-eval'
       directives[1] = "script-src 'unsafe-eval' 'unsafe-inline' 'self'";
+      directives.push("connect-src 'self' ws://localhost:* wss://localhost:*");
     }
 
     const csp = directives.join(';');
@@ -53,7 +53,7 @@ class MyDocument extends Document<{
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
           />
         </Head>
-        <body>
+        <body style={{ overflowY: 'scroll' }}>
           <Main />
           <NextScript />
         </body>
