@@ -44,7 +44,7 @@ func main() {
 	host := os.Getenv("BACKEND_URL")
 
 	if host == "" {
-		host = "https://localhost:3000"
+		host = "https://localhost"
 	}
 
 	services, err := createServices(*dbProvider, *connectionString)
