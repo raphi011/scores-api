@@ -23,15 +23,15 @@ class DrawerContainer extends React.Component<Props, State> {
     };
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.width === 'xs' && this.props.width !== 'xs') {
-      this.setState({ open: false });
-    } else if (prevProps.open !== this.props.open) {
-      this.setState({
-        open: !this.state.open,
-      });
-    }
-  }
+  // componentDidUpdate(prevProps: Props) {
+  //   if (prevProps.width === 'xs' && this.props.width !== 'xs') {
+  //     this.setState({ open: false });
+  //   } else if (prevProps.open !== this.props.open) {
+  //     this.setState({
+  //       open: !this.state.open,
+  //     });
+  //   }
+  // }
 
   onToggleDrawer = () => {
     this.setState({ open: !this.state.open });

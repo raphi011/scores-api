@@ -26,7 +26,7 @@ interface State {
 
 class Login extends React.Component<Props, State> {
   loginRegex = /^[A-Z][a-z]+\.[A-Z]+$/;
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -38,7 +38,7 @@ class Login extends React.Component<Props, State> {
     };
   }
 
-  onChangeUsername = event => {
+  onChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     const username = event.target.value;
     let usernameValidation = '';
 
@@ -49,7 +49,7 @@ class Login extends React.Component<Props, State> {
     this.setState({ username, usernameValidation });
   };
 
-  onChangePassword = event => {
+  onChangePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     const password = event.target.value;
 
     this.setState({ password });
@@ -71,7 +71,7 @@ class Login extends React.Component<Props, State> {
     }
   };
 
-  onChangeRememberMe = event => {
+  onChangeRememberMe = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rememberMe = event.target.checked;
 
     this.setState({ rememberMe });

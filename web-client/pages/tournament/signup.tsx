@@ -49,9 +49,9 @@ interface Props extends WithStyles<typeof styles> {
   ) => void;
 }
 
-type State = {
+interface State {
   partner?: Player;
-};
+}
 
 class Signup extends React.Component<Props, State> {
   static mapDispatchToProps = {

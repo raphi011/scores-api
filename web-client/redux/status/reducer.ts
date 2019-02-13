@@ -6,9 +6,9 @@ export const initialStatusState = {
   status: '',
 };
 
-export type StatusStore = {
+export interface StatusStore {
   status: string;
-};
+}
 
 function setStatus(_: StatusStore, action): StatusStore {
   return {

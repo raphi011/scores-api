@@ -2,6 +2,7 @@ import React from 'react';
 
 import Card from '@material-ui/core/Card';
 
+import Typography from '@material-ui/core/Typography';
 import Ladder from '../components/volleynet/Ladder';
 import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
@@ -58,7 +59,8 @@ class Ranking extends React.Component<Props> {
 
     return (
       <Layout title={{ text: 'Rankings', href: '' }}>
-        <Card>
+        <Typography variant="h1">Rankings</Typography>
+        <Card style={{ marginTop: '40px' }}>
           <Ladder players={ladder} />
         </Card>
       </Layout>

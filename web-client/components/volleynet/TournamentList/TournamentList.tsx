@@ -10,7 +10,7 @@ import TournamentListItem from './TournamentListItem';
 const styles = createStyles({
   container: {
     marginBottom: '15px',
-    maxWidth: '500px',
+    padding: 0,
   },
   list: {
     padding: '0',
@@ -28,7 +28,7 @@ class TournamentList extends React.PureComponent<Props> {
     const { tournaments = [], onTournamentClick, classes } = this.props;
 
     return (
-      <Card className={classes.container}>
+      <Card classes={{ root: classes.container }}>
         <List className={classes.list}>
           {tournaments.map(t => (
             <TournamentListItem

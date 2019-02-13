@@ -28,7 +28,7 @@ interface Props extends WithStyles<typeof styles> {
   loginWithPassword: (credentials: {
     email: string;
     password: string;
-  }) => Promise<any>;
+  }) => Promise<void>;
   setStatus: (status: string) => void;
 }
 
@@ -150,6 +150,7 @@ class Login extends React.Component<Props, State> {
                 onChange={this.onEmailChange}
                 autoComplete="email"
                 margin="normal"
+                autoFocus
               />
               <TextField
                 label="Password"

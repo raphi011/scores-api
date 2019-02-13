@@ -45,6 +45,7 @@ const styles = (theme: Theme) =>
       padding: 0,
     },
     name: {
+      color: theme.palette.grey[800],
       fontSize: '20px',
       marginBottom: '15px',
       overflow: 'hidden',

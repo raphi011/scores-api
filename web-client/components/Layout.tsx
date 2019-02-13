@@ -8,6 +8,7 @@ import React, { ReactNode } from 'react';
 
 import AppBar from '../containers/AppBarContainer';
 import Drawer from '../containers/DrawerContainer';
+import { maxContentWidth } from '../styles/theme';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -16,17 +17,17 @@ const styles = (theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      marginTop: '64px',
+      margin: '80px auto 0 auto',
+      maxWidth: maxContentWidth,
       padding: theme.spacing.unit * 3,
 
       [theme.breakpoints.down('xs')]: {
         padding: theme.spacing.unit * 1,
-      }
+      },
     },
     root: {
       display: 'flex',
     },
-    // toolbar: theme.mixins.toolbar,
   });
 
 interface Props extends WithStyles<typeof styles> {
@@ -46,13 +47,8 @@ const Layout = ({
 }: Props) => (
   <div className={classes.root}>
     <AppBar onToggleDrawer={onToggleDrawer} title={title} />
-    <Drawer
-      open={drawerOpen}
-    />
-    <main className={classes.content}>
-      {/* <div className={classes.toolbar} /> */}
-      {children}
-    </main>
+    <Drawer open={drawerOpen} />
+    <main className={classes.content}>{children}</main>
   </div>
 );
 

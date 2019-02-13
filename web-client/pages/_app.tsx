@@ -12,9 +12,9 @@ import Snackbar from '../containers/SnackbarContainer';
 import getPageContext from '../getPageContext';
 import withReduxStore from '../redux/withReduxStore';
 
-type Props = {
+interface Props {
   store: Store;
-};
+}
 
 class MyApp extends App<Props> {
   pageContext = null;

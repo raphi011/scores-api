@@ -1,5 +1,3 @@
-/* eslint-disable prefer-destructuring */
-
 import React from 'react';
 
 import { NextComponentClass, NextContext } from 'next';
@@ -12,12 +10,12 @@ import { dispatchAction, dispatchActions } from '../redux/actions';
 import { userOrLoginRouteAction } from '../redux/auth/actions';
 import { userSelector } from '../redux/auth/selectors';
 
-type Props = {
+interface Props {
   store: Store;
   fromServer: boolean;
   dispatch: Dispatch;
-  error: any;
-};
+  error?: { responseCode: number };
+}
 
 export interface Context extends NextContext {
   store: Store;
@@ -138,7 +136,7 @@ export default (Component): NextComponentClass<Props> => {
       await dispatchActions(dispatch, actions, false);
     }
 
-    async componentWillUpdate(nextProps, nextState) {
+    async componentDidUpdate(nextProps, nextState) {
       if (
         !Component.shouldComponentUpdate ||
         !Component.buildActions ||

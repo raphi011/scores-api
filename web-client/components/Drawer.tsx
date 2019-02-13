@@ -52,81 +52,80 @@ interface Props extends WithStyles<typeof styles> {
   onClose?: (event: SyntheticEvent<{}>) => void;
 }
 
-export default withStyles(styles)(
-  ({ mobile, onClose, open, classes }: Props) => {
-    const sideList = (
-      <div>
-        <List>
-          <Link prefetch href="/">
-            <ListItem button>
-              <ListItemIcon>
-                <TournamentIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Tournaments" />
-            </ListItem>
-          </Link>
-          <Link prefetch href="/ladder">
-            <ListItem button>
-              <ListItemIcon>
-                <LadderIcon />
-              </ListItemIcon>
-              <ListItemText inset primary="Ladder" />
-            </ListItem>
-          </Link>
-          <AdminOnly>
-            <Link href="/admin">
-              <ListItem button>
-                <ListItemIcon>
-                  <SettingsIcon />
-                </ListItemIcon>
-                <ListItemText inset primary="Admin" />
-              </ListItem>
-            </Link>
-          </AdminOnly>
-        </List>
-      </div>
-    );
-
-    const content = (
-      <>
-        {sideList}
-        <div style={{ flex: 1 }} />
-        <Divider />
-        <Link href="/logout">
+export default withStyles(styles)(({ mobile, onClose, open }: Props) => {
+  const sideList = (
+    <div>
+      <List>
+        <Link prefetch href="/">
           <ListItem button>
             <ListItemIcon>
-              <LogoutIcon />
+              <TournamentIcon />
             </ListItemIcon>
-            <ListItemText inset primary="Logout" />
+            <ListItemText inset primary="Tournaments" />
           </ListItem>
         </Link>
-        <Typography align="center" variant="caption">
-          {VERSION}
-        </Typography>
-      </>
-    );
+        <Link prefetch href="/ladder">
+          <ListItem button>
+            <ListItemIcon>
+              <LadderIcon />
+            </ListItemIcon>
+            <ListItemText inset primary="Ladder" />
+          </ListItem>
+        </Link>
+        <AdminOnly>
+          <Link href="/admin">
+            <ListItem button>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText inset primary="Admin" />
+            </ListItem>
+          </Link>
+        </AdminOnly>
+      </List>
+    </div>
+  );
 
-    if (mobile) {
-      return (
-        <Drawer open={open} variant="temporary" anchor="top" onClose={onClose}>
-          {content}
-        </Drawer>
-      );
-    }
+  const content = (
+    <>
+      {sideList}
+      <div style={{ flex: 1 }} />
+      <Divider />
+      <Link href="/logout">
+        <ListItem button>
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText inset primary="Logout" />
+        </ListItem>
+      </Link>
+      <Typography align="center" variant="caption">
+        {process.env.VERSION}
+      </Typography>
+    </>
+  );
 
+  if (mobile) {
     return (
-      <Drawer
-        open={open}
-        variant="permanent"
-        anchor="left"
-        className={classes.permanentDrawer}
-        classes={{
-          paper: classes.permanentDrawerPaper,
-        }}
-      >
-        <div className={classes.toolbar} />
+      <Drawer open={open} variant="temporary" anchor="top" onClose={onClose}>
         {content}
       </Drawer>
     );
-  },
-);
+  }
+
+  return null;
+  // return (
+  //   <Drawer
+  //     open={open}
+  //     variant="permanent"
+  //     anchor="left"
+  //     className={classes.permanentDrawer}
+  //     classes={{
+  //       paper: classes.permanentDrawerPaper,
+  //     }}
+  //   >
+  //     <div className={classes.toolbar} />
+  //     {content}
+  //   </Drawer>
+  // );
+});

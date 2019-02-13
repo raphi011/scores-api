@@ -1,4 +1,6 @@
-export function equals(a1: any[], a2: any[]): boolean {
+type Comparable = object | string | number;
+
+export function equals(a1: Comparable[], a2: Comparable[]): boolean {
   if (a1 === a2) {
     return true;
   }

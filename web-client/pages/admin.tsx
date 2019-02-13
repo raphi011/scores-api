@@ -52,10 +52,10 @@ interface Props extends WithStyles<typeof styles> {
   runJob: (jobName: string) => void;
 }
 
-type State = {
+interface State {
   isEditUserOpen: boolean;
   editUser?: User;
-};
+}
 
 class Administration extends React.Component<Props, State> {
   static mapDispatchToProps = {
@@ -123,6 +123,7 @@ class Administration extends React.Component<Props, State> {
 
     return (
       <Layout title={{ text: 'Administration', href: '' }}>
+        <Typography variant="h1">Administration</Typography>
         <div className={classes.container}>
           <Typography variant="h5" className={classes.title}>
             Volleynet scrape jobs

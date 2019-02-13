@@ -1,26 +1,19 @@
 import React from 'react';
 
 import Router from 'next/router';
-import { Store } from 'redux';
+import { connect } from 'react-redux';
 
-import { Context } from '../containers/AuthContainer';
 import { logoutAction } from '../redux/auth/actions';
 
 interface Props {
-  store: Store;
+  logout: () => Promise<void>;
 }
 
-export default class Logout extends React.Component<Props> {
-  static async getInitialProps(ctx: Context) {
-    const { store } = ctx;
-
-    return { store };
-  }
-
+class Logout extends React.Component<Props> {
   async componentDidMount() {
-    const { store } = this.props;
+    const { logout } = this.props;
 
-    await store.dispatch(logoutAction());
+    await logout();
     Router.push('/login');
   }
 
@@ -28,3 +21,12 @@ export default class Logout extends React.Component<Props> {
     return null;
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(logoutAction()),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(Logout);

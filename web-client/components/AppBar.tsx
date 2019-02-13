@@ -16,14 +16,19 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import MenuIcon from '@material-ui/icons/Menu';
 
+import AdminOnly from '../containers/AdminOnly';
+import { maxContentWidth } from '../styles/theme';
 import { User } from '../types';
+import ActiveLink from './ActiveLink';
 
 const styles = (theme: Theme) =>
   createStyles({
+    active: {
+      color: theme.palette.primary[600],
+    },
     appBar: {
-      backgroundColor: 'white',
       borderBottom: `1px solid ${theme.palette.grey[100]}`,
-      zIndex: theme.zIndex.drawer + 1,
+      height: '80px',
     },
     bodyNotScrolled: {
       boxShadow: 'none',
@@ -31,16 +36,42 @@ const styles = (theme: Theme) =>
     flex: {
       flex: 1,
     },
+    links: {
+      alignItems: 'baseline',
+      display: 'flex',
+      flexDirection: 'row',
+
+      '&> *': {
+        color: theme.palette.grey[500],
+        fontWeight: 400,
+        cursor: 'pointer',
+        marginRight: '20px',
+      },
+    },
     logo: {
+      color: theme.palette.grey[900],
       cursor: 'pointer',
+      display: 'inline-block',
+      fontSize: '20px',
+      fontWeight: 500,
     },
     menuButton: {
-      marginLeft: -12,
+      color: theme.palette.primary[200],
       marginRight: 20,
+    },
+    page: {
+      color: theme.palette.primary[100],
+      display: 'inline-block',
+      marginLeft: '7px',
     },
     row: {
       display: 'flex',
       justifyContent: 'center',
+    },
+    toolbar: {
+      margin: 'auto',
+      maxWidth: maxContentWidth,
+      width: '100%',
     },
   });
 
@@ -53,13 +84,7 @@ interface Props extends WithStyles<typeof styles> {
   onToggleDrawer: () => void;
 }
 
-function ButtonAppBar({
-  onToggleDrawer,
-  title,
-  user,
-  bodyScrolled,
-  classes,
-}: Props) {
+function ButtonAppBar({ onToggleDrawer, user, bodyScrolled, classes }: Props) {
   let className = classes.appBar;
 
   if (!bodyScrolled) {
@@ -67,11 +92,10 @@ function ButtonAppBar({
   }
 
   return (
-    <AppBar position="fixed" className={className}>
-      <Toolbar>
+    <AppBar color="default" position="fixed" className={className}>
+      <Toolbar className={classes.toolbar}>
         <Hidden mdUp>
           <IconButton
-            color="inherit"
             onClick={onToggleDrawer}
             className={classes.menuButton}
             aria-label="Menu"
@@ -79,14 +103,27 @@ function ButtonAppBar({
             <MenuIcon />
           </IconButton>
         </Hidden>
-        <Link href={title.href}>
-          <Typography variant="h6" className={classes.logo} color="inherit">
-            {title.text}
+        <Link href={'/'}>
+          <Typography className={classes.logo} color="inherit">
+            Scores
           </Typography>
         </Link>
         <div className={classes.flex} />
+        <span className={classes.links}>
+          <ActiveLink activeClassName={classes.active} prefetch href="/">
+            <Typography variant="subtitle1">Tournaments</Typography>
+          </ActiveLink>
+          <ActiveLink activeClassName={classes.active} prefetch href="/ladder">
+            <Typography variant="subtitle1">Ladder</Typography>
+          </ActiveLink>
+          <AdminOnly>
+            <ActiveLink activeClassName={classes.active} href="/admin">
+              <Typography variant="subtitle1">Admin</Typography>
+            </ActiveLink>
+          </AdminOnly>
+        </span>
         <Link href={{ pathname: '/user', query: { id: user.id } }}>
-          <IconButton>
+          <IconButton style={{ padding: 0 }}>
             <Avatar alt="Your profile picture" src={user.profileImageUrl} />
           </IconButton>
         </Link>

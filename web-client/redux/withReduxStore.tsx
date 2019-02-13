@@ -17,8 +17,12 @@ function getOrCreateStore(initialState?: Store) {
   return window[__NEXT_REDUX_STORE__];
 }
 
+interface Props {
+  initialReduxState: Store;
+}
+
 export default App => {
-  return class AppWithRedux extends React.Component {
+  return class AppWithRedux extends React.Component<Props> {
     static async getInitialProps(appContext) {
       // Get or Create the store with `undefined` as initialState
       // This allows you to set a custom default initialState
@@ -40,7 +44,7 @@ export default App => {
 
     store: Store;
 
-    constructor(props) {
+    constructor(props: Props) {
       super(props);
       this.store = getOrCreateStore(props.initialReduxState);
     }

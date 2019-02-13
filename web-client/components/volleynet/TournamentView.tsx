@@ -23,14 +23,13 @@ import PhoneIcon from '@material-ui/icons/Phone';
 
 import CenteredLoading from '../../components/CenteredLoading';
 import TeamList from '../../components/volleynet/TeamList';
-import { card, link, title } from '../../styles/shared';
+import { link } from '../../styles/shared';
 import { isSignedup, tournamentDateString } from '../../utils/tournament';
 
 import { Tournament, User } from '../../types';
 
 const styles = (theme: Theme) =>
   createStyles({
-    card,
     container: {
       padding: theme.spacing.unit * 2,
     },
@@ -48,7 +47,6 @@ const styles = (theme: Theme) =>
     tabContent: {
       background: theme.palette.background.paper,
     },
-    title: title(theme),
     updatedAt: {
       marginTop: theme.spacing.unit,
     },
@@ -111,7 +109,11 @@ class TournamentView extends React.Component<Props, State> {
       {
         icon: <LinkIcon className={classes.infoElement} />,
         info: (
-          <a href={`//${tournament.website}`} target="_blank">
+          <a
+            href={`//${tournament.website}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {tournament.website}
           </a>
         ),
@@ -130,10 +132,8 @@ class TournamentView extends React.Component<Props, State> {
       <div className={classes.container}>
         <Grid container spacing={24}>
           <Grid item xs={6}>
-            <Typography className={classes.title} variant="h4">
-              {tournament.name}
-            </Typography>
-            <Card className={classes.card}>
+            <Typography variant="h4">{tournament.name}</Typography>
+            <Card>
               <CardContent>
                 <div>
                   {infos.map((info, i) => (
@@ -166,18 +166,14 @@ class TournamentView extends React.Component<Props, State> {
             >
               Last updated: <TimeAgo date={tournament.updatedAt} />
             </Typography>
-            <Typography className={classes.title} variant="h4">
-              Notes
-            </Typography>
-            <Card className={classes.card}>
+            <Typography variant="h4">Notes</Typography>
+            <Card>
               <CardContent>{infoText}</CardContent>
             </Card>
           </Grid>
 
           <Grid item xs={6}>
-            <Typography className={classes.title} variant="h4">
-              Teams
-            </Typography>
+            <Typography variant="h4">Teams</Typography>
             <Card>
               <CardContent>
                 <TeamList
@@ -190,10 +186,8 @@ class TournamentView extends React.Component<Props, State> {
         </Grid>
         {deregistered.length ? (
           <>
-            <Typography className={classes.title} variant="h4">
-              Deregistered
-            </Typography>
-            <Card className={classes.card}>
+            <Typography variant="h4">Deregistered</Typography>
+            <Card>
               <CardContent>
                 <TeamList teams={deregistered} />
               </CardContent>

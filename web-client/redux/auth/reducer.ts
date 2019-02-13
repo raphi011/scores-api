@@ -7,10 +7,10 @@ export const initialAuthState = {
   user: null,
 };
 
-export type AuthStore = {
+export interface AuthStore {
   user: User;
   loginRoute: string;
-};
+}
 
 function loggedOut(state: AuthStore, action): AuthStore {
   const { loginRoute = '' } = action.payload;

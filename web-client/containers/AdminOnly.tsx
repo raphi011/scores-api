@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import React from 'react';
 
 import { connect } from 'react-redux';
 import { User } from '../types';
@@ -6,11 +6,11 @@ import { User } from '../types';
 import { userSelector } from '../redux/auth/selectors';
 import { Store } from '../redux/store';
 
-type Props = {
-  children: ReactElement<any>;
+interface Props {
+  children: JSX.Element | JSX.Element[];
   user: User;
   isLoggedIn: boolean;
-};
+}
 
 const AdminOnly = ({ isLoggedIn, user, children }: Props) => {
   if (isLoggedIn && user.role === 'admin') {

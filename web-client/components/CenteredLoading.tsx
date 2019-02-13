@@ -11,9 +11,7 @@ const styles = createStyles({
   },
 });
 
-interface Props extends WithStyles<typeof styles> {}
-
-const CenteredLoading = ({ classes }: Props) => (
+const CenteredLoading = ({ classes }: WithStyles<typeof styles>) => (
   <div className={classes.container}>
     <CircularProgress />
   </div>

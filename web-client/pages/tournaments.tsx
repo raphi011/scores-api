@@ -6,15 +6,22 @@ import Router from 'next/router';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import { createStyles, Theme, WithStyles, withStyles } from '@material-ui/core/styles';
+import {
+  createStyles,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core/styles';
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 import Typography from '@material-ui/core/Typography';
 import withWidth from '@material-ui/core/withWidth';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 import DayHeader from '../components/DayHeader';
 import GroupedList from '../components/GroupedList';
-import TournamentFilters, { Filters } from '../components/volleynet/filters/TournamentFilters';
+import TournamentFilters, {
+  Filters,
+} from '../components/volleynet/filters/TournamentFilters';
 import TournamentList from '../components/volleynet/TournamentList';
 import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
@@ -29,26 +36,31 @@ import { Gender, Tournament, User } from '../types';
 
 const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
-const styles = (theme: Theme) => createStyles({
-  primary: {
-    flexGrow: 1,
-  },
-  root: {
-    display: 'flex',
+const styles = (theme: Theme) =>
+  createStyles({
+    found: {
+      color: theme.palette.grey[400],
+    },
+    primary: {
+      flexGrow: 1,
+    },
+    root: {
+      display: 'flex',
 
-    flexDirection: 'row',
+      flexDirection: 'row',
+      marginTop: '40px',
 
-    [theme.breakpoints.down('xs')]: {
-      flexDirection: 'column',
-    }
-  },
-  secondary: {
-    [theme.breakpoints.up('sm')]: {
-      paddingRight: '30px',
-      width: '300px',
-    }
-  },
-});
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+      },
+    },
+    secondary: {
+      [theme.breakpoints.up('sm')]: {
+        paddingRight: '50px',
+        width: '250px',
+      },
+    },
+  });
 
 interface Props extends WithStyles<typeof styles> {
   tournaments: Tournament[];
@@ -58,9 +70,11 @@ interface Props extends WithStyles<typeof styles> {
   user: User;
   width: Breakpoint;
 
-  loadTournaments: (
-    filters: { gender: Gender[]; league: string[]; season: number },
-  ) => void;
+  loadTournaments: (filters: {
+    gender: Gender[];
+    league: string[];
+    season: number;
+  }) => void;
 }
 
 interface State {
@@ -74,15 +88,17 @@ class Volleynet extends React.Component<Props, State> {
   };
 
   static buildActions({ gender, season, league = [] }: Props) {
-      return [loadTournamentsAction({
+    return [
+      loadTournamentsAction({
         gender,
         league,
         season,
-      })];
+      }),
+    ];
   }
 
   static getParameters(query: QueryStringMapObject) {
-    const { season = "2018" } = query;
+    const { season = '2019' } = query;
     let { gender = ['M', 'W'], league = ['amateur-tour'] } = query;
 
     if (!Array.isArray(league)) {
@@ -108,7 +124,6 @@ class Volleynet extends React.Component<Props, State> {
     loading: false,
   };
 
-
   renderList = (tournaments: Tournament[]) => {
     return (
       <div key={tournaments[0].id}>
@@ -128,22 +143,21 @@ class Volleynet extends React.Component<Props, State> {
   };
 
   onFilter = async (filters: Filters) => {
-    this.setState({ loading: true })
+    this.setState({ loading: true });
 
     const { loadTournaments } = this.props;
 
-    const query = filters; 
+    const query = filters;
 
     Router.push({
       pathname: '/',
       query,
     });
 
-    
     await loadTournaments(query);
 
-    this.setState({ loading: false })
-  }
+    this.setState({ loading: false });
+  };
 
   renderFilters = () => {
     const { league, gender, season, width } = this.props;
@@ -157,33 +171,33 @@ class Volleynet extends React.Component<Props, State> {
         season={season}
         onFilter={this.onFilter}
       />
-    )
+    );
 
-    if (width === "xs") {
+    if (width === 'xs') {
       return (
         <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography style={{ fontSize: '20px' }}>Filters</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails >
-            {filters}
-          </ExpansionPanelDetails>
+          <ExpansionPanelDetails>{filters}</ExpansionPanelDetails>
         </ExpansionPanel>
       );
     }
 
     return filters;
-  }
+  };
 
   render() {
     const { tournaments, classes } = this.props;
 
     return (
       <Layout title={{ text: 'Tournaments', href: '' }}>
+        <Typography variant="h1">
+          Tournaments{' '}
+          <span className={classes.found}>({tournaments.length})</span>
+        </Typography>
         <div className={classes.root}>
-          <div className={classes.secondary}>
-            {this.renderFilters()}
-          </div>
+          <div className={classes.secondary}>{this.renderFilters()}</div>
           <div className={classes.primary}>
             <GroupedList<Tournament>
               groupItems={groupTournaments}

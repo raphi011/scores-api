@@ -4,9 +4,11 @@ import { MuiThemeProviderProps } from '@material-ui/core/styles/MuiThemeProvider
 import Document, { Head, Main, NextScript } from 'next/document';
 import flush from 'styled-jsx/server';
 
-class MyDocument extends Document<{
+interface Props {
   pageContext: MuiThemeProviderProps;
-}> {
+}
+
+class MyDocument extends Document<Props> {
   render() {
     const { pageContext } = this.props;
 
@@ -19,6 +21,7 @@ class MyDocument extends Document<{
 
     const directives = [
       "default-src 'self'",
+      "script-src 'self'",
       "img-src 'self' https://*.googleusercontent.com",
       "child-src 'none'",
       "object-src 'none'",
@@ -66,7 +69,7 @@ MyDocument.getInitialProps = ctx => {
   let pageContext;
 
   const page = ctx.renderPage(Component => {
-    const WrappedComponent = props => {
+    const WrappedComponent = (props: Props) => {
       pageContext = props.pageContext;
       return <Component {...props} />;
     };

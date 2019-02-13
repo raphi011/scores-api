@@ -4,9 +4,11 @@ import { createReducer } from '../reduxHelper';
 
 import { EntityName, EntityType } from '../../types';
 
-export type EntityStoreValues = { [key: string]: EntityType };
+export interface EntityStoreValues {
+  [key: string]: EntityType;
+}
 
-export type EntityStorePart = {
+export interface EntityStorePart {
   values: EntityStoreValues;
   list?: {
     all: string[];
@@ -15,7 +17,7 @@ export type EntityStorePart = {
   by?: {
     [listName: string]: { [key: string]: string[] };
   };
-};
+}
 
 export type EntityStore = { [key in EntityName]: EntityStorePart };
 
@@ -33,7 +35,7 @@ export interface ReceiveEntityParams {
 }
 
 export interface DeleteEntityAction {
-  payload: any;
+  payload: object | string;
   entityName: EntityName;
   listNames: string[];
 }

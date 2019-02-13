@@ -4,25 +4,25 @@ import { connect } from 'react-redux';
 
 import Layout from '../components/Layout';
 
-type Props = {
+interface Props {
   title: { text: string; href: string };
   children: ReactNode;
-};
+}
 
-type State = {
+interface State {
   drawerOpen: boolean;
-};
+}
 
 class LayoutContainer extends React.Component<Props, State> {
   state = {
     drawerOpen: false,
-  }
+  };
 
   onToggleDrawer = () => {
     this.setState({
       drawerOpen: !this.state.drawerOpen,
-    })
-  }
+    });
+  };
 
   render() {
     const { title, children } = this.props;

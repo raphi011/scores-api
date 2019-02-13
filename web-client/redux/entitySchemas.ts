@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { denormalize, normalize, schema } from 'normalizr';
 
 import { EntityName, EntityType } from './../types';
@@ -52,7 +54,7 @@ export function norm(
   assignId: boolean,
 ): {
   result: string[];
-  entities: { [entity in EntityName]?: { [id: string]: EntityType }};
+  entities: { [entity in EntityName]?: { [id: string]: EntityType } };
 } {
   const isList = Array.isArray(data);
 

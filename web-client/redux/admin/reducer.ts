@@ -6,9 +6,9 @@ export const initialAdminState = {
   scrapeJobs: [],
 };
 
-export type AdminStore = {
+export interface AdminStore {
   scrapeJobs: ScrapeJob[];
-};
+}
 
 function receiveScrapeJobs(_: AdminStore, action): AdminStore {
   return {
