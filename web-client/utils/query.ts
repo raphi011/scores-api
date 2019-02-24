@@ -1,6 +1,49 @@
 import { QueryStringMapObject } from 'next';
 
-export type Query = Record<string, string | string[]>;
+function isOfT<T>(value: any, options: T[]): value is T {
+  return options.indexOf(value) !== -1;
+}
+
+export function multipleOf<T>(
+  query: QueryStringMapObject,
+  key: string,
+  available: T[] = [],
+): T[] {
+  let values = query[key];
+
+  if (!values) {
+    return [];
+  }
+
+  if (!Array.isArray(values)) {
+    values = [values];
+  }
+
+  const result: T[] = [];
+
+  values.forEach(v => {
+    if (isOfT(v, available)) {
+      result.push(v);
+    }
+  });
+
+  return result;
+}
+
+export function multipleOfDefault<T>(
+  query: QueryStringMapObject,
+  key: string,
+  available: T[] = [],
+  defaultValues: T[],
+): T[] {
+  const values = multipleOf(query, key, available);
+
+  if (!values || (!values.length && defaultValues.length)) {
+    return defaultValues;
+  }
+
+  return values;
+}
 
 export function str(query: QueryStringMapObject, key: string): string {
   const value = query[key];
