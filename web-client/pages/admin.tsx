@@ -54,7 +54,7 @@ interface Props extends WithStyles<typeof styles> {
 
 interface State {
   isEditUserOpen: boolean;
-  editUser?: User;
+  editUser: User | null;
 }
 
 class Administration extends React.Component<Props, State> {
@@ -77,19 +77,21 @@ class Administration extends React.Component<Props, State> {
     };
   }
 
-  state = {
+  state: State = {
     editUser: null,
     isEditUserOpen: false,
   };
 
-  interval: NodeJS.Timer;
+  interval?: NodeJS.Timer;
 
   componentDidMount() {
     this.interval = setInterval(this.loadScrapeJobs, 5000);
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval);
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   loadScrapeJobs = () => {

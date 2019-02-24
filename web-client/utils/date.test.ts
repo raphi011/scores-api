@@ -1,4 +1,4 @@
-import { formatDate } from './dateFormat';
+import { formatDate } from './date';
 
 const date = new Date(2017, 0, 1);
 

@@ -10,12 +10,11 @@ export interface Action {
 export async function dispatchActions(
   dispatch: Dispatch,
   actions = [],
-  isServer: boolean,
   req?: http.IncomingMessage,
   res?: http.OutgoingMessage,
 ) {
   for (const a of actions) {
-    const action = isServer ? serverAction(a, req, res) : a;
+    const action = req && res ? serverAction(a, req, res) : a;
 
     await dispatch(action);
   }
@@ -23,13 +22,12 @@ export async function dispatchActions(
 
 export async function dispatchAction(
   dispatch: Dispatch,
-  action,
-  isServer: boolean,
+  action: any,
   req?: http.IncomingMessage,
   res?: http.ServerResponse,
 ) {
   const result = await dispatch(
-    isServer ? serverAction(action, req, res) : action,
+    req && res ? serverAction(action, req, res) : action,
   );
   return result;
 }

@@ -3,6 +3,7 @@ import { norm } from '../entitySchemas';
 import { createReducer } from '../reduxHelper';
 
 import { EntityName, EntityType } from '../../types';
+import { ReceiveEntitiesAction } from './actions';
 
 export interface EntityStoreValues {
   [key: string]: EntityType;
@@ -10,7 +11,7 @@ export interface EntityStoreValues {
 
 export interface EntityStorePart {
   values: EntityStoreValues;
-  list?: {
+  list: {
     all: string[];
     [listName: string]: string[];
   };
@@ -20,19 +21,6 @@ export interface EntityStorePart {
 }
 
 export type EntityStore = { [key in EntityName]: EntityStorePart };
-
-export interface ReceiveEntityParams {
-  payload?: EntityType[];
-  entityName: EntityName;
-  assignId?: boolean;
-  listOptions?: {
-    [key in EntityName]?: {
-      name: string;
-      key?: string;
-      mode?: 'replace' | 'append';
-    }
-  };
-}
 
 export interface DeleteEntityAction {
   payload: object | string;
@@ -69,7 +57,36 @@ export const initialEntitiesState: EntityStore = {
   },
 };
 
-function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
+function isEntityName(entity: string): entity is EntityName {
+  return ['player, tournament', 'user'].includes(entity);
+}
+
+function getList(
+  state: EntityStore,
+  entityName: EntityName,
+  name: string,
+  key?: string,
+) {
+  const statePart = state[entityName];
+
+  if (!statePart) {
+    return [];
+  }
+
+  if (key) {
+    const lists = statePart.by && statePart.by[name];
+
+    if (!lists || !lists[key]) {
+      return [];
+    }
+
+    return lists[key];
+  }
+
+  return statePart.list[name];
+}
+
+function receiveEntities(state: EntityStore, action: ReceiveEntitiesAction) {
   // STEP 1: normalize entites
   const { entityName, payload, assignId = false, listOptions = {} } = action;
 
@@ -78,32 +95,39 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
   const newState = { ...state };
 
   // STEP 2: add entities to entity map(s)
-  Object.keys(entities).forEach((entityKey: EntityName) => {
-    let { values, by, list } = state[entityKey];
+  for (const entityName in entities) {
+    if (!isEntityName(entityName)) {
+      continue;
+    }
+
+    let { values, by, list } = state[entityName];
 
     let newIds: string[];
 
-    if (entityKey === action.entityName) {
+    if (entityName === action.entityName) {
       newIds = result;
     } else {
-      newIds = Object.keys(entities[entityKey]);
+      newIds = Object.keys(entityName);
     }
 
     values = {
       ...values,
-      ...entities[entityKey],
+      ...entities[entityName],
     };
 
-    const options = listOptions[entityKey];
+    const options = listOptions[entityName];
 
     // STEP 3: append or replace ids
     if (options) {
-      let newList = [];
+      let newList: string[] = [];
 
       if (options.mode === 'append') {
-        const previousList = options.key
-          ? (state[entityKey].by[options.name] || {})[options.key]
-          : state[entityKey].list[options.name];
+        const previousList = getList(
+          state,
+          entityName,
+          options.name,
+          options.key,
+        );
 
         if (previousList) {
           newList = previousList;
@@ -116,7 +140,7 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
         by = {
           ...by,
           [options.name]: {
-            ...(by[options.name] || {}),
+            ...((by && by[options.name]) || {}),
             [options.key]: newList,
           },
         };
@@ -128,32 +152,18 @@ function receiveEntities(state: EntityStore, action: ReceiveEntityParams) {
       }
     }
 
-    newState[entityKey] = {
+    newState[entityName] = {
       by,
       list,
       values,
     };
-  });
+  }
 
   return newState;
 }
 
-function receiveUser(state: EntityStore, action) {
-  const { user } = action.payload;
-
-  if (!user || !user.player) {
-    return state;
-  }
-
-  return receiveEntities(state, {
-    entityName: EntityName.Player,
-    payload: user.player,
-  });
-}
-
 const reducer = createReducer(initialEntitiesState, {
   [actionNames.RECEIVE_ENTITIES]: receiveEntities,
-  [actionNames.SET_USER_OR_LOGINROUTE]: receiveUser,
 });
 
 export default reducer;

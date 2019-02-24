@@ -10,7 +10,7 @@ import {
 import Typography from '@material-ui/core/Typography';
 import ArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-import StatusMarker from './StatusMarker';
+// import StatusMarker from './StatusMarker';
 
 import { Tournament } from '../../../types';
 import TournamentAttribute from './TournamentAttribute';
@@ -68,7 +68,6 @@ const TournamentListItem = ({ tournament, classes, onClick }: Props) => {
       divider
       onClick={() => onClick(tournament)}
     >
-      <StatusMarker status={tournament.status} />
       <div className={classes.content}>
         <Typography className={classes.name}>
           {tournament.name}{' '}

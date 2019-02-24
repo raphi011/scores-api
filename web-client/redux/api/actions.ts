@@ -2,12 +2,20 @@ import * as http from 'http';
 import { Params } from '../../api';
 import * as actionNames from '../actionNames';
 import { Action } from '../actions';
-import { ReceiveEntityParams } from '../entities/reducer';
+import { ReceiveEntitiesAction } from '../entities/actions';
 
 export const multiApiAction = (actions: ApiAction[]): ApiActions => ({
   actions,
   type: actionNames.API_MULTI,
 });
+
+export interface ApiResponse<T> {
+  status: number;
+  message: string;
+  payload: T;
+}
+
+export type ApiActionType = ApiAction | ApiActions;
 
 export interface ApiAction extends Action {
   type: 'API';
@@ -22,7 +30,7 @@ export interface ApiAction extends Action {
   error?: string;
   body?: string;
   successStatus?: string;
-  successParams?: ReceiveEntityParams;
+  successParams?: ReceiveEntitiesAction;
 }
 
 export interface ApiActions extends Action {

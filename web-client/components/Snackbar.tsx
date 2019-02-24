@@ -48,7 +48,10 @@ const SimpleSnackbar = ({ classes, onClose, status, open }: Props) => (
   />
 );
 
-const handleRequestClose = onClose => (_, reason) => {
+const handleRequestClose = (onClose: () => void) => (
+  _: any,
+  reason: string,
+) => {
   if (reason === 'clickaway') {
     return;
   }

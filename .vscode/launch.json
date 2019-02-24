@@ -37,7 +37,6 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",
-      "runtimeVersion": "10.7.0",
       "cwd": "${workspaceRoot}/web-client",
       "runtimeArgs": ["run-script", "debug"],
       "env": { "BACKEND_URL": "http://localhost:8080" },

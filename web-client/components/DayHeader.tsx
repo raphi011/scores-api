@@ -4,7 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import { formatDate } from '../utils/dateFormat';
+import { formatDate } from '../utils/date';
 
 const styles = createStyles({
   container: {

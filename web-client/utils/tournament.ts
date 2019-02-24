@@ -1,4 +1,4 @@
-import { formatDate } from './dateFormat';
+import { formatDate } from './date';
 
 import { Tournament } from '../types';
 

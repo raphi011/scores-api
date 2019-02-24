@@ -18,6 +18,7 @@ import { loginWithPasswordAction } from '../redux/auth/actions';
 import { loginRouteSelector } from '../redux/auth/selectors';
 import { setStatusAction } from '../redux/status/actions';
 import { Store } from '../redux/store';
+import { QueryStringMapObject } from 'next';
 
 interface Props extends WithStyles<typeof styles> {
   r: string;
@@ -59,7 +60,7 @@ class Login extends React.Component<Props, State> {
     setStatus: setStatusAction,
   };
 
-  static getParameters(query) {
+  static getParameters(query: QueryStringMapObject) {
     const { error, r } = query;
 
     return { error, r };
@@ -161,7 +162,9 @@ class Login extends React.Component<Props, State> {
                 margin="normal"
               />
             </FormGroup>
-            <LoadingButton loading={loggingIn}>Login</LoadingButton>
+            <LoadingButton loading={loggingIn}>
+              <span>Login</span>
+            </LoadingButton>
             <div style={{ margin: '20px 0' }}>- or -</div>
             <Button
               disabled={!loginRoute}

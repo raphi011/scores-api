@@ -42,7 +42,7 @@ class JobListItem extends React.PureComponent<Props> {
   }
 }
 
-function stateToString(state: number) {
+function stateToString(state: number): JSX.Element {
   switch (state) {
     case 0:
       return <StopIcon />;
@@ -54,6 +54,8 @@ function stateToString(state: number) {
       return <PlayIcon />;
     case 4:
       return <WarningIcon />;
+    default:
+      return <span />;
   }
 }
 

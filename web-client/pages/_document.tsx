@@ -1,14 +1,53 @@
 import React from 'react';
 
 import { MuiThemeProviderProps } from '@material-ui/core/styles/MuiThemeProvider';
-import Document, { Head, Main, NextScript } from 'next/document';
+import Document, {
+  Head,
+  Main,
+  NextScript,
+  NextDocumentContext,
+} from 'next/document';
 import flush from 'styled-jsx/server';
 
 interface Props {
   pageContext: MuiThemeProviderProps;
+  url: string;
 }
 
 class MyDocument extends Document<Props> {
+  static getInitialProps = (ctx: NextDocumentContext): any => {
+    let pageContext: MuiThemeProviderProps;
+
+    const page = ctx.renderPage((Component: any) => {
+      const WrappedComponent = (props: Props) => {
+        pageContext = props.pageContext;
+        return <Component {...props} />;
+      };
+
+      return WrappedComponent;
+    });
+
+    return {
+      ...page,
+      // @ts-ignore
+      pageContext,
+      // Styles fragment is rendered after the app and page rendering finish.
+      styles: (
+        <>
+          <style
+            id="jss-server-side"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              // @ts-ignore
+              __html: pageContext.sheetsRegistry.toString(),
+            }}
+          />
+          {flush() || null}
+        </>
+      ),
+    };
+  };
+
   render() {
     const { pageContext } = this.props;
 
@@ -33,7 +72,7 @@ class MyDocument extends Document<Props> {
     if (process.env.NODE_ENV === 'development') {
       // webpack needs 'unsafe-eval'
       directives[1] = "script-src 'unsafe-eval' 'unsafe-inline' 'self'";
-      directives.push("connect-src 'self' ws://localhost:* wss://localhost:*");
+      directives.push("connect-src 'self' wss://localhost:*");
     }
 
     const csp = directives.join(';');
@@ -64,36 +103,5 @@ class MyDocument extends Document<Props> {
     );
   }
 }
-
-MyDocument.getInitialProps = ctx => {
-  let pageContext;
-
-  const page = ctx.renderPage(Component => {
-    const WrappedComponent = (props: Props) => {
-      pageContext = props.pageContext;
-      return <Component {...props} />;
-    };
-
-    return WrappedComponent;
-  });
-
-  return {
-    ...page,
-    pageContext,
-    // Styles fragment is rendered after the app and page rendering finish.
-    styles: (
-      <>
-        <style
-          id="jss-server-side"
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{
-            __html: pageContext.sheetsRegistry.toString(),
-          }}
-        />
-        {flush() || null}
-      </>
-    ),
-  };
-};
 
 export default MyDocument;

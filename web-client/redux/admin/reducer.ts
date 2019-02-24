@@ -10,7 +10,14 @@ export interface AdminStore {
   scrapeJobs: ScrapeJob[];
 }
 
-function receiveScrapeJobs(_: AdminStore, action): AdminStore {
+interface ReceiveScrapeJobAction {
+  payload: ScrapeJob[];
+}
+
+function receiveScrapeJobs(
+  _: AdminStore,
+  action: ReceiveScrapeJobAction,
+): AdminStore {
   return {
     scrapeJobs: action.payload,
   };

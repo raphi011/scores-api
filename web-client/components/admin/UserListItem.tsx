@@ -7,7 +7,7 @@ import { User } from '../../types';
 
 interface Props {
   user: User;
-  onClick?: (User: User) => void;
+  onClick: (User: User) => void;
 }
 
 const onClickHandler = (handler: (user: User) => void, user: User) => {

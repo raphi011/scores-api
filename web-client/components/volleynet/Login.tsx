@@ -115,7 +115,7 @@ class Login extends React.Component<Props, State> {
 
         <LoadingButton loading={loggingIn}>
           <DoneIcon />
-          Signup
+          <span>Signup</span>
         </LoadingButton>
       </form>
     );

@@ -9,33 +9,11 @@ interface Props {
   children: ReactNode;
 }
 
-interface State {
-  drawerOpen: boolean;
-}
-
-class LayoutContainer extends React.Component<Props, State> {
-  state = {
-    drawerOpen: false,
-  };
-
-  onToggleDrawer = () => {
-    this.setState({
-      drawerOpen: !this.state.drawerOpen,
-    });
-  };
-
+class LayoutContainer extends React.Component<Props> {
   render() {
     const { title, children } = this.props;
 
-    return (
-      <Layout
-        onToggleDrawer={this.onToggleDrawer}
-        drawerOpen={this.state.drawerOpen}
-        title={title}
-      >
-        {children}
-      </Layout>
-    );
+    return <Layout title={title}>{children}</Layout>;
   }
 }
 

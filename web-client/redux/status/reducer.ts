@@ -1,6 +1,7 @@
 import * as actionNames from '../actionNames';
 import { createReducer } from '../reduxHelper';
 import { Store } from '../store';
+import { SetStatusAction } from './actions';
 
 export const initialStatusState = {
   status: '',
@@ -10,7 +11,7 @@ export interface StatusStore {
   status: string;
 }
 
-function setStatus(_: StatusStore, action): StatusStore {
+function setStatus(_: StatusStore, action: SetStatusAction): StatusStore {
   return {
     status: action.status,
   };

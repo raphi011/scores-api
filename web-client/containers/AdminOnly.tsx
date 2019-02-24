@@ -7,13 +7,12 @@ import { userSelector } from '../redux/auth/selectors';
 import { Store } from '../redux/store';
 
 interface Props {
-  children: JSX.Element | JSX.Element[];
-  user: User;
-  isLoggedIn: boolean;
+  children: JSX.Element;
+  user: User | null;
 }
 
-const AdminOnly = ({ isLoggedIn, user, children }: Props) => {
-  if (isLoggedIn && user.role === 'admin') {
+const AdminOnly = ({ user, children }: Props) => {
+  if (user && user.role === 'admin') {
     return children;
   }
 
@@ -21,9 +20,9 @@ const AdminOnly = ({ isLoggedIn, user, children }: Props) => {
 };
 
 function mapStateToProps(state: Store) {
-  const { user, isLoggedIn } = userSelector(state);
+  const { user } = userSelector(state);
 
-  return { user, isLoggedIn };
+  return { user };
 }
 
 export default connect(mapStateToProps)(AdminOnly);

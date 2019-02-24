@@ -80,7 +80,7 @@ interface Props extends WithStyles<typeof styles> {
 type State = Filters;
 
 class TournamentFilters extends React.Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
 
     const { league, gender, season } = this.props;
@@ -152,7 +152,7 @@ class TournamentFilters extends React.Component<Props, State> {
     });
   };
 
-  onSubmit = e => {
+  onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const { onFilter } = this.props;
@@ -229,7 +229,9 @@ class TournamentFilters extends React.Component<Props, State> {
             />
           ))}
         </div>
-        <LoadingButton loading={loading}>Search</LoadingButton>
+        <LoadingButton loading={loading}>
+          <span>Search</span>
+        </LoadingButton>
       </form>
     );
   }

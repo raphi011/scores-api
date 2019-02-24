@@ -13,11 +13,7 @@ export const entityMapSelector = createSelector(
   playerMap,
   tournamentMap,
   userMap,
-  (
-    player,
-    tournament,
-    user,
-  ) => ({
+  (player, tournament, user) => ({
     player,
     tournament,
     user,
@@ -48,14 +44,14 @@ export const filteredTournamentsSelector = (state: Store) =>
     state.entities.tournament.list.filter || [],
   );
 
-export const tournamentSelector = (state: Store, tournamentId: number) =>
-  denorm(EntityName.Tournament, entityMapSelector(state), tournamentId.toString());
+export const tournamentSelector = (state: Store, tournamentId: string) =>
+  denorm(EntityName.Tournament, entityMapSelector(state), tournamentId);
 
 export const ladderVolleynetplayerSelector = (state: Store, gender: string) =>
   denorm(
     EntityName.Player,
     entityMapSelector(state),
-    state.entities.player.by.ladder[gender],
+    state.entities.player.by ? state.entities.player.by.ladder[gender] : [],
   );
 
 export const searchVolleynetplayerSelector = (state: Store) =>

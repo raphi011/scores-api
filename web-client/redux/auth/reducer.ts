@@ -8,11 +8,17 @@ export const initialAuthState = {
 };
 
 export interface AuthStore {
-  user: User;
+  user: User | null;
   loginRoute: string;
 }
 
-function loggedOut(state: AuthStore, action): AuthStore {
+interface LoggedOutAction {
+  payload: {
+    loginRoute: string;
+  };
+}
+
+function loggedOut(state: AuthStore, action: LoggedOutAction): AuthStore {
   const { loginRoute = '' } = action.payload;
 
   return {
@@ -22,8 +28,18 @@ function loggedOut(state: AuthStore, action): AuthStore {
   };
 }
 
-function setUserOrLoginroute(state: AuthStore, action): AuthStore {
-  const { user, loginRoute } = action.payload;
+interface SetUserOrLoginrouteAction {
+  payload: {
+    user?: User;
+    loginRoute?: string;
+  };
+}
+
+function setUserOrLoginroute(
+  state: AuthStore,
+  action: SetUserOrLoginrouteAction,
+): AuthStore {
+  const { user = null, loginRoute = '' } = action.payload;
 
   return {
     ...state,

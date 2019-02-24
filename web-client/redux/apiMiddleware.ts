@@ -1,8 +1,8 @@
 import * as http from 'http';
 import fetch from 'isomorphic-unfetch';
-import { Store } from 'redux';
+import { Store, Action } from 'redux';
 import { BACKEND_URL, buildUrl, isJson } from '../api';
-import { ApiAction, ApiActions } from '../redux/api/actions';
+import { ApiAction, ApiActions, ApiActionType } from '../redux/api/actions';
 import * as actionNames from './actionNames';
 import { userSelector } from './auth/selectors';
 
@@ -30,7 +30,6 @@ export function serverAction(
 async function doAction(
   store: Store,
   action: ApiAction,
-  isServer = false,
   req?: http.IncomingMessage,
   res?: http.ServerResponse,
 ) {
@@ -48,7 +47,7 @@ async function doAction(
   } = action;
   const { dispatch, getState } = store;
 
-  if (isServer && req.headers.cookie) {
+  if (req && req.headers.cookie) {
     const cookie = Array.isArray(req.headers.cookie)
       ? req.headers.cookie[0]
       : req.headers.cookie;
@@ -86,7 +85,7 @@ async function doAction(
       });
     }
 
-    if (isServer) {
+    if (res) {
       const setCookie = response.headers.get('Set-Cookie');
 
       if (setCookie) {
@@ -135,28 +134,30 @@ async function doAction(
   return Promise.reject({ responseCode });
 }
 
-const apiMiddleware = (store: Store) => next => async action => {
-  if (
-    action.type !== actionNames.API &&
-    action.type !== actionNames.API_MULTI
-  ) {
+function isApiAction(action: Action): action is ApiActionType {
+  return (
+    action.type === actionNames.API || action.type === actionNames.API_MULTI
+  );
+}
+
+function isMultiApiAction(action: Action): action is ApiActions {
+  return action.type === actionNames.API_MULTI;
+}
+
+const apiMiddleware = (store: any) => (next: any) => async (action: Action) => {
+  if (!isApiAction(action)) {
     return next(action);
   }
-
-  const apiAction: ApiAction | ApiActions = action;
-
-  const { req, res, isServer } = apiAction;
+  const { req, res } = action;
 
   let result;
 
-  if (apiAction.type === actionNames.API_MULTI) {
-    const { actions } = apiAction;
+  if (isMultiApiAction(action)) {
+    const { actions } = action;
 
-    result = await Promise.all(
-      actions.map(a => doAction(store, a, isServer, req, res)),
-    );
+    result = await Promise.all(actions.map(a => doAction(store, a, req, res)));
   } else {
-    result = await doAction(store, apiAction, isServer, req, res);
+    result = await doAction(store, action, req, res);
   }
 
   return result;

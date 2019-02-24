@@ -7,7 +7,6 @@ import {
 import React, { ReactNode } from 'react';
 
 import AppBar from '../containers/AppBarContainer';
-import Drawer from '../containers/DrawerContainer';
 import { maxContentWidth } from '../styles/theme';
 
 const styles = (theme: Theme) =>
@@ -33,21 +32,11 @@ const styles = (theme: Theme) =>
 interface Props extends WithStyles<typeof styles> {
   title: { text: string; href: string };
   children: ReactNode;
-  drawerOpen: boolean;
-
-  onToggleDrawer: () => void;
 }
 
-const Layout = ({
-  title,
-  children,
-  drawerOpen,
-  onToggleDrawer,
-  classes,
-}: Props) => (
+const Layout = ({ title, children, classes }: Props) => (
   <div className={classes.root}>
-    <AppBar onToggleDrawer={onToggleDrawer} title={title} />
-    <Drawer open={drawerOpen} />
+    <AppBar title={title} />
     <main className={classes.content}>{children}</main>
   </div>
 );

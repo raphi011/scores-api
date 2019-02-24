@@ -82,8 +82,8 @@ export default createMuiTheme({
       },
       body2: {
         fontSize: fontPalette[500],
-        fontWeight: 500,
-        color: palette.grey[600],
+        fontWeight: 300,
+        color: palette.grey[700],
       },
       h1: {
         color: palette.grey[800],
@@ -104,17 +104,16 @@ export default createMuiTheme({
         fontSize: fontPalette[400],
         fontWeight: 500,
         textTransform: 'uppercase',
-        marginBottom: '20px',
       },
       subtitle1: {
-        color: palette.grey[500],
+        color: palette.grey[400],
         fontSize: fontPalette[500],
-        fontWeight: 500,
+        fontWeight: 300,
       },
       subtitle2: {
-        color: palette.grey[500],
+        color: palette.grey[400],
         fontSize: fontPalette[400],
-        fontWeight: 500,
+        fontWeight: 400,
       },
       useNextVariants: true,
     };

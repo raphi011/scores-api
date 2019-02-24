@@ -23,15 +23,13 @@ func parseFloat(text string) float32 {
 	return float32(val)
 }
 
-func findInt(text string) int {
+func findInt(text string) (nr int, ok bool) {
 	nrstr := numberRegex.FindString(text)
+
 	nr, err := strconv.Atoi(nrstr)
+	ok = err == nil
 
-	if err != nil {
-		return -1
-	}
-
-	return nr
+	return
 }
 
 func trimSelectionHTML(s *goquery.Selection) string {
@@ -90,7 +88,7 @@ func parsePlayerIDFromSteckbrief(s *goquery.Selection) (int, error) {
 	href := parseHref(s)
 
 	if href == "" {
-		return -1, errors.New("could not parse playerid from empty steckbrief href")
+		return 0, errors.New("could not parse playerid from empty steckbrief href")
 	}
 
 	dashIndex := strings.Index(href, "-")

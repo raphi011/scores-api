@@ -11,6 +11,7 @@ import SearchPlayerList from './SearchPlayerList';
 
 import { Gender, SearchPlayer } from '../../types';
 import LoadingButton from '../LoadingButton';
+import { Store } from '../../redux/store';
 
 const styles = createStyles({
   container: {
@@ -22,10 +23,12 @@ interface Props extends WithStyles<typeof styles> {
   gender: Gender;
   foundPlayers: SearchPlayer[];
 
-  onSelectPlayer: (player: SearchPlayer) => void;
-  searchVolleynetPlayers: (
-    params: { fname: string; lname: string; bday: string },
-  ) => void;
+  onSelectPlayer: (player: SearchPlayer | null) => void;
+  searchVolleynetPlayers: (params: {
+    fname: string;
+    lname: string;
+    bday: string;
+  }) => void;
 }
 
 interface State {
@@ -43,24 +46,24 @@ class PlayerSearch extends React.Component<Props, State> {
     searching: false,
   };
 
-  onChangeFirstname = event => {
+  onChangeFirstname = (event: React.ChangeEvent<HTMLInputElement>) => {
     const firstName = event.target.value;
 
     this.setState({ firstName });
   };
 
-  onChangeLastname = event => {
+  onChangeLastname = (event: React.ChangeEvent<HTMLInputElement>) => {
     const lastName = event.target.value;
 
     this.setState({ lastName });
   };
-  onChangeBirthday = event => {
+  onChangeBirthday = (event: React.ChangeEvent<HTMLInputElement>) => {
     const birthday = event.target.value;
 
     this.setState({ birthday });
   };
 
-  onSearch = async (e: React.FormEvent<HTMLFormElement>)  => {
+  onSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     const { firstName: fname, lastName: lname, birthday: bday } = this.state;
     const { searchVolleynetPlayers } = this.props;
 
@@ -111,7 +114,7 @@ class PlayerSearch extends React.Component<Props, State> {
         />
         <LoadingButton loading={searching}>
           <SearchIcon />
-          Search
+          <span>Search</span>
         </LoadingButton>
       </form>
     );
@@ -122,7 +125,7 @@ const mapDispatchToProps = {
   searchVolleynetPlayers: searchPlayersAction,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state: Store) {
   const foundPlayers = searchVolleynetplayerSelector(state);
 
   return { foundPlayers };

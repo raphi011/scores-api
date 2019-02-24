@@ -12,6 +12,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/explicit-member-accessibility': 0,
     '@typescript-eslint/no-use-before-define': 0,
+    '@typescript-eslint/no-explicit-any': 0, // enable as soon as all any's are removed
   },
   env: {
     es6: true,
@@ -26,7 +27,7 @@ module.exports = {
   },
   parserOptions: {
     ecmaVersion: 6,
-    // project: './web-client/tsconfig.json', // remove web-client as soon as https://github.com/typescript-eslint/typescript-eslint/issues/251 is fixed^
+    tsconfigRootDir: __dirname,
     project: './tsconfig.json',
     sourceType: 'module',
   },

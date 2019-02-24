@@ -42,10 +42,10 @@ func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 
 			switch j {
 			case 1:
-				p.LadderRank = findInt(c.Text())
+				p.LadderRank, _ = findInt(c.Text())
 			case 2:
 				p.FirstName, p.LastName = parsePlayerName(c)
-				p.ID, err = parsePlayerIDFromSteckbrief(c.Find("a"))
+				p.ID, _ = parsePlayerIDFromSteckbrief(c.Find("a"))
 			case 3:
 				break
 			case 4:
@@ -53,7 +53,7 @@ func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 			case 5:
 				p.Club = trimmSelectionText(c)
 			case 6:
-				p.TotalPoints = findInt(c.Text())
+				p.TotalPoints, _ = findInt(c.Text())
 			}
 		}
 

@@ -8,7 +8,10 @@ export const userOrLoginRouteAction = (): ApiAction => ({
   url: 'user-or-login',
 });
 
-export const loginWithPasswordAction = (credentials): ApiAction => ({
+export const loginWithPasswordAction = (credentials: {
+  email: string;
+  password: string;
+}): ApiAction => ({
   body: JSON.stringify(credentials),
   method: 'POST',
   success: actionNames.SET_USER_OR_LOGINROUTE,

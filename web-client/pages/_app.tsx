@@ -9,7 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import Snackbar from '../containers/SnackbarContainer';
-import getPageContext from '../getPageContext';
+import getPageContext, { PageContext } from '../getPageContext';
 import withReduxStore from '../redux/withReduxStore';
 
 interface Props {
@@ -17,9 +17,9 @@ interface Props {
 }
 
 class MyApp extends App<Props> {
-  pageContext = null;
+  pageContext: PageContext;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.pageContext = getPageContext();
   }

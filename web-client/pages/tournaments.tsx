@@ -33,6 +33,7 @@ import {
 import { filteredTournamentsSelector } from '../redux/entities/selectors';
 import { Store } from '../redux/store';
 import { Gender, Tournament, User } from '../types';
+import { sameDay } from '../utils/date';
 
 const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
@@ -212,20 +213,12 @@ class Volleynet extends React.Component<Props, State> {
   }
 }
 
-function sameDay(d1: Date, d2: Date): boolean {
-  return (
-    d1.getFullYear() === d2.getFullYear() &&
-    d1.getMonth() === d2.getMonth() &&
-    d1.getDay() === d2.getDay()
-  );
-}
-
 function groupTournaments(tournaments: Tournament[]) {
-  const grouped = [];
+  const grouped: Tournament[][] = [];
 
-  let previous = null;
+  let previous: Tournament | null = null;
 
-  tournaments.forEach(t => {
+  tournaments.forEach((t: Tournament) => {
     if (!previous || !sameDay(new Date(previous.start), new Date(t.start))) {
       grouped.push([t]);
     } else {

@@ -92,6 +92,7 @@ export interface Tournament {
   signedupTeams: number;
   start: string;
   status: TournamentStatus;
+  subLeague: string;
   teams: Team[];
   website: string;
 }
@@ -111,11 +112,7 @@ export interface ScrapeJob {
   state: number;
 }
 
-export type EntityType =
-  | User
-  | Player
-  | Team
-  | Tournament;
+export type EntityType = User | Player | Team | Tournament;
 
 export interface Classes {
   [key: string]: string;

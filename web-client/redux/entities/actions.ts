@@ -1,7 +1,22 @@
 import { ApiAction } from '../../redux/api/actions';
 
-import { EntityName, Gender } from '../../types';
+import { EntityName, Gender, EntityType } from '../../types';
 import * as actionNames from '../actionNames';
+
+export type EntityActionTypes = ReceiveEntitiesAction;
+
+export interface ReceiveEntitiesAction {
+  payload?: EntityType[];
+  entityName: EntityName;
+  assignId?: boolean;
+  listOptions?: {
+    [key in EntityName]?: {
+      name: string;
+      key?: string;
+      mode?: 'replace' | 'append';
+    }
+  };
+}
 
 export const searchPlayersAction = (filters: {
   fname: string;

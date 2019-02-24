@@ -3,7 +3,9 @@ import React from 'react';
 import Card from '@material-ui/core/Card';
 
 import Typography from '@material-ui/core/Typography';
+
 import Ladder from '../components/volleynet/Ladder';
+import * as Query from '../utils/query';
 import withAuth from '../containers/AuthContainer';
 import Layout from '../containers/LayoutContainer';
 import { loadLadderAction } from '../redux/entities/actions';
@@ -11,6 +13,7 @@ import { ladderVolleynetplayerSelector } from '../redux/entities/selectors';
 
 import { Store } from '../redux/store';
 import { Player } from '../types';
+import { QueryStringMapObject } from 'next';
 
 interface Props {
   gender: 'M' | 'W';
@@ -30,12 +33,8 @@ class Ranking extends React.Component<Props> {
     return [loadLadderAction(gender)];
   }
 
-  static getParameters(query) {
-    let { gender } = query;
-
-    if (!genderList.includes(gender)) {
-      gender = 'M';
-    }
+  static getParameters(query: QueryStringMapObject) {
+    const gender = Query.oneOfDefault(query, 'gender', genderList, 'M');
 
     return { gender };
   }
@@ -46,7 +45,7 @@ class Ranking extends React.Component<Props> {
     return { ladder };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { loadLadder, gender } = this.props;
 
     if (gender !== prevProps.gender) {

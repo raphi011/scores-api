@@ -4,7 +4,7 @@ import { NextComponentClass, NextContext } from 'next';
 import Error from 'next/error';
 import Router from 'next/router';
 import { connect } from 'react-redux';
-import { Dispatch, Store } from 'redux';
+import { Dispatch, Store, Action } from 'redux';
 
 import { dispatchAction, dispatchActions } from '../redux/actions';
 import { userOrLoginRouteAction } from '../redux/auth/actions';
@@ -21,21 +21,18 @@ export interface Context extends NextContext {
   store: Store;
 }
 
-export async function dispatchWithContext(ctx: Context, action) {
+export async function dispatchWithContext(ctx: Context, action: Action) {
   const { store, res, req } = ctx;
 
-  const isServer = !!req;
   const dispatch = store.dispatch;
 
-  return await dispatchAction(dispatch, action, isServer, req, res);
+  return await dispatchAction(dispatch, action, req, res);
 }
 
 export function redirectWithContext(ctx: Context, path: string) {
   const { res, req } = ctx;
 
-  const isServer = !!req;
-
-  if (isServer) {
+  if (req && res) {
     const protocol = 'https';
     const host = req.headers.host;
     const loginUrl = `${protocol}://${host}${path}`;
@@ -49,7 +46,7 @@ export function redirectWithContext(ctx: Context, path: string) {
   }
 }
 
-export default (Component): NextComponentClass<Props> => {
+export default (Component: any): NextComponentClass<Props> => {
   class Auth extends React.Component<Props> {
     static async getInitialProps(ctx: Context) {
       try {
@@ -116,7 +113,7 @@ export default (Component): NextComponentClass<Props> => {
         if (isServer && Component.buildActions) {
           const actions = Component.buildActions(props);
 
-          await dispatchActions(dispatch, actions, isServer, req, res);
+          await dispatchActions(dispatch, actions, req, res);
         }
 
         return props;
@@ -133,10 +130,10 @@ export default (Component): NextComponentClass<Props> => {
       }
 
       const actions = Component.buildActions(this.props);
-      await dispatchActions(dispatch, actions, false);
+      await dispatchActions(dispatch, actions);
     }
 
-    async componentDidUpdate(nextProps, nextState) {
+    async componentDidUpdate(nextProps: any, nextState: any) {
       if (
         !Component.shouldComponentUpdate ||
         !Component.buildActions ||
@@ -149,7 +146,7 @@ export default (Component): NextComponentClass<Props> => {
 
       const actions = Component.buildActions(nextProps);
 
-      await dispatchActions(dispatch, actions, false);
+      await dispatchActions(dispatch, actions);
     }
 
     render() {

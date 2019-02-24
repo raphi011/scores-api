@@ -26,7 +26,7 @@ class EditUserDialogContainer extends React.Component<Props, State> {
     submitting: false,
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { user } = this.props;
 
     if (prevProps.user === user) {
@@ -34,9 +34,9 @@ class EditUserDialogContainer extends React.Component<Props, State> {
     }
 
     if (user) {
-      this.setState({ 
+      this.setState({
         email: user.email,
-        password: "",
+        password: '',
       });
     }
   }

@@ -2,7 +2,7 @@ export interface Params {
   [key: string]: ParamValue;
 }
 
-type ParamValue = number | string | string[]
+type ParamValue = number | string | string[];
 
 export function buildUrl(host: string, endpoint: string, params: Params = {}) {
   let paramUrl = '';
@@ -21,15 +21,13 @@ export function buildUrl(host: string, endpoint: string, params: Params = {}) {
 function keyValue(key: string, value: ParamValue): string {
   return Array.isArray(value)
     ? value.map(v => `${key}=${v}`).join('&')
-    : `${key}=${value}`
+    : `${key}=${value}`;
 }
 
-export function isJson(response: {
-  headers: { get: (key: string) => string };
-}): boolean {
+export function isJson(response: Response): boolean {
   const contentType = response.headers.get('content-type');
 
   return !!contentType && contentType.indexOf('application/json') !== -1;
 }
 
-export const { BACKEND_URL } = process.env;
+export const { BACKEND_URL = '' } = process.env;

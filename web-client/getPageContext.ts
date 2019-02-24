@@ -1,13 +1,17 @@
 /* eslint-disable no-underscore-dangle */
 
-import {
-  createGenerateClassName,
-} from '@material-ui/core/styles';
-import { SheetsRegistry } from 'jss';
+import { createGenerateClassName, Theme } from '@material-ui/core/styles';
+import { SheetsRegistry, GenerateClassName } from 'jss';
 import theme from './styles/theme';
 
+export interface PageContext {
+  generateClassName: GenerateClassName;
+  sheetsManager: any; // Map<Theme, SheetManagerTheme>
+  sheetsRegistry: SheetsRegistry;
+  theme: Theme;
+}
 
-function createPageContext() {
+function createPageContext(): PageContext {
   return {
     // The standard class name generator.
     generateClassName: createGenerateClassName(),
@@ -19,13 +23,13 @@ function createPageContext() {
   };
 }
 
-declare const process;
-declare const global;
+declare const process: any;
+declare const global: any;
 
 export default function getPageContext() {
   // Make sure to create a new context for every server-side request so that data
   // isn't shared between connections (which would be bad).
-  if (!process.browser) { 
+  if (!process.browser) {
     return createPageContext();
   }
 

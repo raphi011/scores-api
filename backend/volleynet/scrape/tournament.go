@@ -94,11 +94,11 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 	},
 	"Modus": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Mode = trimmSelectionText(value)
-		t.MaxTeams = findInt(t.Mode)
+		t.MaxTeams, _ = findInt(t.Mode)
 	},
 	"Teiln. Qual.": func(value *goquery.Selection, t *volleynet.Tournament) {
 		// TODO: not min teams but min teams for qualification, this is misleading
-		t.MinTeams = findInt(value.Text())
+		t.MinTeams, _ = findInt(value.Text())
 	},
 	"Datum": func(value *goquery.Selection, t *volleynet.Tournament) {
 		var err error
@@ -112,7 +112,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		t.Location = trimSelectionHTML(value)
 	},
 	"Max. Punkte": func(value *goquery.Selection, t *volleynet.Tournament) {
-		t.MaxPoints = findInt(value.Text())
+		t.MaxPoints, _ = findInt(value.Text())
 	},
 	"Veranstalter": func(value *goquery.Selection, t *volleynet.Tournament) {
 		t.Organiser = trimmSelectionText(value)
@@ -225,14 +225,14 @@ func parsePlayerRow(row *goquery.Selection, team *volleynet.TournamentTeam) (pla
 		if columnsCount == 5 {
 			switch k {
 			case 0:
-				team.Result = findInt(column.Text())
+				team.Result, _ = findInt(column.Text())
 			case 1:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
 				player.FirstName, player.LastName = parsePlayerName(column)
 			case 2:
 				player.CountryUnion = trimmSelectionText(column)
 			case 3:
-				team.WonPoints = findInt(column.Text())
+				team.WonPoints, _ = findInt(column.Text())
 			case 4:
 				team.PrizeMoney = parseFloat(column.Text())
 			}
@@ -246,12 +246,12 @@ func parsePlayerRow(row *goquery.Selection, team *volleynet.TournamentTeam) (pla
 			case 2:
 				player.CountryUnion = trimmSelectionText(column)
 			case 3:
-				player.TotalPoints = findInt(column.Text())
+				player.TotalPoints, _ = findInt(column.Text())
 			}
 		} else if columnsCount == 7 {
 			switch k {
 			case 0:
-				team.Seed = findInt(column.Text())
+				team.Seed, _ = findInt(column.Text())
 			case 1:
 				player.ID, err = parsePlayerIDFromSteckbrief(column.Find("a"))
 				player.FirstName, player.LastName = parsePlayerName(column)
@@ -260,9 +260,9 @@ func parsePlayerRow(row *goquery.Selection, team *volleynet.TournamentTeam) (pla
 			case 3:
 				player.CountryUnion = trimmSelectionText(column)
 			case 4:
-				player.TotalPoints = findInt(column.Text())
+				player.TotalPoints, _ = findInt(column.Text())
 			case 5:
-				team.TotalPoints = findInt(column.Text())
+				team.TotalPoints, _ = findInt(column.Text())
 			case 6:
 				// signout link
 				team.Deregistered = trimmSelectionText(column) == ""

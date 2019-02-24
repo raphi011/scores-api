@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 interface Props<T> {
   groupItems: (items: T[]) => T[][];
-  renderHeader: (item: T[]) => ReactNode;
-  renderList: (items: T[]) => ReactNode;
+  renderHeader: (item: T[]) => JSX.Element;
+  renderList: (items: T[]) => JSX.Element;
   items: T[];
 }
 
@@ -15,7 +15,7 @@ export default function GroupedList<T>({
 }: Props<T>) {
   const groupedItems = groupItems(items);
 
-  const groupsWithHeaders = [];
+  const groupsWithHeaders: JSX.Element[] = [];
 
   groupedItems.forEach(group => {
     groupsWithHeaders.push(renderHeader(group));

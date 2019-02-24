@@ -18,82 +18,90 @@ import {
   tournamentSignupAction,
 } from '../../redux/entities/actions';
 import { tournamentSelector } from '../../redux/entities/selectors';
-import { card, link, title } from '../../styles/shared';
+import { link } from '../../styles/shared';
 
-import { Player, Tournament, User } from '../../types';
+import {
+  Tournament,
+  User,
+  SearchPlayer as SearchPlayerType,
+} from '../../types';
+import { Query } from '../../utils/query';
+import { Store } from '../../redux/store';
 
 const styles = (theme: Theme) =>
   createStyles({
-    card,
     container: {
       padding: theme.spacing.unit * 2,
     },
     link,
-    title: title(theme),
   });
 
 interface Props extends WithStyles<typeof styles> {
-  tournamentId: number;
+  tournamentId: string;
   tournament?: Tournament;
   user: User;
 
-  signup: (
-    info: {
-      username: string;
-      password: string;
-      partnerId: number;
-      tournamentId: number;
-      partnerName: string;
-      rememberMe: boolean;
-    },
-  ) => void;
+  signup: (info: {
+    username: string;
+    password: string;
+    partnerId: number;
+    tournamentId: string;
+    // partnerName: string;
+    rememberMe: boolean;
+  }) => void;
 }
 
 interface State {
-  partner?: Player;
+  partner: SearchPlayerType | null;
 }
 
 class Signup extends React.Component<Props, State> {
   static mapDispatchToProps = {
     signup: tournamentSignupAction,
   };
-  static getParameters(query) {
+  static getParameters(query: Query) {
     const { id } = query;
 
-    const tournamentId = Number(id);
-
-    return { tournamentId };
+    return { tournamentId: id };
   }
 
-  static buildActions({ tournamentId }) {
+  static buildActions({ tournamentId }: Props) {
     return [loadTournamentAction(tournamentId)];
   }
 
-  static mapStateToProps(state, { tournamentId }) {
+  static mapStateToProps(state: Store, { tournamentId }: Props) {
     const tournament = tournamentSelector(state, tournamentId);
     const { user } = userSelector(state);
 
     return { tournament, user };
   }
 
-  state = {
+  state: State = {
     partner: null,
   };
 
-  onSelectPlayer = partner => {
+  onSelectPlayer = (partner: SearchPlayerType | null) => {
     this.setState({ partner });
   };
 
-  onSignup = async (username, password, rememberMe) => {
+  onSignup = async (
+    username: string,
+    password: string,
+    rememberMe: boolean,
+  ) => {
     const { tournamentId, signup } = this.props;
     const { partner } = this.state;
 
     const partnerId = partner && partner.id;
-    const partnerName = partner && partner.login;
+    // const partnerName = partner && partner.login;
+
+    if (!partnerId) {
+      return;
+    }
 
     const body = {
       partnerId,
-      partnerName,
+      // partnerName,
       password,
       rememberMe,
       tournamentId,
@@ -139,14 +147,14 @@ class Signup extends React.Component<Props, State> {
         }}
       >
         <div className={classes.container}>
-          <div className={`${classes.title} ${classes.link}`}>
+          <div className={classes.link}>
             <Link href={`/tournament?id=${tournament.id}`}>
               <a className={classes.link}>
                 <Typography variant="h4">{tournament.name}</Typography>
               </a>
             </Link>
           </div>
-          <Card className={classes.card}>
+          <Card>
             <CardContent>{content}</CardContent>
           </Card>
         </div>

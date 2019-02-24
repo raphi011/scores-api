@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { denormalize, normalize, schema } from 'normalizr';
+import { denormalize, normalize, schema, Schema } from 'normalizr';
 
 import { EntityName, EntityType } from './../types';
 
@@ -13,7 +13,7 @@ const tournamentList = new schema.Array(tournament);
 const user = new schema.Entity('user');
 const userList = new schema.Array(user);
 
-const entitySchemaMap = {
+const entitySchemaMap: Record<string, Schema> = {
   player,
   playerList,
   tournament,
@@ -22,7 +22,7 @@ const entitySchemaMap = {
   userList,
 };
 
-function getSchemaMap(entityName: string, isList: boolean) {
+function getSchemaMap(entityName: string, isList: boolean): Schema {
   const key = entityName + (isList ? 'List' : '');
   const entitySchema = entitySchemaMap[key];
 
@@ -71,7 +71,7 @@ export function norm(
 
 export function denorm(
   entityName: EntityName,
-  entities,
+  entities: any,
   ids: string[] | string,
 ) {
   const isList = Array.isArray(ids);
