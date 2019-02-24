@@ -58,7 +58,7 @@ export const initialEntitiesState: EntityStore = {
 };
 
 function isEntityName(entity: string): entity is EntityName {
-  return ['player, tournament', 'user'].includes(entity);
+  return ['player', 'tournament', 'user'].indexOf(entity) !== -1;
 }
 
 function getList(
