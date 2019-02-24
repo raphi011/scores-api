@@ -25,8 +25,8 @@ import {
   User,
   SearchPlayer as SearchPlayerType,
 } from '../../types';
-import { Query } from '../../utils/query';
 import { Store } from '../../redux/store';
+import { QueryStringMapObject } from 'next';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -59,7 +59,7 @@ class Signup extends React.Component<Props, State> {
   static mapDispatchToProps = {
     signup: tournamentSignupAction,
   };
-  static getParameters(query: Query) {
+  static getParameters(query: QueryStringMapObject) {
     const { id } = query;
 
     return { tournamentId: id };

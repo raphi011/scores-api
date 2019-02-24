@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Router from 'next/router';
+import TimeAgo from 'react-timeago';
 
 import Button from '@material-ui/core/Button';
 import {
@@ -29,6 +30,8 @@ import * as Query from '../../utils/query';
 import { fontPalette } from '../../styles/theme';
 import classNames from 'classnames';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
+import { formatDate } from '../../utils/date';
+import { QueryStringMapObject } from 'next';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -78,9 +81,9 @@ const styles = (theme: Theme) =>
     },
   });
 
-type TabOption = 'notes' | 'teams' | 'history';
+type TabOption = 'notes' | 'teams' | 'organiser';
 
-const tabOptions: TabOption[] = ['notes', 'teams', 'history'];
+const tabOptions: TabOption[] = ['notes', 'teams', 'organiser'];
 
 interface Props extends WithStyles<typeof styles> {
   tournament?: Tournament;
@@ -91,7 +94,7 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 class ShowTournament extends React.Component<Props> {
-  static getParameters(query: Query.Query): Partial<Props> {
+  static getParameters(query: QueryStringMapObject): Partial<Props> {
     const tab = Query.oneOfDefault(query, 'tab', tabOptions, 'notes');
     const tournamentId = Query.str(query, 'id');
 
@@ -145,33 +148,39 @@ class ShowTournament extends React.Component<Props> {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Typography variant="h1">
+              <Typography variant="h1" inline>
                 {tournament.name}
                 <External className={classes.externalIcon} />
               </Typography>
             </a>
-            <Typography variant="subtitle1">{tournament.subLeague}</Typography>
-          </div>
-          <div>
-            <Typography
-              style={{ marginRight: '10px' }}
-              inline
-              variant="subtitle2"
-            >
-              3 days left to signup
+            <Typography variant="subtitle1">
+              {tournament.subLeague} - {formatDate(tournament.start)}
             </Typography>
-            <Button
-              variant="contained"
-              className={classes.signupButton}
-              color="primary"
-            >
-              Signup
-            </Button>
           </div>
+          <Button
+            variant="contained"
+            className={classes.signupButton}
+            color="primary"
+          >
+            Signup
+          </Button>
         </div>
         <div>
+          <TimeAgo
+            date={tournament.start}
+            formatter={(value, unit, suffix) => (
+              <>
+                <Typography inline className={classes.attr}>
+                  {value}
+                </Typography>
+                <Typography inline className={classes.attrValue}>
+                  {unit} {suffix}
+                </Typography>
+              </>
+            )}
+          />
           <Typography inline className={classes.attr}>
-            {`${tournament.minTeams}/${tournament.maxPoints}`}
+            {`${tournament.signedupTeams}/${tournament.maxTeams}`}
           </Typography>
           <Typography inline className={classes.attrValue}>
             Teams signed up
@@ -202,7 +211,6 @@ class ShowTournament extends React.Component<Props> {
             />
           )}
           {tab === 'teams' && <TeamList teams={teams} />}
-          {tab === 'history' && <span>TODO</span>}
         </div>
       </Layout>
     );
