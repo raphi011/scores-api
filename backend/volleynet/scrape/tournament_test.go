@@ -79,7 +79,7 @@ var tournamentTests = []struct {
 			},
 			MaxTeams:  8,
 			MinTeams:  8,
-			MaxPoints: -1,
+			MaxPoints: 0,
 			Website:   "www.surfworldcup.at/sport/beach-summer-games/",
 			Location:  "Seegelände 7100 Neusiedl am See",
 			Mode:      "Double Elimination 8er-Raster",
