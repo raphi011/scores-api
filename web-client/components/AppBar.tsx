@@ -103,6 +103,7 @@ const links = [
   {
     href: '/',
     name: 'Tournaments',
+    altHref: '/tournament',
   },
   {
     href: '/ladder',
@@ -199,12 +200,24 @@ function ButtonAppBar({
 interface RenderLinkProps extends WithStyles<typeof styles> {
   href: string;
   adminOnly?: boolean;
+  altHref?: string;
   name: string;
 }
 
-function RenderLink({ href, adminOnly, name, classes }: RenderLinkProps) {
+function RenderLink({
+  href,
+  altHref,
+  adminOnly,
+  name,
+  classes,
+}: RenderLinkProps) {
   const link = (
-    <ActiveLink activeClassName={classes.active} prefetch href={href}>
+    <ActiveLink
+      altHref={altHref}
+      activeClassName={classes.active}
+      prefetch
+      href={href}
+    >
       <Typography variant="subtitle1">{name}</Typography>
     </ActiveLink>
   );
