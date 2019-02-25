@@ -172,7 +172,10 @@ function ButtonAppBar({
         ) : null}
         <Link href={{ pathname: '/user', query: { id: userId } }}>
           <IconButton className={classes.avatar}>
-            <Avatar alt="Your profile picture" src={profileImageUrl} />
+            <Avatar
+              alt="Your profile picture"
+              src={profileImageUrl ? `${profileImageUrl}?sz=40` : ''}
+            />
           </IconButton>
         </Link>
       </Toolbar>
