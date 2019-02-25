@@ -3,9 +3,6 @@ import React from 'react';
 import { QueryStringMapObject } from 'next';
 import Router from 'next/router';
 
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import {
   createStyles,
   Theme,
@@ -15,7 +12,9 @@ import {
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 import Typography from '@material-ui/core/Typography';
 import withWidth from '@material-ui/core/withWidth';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FilterIcon from '@material-ui/icons/FilterList';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 import DayHeader from '../components/DayHeader';
 import GroupedList from '../components/GroupedList';
@@ -34,6 +33,8 @@ import { filteredTournamentsSelector } from '../redux/entities/selectors';
 import { Store } from '../redux/store';
 import { Gender, Tournament, User } from '../types';
 import { sameDay } from '../utils/date';
+import Fab from '@material-ui/core/Fab';
+import { Dialog } from '@material-ui/core';
 
 const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
@@ -45,6 +46,12 @@ const styles = (theme: Theme) =>
     primary: {
       flexGrow: 1,
     },
+    dialogContainer: {
+      padding: theme.spacing.unit * 2,
+    },
+    dialogBody: {
+      marginTop: '20px',
+    },
     root: {
       display: 'flex',
 
@@ -54,6 +61,11 @@ const styles = (theme: Theme) =>
       [theme.breakpoints.down('xs')]: {
         flexDirection: 'column',
       },
+    },
+    fab: {
+      position: 'fixed',
+      bottom: theme.spacing.unit * 2,
+      right: theme.spacing.unit * 2,
     },
     secondary: {
       [theme.breakpoints.up('sm')]: {
@@ -80,6 +92,7 @@ interface Props extends WithStyles<typeof styles> {
 
 interface State {
   loading: boolean;
+  filterDialogOpen: boolean;
 }
 
 class Volleynet extends React.Component<Props, State> {
@@ -123,6 +136,7 @@ class Volleynet extends React.Component<Props, State> {
 
   state = {
     loading: false,
+    filterDialogOpen: false,
   };
 
   renderList = (tournaments: Tournament[]) => {
@@ -144,7 +158,7 @@ class Volleynet extends React.Component<Props, State> {
   };
 
   onFilter = async (filters: Filters) => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, filterDialogOpen: false });
 
     const { loadTournaments } = this.props;
 
@@ -160,11 +174,32 @@ class Volleynet extends React.Component<Props, State> {
     this.setState({ loading: false });
   };
 
-  renderFilters = () => {
-    const { league, gender, season, width } = this.props;
+  onOpenFilterDialog = () => {
+    this.setState({
+      filterDialogOpen: true,
+    });
+  };
+
+  onCloseFilterDialog = () => {
+    this.setState({
+      filterDialogOpen: false,
+    });
+  };
+
+  render() {
+    const { league, gender, season, tournaments, width, classes } = this.props;
     const { loading } = this.state;
 
-    const filters = (
+    const list = (
+      <GroupedList<Tournament>
+        groupItems={groupTournaments}
+        items={tournaments}
+        renderHeader={renderHeader}
+        renderList={this.renderList}
+      />
+    );
+
+    const filter = (
       <TournamentFilters
         loading={loading}
         league={league}
@@ -174,22 +209,47 @@ class Volleynet extends React.Component<Props, State> {
       />
     );
 
+    let body;
+
     if (width === 'xs') {
-      return (
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography style={{ fontSize: '20px' }}>Filters</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>{filters}</ExpansionPanelDetails>
-        </ExpansionPanel>
+      body = (
+        <>
+          {list}
+          <Fab
+            onClick={this.onOpenFilterDialog}
+            className={classes.fab}
+            color="primary"
+          >
+            <FilterIcon />
+          </Fab>
+          <Dialog
+            fullScreen
+            open={this.state.filterDialogOpen}
+            onClose={this.onCloseFilterDialog}
+          >
+            <div className={classes.dialogContainer}>
+              <IconButton
+                color="inherit"
+                onClick={this.onCloseFilterDialog}
+                aria-label="Close"
+              >
+                <CloseIcon />
+              </IconButton>
+              <div className={classes.dialogBody}>{filter}</div>
+            </div>
+          </Dialog>
+          {/* allow scrolling of fab below last tournament */}
+          <div style={{ height: '60px' }} />
+        </>
+      );
+    } else {
+      body = (
+        <>
+          <div className={classes.secondary}>{filter}</div>
+          <div className={classes.primary}>{list}</div>
+        </>
       );
     }
-
-    return filters;
-  };
-
-  render() {
-    const { tournaments, classes } = this.props;
 
     return (
       <Layout title={{ text: 'Tournaments', href: '' }}>
@@ -197,17 +257,7 @@ class Volleynet extends React.Component<Props, State> {
           Tournaments{' '}
           <span className={classes.found}>({tournaments.length})</span>
         </Typography>
-        <div className={classes.root}>
-          <div className={classes.secondary}>{this.renderFilters()}</div>
-          <div className={classes.primary}>
-            <GroupedList<Tournament>
-              groupItems={groupTournaments}
-              items={tournaments}
-              renderHeader={renderHeader}
-              renderList={this.renderList}
-            />
-          </div>
-        </div>
+        <div className={classes.root}>{body}</div>
       </Layout>
     );
   }

@@ -3,7 +3,6 @@ import { combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import apiMiddleware from './middleware/api';
-import thunkMiddleware from './middleware/thunk';
 
 import admin, { AdminStore, initialAdminState } from './admin/reducer';
 import auth, { AuthStore, initialAuthState } from './auth/reducer';
@@ -35,7 +34,7 @@ export interface Store {
 
 const middleware =
   process.env.NODE_ENV === 'development'
-    ? composeWithDevTools(applyMiddleware(thunkMiddleware, apiMiddleware))
+    ? composeWithDevTools(applyMiddleware(apiMiddleware))
     : applyMiddleware(apiMiddleware);
 
 const initStore = (state: Store = initialState) =>
