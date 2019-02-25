@@ -70,9 +70,8 @@ class MyDocument extends Document<Props> {
     ];
 
     if (process.env.NODE_ENV === 'development') {
-      // webpack needs 'unsafe-eval'
+      // webpack's HMR needs 'unsafe-eval' + 'unsafe-inline'
       directives[1] = "script-src 'unsafe-eval' 'unsafe-inline' 'self'";
-      directives.push("connect-src 'self' wss://localhost:*");
     }
 
     const csp = directives.join(';');
