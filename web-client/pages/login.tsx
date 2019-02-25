@@ -24,7 +24,7 @@ interface Props extends WithStyles<typeof styles> {
   r: string;
   loginRoute: string;
   fromServer: boolean;
-  error: string;
+  loginError: string;
 
   loginWithPassword: (credentials: {
     email: string;
@@ -61,9 +61,9 @@ class Login extends React.Component<Props, State> {
   };
 
   static getParameters(query: QueryStringMapObject) {
-    const { error, r } = query;
+    const { error: loginError, r } = query;
 
-    return { error, r };
+    return { loginError, r };
   }
 
   static mapStateToProps(state: Store) {
@@ -119,10 +119,10 @@ class Login extends React.Component<Props, State> {
   };
 
   render() {
-    const { loginRoute, error, classes } = this.props;
+    const { loginRoute, loginError, classes } = this.props;
     const { email, password, loggingIn } = this.state;
 
-    const errorBox = error ? (
+    const errorBox = loginError ? (
       <span
         style={{
           alignItems: 'center',
@@ -133,7 +133,7 @@ class Login extends React.Component<Props, State> {
         }}
       >
         <WarningIcon />
-        {error}
+        {loginError}
       </span>
     ) : null;
 
