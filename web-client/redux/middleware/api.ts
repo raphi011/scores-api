@@ -1,10 +1,10 @@
 import * as http from 'http';
 import fetch from 'isomorphic-unfetch';
 import { Store, Action } from 'redux';
-import { BACKEND_URL, buildUrl, isJson } from '../api';
-import { ApiAction, ApiActions, ApiActionType } from '../redux/api/actions';
-import * as actionNames from './actionNames';
-import { userSelector } from './auth/selectors';
+import { BACKEND_URL, buildUrl, isJson } from '../../api';
+import { ApiAction, ApiActions, ApiActionType } from '../../redux/api/actions';
+import * as actionNames from '../actionNames';
+import { userSelector } from '../auth/selectors';
 
 function getHost(req?: http.IncomingMessage): string {
   if (req) {
@@ -21,7 +21,6 @@ export function serverAction(
 ) {
   return {
     ...action,
-    isServer: true,
     req,
     res,
   };

@@ -1,7 +1,7 @@
 import * as http from 'http';
 import { Dispatch } from 'redux';
 
-import { serverAction } from './apiMiddleware';
+import { serverAction } from './middleware/api';
 
 export interface Action {
   type: string;

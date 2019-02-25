@@ -3,6 +3,8 @@ import { createReducer } from '../reduxHelper';
 import * as Query from '../../utils/query';
 import { SetFilterAction } from './actions';
 
+const thisYear = new Date().getFullYear();
+
 export const initialTournamentState = {
   available: {
     leagues: [
@@ -14,8 +16,9 @@ export const initialTournamentState = {
     genders: [{ name: 'Female', key: 'W' }, { name: 'Male', key: 'M' }],
   },
   filter: {
-    year: new Date().getFullYear,
-    gender: 'M',
+    season: thisYear,
+    genders: ['M'],
+    leagues: ['amateur-tour'],
   },
 };
 
@@ -24,17 +27,19 @@ interface NameKey {
   key: string;
 }
 
+export interface Filter {
+  leagues: string[];
+  genders: string[];
+  season: number;
+}
+
 export interface TournamentStore {
   available: {
     leagues: NameKey[];
     genders: NameKey[];
     seasons: number[];
   };
-  filter: {
-    leagues: string[];
-    genders: string[];
-    season: number;
-  };
+  filter: Filter;
 }
 
 function setFilter(
@@ -65,14 +70,36 @@ function setFilter(
     filter.leagues,
   );
 
+  const newFilter: Filter = {
+    season,
+    genders,
+    leagues,
+  };
+
+  if (!hasFilterChanged(filter, newFilter)) {
+    return state;
+  }
+
   return {
     available,
-    filter: {
-      season,
-      genders,
-      leagues,
-    },
+    filter: newFilter,
   };
+}
+
+function hasFilterChanged(oldFilter: Filter, newFilter: Filter): boolean {
+  if (oldFilter.season !== newFilter.season) {
+    return true;
+  }
+
+  if (oldFilter.leagues.some(l => newFilter.leagues.indexOf(l) !== -1)) {
+    return true;
+  }
+
+  if (oldFilter.genders.some(l => newFilter.genders.indexOf(l) !== -1)) {
+    return true;
+  }
+
+  return false;
 }
 
 const reducer = createReducer(initialTournamentState, {
