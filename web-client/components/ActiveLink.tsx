@@ -6,18 +6,25 @@ import { SingletonRouter, withRouter } from 'next/router';
 interface Props extends LinkProps {
   children: JSX.Element;
   activeClassName: string;
+  altHref?: string;
   href: string;
   router: SingletonRouter;
 }
 
 const ActiveLink = withRouter(
-  ({ router, activeClassName, children, ...props }: Props) => (
-    <Link {...props}>
-      {React.cloneElement(Children.only(children), {
-        className: router.pathname === props.href ? activeClassName : null,
-      })}
-    </Link>
-  ),
+  ({ router, activeClassName, altHref, children, ...props }: Props) => {
+    const path = router.pathname;
+
+    const active = (altHref && path.startsWith(altHref)) || path === props.href;
+
+    return (
+      <Link {...props}>
+        {React.cloneElement(Children.only(children), {
+          className: active ? activeClassName : null,
+        })}
+      </Link>
+    );
+  },
 );
 
 export default ActiveLink;

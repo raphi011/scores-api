@@ -13,8 +13,11 @@ import {
 import Typography from '@material-ui/core/Typography';
 import withWidth from '@material-ui/core/withWidth';
 import External from '@material-ui/icons/OpenInNew';
+import SignupIcon from '@material-ui/icons/AssignmentTurnedIn';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Fab from '@material-ui/core/Fab';
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
 import withAuth from '../../containers/AuthContainer';
 import Layout from '../../containers/LayoutContainer';
@@ -29,12 +32,14 @@ import TeamList from '../../components/volleynet/TeamList';
 import * as Query from '../../utils/query';
 import { fontPalette } from '../../styles/theme';
 import classNames from 'classnames';
-import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 import { formatDate } from '../../utils/date';
 import { QueryStringMapObject } from 'next';
 
 const styles = (theme: Theme) =>
   createStyles({
+    attrContainer: {
+      marginRight: '40px',
+    },
     attr: {
       fontSize: fontPalette[800],
       fontWeight: 500,
@@ -44,10 +49,14 @@ const styles = (theme: Theme) =>
       fontSize: fontPalette[500],
       fontWeight: 300,
       color: theme.palette.grey[500],
-      marginRight: '40px',
     },
     body: {
       marginTop: '30px',
+    },
+    fab: {
+      position: 'fixed',
+      bottom: theme.spacing.unit * 2,
+      right: theme.spacing.unit * 2,
     },
     externalIcon: {
       fontSize: '16px',
@@ -56,6 +65,13 @@ const styles = (theme: Theme) =>
     },
     signupButton: {
       width: '120px',
+    },
+    stats: {
+      display: 'flex',
+      flexDirection: 'row',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+      },
     },
     tabs: {
       marginTop: '50px',
@@ -138,6 +154,30 @@ class ShowTournament extends React.Component<Props> {
       [classes.titleRowMobile]: isMobile,
     });
 
+    let button = null;
+    let fabButton = null;
+
+    if (isMobile) {
+      fabButton = (
+        <>
+          <div style={{ height: '30px' }} />
+          <Fab className={classes.fab} color="primary">
+            <SignupIcon />
+          </Fab>
+        </>
+      );
+    } else {
+      button = (
+        <Button
+          variant="contained"
+          className={classes.signupButton}
+          color="primary"
+        >
+          Signup
+        </Button>
+      );
+    }
+
     return (
       <Layout title={{ text: 'Tournaments', href: '/' }}>
         <div className={titleRowClassName}>
@@ -157,41 +197,43 @@ class ShowTournament extends React.Component<Props> {
               {tournament.subLeague} - {formatDate(tournament.start)}
             </Typography>
           </div>
-          <Button
-            variant="contained"
-            className={classes.signupButton}
-            color="primary"
-          >
-            Signup
-          </Button>
+          {button}
         </div>
         <div>
-          <TimeAgo
-            date={tournament.start}
-            formatter={(value, unit, suffix) => (
-              <>
-                <Typography inline className={classes.attr}>
-                  {value}
-                </Typography>
-                <Typography inline className={classes.attrValue}>
-                  {unit}
-                  {value > 1 ? 's' : ''} {suffix}
-                </Typography>
-              </>
-            )}
-          />
-          <Typography inline className={classes.attr}>
-            {`${tournament.signedupTeams}/${tournament.maxTeams}`}
-          </Typography>
-          <Typography inline className={classes.attrValue}>
-            Teams signed up
-          </Typography>
-          <Typography inline className={classes.attr}>
-            {tournament.maxPoints}
-          </Typography>
-          <Typography inline className={classes.attrValue}>
-            Max points
-          </Typography>
+          <div className={classes.stats}>
+            <span className={classes.attrContainer}>
+              <TimeAgo
+                date={tournament.start}
+                formatter={(value, unit, suffix) => (
+                  <>
+                    <Typography inline className={classes.attr}>
+                      {value}
+                    </Typography>
+                    <Typography inline className={classes.attrValue}>
+                      {unit}
+                      {value > 1 ? 's' : ''} {suffix}
+                    </Typography>
+                  </>
+                )}
+              />
+            </span>
+            <span className={classes.attrContainer}>
+              <Typography inline className={classes.attr}>
+                {`${tournament.signedupTeams}/${tournament.maxTeams}`}
+              </Typography>
+              <Typography inline className={classes.attrValue}>
+                Teams signed up
+              </Typography>
+            </span>
+            <span className={classes.attrContainer}>
+              <Typography inline className={classes.attr}>
+                {tournament.maxPoints}
+              </Typography>
+              <Typography inline className={classes.attrValue}>
+                Max points
+              </Typography>
+            </span>
+          </div>
         </div>
         <Tabs
           className={classes.tabs}
@@ -213,6 +255,7 @@ class ShowTournament extends React.Component<Props> {
           )}
           {tab === 'teams' && <TeamList teams={teams} />}
         </div>
+        {fabButton}
       </Layout>
     );
   }

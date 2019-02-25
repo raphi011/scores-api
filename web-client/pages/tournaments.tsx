@@ -15,6 +15,8 @@ import withWidth from '@material-ui/core/withWidth';
 import FilterIcon from '@material-ui/icons/FilterList';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import Fab from '@material-ui/core/Fab';
+import { Dialog } from '@material-ui/core';
 
 import DayHeader from '../components/DayHeader';
 import GroupedList from '../components/GroupedList';
@@ -33,8 +35,6 @@ import { filteredTournamentsSelector } from '../redux/entities/selectors';
 import { Store } from '../redux/store';
 import { Gender, Tournament, User } from '../types';
 import { sameDay } from '../utils/date';
-import Fab from '@material-ui/core/Fab';
-import { Dialog } from '@material-ui/core';
 
 const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
 
