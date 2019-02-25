@@ -174,7 +174,8 @@ class ShowTournament extends React.Component<Props> {
                   {value}
                 </Typography>
                 <Typography inline className={classes.attrValue}>
-                  {unit} {suffix}
+                  {unit}
+                  {value > 1 ? 's' : ''} {suffix}
                 </Typography>
               </>
             )}
@@ -196,7 +197,7 @@ class ShowTournament extends React.Component<Props> {
           className={classes.tabs}
           indicatorColor="primary"
           value={tabOptions.indexOf(tab)}
-          fullWidth={isMobile}
+          variant={isMobile ? 'fullWidth' : 'standard'}
           onChange={this.onSelectTab}
         >
           {tabOptions.map(t => (
