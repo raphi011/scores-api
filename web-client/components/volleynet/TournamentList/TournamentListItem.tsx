@@ -10,8 +10,6 @@ import {
 import Typography from '@material-ui/core/Typography';
 import ArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
-// import StatusMarker from './StatusMarker';
-
 import { Tournament } from '../../../types';
 import TournamentAttribute from './TournamentAttribute';
 
@@ -84,7 +82,7 @@ const TournamentListItem = ({ tournament, classes, onClick }: Props) => {
           <TournamentAttribute label="League" data={tournament.league} />
         </div>
       </div>
-      <ArrowRight fontSize="large" className={classes.arrow} />
+      <ArrowRight fontSize="large" color="primary" className={classes.arrow} />
     </ListItem>
   );
 };
