@@ -71,8 +71,8 @@ func getDate(d time.Time) time.Time {
 	return date
 }
 
-func isDateAfter(tournament, current time.Time) bool {
-	return getDate(tournament).After(getDate(current))
+func isDateAfter(d1, d2 time.Time) bool {
+	return getDate(d1).After(getDate(d2))
 }
 
 func parseTournamentNotes(doc *goquery.Document, t *volleynet.Tournament) {
