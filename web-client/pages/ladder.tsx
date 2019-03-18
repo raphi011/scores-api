@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 
 import Ladder from '../components/volleynet/Ladder';
 import * as Query from '../utils/query';
-import withAuth from '../containers/AuthContainer';
+import withAuth from '../hoc/next/withAuth';
 import Layout from '../containers/LayoutContainer';
 import { loadLadderAction } from '../redux/entities/actions';
 import { ladderVolleynetplayerSelector } from '../redux/entities/selectors';
@@ -14,6 +14,7 @@ import { ladderVolleynetplayerSelector } from '../redux/entities/selectors';
 import { Store } from '../redux/store';
 import { Player } from '../types';
 import { QueryStringMapObject } from 'next';
+import withConnect, { ClientContext } from '../hoc/next/withConnect';
 
 interface Props {
   gender: 'M' | 'W';
@@ -33,7 +34,7 @@ class Ranking extends React.Component<Props> {
     return [loadLadderAction(gender)];
   }
 
-  static getParameters(query: QueryStringMapObject) {
+  static async getInitialProps({ query }: ClientContext) {
     const gender = Query.oneOfDefault(query, 'gender', genderList, 'M');
 
     return { gender };
@@ -67,4 +68,4 @@ class Ranking extends React.Component<Props> {
   }
 }
 
-export default withAuth(Ranking);
+export default withAuth(withConnect(Ranking));

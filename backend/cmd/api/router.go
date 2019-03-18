@@ -76,6 +76,7 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	auth.POST("/csp-violation-report", cspHandler.violationReportHandler)
 
 	auth.GET("/ladder", volleynetHandler.getLadder)
+	auth.GET("/filters", volleynetHandler.getFilterOptions)
 	auth.GET("/tournaments", volleynetHandler.getTournaments)
 	auth.GET("/tournaments/:tournamentID", volleynetHandler.getTournament)
 	auth.GET("/players/search", volleynetHandler.getSearchPlayers)

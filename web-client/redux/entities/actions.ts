@@ -1,6 +1,6 @@
 import { ApiAction } from '../../redux/api/actions';
 
-import { EntityName, Gender, EntityType } from '../../types';
+import { EntityName, EntityType } from '../../types';
 import * as actionNames from '../actionNames';
 
 export type EntityActionTypes = ReceiveEntitiesAction;
@@ -50,9 +50,9 @@ export const loadTournamentAction = (tournamentId: string): ApiAction => ({
 });
 
 export const loadTournamentsAction = (filters: {
-  gender: Gender[];
-  league: string[];
-  season: number;
+  genders: string[];
+  leagues: string[];
+  season: string;
 }): ApiAction => ({
   method: 'GET',
   params: filters,
@@ -70,7 +70,7 @@ export const loadTournamentsAction = (filters: {
   url: 'tournaments',
 });
 
-export const loadLadderAction = (gender: Gender): ApiAction => ({
+export const loadLadderAction = (gender: string): ApiAction => ({
   method: 'GET',
   params: { gender },
   success: actionNames.RECEIVE_ENTITIES,

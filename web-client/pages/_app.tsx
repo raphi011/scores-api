@@ -9,8 +9,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import Snackbar from '../containers/SnackbarContainer';
-import getPageContext, { PageContext } from '../getPageContext';
-import withReduxStore from '../redux/withReduxStore';
+import getPageContext, { PageContext } from '../styles/getPageContext';
+import withReduxStore from '../hoc/next/withReduxStore';
 
 interface Props {
   store: Store;
@@ -47,7 +47,6 @@ class MyApp extends App<Props> {
             theme={this.pageContext.theme}
             sheetsManager={this.pageContext.sheetsManager}
           >
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
             {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server side. */}

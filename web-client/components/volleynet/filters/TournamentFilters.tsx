@@ -13,19 +13,8 @@ import {
 import Typography from '@material-ui/core/Typography';
 import Calendar from '@material-ui/icons/CalendarTodayTwoTone';
 
-import { Gender } from '../../../types';
 import LoadingButton from '../../LoadingButton';
-
-const availableLeagues = [
-  { name: 'Junior Tour', key: 'junior-tour' },
-  { name: 'Amateur Tour', key: 'amateur-tour' },
-  { name: 'Pro Tour', key: 'pro-tour' },
-];
-const availableGenders: { name: string; key: Gender }[] = [
-  { name: 'Female', key: 'W' },
-  { name: 'Male', key: 'M' },
-];
-const availableSeasons = [2018, 2019];
+import { FilterOptions } from '../../../redux/tournaments/reducer';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -61,15 +50,14 @@ const styles = (theme: Theme) =>
   });
 
 export interface Filters {
-  league: string[];
-  gender: Gender[];
-  season: number;
+  leagues: string[];
+  genders: string[];
+  season: string;
 }
 
 interface Props extends WithStyles<typeof styles> {
-  league: string[];
-  gender: Gender[];
-  season: number;
+  filters: Filters;
+  options: FilterOptions;
 
   loading: boolean;
 
@@ -82,33 +70,35 @@ class TournamentFilters extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const { league, gender, season } = this.props;
+    const {
+      filters: { leagues, genders, season },
+    } = this.props;
 
     this.state = {
-      gender,
-      league,
+      genders,
+      leagues,
       season,
     };
   }
 
   onSelectSeason = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { gender, season, league } = this.state;
+    const { genders: gender, season, leagues: league } = this.state;
 
-    const selectedSeason = Number(event.target.value);
+    const selectedSeason = event.target.value;
 
     if (selectedSeason === season) {
       return;
     }
 
     this.setState({
-      gender,
-      league,
+      genders: gender,
+      leagues: league,
       season: selectedSeason,
     });
   };
 
   onSelectLeague = (selected: string) => {
-    const { gender, season, league } = this.state;
+    const { genders: gender, season, leagues: league } = this.state;
 
     if (league.length === 1 && league[0] === selected) {
       return;
@@ -123,14 +113,14 @@ class TournamentFilters extends React.Component<Props, State> {
     }
 
     this.setState({
-      gender,
-      league: newSelected,
+      genders: gender,
+      leagues: newSelected,
       season,
     });
   };
 
-  onSelectGenders = (selected: Gender) => {
-    const { gender, season, league } = this.state;
+  onSelectGenders = (selected: string) => {
+    const { genders: gender, season, leagues: league } = this.state;
 
     if (gender.length === 1 && gender[0] === selected) {
       return;
@@ -145,8 +135,8 @@ class TournamentFilters extends React.Component<Props, State> {
     }
 
     this.setState({
-      gender: newSelected,
-      league,
+      genders: newSelected,
+      leagues: league,
       season,
     });
   };
@@ -160,8 +150,12 @@ class TournamentFilters extends React.Component<Props, State> {
   };
 
   render() {
-    const { classes, loading = false } = this.props;
-    const { gender, league, season } = this.state;
+    const { classes, loading = false, options } = this.props;
+    const { genders: gender, leagues: league, season } = this.state;
+
+    if (!options) {
+      return null;
+    }
 
     return (
       <form
@@ -185,7 +179,7 @@ class TournamentFilters extends React.Component<Props, State> {
               onChange={this.onSelectSeason}
               fullWidth
             >
-              {availableSeasons.map(s => (
+              {options.seasons.map(s => (
                 <MenuItem classes={{ root: classes.font }} key={s} value={s}>
                   <Typography className={classes.font}>{s}</Typography>
                 </MenuItem>
@@ -194,23 +188,21 @@ class TournamentFilters extends React.Component<Props, State> {
           </div>
         </div>
         <div className={classes.filterGroup}>
-          <Typography variant="subtitle2" className={classes.filterHeader}>
-            Gender
-          </Typography>
-          {availableGenders.map(g => (
+          <Typography variant="subtitle2" className={classes.filterHeader} />
+          {options.genders.map(g => (
             <FormControlLabel
-              key={g.key}
+              key={g}
               classes={{ label: classes.font }}
               control={
                 <Checkbox
-                  checked={gender.includes(g.key)}
-                  onChange={() => this.onSelectGenders(g.key)}
+                  checked={gender.includes(g)}
+                  onChange={() => this.onSelectGenders(g)}
                   className={`${classes.checkbox} ${classes.checkboxes}`}
-                  value={g.key}
+                  value={g}
                   color="primary"
                 />
               }
-              label={g.name}
+              label={g}
             />
           ))}
         </div>
@@ -218,20 +210,20 @@ class TournamentFilters extends React.Component<Props, State> {
           <Typography variant="subtitle2" className={classes.filterHeader}>
             Tour
           </Typography>
-          {availableLeagues.map(l => (
+          {options.leagues.map(l => (
             <FormControlLabel
-              key={l.key}
+              key={l}
               classes={{ label: classes.font }}
               control={
                 <Checkbox
-                  checked={league.includes(l.key)}
-                  onChange={() => this.onSelectLeague(l.key)}
+                  checked={league.includes(l)}
+                  onChange={() => this.onSelectLeague(l)}
                   className={`${classes.checkbox} ${classes.checkboxes}`}
-                  value={l.key}
+                  value={l}
                   color="primary"
                 />
               }
-              label={l.name}
+              label={l}
             />
           ))}
         </div>

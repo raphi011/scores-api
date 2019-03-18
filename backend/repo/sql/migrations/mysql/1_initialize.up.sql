@@ -43,7 +43,7 @@ CREATE TABLE tournaments (
 	email varchar(128) NOT NULL,
 	website varchar(128) NOT NULL,
 	current_points varchar(256) NOT NULL,
-	season integer NOT NULL,
+	season varchar(16) NOT NULL,
 	loc_lat double NOT NULL,
 	loc_lon double NOT NULL,
 	INDEX(season),

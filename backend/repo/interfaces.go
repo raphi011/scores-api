@@ -27,7 +27,7 @@ type TeamRepository interface {
 
 // TournamentRepository exposes CRUD operations on tournaments.
 type TournamentRepository interface {
-	Filter(seasons []int, leagues []string, gender []string) (
+	Filter(seasons []string, leagues []string, gender []string) (
 		[]*volleynet.Tournament, error)
 	Get(tournamentID int) (*volleynet.Tournament, error)
 	New(t *volleynet.Tournament) (*volleynet.Tournament, error)
@@ -35,9 +35,9 @@ type TournamentRepository interface {
 	Update(t *volleynet.Tournament) error
 	UpdateBatch(t ...*volleynet.Tournament) error
 
-	Leagues() ([]scores.NameValue, error)
-	SubLeagues() ([]scores.NameValue, error)
-	Seasons() ([]int, error)
+	Leagues() ([]string, error)
+	SubLeagues() ([]string, error)
+	Seasons() ([]string, error)
 }
 
 // UserRepository exposes CRUD operations on users.
@@ -49,10 +49,18 @@ type UserRepository interface {
 	Update(user *scores.User) error
 }
 
+// SettingRepository exposes CRUD operations on settings.
+type SettingRepository interface {
+	Create(setting *scores.Setting) (*scores.Setting, error)
+	Update(setting *scores.Setting) error
+	ByUserID(userID int) ([]*scores.Setting, error)
+}
+
 // Repositories is a collection of instances of all available repositories.
 type Repositories struct {
 	PlayerRepo     PlayerRepository
 	TeamRepo       TeamRepository
 	TournamentRepo TournamentRepository
 	UserRepo       UserRepository
+	SettingRepo    SettingRepository
 }

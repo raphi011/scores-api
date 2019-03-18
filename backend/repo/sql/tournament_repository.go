@@ -68,7 +68,7 @@ func (s *tournamentRepository) UpdateBatch(tournaments ...*volleynet.Tournament)
 
 // Filter loads all tournaments by season, league and gender.
 func (s *tournamentRepository) Filter(
-	seasons []int,
+	seasons []string,
 	leagues []string,
 	gender []string) ([]*volleynet.Tournament, error) {
 
@@ -82,29 +82,33 @@ func (s *tournamentRepository) Filter(
 	return tournaments, errors.Wrap(err, "filtered tournaments")
 }
 
-func (s *tournamentRepository) Seasons() ([]int, error) {
-	seasons := []int{}
+// Seasons returns all available seasons
+func (s *tournamentRepository) Seasons() ([]string, error) {
+	seasons := []string{}
 	err := crud.ReadIn(s.DB, "tournament/select-seasons", &seasons)
 
-	sort.Ints(seasons)
+	sort.Strings(seasons)
 
 	return seasons, errors.Wrap(err, "available seasons")
 }
 
-func (s *tournamentRepository) Leagues() ([]scores.NameValue, error) {
-	leagues := []scores.NameValue{}
+// Leagues returns all available leagues
+func (s *tournamentRepository) Leagues() ([]string, error) {
+	leagues := []string{}
+
 	err := crud.ReadIn(s.DB, "tournament/select-leagues", &leagues)
 
-	// sort.Strings(leagues)
+	sort.Strings(leagues)
 
 	return leagues, errors.Wrap(err, "leagues")
 }
 
-func (s *tournamentRepository) SubLeagues() ([]scores.NameValue, error) {
-	subLeagues := []scores.NameValue{}
+// SubLeagues returns all available sub-leagues
+func (s *tournamentRepository) SubLeagues() ([]string, error) {
+	subLeagues := []string{}
 	err := crud.ReadIn(s.DB, "tournament/select-sub-leagues", &subLeagues)
 
-	// sort.Strings(subLeagues)
+	sort.Strings(subLeagues)
 
 	return subLeagues, errors.Wrap(err, "subleagues")
 }

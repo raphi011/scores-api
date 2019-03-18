@@ -7,7 +7,7 @@ import {
   WithStyles,
 } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import withAuth from '../containers/AuthContainer';
+import withAuth from '../hoc/next/withAuth';
 import Layout from '../containers/LayoutContainer';
 import Divider from '@material-ui/core/Divider';
 

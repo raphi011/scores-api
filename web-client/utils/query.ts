@@ -45,7 +45,7 @@ export function multipleOfDefault<T>(
   return values;
 }
 
-export function str(query: QueryStringMapObject, key: string): string {
+export function one(query: QueryStringMapObject, key: string): string {
   const value = query[key];
 
   if (!value) {
@@ -59,12 +59,26 @@ export function str(query: QueryStringMapObject, key: string): string {
   return value;
 }
 
+export function multiple(query: QueryStringMapObject, key: string): string[] {
+  const value = query[key];
+
+  if (!value) {
+    return [];
+  }
+
+  if (!Array.isArray(value)) {
+    return [value];
+  }
+
+  return value;
+}
+
 export function oneOf<T>(
   query: QueryStringMapObject,
   key: string,
   available: T[] = [],
 ): T | '' {
-  const value = str(query, key);
+  const value = one(query, key);
 
   if (!value) {
     return '';

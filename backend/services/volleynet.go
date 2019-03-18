@@ -1,12 +1,12 @@
 package services
 
 import (
-	"time"
-
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/volleynet"
+
+	"strconv"
+	"time"
 )
 
 // Volleynet allows loading / mutation of volleynet data
@@ -26,47 +26,89 @@ func (s *Volleynet) Ladder(gender string) ([]*volleynet.Player, error) {
 	return s.PlayerRepo.Ladder(gender)
 }
 
-// TournamentFilters contains all available Tournament filters.
-type TournamentFilters struct {
-	Seasons []int
+// TournamentFilter contains all available Tournament filters.
+type TournamentFilter struct {
+	Seasons []string
 	Leagues []string
 	Genders []string
 }
 
+type FilterOptions struct {
+	Seasons []string `json:"seasons"`
+	Leagues []string `json:"leagues"`
+	Genders []string `json:"genders"`
+}
+
 // SearchTournaments loads all tournaments of a certain `gender`, `league` and `season`
-func (s *Volleynet) SearchTournaments(filters TournamentFilters) (
+func (s *Volleynet) SearchTournaments(filter TournamentFilter) (
 	[]*volleynet.Tournament, error) {
-	if len(filters.Seasons) == 0 {
-		filters.Seasons = append(filters.Seasons, time.Now().Year())
+	return s.TournamentRepo.Filter(filter.Seasons, filter.Leagues, filter.Genders)
+}
+
+// SetDefaultFilters sets filters to the users's previous setting - or the default value
+// if no value has been provided for a filter.
+func (s *Volleynet) SetDefaultFilters(filter TournamentFilter) TournamentFilter {
+	if len(filter.Seasons) == 0 {
+		filter.Seasons = append(filter.Seasons, strconv.Itoa(time.Now().Year()))
 	}
-	if len(filters.Leagues) == 0 {
+	if len(filter.Leagues) == 0 {
 		// TODO read this from DB
-		filters.Leagues = append(filters.Leagues, "amateur-tour")
+		filter.Leagues = append(filter.Leagues, "amateur-tour")
 	}
-	if len(filters.Genders) == 0 {
-		filters.Genders = append(filters.Genders, "M", "W")
+	if len(filter.Genders) == 0 {
+		filter.Genders = append(filter.Genders, "M", "W")
 	}
 
-	return s.TournamentRepo.Filter(filters.Seasons, filters.Leagues, filters.Genders)
+	return filter
+}
+
+func (s *Volleynet) UpdateTournamentFilter(userID int, filter TournamentFilter) error {
+	// 	&scores.Setting{UserID: userID, Key: "tournament-filter-league", Type: "strings", Value: scores.ListToString(league)},
+	// 	&scores.Setting{UserID: userID, Key: "tournament-filter-gender", Type: "strings", Value: scores.ListToString(gender)},
+	// 	&scores.Setting{UserID: userID, Key: "tournament-filter-season", Type: "string", Value: season},
+
+	return nil
+}
+
+// TournamentFilterOptions returns available filter options
+func (s *Volleynet) TournamentFilterOptions() (*FilterOptions, error) {
+	leagues, err := s.Leagues()
+	if err != nil {
+		return nil, errors.Wrap(err, "loading leagues")
+	}
+
+	seasons, err := s.Seasons()
+
+	if err != nil {
+		return nil, errors.Wrap(err, "loading seasons")
+	}
+
+	options := &FilterOptions{
+		Genders: []string{"M", "W"},
+		Leagues: leagues,
+		Seasons: seasons,
+	}
+
+	return options, nil
 }
 
 // Leagues loads all available Leagues as Name/Value pairs.
-func (s *Volleynet) Leagues() ([]scores.NameValue, error) {
+func (s *Volleynet) Leagues() ([]string, error) {
 	leagues, err := s.TournamentRepo.Leagues()
 
 	return leagues, errors.Wrap(err, "loading leagues")
 }
 
 // SubLeagues loads all available SubLeagues as Name/Value pairs.
-func (s *Volleynet) SubLeagues() ([]scores.NameValue, error) {
+func (s *Volleynet) SubLeagues() ([]string, error) {
 	leagues, err := s.TournamentRepo.Leagues()
 
 	return leagues, errors.Wrap(err, "loading leagues")
 }
 
 // Seasons loads all available seasons.
-func (s *Volleynet) Seasons() ([]scores.NameValue, error) {
-	leagues, err := s.TournamentRepo.Leagues()
+func (s *Volleynet) Seasons() ([]string, error) {
+	leagues, err := s.TournamentRepo.Seasons()
 
 	return leagues, errors.Wrap(err, "loading leagues")
 }

@@ -4,11 +4,12 @@ package scores
 type User struct {
 	M
 	Track
-	Email           string `json:"email"`
-	ProfileImageURL string `json:"profileImageUrl" db:"profile_image_url"`
-	VolleynetUserID int    `json:"volleynetUserId" db:"volleynet_user_id"`
-	VolleynetUser   string `json:"volleynetUser" db:"volleynet_user"`
-	Role            string `json:"role"`
+	Email           string   `json:"email"`
+	ProfileImageURL string   `json:"profileImageUrl" db:"profile_image_url"`
+	VolleynetUserID int      `json:"volleynetUserId" db:"volleynet_user_id"`
+	VolleynetUser   string   `json:"volleynetUser" db:"volleynet_user"`
+	Role            string   `json:"role"`
+	Settings        Settings `json:"settings"`
 	PasswordInfo
 }
 

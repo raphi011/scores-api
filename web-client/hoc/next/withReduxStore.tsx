@@ -1,6 +1,6 @@
 import React from 'react';
-import initializeStore, { Store } from './store';
-import { Context } from '../containers/AuthContainer';
+import initializeStore, { Store } from '../../redux/store';
+import { Context } from './withConnect';
 
 const isServer = typeof window === 'undefined';
 const __NEXT_REDUX_STORE__ = '__NEXT_REDUX_STORE__';

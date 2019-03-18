@@ -14,7 +14,7 @@ import AddIcon from '@material-ui/icons/Add';
 import JobList from '../components/admin/JobList';
 import UserList from '../components/admin/UserList';
 import EditUserDialog from '../containers/admin/EditUserDialogContainer';
-import withAuth from '../containers/AuthContainer';
+import withAuth from '../hoc/next/withAuth';
 import Layout from '../containers/LayoutContainer';
 import {
   loadUsersAction,
@@ -25,6 +25,7 @@ import { scrapeJobsSelector } from '../redux/admin/selectors';
 import { allUsersSelector } from '../redux/entities/selectors';
 import { Store } from '../redux/store';
 import { ScrapeJob, User } from '../types';
+import withConnect from '../hoc/next/withConnect';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -156,4 +157,4 @@ class Administration extends React.Component<Props, State> {
   }
 }
 
-export default withAuth(withStyles(styles)(Administration));
+export default withAuth(withConnect(withStyles(styles)(Administration)));

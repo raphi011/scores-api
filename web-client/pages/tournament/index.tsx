@@ -19,7 +19,7 @@ import Tab from '@material-ui/core/Tab';
 import Fab from '@material-ui/core/Fab';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
-import withAuth from '../../containers/AuthContainer';
+import withAuth from '../../hoc/next/withAuth';
 import Layout from '../../containers/LayoutContainer';
 
 import { userSelector } from '../../redux/auth/selectors';
@@ -33,7 +33,7 @@ import * as Query from '../../utils/query';
 import { fontPalette } from '../../styles/theme';
 import classNames from 'classnames';
 import { formatDate } from '../../utils/date';
-import { QueryStringMapObject } from 'next';
+import withConnect, { Context } from '../../hoc/next/withConnect';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -97,9 +97,9 @@ const styles = (theme: Theme) =>
     },
   });
 
-type TabOption = 'notes' | 'teams' | 'organiser';
+type TabOption = 'notes' | 'teams';
 
-const tabOptions: TabOption[] = ['notes', 'teams', 'organiser'];
+const tabOptions: TabOption[] = ['notes', 'teams'];
 
 interface Props extends WithStyles<typeof styles> {
   tournament?: Tournament;
@@ -109,10 +109,20 @@ interface Props extends WithStyles<typeof styles> {
   width: Breakpoint;
 }
 
-class ShowTournament extends React.Component<Props> {
-  static getParameters(query: QueryStringMapObject): Partial<Props> {
+interface State {
+  signupPageOpen: boolean;
+}
+
+class ShowTournament extends React.Component<Props, State> {
+  state = {
+    signupPageOpen: false,
+  };
+
+  static async getInitialProps(ctx: Context): Promise<Partial<Props>> {
+    const { query } = ctx;
+
     const tab = Query.oneOfDefault(query, 'tab', tabOptions, 'notes');
-    const tournamentId = Query.str(query, 'id');
+    const tournamentId = Query.one(query, 'id');
 
     return { tournamentId, tab };
   }
@@ -123,7 +133,7 @@ class ShowTournament extends React.Component<Props> {
 
   static mapStateToProps(state: Store, { tournamentId }: Props) {
     const tournament = tournamentSelector(state, tournamentId);
-    const { user } = userSelector(state);
+    const user = userSelector(state);
 
     return { tournament, user };
   }
@@ -139,14 +149,57 @@ class ShowTournament extends React.Component<Props> {
     });
   };
 
-  render() {
+  renderBody = () => {
     const { classes, tab, tournament, width } = this.props;
+    // const { signupPageOpen } = this.state;
+
+    const isMobile = ['xs', 'sm'].includes(width);
 
     if (!tournament) {
       return null;
     }
 
     const teams = tournament.teams || [];
+
+    // if (signupPageOpen) {
+    //   return (
+    //     <Signup
+    //   );
+    // }
+
+    return (
+      <>
+        <Tabs
+          className={classes.tabs}
+          indicatorColor="primary"
+          value={tabOptions.indexOf(tab)}
+          variant={isMobile ? 'fullWidth' : 'standard'}
+          onChange={this.onSelectTab}
+        >
+          {tabOptions.map(t => (
+            <Tab key={t} label={t} />
+          ))}
+        </Tabs>
+        <div className={classes.body}>
+          {tab === 'notes' && (
+            <Typography
+              variant="body2"
+              dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
+            />
+          )}
+          {tab === 'teams' && <TeamList teams={teams} />}
+        </div>
+      </>
+    );
+  };
+
+  render() {
+    const { classes, tournament, width } = this.props;
+
+    if (!tournament) {
+      return null;
+    }
+
     const isMobile = ['xs', 'sm'].includes(width);
 
     const titleRowClassName = classNames(classes.titleRow, {
@@ -235,30 +288,13 @@ class ShowTournament extends React.Component<Props> {
             </span>
           </div>
         </div>
-        <Tabs
-          className={classes.tabs}
-          indicatorColor="primary"
-          value={tabOptions.indexOf(tab)}
-          variant={isMobile ? 'fullWidth' : 'standard'}
-          onChange={this.onSelectTab}
-        >
-          {tabOptions.map(t => (
-            <Tab key={t} label={t} />
-          ))}
-        </Tabs>
-        <div className={classes.body}>
-          {tab === 'notes' && (
-            <Typography
-              variant="body2"
-              dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
-            />
-          )}
-          {tab === 'teams' && <TeamList teams={teams} />}
-        </div>
+        {this.renderBody()}
         {fabButton}
       </Layout>
     );
   }
 }
 
-export default withStyles(styles)(withAuth(withWidth()(ShowTournament)));
+export default withAuth(
+  withConnect(withWidth()(withStyles(styles)(ShowTournament))),
+);

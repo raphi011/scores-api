@@ -4,6 +4,10 @@ export enum EntityName {
   User = 'user',
 }
 
+export const SETTING_TOURNAMENT_FILTER_LEAGUE_KEY = 'tournament-filter-league';
+export const SETTING_TOURNAMENT_FILTER_GENDER_KEY = 'tournament-filter-gender';
+export const SETTING_TOURNAMENT_FILTER_SEASON_KEY = 'tournament-filter-season';
+
 export interface User {
   id: number;
   email: string;
@@ -11,6 +15,11 @@ export interface User {
   profileImageUrl?: string;
   volleynetUserId: number;
   volleynetLogin: string;
+  settings: {
+    [SETTING_TOURNAMENT_FILTER_LEAGUE_KEY]: string[];
+    [SETTING_TOURNAMENT_FILTER_GENDER_KEY]: string[];
+    [SETTING_TOURNAMENT_FILTER_SEASON_KEY]: string;
+  };
 }
 
 export interface SearchPlayer {
@@ -20,8 +29,6 @@ export interface SearchPlayer {
   login: string;
   birthday: string;
 }
-
-export type Gender = 'M' | 'W';
 
 export interface Player {
   id: number;
@@ -33,7 +40,7 @@ export interface Player {
   club: string;
   countryUnion: string;
   firstName: string;
-  gender: Gender;
+  gender: string;
   ladderRank: string;
   lastName: string;
   license: string;
@@ -73,7 +80,7 @@ export interface Tournament {
   end: string;
   endRegistration?: string;
   entryLink: string;
-  gender: Gender;
+  gender: string;
   htmlNotes: string;
   latitude: number;
   league: string;

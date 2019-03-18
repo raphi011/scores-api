@@ -61,6 +61,32 @@ func SetupDB(t testing.TB) *sqlx.DB {
 	return db
 }
 
+type U struct {
+	ID int
+}
+
+// CreateUsers is a handy helper to create multiple users.
+func CreateUsers(t testing.TB, db *sqlx.DB, users ...U) []*scores.User {
+	t.Helper()
+
+	newUsers := []*scores.User{}
+	userRepo := &userRepository{DB: db}
+
+	for _, u := range users {
+		persistedUser, err := userRepo.New(&scores.User{
+			M: scores.M{
+				ID: u.ID,
+			},
+		})
+
+		test.Check(t, "userRepo.New() failed: %v", err)
+
+		newUsers = append(newUsers, persistedUser)
+	}
+
+	return newUsers
+}
+
 // P is a helper struct to create players.
 type P struct {
 	Gender      string
@@ -94,12 +120,12 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 
 // T is a helper struct to create tournaments.
 type T struct {
-	ID            int
-	Season        int
-	Status        string
-	League        string
+	ID           int
+	Season       int
+	Status       string
+	League       string
 	LeagueKey    string
-	SubLeague     string
+	SubLeague    string
 	SubLeagueKey string
 }
 
@@ -113,14 +139,14 @@ func CreateTournaments(t testing.TB, db *sqlx.DB, tournaments ...T) []*volleynet
 	for _, tournament := range tournaments {
 		persistedTournament, err := tournamentRepo.New(&volleynet.Tournament{
 			TournamentInfo: volleynet.TournamentInfo{
-				ID:            tournament.ID,
-				Season:        tournament.Season,
-				Status:        tournament.Status,
-				Start:         time.Now(),
-				End:           time.Now(),
-				League:        tournament.League,
+				ID:           tournament.ID,
+				Season:       tournament.Season,
+				Status:       tournament.Status,
+				Start:        time.Now(),
+				End:          time.Now(),
+				League:       tournament.League,
 				LeagueKey:    scores.Sluggify(tournament.League),
-				SubLeague:     tournament.SubLeague,
+				SubLeague:    tournament.SubLeague,
 				SubLeagueKey: scores.Sluggify(tournament.SubLeague),
 			},
 		})

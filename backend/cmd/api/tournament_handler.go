@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -20,29 +19,45 @@ type volleynetHandler struct {
 }
 
 func (h *volleynetHandler) getTournaments(c *gin.Context) {
-	season := c.DefaultQuery("season", strconv.Itoa(time.Now().Year()))
-	gender := c.QueryArray("gender")
-	league := c.QueryArray("league")
+	season := c.Query("season")
+	gender := c.QueryArray("genders")
+	league := c.QueryArray("leagues")
 
-	seasonNumber, err := strconv.Atoi(season)
-
-	if err != nil {
-		responseBadRequest(c)
-		return
-	}
-
-	tournaments, err := h.volleynetService.SearchTournaments(services.TournamentFilters{
-		Seasons: []int{seasonNumber},
+	filters := h.volleynetService.SetDefaultFilters(services.TournamentFilter{
+		Seasons: []string{season},
 		Leagues: league,
 		Genders: gender,
 	})
+
+	tournaments, err := h.volleynetService.SearchTournaments(filters)
 
 	if err != nil {
 		responseErr(c, err)
 		return
 	}
 
+	session := sessions.Default(c)
+
+	if userID, ok := session.Get("user-id").(int); ok {
+		err := h.volleynetService.UpdateTournamentFilter(userID, filters)
+
+		if err != nil {
+			logger.Get(c).Warnf("could not update user settings %v", err)
+		}
+	}
+
 	response(c, http.StatusOK, tournaments)
+}
+
+func (h *volleynetHandler) getFilterOptions(c *gin.Context) {
+	filters, err := h.volleynetService.TournamentFilterOptions()
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	response(c, http.StatusOK, filters)
 }
 
 func (h *volleynetHandler) getTournament(c *gin.Context) {

@@ -20,7 +20,7 @@ const AdminOnly = ({ user, children }: Props) => {
 };
 
 function mapStateToProps(state: Store) {
-  const { user } = userSelector(state);
+  const user = userSelector(state);
 
   return { user };
 }

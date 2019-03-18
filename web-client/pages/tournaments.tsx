@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { QueryStringMapObject } from 'next';
 import Router from 'next/router';
 
 import {
@@ -18,25 +17,33 @@ import CloseIcon from '@material-ui/icons/Close';
 import Fab from '@material-ui/core/Fab';
 import { Dialog } from '@material-ui/core';
 
+import * as Query from '../utils/query';
 import DayHeader from '../components/DayHeader';
 import GroupedList from '../components/GroupedList';
 import TournamentFilters, {
   Filters,
 } from '../components/volleynet/filters/TournamentFilters';
 import TournamentList from '../components/volleynet/TournamentList';
-import withAuth from '../containers/AuthContainer';
+import withAuth from '../hoc/next/withAuth';
 import Layout from '../containers/LayoutContainer';
 import { userSelector } from '../redux/auth/selectors';
-import {
-  loadTournamentAction,
-  loadTournamentsAction,
-} from '../redux/entities/actions';
+import { loadTournamentsAction } from '../redux/entities/actions';
 import { filteredTournamentsSelector } from '../redux/entities/selectors';
 import { Store } from '../redux/store';
-import { Gender, Tournament, User } from '../types';
+import { Tournament, User } from '../types';
 import { sameDay } from '../utils/date';
-
-const defaultLeagues = ['amateur-tour', 'pro-tour', 'junior-tour'];
+import {
+  tournamentFilterSelector,
+  filterOptionsSelector,
+} from '../redux/tournaments/selectors';
+import { FilterOptions, Filter } from '../redux/tournaments/reducer';
+import {
+  setFilterAction,
+  loadFilterOptionsAction,
+} from '../redux/tournaments/actions';
+import { QueryStringMapObject } from 'next';
+import { dispatchAction } from '../redux/actions';
+import withConnect, { ClientContext } from '../hoc/next/withConnect';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -77,17 +84,16 @@ const styles = (theme: Theme) =>
 
 interface Props extends WithStyles<typeof styles> {
   tournaments: Tournament[];
-  league: string[];
-  season: number;
-  gender: Gender[];
+  leagues: string[];
+  genders: string[];
+  season: string;
+  options: FilterOptions;
+  filters: Filter;
   user: User;
   width: Breakpoint;
 
-  loadTournaments: (filters: {
-    gender: Gender[];
-    league: string[];
-    season: number;
-  }) => void;
+  setFilter: (filters: Filter) => void;
+  loadTournaments: (filters: Filter) => void;
 }
 
 interface State {
@@ -95,41 +101,43 @@ interface State {
   filterDialogOpen: boolean;
 }
 
+function filtersFromQuery(query: QueryStringMapObject): Filters {
+  const season = Query.one(query, 'season');
+  const genders = Query.multiple(query, 'gender');
+  const leagues = Query.multiple(query, 'league');
+
+  return { leagues, genders, season };
+}
+
 class Volleynet extends React.Component<Props, State> {
+  static async getInitialProps({ req, res, store, query }: ClientContext) {
+    if (req) {
+      await dispatchAction(store.dispatch, loadFilterOptionsAction(), req, res);
+    }
+
+    const queryFilters = filtersFromQuery(query);
+    await store.dispatch(setFilterAction(queryFilters));
+
+    const state = store.getState();
+
+    const filters = tournamentFilterSelector(state);
+    const options = filterOptionsSelector(state);
+
+    return { filters, options };
+  }
+
+  static buildActions({ filters }: Props) {
+    return [loadTournamentsAction(filters)];
+  }
+
   static mapDispatchToProps = {
-    loadTournament: loadTournamentAction,
     loadTournaments: loadTournamentsAction,
+    setFilter: setFilterAction,
   };
-
-  static buildActions({ gender, season, league = [] }: Props) {
-    return [
-      loadTournamentsAction({
-        gender,
-        league,
-        season,
-      }),
-    ];
-  }
-
-  static getParameters(query: QueryStringMapObject) {
-    const { season = '2019' } = query;
-    let { gender = ['M', 'W'], league = ['amateur-tour'] } = query;
-
-    if (!Array.isArray(league)) {
-      league = [league];
-    }
-    if (!Array.isArray(gender)) {
-      gender = [gender];
-    }
-
-    league = league.filter((l: string) => defaultLeagues.includes(l));
-
-    return { league, gender, season: Number(season) };
-  }
 
   static mapStateToProps(state: Store) {
     const tournaments = filteredTournamentsSelector(state);
-    const { user } = userSelector(state);
+    const user = userSelector(state);
 
     return { tournaments, user };
   }
@@ -160,7 +168,7 @@ class Volleynet extends React.Component<Props, State> {
   onFilter = async (filters: Filters) => {
     this.setState({ loading: true, filterDialogOpen: false });
 
-    const { loadTournaments } = this.props;
+    const { setFilter, loadTournaments } = this.props;
 
     const query = filters;
 
@@ -170,6 +178,7 @@ class Volleynet extends React.Component<Props, State> {
     });
 
     await loadTournaments(query);
+    setFilter(query);
 
     this.setState({ loading: false });
   };
@@ -187,7 +196,7 @@ class Volleynet extends React.Component<Props, State> {
   };
 
   render() {
-    const { league, gender, season, tournaments, width, classes } = this.props;
+    const { filters, options, tournaments, width, classes } = this.props;
     const { loading } = this.state;
 
     const list = (
@@ -201,10 +210,9 @@ class Volleynet extends React.Component<Props, State> {
 
     const filter = (
       <TournamentFilters
+        filters={filters}
+        options={options}
         loading={loading}
-        league={league}
-        gender={gender}
-        season={season}
         onFilter={this.onFilter}
       />
     );
@@ -251,11 +259,12 @@ class Volleynet extends React.Component<Props, State> {
       );
     }
 
+    const tournamentCount = tournaments ? tournaments.length : 0;
+
     return (
       <Layout title={{ text: 'Tournaments', href: '' }}>
         <Typography variant="h1">
-          Tournaments{' '}
-          <span className={classes.found}>({tournaments.length})</span>
+          Tournaments <span className={classes.found}>({tournamentCount})</span>
         </Typography>
         <div className={classes.root}>{body}</div>
       </Layout>
@@ -291,4 +300,6 @@ function renderHeader(tournaments: Tournament[]) {
   );
 }
 
-export default withStyles(styles)(withAuth(withWidth()(Volleynet)));
+export default withAuth(
+  withConnect(withWidth()(withStyles(styles)(Volleynet))),
+);

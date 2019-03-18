@@ -1,1 +1,1 @@
-SELECT distinct league as name, league_key as value FROM tournaments
+SELECT distinct league_key as value FROM tournaments

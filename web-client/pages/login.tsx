@@ -12,18 +12,17 @@ import Typography from '@material-ui/core/Typography';
 import WarningIcon from '@material-ui/icons/Warning';
 
 import LoadingButton from '../components/LoadingButton';
-import withAuth from '../containers/AuthContainer';
 import Snackbar from '../containers/SnackbarContainer';
 import { loginWithPasswordAction } from '../redux/auth/actions';
 import { loginRouteSelector } from '../redux/auth/selectors';
 import { setStatusAction } from '../redux/status/actions';
 import { Store } from '../redux/store';
 import { QueryStringMapObject } from 'next';
+import withConnect from '../hoc/next/withConnect';
 
 interface Props extends WithStyles<typeof styles> {
   r: string;
   loginRoute: string;
-  fromServer: boolean;
   loginError: string;
 
   loginWithPassword: (credentials: {
@@ -187,4 +186,4 @@ class Login extends React.Component<Props, State> {
   }
 }
 
-export default withAuth(withStyles(styles)(Login));
+export default withConnect(withStyles(styles)(Login));

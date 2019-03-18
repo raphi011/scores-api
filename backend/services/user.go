@@ -1,6 +1,8 @@
 package services
 
 import (
+	"time"
+
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores"
@@ -9,8 +11,9 @@ import (
 
 // User allows loading / mutation of user data
 type User struct {
-	Repo       repo.UserRepository
-	PlayerRepo repo.PlayerRepository
+	Repo        repo.UserRepository
+	PlayerRepo  repo.PlayerRepository
+	SettingRepo repo.SettingRepository
 
 	Password Password
 }
@@ -24,6 +27,39 @@ func (s *User) HasRole(userID int, roleName string) bool {
 	}
 
 	return user.Role == roleName
+}
+
+// UpdateSettings updates settings for a user
+func (s *User) UpdateSettings(userID int, settings ...*scores.Setting) error {
+	currentSettings, err := s.loadSettings(userID)
+
+	if err != nil {
+		return err
+	}
+
+	for _, setting := range settings {
+		var err error
+
+		if setting.Value == "" {
+			continue
+		}
+		if previousSetting, ok := currentSettings[setting.Key]; ok && previousSetting.Value == setting.Value {
+			continue
+		} else if ok {
+			setting.CreatedAt = previousSetting.CreatedAt
+			setting.UpdatedAt = time.Now()
+
+			err = s.SettingRepo.Update(setting)
+		} else {
+			_, err = s.SettingRepo.Create(setting)
+		}
+
+		if err != nil {
+			return errors.Wrapf(err, "updating user's %q setting key %q", userID, setting.Key)
+		}
+	}
+
+	return nil
 }
 
 // New creates a new user
@@ -83,7 +119,9 @@ func (s *User) ByEmail(email string) (*scores.User, error) {
 		return nil, errors.Wrapf(err, "could not load user by email %s", email)
 	}
 
-	return user, nil
+	user.Settings, err = s.loadSettingsDictionary(user.ID)
+
+	return user, err
 }
 
 // ByID retrieves a user by ID
@@ -94,7 +132,37 @@ func (s *User) ByID(userID int) (*scores.User, error) {
 		return nil, errors.Wrapf(err, "could not load user by ID %d", userID)
 	}
 
-	return user, nil
+	user.Settings, err = s.loadSettingsDictionary(userID)
+
+	return user, err
+}
+
+func (s *User) loadSettingsDictionary(userID int) (scores.Settings, error) {
+	settings, err := s.SettingRepo.ByUserID(userID)
+
+	if err != nil {
+		return nil, errors.Wrapf(err, "load settings for user %q", userID)
+	}
+
+	return scores.ToSettingsDictionary(settings), nil
+}
+
+type settingsMap map[string]*scores.Setting
+
+func (s *User) loadSettings(userID int) (settingsMap, error) {
+	settings, err := s.SettingRepo.ByUserID(userID)
+
+	if err != nil {
+		return nil, errors.Wrapf(err, "load settings for user %q", userID)
+	}
+
+	settingsMap := map[string]*scores.Setting{}
+
+	for _, setting := range settings {
+		settingsMap[setting.Key] = setting
+	}
+
+	return settingsMap, nil
 }
 
 // All returns all users

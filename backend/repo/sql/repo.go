@@ -1,8 +1,8 @@
 package sql
 
 import (
-	"github.com/pkg/errors"
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sql/migrate"
@@ -19,11 +19,10 @@ func Repositories(provider, connectionString string) (*repo.Repositories, error)
 	err = migrate.All(provider, db)
 
 	return &repo.Repositories{
-		UserRepo: &userRepository{DB: db},
-		PlayerRepo: &playerRepository{DB: db},
+		UserRepo:       &userRepository{DB: db},
+		PlayerRepo:     &playerRepository{DB: db},
 		TournamentRepo: &tournamentRepository{DB: db},
-		TeamRepo: &teamRepository{DB: db},
+		TeamRepo:       &teamRepository{DB: db},
+		SettingRepo:    &settingRepository{DB: db},
 	}, err
 }
-
-

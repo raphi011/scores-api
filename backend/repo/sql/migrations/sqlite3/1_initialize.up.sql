@@ -39,7 +39,7 @@ CREATE TABLE tournaments (
 	organiser varchar(128) NOT NULL,
 	phone varchar(128) NOT NULL,
 	registration_open integer NOT NULL,
-	season integer NOT NULL,
+	season varchar(16) NOT NULL,
 	signedup_teams integer NOT NULL,
 	start_date datetime NOT NULL,
 	status varchar(255) NOT NULL,

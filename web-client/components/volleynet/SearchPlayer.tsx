@@ -9,7 +9,7 @@ import { searchPlayersAction } from '../../redux/entities/actions';
 import { searchVolleynetplayerSelector } from '../../redux/entities/selectors';
 import SearchPlayerList from './SearchPlayerList';
 
-import { Gender, SearchPlayer } from '../../types';
+import { SearchPlayer } from '../../types';
 import LoadingButton from '../LoadingButton';
 import { Store } from '../../redux/store';
 
@@ -20,7 +20,7 @@ const styles = createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  gender: Gender;
+  gender: string;
   foundPlayers: SearchPlayer[];
 
   onSelectPlayer: (player: SearchPlayer | null) => void;

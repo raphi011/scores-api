@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 import Login from '../../components/volleynet/Login';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
-import withAuth from '../../containers/AuthContainer';
+import withAuth from '../../hoc/next/withAuth';
 import Layout from '../../containers/LayoutContainer';
 import { userSelector } from '../../redux/auth/selectors';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../../types';
 import { Store } from '../../redux/store';
 import { QueryStringMapObject } from 'next';
+import withConnect from '../../hoc/next/withConnect';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -46,7 +47,6 @@ interface Props extends WithStyles<typeof styles> {
     password: string;
     partnerId: number;
     tournamentId: string;
-    // partnerName: string;
     rememberMe: boolean;
   }) => void;
 }
@@ -71,7 +71,7 @@ class Signup extends React.Component<Props, State> {
 
   static mapStateToProps(state: Store, { tournamentId }: Props) {
     const tournament = tournamentSelector(state, tournamentId);
-    const { user } = userSelector(state);
+    const user = userSelector(state);
 
     return { tournament, user };
   }
@@ -93,7 +93,6 @@ class Signup extends React.Component<Props, State> {
     const { partner } = this.state;
 
     const partnerId = partner && partner.id;
-    // const partnerName = partner && partner.login;
 
     if (!partnerId) {
       return;
@@ -101,7 +100,6 @@ class Signup extends React.Component<Props, State> {
 
     const body = {
       partnerId,
-      // partnerName,
       password,
       rememberMe,
       tournamentId,
@@ -163,4 +161,4 @@ class Signup extends React.Component<Props, State> {
   }
 }
 
-export default withAuth(withStyles(styles)(Signup));
+export default withAuth(withConnect(withStyles(styles)(Signup)));

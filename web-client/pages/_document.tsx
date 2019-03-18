@@ -27,11 +27,16 @@ class MyDocument extends Document<Props> {
       return WrappedComponent;
     });
 
+    let css;
+
+    if (pageContext) {
+      css = pageContext.sheetsRegistry.toString();
+    }
+
     return {
       ...page,
       // @ts-ignore
       pageContext,
-      // Styles fragment is rendered after the app and page rendering finish.
       styles: (
         <>
           <style
@@ -39,7 +44,7 @@ class MyDocument extends Document<Props> {
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{
               // @ts-ignore
-              __html: pageContext.sheetsRegistry.toString(),
+              __html: css,
             }}
           />
           {flush() || null}
@@ -70,7 +75,7 @@ class MyDocument extends Document<Props> {
     ];
 
     if (process.env.NODE_ENV === 'development') {
-      // webpack's HMR needs 'unsafe-eval' + 'unsafe-inline'
+      // webpack's HMR needs this in development mode
       directives[1] = "script-src 'unsafe-eval' 'unsafe-inline' 'self'";
     }
 

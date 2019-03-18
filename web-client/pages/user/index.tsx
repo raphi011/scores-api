@@ -1,11 +1,12 @@
 import React from 'react';
 
-import withAuth from '../../containers/AuthContainer';
+import withAuth from '../../hoc/next/withAuth';
 import Layout from '../../containers/LayoutContainer';
 
 import { userSelector } from '../../redux/auth/selectors';
 import { Store } from '../../redux/store';
 import { User } from '../../types';
+import withConnect from '../../hoc/next/withConnect';
 
 interface Props {
   user: User;
@@ -13,7 +14,7 @@ interface Props {
 
 class Ranking extends React.Component<Props> {
   static mapStateToProps(state: Store) {
-    const { user } = userSelector(state);
+    const user = userSelector(state);
 
     return { user };
   }
@@ -25,4 +26,4 @@ class Ranking extends React.Component<Props> {
   }
 }
 
-export default withAuth(Ranking);
+export default withAuth(withConnect(Ranking));

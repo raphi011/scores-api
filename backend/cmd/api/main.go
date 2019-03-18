@@ -3,23 +3,23 @@ package main
 import (
 	"flag"
 	"fmt"
-	"time"
 	"net"
 	"os"
+	"time"
 
 	"golang.org/x/oauth2"
 
-	"github.com/bshuster-repo/logrus-logstash-hook"
+	logrustash "github.com/bshuster-repo/logrus-logstash-hook"
 	"github.com/cenkalti/backoff"
 	"github.com/sirupsen/logrus"
 
 	"github.com/raphi011/scores/events"
+	"github.com/raphi011/scores/job"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/repo/sql"
-	"github.com/raphi011/scores/job"
 	"github.com/raphi011/scores/services"
-	"github.com/raphi011/scores/volleynet/sync"
 	"github.com/raphi011/scores/volleynet/client"
+	"github.com/raphi011/scores/volleynet/sync"
 )
 
 type app struct {
@@ -129,10 +129,10 @@ func newBroker() *events.Broker {
 
 type handlerServices struct {
 	JobManager *job.Manager
-	User *services.User
-	Volleynet *services.Volleynet
-	Scrape *sync.Service
-	Password services.Password
+	User       *services.User
+	Volleynet  *services.Volleynet
+	Scrape     *sync.Service
+	Password   services.Password
 }
 
 func createServices(provider string, connectionString string) (*handlerServices, error) {
@@ -142,7 +142,7 @@ func createServices(provider string, connectionString string) (*handlerServices,
 	switch provider {
 	case "sqlite3":
 		fallthrough
-	case "postgres": 
+	case "postgres":
 		fallthrough
 	case "mysql":
 		repos, err = sql.Repositories(provider, connectionString)
@@ -164,38 +164,39 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 	}
 
 	userService := &services.User{
-		Repo:       repos.UserRepo,
-		PlayerRepo: repos.PlayerRepo,
-		Password:         password,
+		Repo:        repos.UserRepo,
+		PlayerRepo:  repos.PlayerRepo,
+		SettingRepo: repos.SettingRepo,
+		Password:    password,
 	}
 
 	volleynetService := &services.Volleynet{
-		PlayerRepo: repos.PlayerRepo,
-		TeamRepo: repos.TeamRepo,
+		PlayerRepo:     repos.PlayerRepo,
+		TeamRepo:       repos.TeamRepo,
 		TournamentRepo: repos.TournamentRepo,
 	}
 
 	broker := newBroker()
 
 	scrapeService := &sync.Service{
-		Client: client.DefaultClient(),
-		PlayerRepo: repos.PlayerRepo,
-		TeamRepo: repos.TeamRepo,
+		Client:         client.DefaultClient(),
+		PlayerRepo:     repos.PlayerRepo,
+		TeamRepo:       repos.TeamRepo,
 		TournamentRepo: repos.TournamentRepo,
-		Subscriptions: broker,
+		Subscriptions:  broker,
 	}
 
 	manager := &job.Manager{}
 
 	ladderJob := ladderJob{
 		syncService: scrapeService,
-		genders: []string{ "M", "W" },
+		genders:     []string{"M", "W"},
 	}
 
 	tournamentsJob := tournamentsJob{
 		syncService: scrapeService,
-		genders: []string{ "M", "W" },
-		leagues: []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
+		genders:     []string{"M", "W"},
+		leagues:     []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
 	}
 
 	if startManager {
@@ -205,7 +206,7 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 				MaxFailures: 3,
 				Interval:    1 * time.Hour,
 
-				Do:          ladderJob.do,
+				Do: ladderJob.do,
 			},
 			job.Job{
 				Name:        "Tournaments",
@@ -213,17 +214,17 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 				Interval:    5 * time.Minute,
 				Delay:       1 * time.Minute,
 
-				Do:          tournamentsJob.do,
+				Do: tournamentsJob.do,
 			},
 		)
 	}
 
 	s := &handlerServices{
 		JobManager: manager,
-		Scrape: scrapeService,
-		Volleynet: volleynetService,
-		Password:  password,
-		User:      userService,
+		Scrape:     scrapeService,
+		Volleynet:  volleynetService,
+		Password:   password,
+		User:       userService,
 	}
 
 	return s

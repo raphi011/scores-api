@@ -1,6 +1,6 @@
 import React from 'react';
 
-import withAuth from '../../containers/AuthContainer';
+import withAuth from '../../hoc/next/withAuth';
 import Layout from '../../containers/LayoutContainer';
 
 class UserSettings extends React.Component {

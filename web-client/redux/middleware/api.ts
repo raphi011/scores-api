@@ -68,7 +68,7 @@ async function doAction(
 
     responseCode = response.status;
 
-    if (responseCode === 401 && userSelector(getState()).isLoggedIn) {
+    if (responseCode === 401 && userSelector(getState())) {
       dispatch({ type: actionNames.LOGGEDOUT });
       dispatch({
         status: 'You have to be logged in for this action',

@@ -2,11 +2,11 @@
 
 import { createGenerateClassName, Theme } from '@material-ui/core/styles';
 import { SheetsRegistry, GenerateClassName } from 'jss';
-import theme from './styles/theme';
+import theme from './theme';
 
 export interface PageContext {
   generateClassName: GenerateClassName;
-  sheetsManager: any; // Map<Theme, SheetManagerTheme>
+  sheetsManager: any;
   sheetsRegistry: SheetsRegistry;
   theme: Theme;
 }
@@ -24,7 +24,8 @@ function createPageContext(): PageContext {
 }
 
 declare const process: any;
-declare const global: any;
+
+let pageContext: PageContext;
 
 export default function getPageContext() {
   // Make sure to create a new context for every server-side request so that data
@@ -34,9 +35,9 @@ export default function getPageContext() {
   }
 
   // Reuse context on the client-side.
-  if (!global.__INIT_MATERIAL_UI__) {
-    global.__INIT_MATERIAL_UI__ = createPageContext();
+  if (!pageContext) {
+    pageContext = createPageContext();
   }
 
-  return global.__INIT_MATERIAL_UI__;
+  return pageContext;
 }

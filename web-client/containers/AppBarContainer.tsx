@@ -74,10 +74,10 @@ class AppBarContainer extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: Store) {
-  const { user, isLoggedIn } = userSelector(state);
+  const user = userSelector(state);
 
   return {
-    isLoggedIn,
+    isLoggedIn: !!user,
     user,
   };
 }

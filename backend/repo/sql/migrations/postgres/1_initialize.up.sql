@@ -43,7 +43,7 @@ CREATE TABLE tournaments (
 	email               text        NOT NULL,
 	website             text        NOT NULL,
 	current_points      text        NOT NULL,
-	season              smallint    NOT NULL,
+	season              text    	NOT NULL,
 	loc_lat             float8      NOT NULL,
 	loc_lon             float8      NOT NULL
 );

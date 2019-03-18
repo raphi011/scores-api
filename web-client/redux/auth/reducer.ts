@@ -28,7 +28,7 @@ function loggedOut(state: AuthStore, action: LoggedOutAction): AuthStore {
   };
 }
 
-interface SetUserOrLoginrouteAction {
+export interface SetUserOrLoginrouteAction {
   payload: {
     user?: User;
     loginRoute?: string;
