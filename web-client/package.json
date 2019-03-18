@@ -31,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^1.3.0",
     "@zeit/next-typescript": "^1.1.1",
     "babel-jest": "^24.1.0",
+    "cypress": "^3.2.0",
     "eslint": "^5.13.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.12.4",
@@ -47,6 +48,7 @@
     "build": "next build",
     "start": "next start",
     "test": "jest",
+    "e2e": "cypress open",
     "ci-lint": "eslint . --ext .ts,.tsx",
     "ci-build": "tsc --noEmit --project ."
   },
