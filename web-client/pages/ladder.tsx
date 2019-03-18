@@ -13,7 +13,6 @@ import { ladderVolleynetplayerSelector } from '../redux/entities/selectors';
 
 import { Store } from '../redux/store';
 import { Player } from '../types';
-import { QueryStringMapObject } from 'next';
 import withConnect, { ClientContext } from '../hoc/next/withConnect';
 
 interface Props {

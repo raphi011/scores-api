@@ -62,14 +62,6 @@ func (s *Volleynet) SetDefaultFilters(filter TournamentFilter) TournamentFilter 
 	return filter
 }
 
-func (s *Volleynet) UpdateTournamentFilter(userID int, filter TournamentFilter) error {
-	// 	&scores.Setting{UserID: userID, Key: "tournament-filter-league", Type: "strings", Value: scores.ListToString(league)},
-	// 	&scores.Setting{UserID: userID, Key: "tournament-filter-gender", Type: "strings", Value: scores.ListToString(gender)},
-	// 	&scores.Setting{UserID: userID, Key: "tournament-filter-season", Type: "string", Value: season},
-
-	return nil
-}
-
 // TournamentFilterOptions returns available filter options
 func (s *Volleynet) TournamentFilterOptions() (*FilterOptions, error) {
 	leagues, err := s.Leagues()

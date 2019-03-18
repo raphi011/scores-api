@@ -19,12 +19,12 @@ type volleynetHandler struct {
 }
 
 func (h *volleynetHandler) getTournaments(c *gin.Context) {
-	season := c.Query("season")
+	season := c.QueryArray("seasons")
 	gender := c.QueryArray("genders")
 	league := c.QueryArray("leagues")
 
 	filters := h.volleynetService.SetDefaultFilters(services.TournamentFilter{
-		Seasons: []string{season},
+		Seasons: season,
 		Leagues: league,
 		Genders: gender,
 	})
@@ -39,7 +39,7 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	session := sessions.Default(c)
 
 	if userID, ok := session.Get("user-id").(int); ok {
-		err := h.volleynetService.UpdateTournamentFilter(userID, filters)
+		err := h.userService.UpdateTournamentFilter(userID, filters)
 
 		if err != nil {
 			logger.Get(c).Warnf("could not update user settings %v", err)

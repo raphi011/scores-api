@@ -52,7 +52,7 @@ const styles = (theme: Theme) =>
 export interface Filters {
   leagues: string[];
   genders: string[];
-  season: string;
+  seasons: string;
 }
 
 interface Props extends WithStyles<typeof styles> {
@@ -71,34 +71,34 @@ class TournamentFilters extends React.Component<Props, State> {
     super(props);
 
     const {
-      filters: { leagues, genders, season },
+      filters: { leagues, genders, seasons },
     } = this.props;
 
     this.state = {
       genders,
       leagues,
-      season,
+      seasons,
     };
   }
 
   onSelectSeason = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { genders: gender, season, leagues: league } = this.state;
+    const { genders, seasons, leagues } = this.state;
 
     const selectedSeason = event.target.value;
 
-    if (selectedSeason === season) {
+    if (selectedSeason === seasons) {
       return;
     }
 
     this.setState({
-      genders: gender,
-      leagues: league,
-      season: selectedSeason,
+      genders,
+      leagues,
+      seasons: selectedSeason,
     });
   };
 
   onSelectLeague = (selected: string) => {
-    const { genders: gender, season, leagues: league } = this.state;
+    const { genders, seasons, leagues: league } = this.state;
 
     if (league.length === 1 && league[0] === selected) {
       return;
@@ -113,22 +113,22 @@ class TournamentFilters extends React.Component<Props, State> {
     }
 
     this.setState({
-      genders: gender,
+      genders,
       leagues: newSelected,
-      season,
+      seasons,
     });
   };
 
   onSelectGenders = (selected: string) => {
-    const { genders: gender, season, leagues: league } = this.state;
+    const { genders, seasons, leagues } = this.state;
 
-    if (gender.length === 1 && gender[0] === selected) {
+    if (genders.length === 1 && genders[0] === selected) {
       return;
     }
 
-    let newSelected = gender;
+    let newSelected = genders;
 
-    if (gender.includes(selected)) {
+    if (genders.includes(selected)) {
       newSelected = newSelected.filter(g => g !== selected);
     } else {
       newSelected.push(selected);
@@ -136,8 +136,8 @@ class TournamentFilters extends React.Component<Props, State> {
 
     this.setState({
       genders: newSelected,
-      leagues: league,
-      season,
+      leagues,
+      seasons,
     });
   };
 
@@ -151,7 +151,7 @@ class TournamentFilters extends React.Component<Props, State> {
 
   render() {
     const { classes, loading = false, options } = this.props;
-    const { genders: gender, leagues: league, season } = this.state;
+    const { genders, leagues, seasons } = this.state;
 
     if (!options) {
       return null;
@@ -175,7 +175,7 @@ class TournamentFilters extends React.Component<Props, State> {
             />
             <Select
               style={{ marginTop: '3px' }}
-              value={season}
+              value={seasons}
               onChange={this.onSelectSeason}
               fullWidth
             >
@@ -195,7 +195,7 @@ class TournamentFilters extends React.Component<Props, State> {
               classes={{ label: classes.font }}
               control={
                 <Checkbox
-                  checked={gender.includes(g)}
+                  checked={genders.includes(g)}
                   onChange={() => this.onSelectGenders(g)}
                   className={`${classes.checkbox} ${classes.checkboxes}`}
                   value={g}
@@ -216,7 +216,7 @@ class TournamentFilters extends React.Component<Props, State> {
               classes={{ label: classes.font }}
               control={
                 <Checkbox
-                  checked={league.includes(l)}
+                  checked={leagues.includes(l)}
                   onChange={() => this.onSelectLeague(l)}
                   className={`${classes.checkbox} ${classes.checkboxes}`}
                   value={l}

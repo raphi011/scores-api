@@ -16,7 +16,7 @@ export const initialTournamentState = {
 export interface Filter {
   leagues: string[];
   genders: string[];
-  season: string;
+  seasons: string;
 }
 
 export interface FilterOptions {
@@ -34,12 +34,18 @@ function setFilter(
   state: TournamentStore,
   action: SetFilterAction,
 ): TournamentStore {
-  const { options } = state;
+  const { filter: oldFilter, options } = state;
   const { filter } = action;
+
+  const newFilter: Filter = {
+    leagues: filter.leagues.length ? filter.leagues : oldFilter.leagues,
+    genders: filter.genders.length ? filter.genders : oldFilter.genders,
+    seasons: filter.seasons ? filter.seasons : oldFilter.seasons,
+  };
 
   return {
     options,
-    filter,
+    filter: newFilter,
   };
 }
 
@@ -57,7 +63,7 @@ function setUserFilter(
 
   let leagues = filter ? filter.leagues : [];
   let genders = filter ? filter.genders : [];
-  let season = filter ? filter.season : '';
+  let seasons = filter ? filter.seasons : '';
 
   if (settings[SETTING_TOURNAMENT_FILTER_LEAGUE_KEY]) {
     leagues = settings[SETTING_TOURNAMENT_FILTER_LEAGUE_KEY];
@@ -68,7 +74,7 @@ function setUserFilter(
   }
 
   if (settings[SETTING_TOURNAMENT_FILTER_SEASON_KEY]) {
-    season = settings[SETTING_TOURNAMENT_FILTER_SEASON_KEY];
+    seasons = settings[SETTING_TOURNAMENT_FILTER_SEASON_KEY];
   }
 
   return {
@@ -76,7 +82,7 @@ function setUserFilter(
     filter: {
       leagues,
       genders,
-      season,
+      seasons,
     },
   };
 }
@@ -86,8 +92,6 @@ function loadFilterOptions(
   action: { payload: FilterOptions },
 ): TournamentStore {
   const { payload: options } = action;
-
-  console.log(options);
 
   return {
     ...state,

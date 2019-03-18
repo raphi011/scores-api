@@ -102,17 +102,20 @@ interface State {
 }
 
 function filtersFromQuery(query: QueryStringMapObject): Filters {
-  const season = Query.one(query, 'season');
+  const seasons = Query.one(query, 'season');
   const genders = Query.multiple(query, 'gender');
   const leagues = Query.multiple(query, 'league');
 
-  return { leagues, genders, season };
+  return { leagues, genders, seasons };
 }
 
 class Volleynet extends React.Component<Props, State> {
   static async getInitialProps({ req, res, store, query }: ClientContext) {
-    if (req) {
+    let options = filterOptionsSelector(store.getState());
+
+    if (!options) {
       await dispatchAction(store.dispatch, loadFilterOptionsAction(), req, res);
+      options = filterOptionsSelector(store.getState());
     }
 
     const queryFilters = filtersFromQuery(query);
@@ -121,7 +124,6 @@ class Volleynet extends React.Component<Props, State> {
     const state = store.getState();
 
     const filters = tournamentFilterSelector(state);
-    const options = filterOptionsSelector(state);
 
     return { filters, options };
   }

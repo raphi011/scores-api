@@ -52,7 +52,7 @@ export const loadTournamentAction = (tournamentId: string): ApiAction => ({
 export const loadTournamentsAction = (filters: {
   genders: string[];
   leagues: string[];
-  season: string;
+  seasons: string;
 }): ApiAction => ({
   method: 'GET',
   params: filters,

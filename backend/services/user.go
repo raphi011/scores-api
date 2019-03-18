@@ -29,6 +29,15 @@ func (s *User) HasRole(userID int, roleName string) bool {
 	return user.Role == roleName
 }
 
+func (s *User) UpdateTournamentFilter(userID int, filter TournamentFilter) error {
+	return s.UpdateSettings(
+		userID,
+		&scores.Setting{UserID: userID, Key: "tournament-filter-league", Type: "strings", Value: scores.ListToString(filter.Leagues)},
+		&scores.Setting{UserID: userID, Key: "tournament-filter-gender", Type: "strings", Value: scores.ListToString(filter.Genders)},
+		&scores.Setting{UserID: userID, Key: "tournament-filter-season", Type: "strings", Value: scores.ListToString(filter.Seasons)},
+	)
+}
+
 // UpdateSettings updates settings for a user
 func (s *User) UpdateSettings(userID int, settings ...*scores.Setting) error {
 	currentSettings, err := s.loadSettings(userID)
