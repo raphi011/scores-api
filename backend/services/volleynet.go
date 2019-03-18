@@ -33,6 +33,7 @@ type TournamentFilter struct {
 	Genders []string
 }
 
+// FilterOptions are the available tournament filters.
 type FilterOptions struct {
 	Seasons []string `json:"seasons"`
 	Leagues []string `json:"leagues"`

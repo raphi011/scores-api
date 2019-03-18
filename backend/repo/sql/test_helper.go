@@ -61,6 +61,7 @@ func SetupDB(t testing.TB) *sqlx.DB {
 	return db
 }
 
+// U is a helper struct to create users.
 type U struct {
 	ID int
 }

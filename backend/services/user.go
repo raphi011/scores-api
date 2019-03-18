@@ -29,6 +29,7 @@ func (s *User) HasRole(userID int, roleName string) bool {
 	return user.Role == roleName
 }
 
+// UpdateTournamentFilter updates a users tournament filter
 func (s *User) UpdateTournamentFilter(userID int, filter TournamentFilter) error {
 	return s.UpdateSettings(
 		userID,
