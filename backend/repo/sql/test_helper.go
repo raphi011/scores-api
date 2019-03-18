@@ -27,6 +27,7 @@ func RepositoriesTest(t testing.TB) (*repo.Repositories, *sqlx.DB) {
 		PlayerRepo:     &playerRepository{DB: db},
 		TournamentRepo: &tournamentRepository{DB: db},
 		TeamRepo:       &teamRepository{DB: db},
+		SettingRepo:    &settingRepository{DB: db},
 	}, db
 }
 
@@ -122,7 +123,7 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 // T is a helper struct to create tournaments.
 type T struct {
 	ID           int
-	Season       int
+	Season       string
 	Status       string
 	League       string
 	LeagueKey    string

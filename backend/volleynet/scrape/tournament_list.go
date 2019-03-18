@@ -75,7 +75,7 @@ func extractTournamentLinkData(relativeLink, host string) *volleynet.TournamentI
 
 	id, _ := strconv.Atoi(readURLPart(relativeLink, "cup/"))
 
-	season, _ := strconv.Atoi(readURLPart(relativeLink, "saison/"))
+	season := readURLPart(relativeLink, "saison/")
 
 	return &volleynet.TournamentInfo{
 		Gender:       readURLPart(relativeLink, "sex/"),

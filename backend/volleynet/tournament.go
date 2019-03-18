@@ -18,7 +18,7 @@ const (
 // TournamentInfo is all the information that can be parsed from the tournament list.
 type TournamentInfo struct {
 	ID               int       `json:"id"`
-	Season           int       `json:"season"`
+	Season           string    `json:"season"`
 	Start            time.Time `json:"start" db:"start_date"`
 	End              time.Time `json:"end" db:"end_date"`
 	Name             string    `json:"name" fako:"city"`
