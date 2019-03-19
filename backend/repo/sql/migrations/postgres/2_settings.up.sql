@@ -2,10 +2,10 @@ CREATE TABLE settings (
 	created_at  timestamptz NOT NULL,
 	updated_at  timestamptz NOT NULL,
 	deleted_at  timestamptz,
-    key         text NOT NULL,
-    value       text,
-	type 		text NOT NULL,	
+    s_key       text NOT NULL,
+    s_value     text,
+	s_type 		text NOT NULL,	
     user_id     int REFERENCES users(id),
 
-	PRIMARY KEY (key, user_id)
+	PRIMARY KEY (s_key, user_id)
 );

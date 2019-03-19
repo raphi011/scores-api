@@ -10,14 +10,14 @@ import (
 func TestCreateSetting(t *testing.T) {
 	db := SetupDB(t)
 	settingRepo := &settingRepository{DB: db}
-	_ = CreateUsers(t, db, U{ID: 1})
+	users := CreateUsers(t, db, U{})
 
-	setting := &scores.Setting{Key: "FILTER_LEAGUE", UserID: 1}
+	setting := &scores.Setting{Key: "FILTER_LEAGUE", UserID: users[0].ID}
 
 	_, err := settingRepo.Create(setting)
 	test.Check(t, "settingRepository.New(), err: %v", err)
 
-	persistedSetting, err := settingRepo.ByUserID(1)
+	persistedSetting, err := settingRepo.ByUserID(users[0].ID)
 
 	test.Check(t, "settingRepo.Get() failed: %v", err)
 	test.Compare(t, "setting is not equal:\n%s", persistedSetting[0], setting)
@@ -26,12 +26,12 @@ func TestCreateSetting(t *testing.T) {
 func TestUpdateSetting(t *testing.T) {
 	db := SetupDB(t)
 	settingRepo := &settingRepository{DB: db}
-	_ = CreateUsers(t, db, U{ID: 1})
+	users := CreateUsers(t, db, U{})
 
 	setting := &scores.Setting{
 		Key:    "FILTER_LEAGUE",
 		Value:  "amateur-league",
-		UserID: 1,
+		UserID: users[0].ID,
 	}
 
 	_, err := settingRepo.Create(setting)
@@ -40,7 +40,7 @@ func TestUpdateSetting(t *testing.T) {
 	err = settingRepo.Update(&scores.Setting{
 		Key:    "FILTER_LEAGUE",
 		Value:  "junior-league",
-		UserID: 1,
+		UserID: users[0].ID,
 	})
 
 	test.Check(t, "settingRepo.Update() failed: %v", err)

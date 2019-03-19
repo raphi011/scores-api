@@ -11,9 +11,9 @@ type Settings map[string]interface{}
 type Setting struct {
 	Track  `json:"-"`
 	UserID int    `json:"-" db:"user_id"`
-	Key    string `json:"key" db:"key"`
-	Value  string `json:"-" db:"value"`
-	Type   string `json:"-"`
+	Key    string `json:"key" db:"s_key"`
+	Value  string `json:"-" db:"s_value"`
+	Type   string `json:"-" db:"s_type"`
 }
 
 const (
