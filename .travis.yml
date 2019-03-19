@@ -6,9 +6,9 @@ jobs:
       name: "backend"
       language: go
       go: "1.11"
-      cache:
-        directories:
-          - $GOPATH
+      # cache:
+      #   directories:
+      #     - $GOPATH
       services:
         - postgresql
         - mysql
@@ -49,9 +49,9 @@ jobs:
     - stage: "Deploy"
       script: skip
       language: generic
-      cache:
-        directories:
-          - $GOPATH
+      # cache:
+      #   directories:
+      #     - $GOPATH
       if: tag IS present
       before_deploy:
         - openssl aes-256-cbc -K $encrypted_531129a75a03_key -iv $encrypted_531129a75a03_iv -in secrets.tar.enc -out secrets.tar -d
