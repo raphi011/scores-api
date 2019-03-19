@@ -29,7 +29,9 @@ class MyDocument extends Document<Props> {
 
     let css;
 
+    // @ts-ignore
     if (pageContext) {
+      // @ts-ignore
       css = pageContext.sheetsRegistry.toString();
     }
 

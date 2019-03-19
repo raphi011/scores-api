@@ -37,6 +37,10 @@ function setFilter(
   const { filter: oldFilter, options } = state;
   const { filter } = action;
 
+  if (!oldFilter) {
+    return state;
+  }
+
   const newFilter: Filter = {
     leagues: filter.leagues.length ? filter.leagues : oldFilter.leagues,
     genders: filter.genders.length ? filter.genders : oldFilter.genders,

@@ -89,5 +89,6 @@ export default (Component: any): NextComponentClass<Props> => {
     }
   }
 
+  // @ts-ignore
   return Auth;
 };
