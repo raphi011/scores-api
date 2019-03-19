@@ -45,7 +45,10 @@ func TestUpdateSetting(t *testing.T) {
 
 	test.Check(t, "settingRepo.Update() failed: %v", err)
 
-	persistedSetting, err := settingRepo.ByUserID(1)
+	persistedSetting, err := settingRepo.ByUserID(users[0].ID)
+
+	test.Check(t, "settingRepository.ByUserID(), err: %v", err)
+
 	updatedSetting := persistedSetting[0]
 
 	test.Assert(t,
