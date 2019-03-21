@@ -36,10 +36,11 @@ func escapeArgs(path string, routeArgs ...interface{}) string {
 func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interface{}) *url.URL {
 	path := escapeArgs(relativePath, routeArgs...)
 
-	link, err := url.Parse(host + prefixedPath + path)
+	absoluteURL := host + prefixedPath + path
+	link, err := url.Parse(absoluteURL)
 
 	if err != nil {
-		panic("cannot parse client GetUrl")
+		panic(fmt.Sprintf("cannot parse client GetUrl: %s", absoluteURL))
 	}
 
 	return link
@@ -48,10 +49,12 @@ func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interf
 func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	path := escapeArgs(relativePath, routeArgs...)
 
-	link, err := url.Parse(c.PostURL + path)
+	absoluteURL := c.PostURL + path
+
+	link, err := url.Parse(absoluteURL)
 
 	if err != nil {
-		panic("cannot parse client GetUrl")
+		panic(fmt.Sprintf("cannot parse client PostUrl", absoluteURL))
 	}
 
 	return link
@@ -59,7 +62,7 @@ func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *u
 
 // GetTournamentLink returns the link for a tournament.
 func (c *Default) GetTournamentLink(t *volleynet.TournamentInfo) string {
-	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
+	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%d",
 		t.League,
 		t.League,
 		t.Gender,
@@ -72,7 +75,7 @@ func (c *Default) GetTournamentLink(t *volleynet.TournamentInfo) string {
 
 // GetAPITournamentLink returns the API link for a tournament.
 func (c *Default) GetAPITournamentLink(t *volleynet.TournamentInfo) string {
-	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/cup/%d",
+	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%d",
 		t.League,
 		t.League,
 		t.Gender,
