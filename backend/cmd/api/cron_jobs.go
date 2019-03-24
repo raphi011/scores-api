@@ -37,14 +37,13 @@ type tournamentsJob struct {
 	syncService *sync.Service
 	leagues     []string
 	genders     []string
+	season      int
 }
 
 func (j *tournamentsJob) do() error {
-	season := time.Now().Year()
-
 	for _, league := range j.leagues {
 		for _, gender := range j.genders {
-			err := j.syncService.Tournaments(gender, league, season)
+			err := j.syncService.Tournaments(gender, league, j.season)
 
 			if err != nil {
 				return err

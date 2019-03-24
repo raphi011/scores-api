@@ -197,7 +197,11 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 		syncService: scrapeService,
 		genders:     []string{"M", "W"},
 		leagues:     []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
+		season: 	time.Now().Year(),
 	}
+	
+	lastYearsTournamentsJob := tournamentsJob
+	lastYearsTournamentsJob.season = lastYearsTournamentsJob.season - 1
 
 	if startManager {
 		manager.Start(
@@ -207,6 +211,12 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 				Interval:    1 * time.Hour,
 
 				Do: ladderJob.do,
+			},
+			job.Job{
+				Name:        "Last years tournaments",
+				MaxRuns: 	 1, // only run once on startup
+
+				Do: tournamentsJob.do,
 			},
 			job.Job{
 				Name:        "Tournaments",
