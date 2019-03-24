@@ -13,8 +13,8 @@ interface Props {
 const SearchPlayerListItem = ({ player, onClick }: Props) => (
   <ListItem button onClick={() => onClick(player)}>
     <ListItemText
-      primary={`${player.firstName} ${player.lastName}`}
-      secondary={player.birthday}
+      primary={`${player.firstName} ${player.lastName} (#${player.ladderRank})`}
+      secondary={player.birthday ? new Date(player.birthday).getFullYear() : ''}
     />
   </ListItem>
 );
