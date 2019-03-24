@@ -48,7 +48,7 @@ export default (Component: any): NextComponentClass<Props> => {
 
         const isServer = !!req;
 
-        let isLoggedIn: boolean;
+        let user;
 
         if (isServer) {
           const result = await dispatchWithContext(
@@ -56,14 +56,12 @@ export default (Component: any): NextComponentClass<Props> => {
             userOrLoginRouteAction(),
           );
 
-          isLoggedIn = !!result.response.user;
+          user = result.response.user;
         } else {
-          const user = userSelector(store.getState());
-
-          isLoggedIn = !!user;
+          user = userSelector(store.getState());
         }
 
-        if (!isLoggedIn) {
+        if (!user) {
           const redir =
             asPath && asPath !== '/' ? `?r=${encodeURIComponent(asPath)}` : '';
 
@@ -74,11 +72,18 @@ export default (Component: any): NextComponentClass<Props> => {
           return {};
         }
 
+        let props = {
+          user,
+        };
+
         if (typeof Component.getInitialProps === 'function') {
-          return await Component.getInitialProps(ctx);
+          props = {
+            ...props,
+            ...(await Component.getInitialProps(ctx)),
+          };
         }
 
-        return {};
+        return props;
       } catch (e) {
         return { error: e };
       }
