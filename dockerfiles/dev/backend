@@ -14,7 +14,7 @@ COPY ./go.* ./
 
 RUN go mod download
 
-RUN go get -u github.com/derekparker/delve/cmd/dlv
+RUN go get -u github.com/go-delve/delve/cmd/dlv
 RUN go get -u github.com/gobuffalo/packr/packr
 
 COPY . .
