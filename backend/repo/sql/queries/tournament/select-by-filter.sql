@@ -35,4 +35,4 @@ WHERE
 	t.season IN (?) AND
 	t.league_key IN (?) AND
 	t.gender IN (?)
-ORDER BY t.start_date desc
+ORDER BY t.start_date asc
