@@ -2,7 +2,7 @@ import React from 'react';
 
 import Router from 'next/router';
 
-import { Theme, Grid, Dialog } from '@material-ui/core';
+import { Grid, Dialog } from '@material-ui/core';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -27,19 +27,18 @@ import withConnect, { Context } from '../../hoc/next/withConnect';
 import TournamentHeader from '../../components/volleynet/TournamentHeader';
 import SearchPlayerList from '../../components/volleynet/SearchPlayerList';
 
-const styles = (theme: Theme) =>
-  createStyles({
-    body: {
-      marginTop: '30px',
-    },
-    header: {
-      marginBottom: '20px',
-    },
-    info: {
-      verticalAlign: 'middle',
-      height: '100%',
-    },
-  });
+const styles = createStyles({
+  body: {
+    marginTop: '30px',
+  },
+  header: {
+    marginBottom: '20px',
+  },
+  info: {
+    verticalAlign: 'middle',
+    height: '100%',
+  },
+});
 
 interface Props extends WithStyles<typeof styles> {
   tournamentId: string;
@@ -134,6 +133,7 @@ class Signup extends React.Component<Props, State> {
         query: { id: tournamentId },
       });
     } catch (e) {
+      // eslint-disable-next-line
       console.log(e);
     }
   };

@@ -78,7 +78,7 @@ class ShowTournament extends React.Component<Props> {
     });
   };
 
-  onSignup = (_event: React.MouseEvent<HTMLElement>) => {
+  onSignup = () => {
     const { tournamentId: id } = this.props;
 
     Router.push({
