@@ -54,7 +54,7 @@ func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *u
 	link, err := url.Parse(absoluteURL)
 
 	if err != nil {
-		panic(fmt.Sprintf("cannot parse client PostUrl", absoluteURL))
+		panic(fmt.Sprintf("cannot parse client PostUrl: %s", absoluteURL))
 	}
 
 	return link

@@ -97,7 +97,6 @@ export default createMuiTheme({
         color: palette.grey[400],
         fontSize: fontPalette[700],
         fontWeight: 500,
-        textTransform: 'uppercase',
       },
       h4: {
         color: palette.grey[400],

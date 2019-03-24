@@ -35,6 +35,7 @@ export const initialEntitiesState: EntityStore = {
         M: [],
         W: [],
       },
+      partners: {},
     },
     list: {
       all: [],

@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores/cmd/api/logger"
+	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/services"
 	"github.com/raphi011/scores/volleynet/client"
 )
@@ -23,7 +24,7 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	gender := c.QueryArray("genders")
 	league := c.QueryArray("leagues")
 
-	filters := h.volleynetService.SetDefaultFilters(services.TournamentFilter{
+	filters := h.volleynetService.SetDefaultFilters(repo.TournamentFilter{
 		Seasons: season,
 		Leagues: league,
 		Genders: gender,

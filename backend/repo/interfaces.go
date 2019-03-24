@@ -5,14 +5,21 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
+// PlayerFilter exposes search fields for a player.
+type PlayerFilter struct {
+	FirstName string
+	LastName  string
+	Gender    string
+}
+
 // PlayerRepository exposes CRUD operations on players.
 type PlayerRepository interface {
 	Get(id int) (*volleynet.Player, error)
-	Ladder(gender string) ([]*volleynet.Player, error)
 	New(p *volleynet.Player) (*volleynet.Player, error)
-	// NewBatch(p ...*volleynet.Player) error
 	Update(p *volleynet.Player) error
-	// UpdateBatch(p ...*volleynet.Player) error
+	Ladder(gender string) ([]*volleynet.Player, error)
+	PreviousPartners(playerID int) ([]*volleynet.Player, error)
+	Search(filter PlayerFilter) ([]*volleynet.Player, error)
 }
 
 // TeamRepository exposes CRUD operations on teams.
@@ -25,9 +32,16 @@ type TeamRepository interface {
 	UpdateBatch(t ...*volleynet.TournamentTeam) error
 }
 
+// TournamentFilter contains all available Tournament filters.
+type TournamentFilter struct {
+	Seasons []string
+	Leagues []string
+	Genders []string
+}
+
 // TournamentRepository exposes CRUD operations on tournaments.
 type TournamentRepository interface {
-	Filter(seasons []string, leagues []string, gender []string) (
+	Search(filter TournamentFilter) (
 		[]*volleynet.Tournament, error)
 	Get(tournamentID int) (*volleynet.Tournament, error)
 	New(t *volleynet.Tournament) (*volleynet.Tournament, error)

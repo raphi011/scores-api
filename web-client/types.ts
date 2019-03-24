@@ -22,14 +22,6 @@ export interface User {
   };
 }
 
-export interface SearchPlayer {
-  firstName: string;
-  lastName: string;
-  id: number;
-  login: string;
-  birthday: string;
-}
-
 export interface Player {
   id: number;
 

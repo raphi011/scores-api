@@ -80,6 +80,7 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	auth.GET("/tournaments", volleynetHandler.getTournaments)
 	auth.GET("/tournaments/:tournamentID", volleynetHandler.getTournament)
 	auth.GET("/players/search", volleynetHandler.getSearchPlayers)
+	auth.GET("/players/partners/:playerID", volleynetHandler.getPartners)
 	auth.POST("/signup", volleynetHandler.postSignup)
 
 	admin := auth.Group("/admin")

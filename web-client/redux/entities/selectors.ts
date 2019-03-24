@@ -34,6 +34,13 @@ export const allPlayersSelector = (state: Store) =>
     state.entities.player.list.all,
   );
 
+export const previousPartnersSelector = (state: Store, playerId: number) =>
+  denorm(
+    EntityName.Player,
+    entityMapSelector(state),
+    state.entities.player.by ? state.entities.player.by.partners[playerId] : [],
+  );
+
 export const playerSelector = (state: Store, playerId: number) =>
   denorm(EntityName.Player, entityMapSelector(state), playerId.toString());
 

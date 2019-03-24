@@ -92,6 +92,8 @@ func CreateUsers(t testing.TB, db *sqlx.DB, users ...U) []*scores.User {
 // P is a helper struct to create players.
 type P struct {
 	Gender      string
+	FirstName string
+	LastName string
 	TotalPoints int
 	LadderRank  int
 	ID          int
@@ -107,6 +109,8 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 	for _, p := range players {
 		persistedPlayer, err := playerRepo.New(&volleynet.Player{
 			ID:          p.ID,
+			FirstName:	 p.FirstName,
+			LastName: 	 p.LastName,
 			Gender:      p.Gender,
 			TotalPoints: p.TotalPoints,
 			LadderRank:  p.LadderRank,

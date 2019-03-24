@@ -94,6 +94,7 @@ export default (Component: any): NextComponentClass<Props> => {
       if (error) {
         return <Error statusCode={error.responseCode} />;
       }
+
       return <Component {...props} />;
     }
   }

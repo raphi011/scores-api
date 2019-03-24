@@ -44,11 +44,9 @@ const styles = (theme: Theme) =>
     },
     name: {
       color: theme.palette.grey[800],
+      fontWeight: 400,
       fontSize: '20px',
       marginBottom: '15px',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      whiteSpace: 'nowrap',
     },
   });
 
@@ -67,7 +65,7 @@ const TournamentListItem = ({ tournament, classes, onClick }: Props) => {
       onClick={() => onClick(tournament)}
     >
       <div className={classes.content}>
-        <Typography className={classes.name}>
+        <Typography className={classes.name} noWrap>
           {tournament.name}{' '}
           <span className={classes.gender}>
             ({tournament.gender.toLowerCase()})

@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/test"
 
 	"github.com/raphi011/scores/volleynet"
@@ -143,12 +144,14 @@ func TestFilterTournament(t *testing.T) {
 		test.Check(t, "tournamentRepo.New() failed: %v", err)
 	}
 
-	got, err := tournamentRepo.Filter(
-		[]string{"2018"}, []string{"amateur-tour", "pro-tour"}, []string{"M"},
-	)
+	got, err := tournamentRepo.Search(repo.TournamentFilter{
+		Seasons: []string{"2018"},
+		Leagues: []string{"amateur-tour", "pro-tour"},
+		Genders: []string{"M"},
+	})
 
-	test.Check(t, "tournamentRepository.Filter(), err: %s", err)
-	test.Assert(t, "tournamentRepository.Filter(), want len(tournaments) 3, got %d", len(got) == 3, len(got))
+	test.Check(t, "tournamentRepository.Search(), err: %s", err)
+	test.Assert(t, "tournamentRepository.Search(), want len(tournaments) 3, got %d", len(got) == 3, len(got))
 }
 
 func BenchmarkCreateTournament(b *testing.B) {
@@ -177,11 +180,11 @@ func BenchmarkFilterTournament(b *testing.B) {
 	b.StartTimer()
 
 	for n := 0; n < b.N; n++ {
-		ts, err := tournamentRepo.Filter(
-			[]string{"2018"},
-			[]string{"amateur-tour"},
-			[]string{"M"},
-		)
+		ts, err := tournamentRepo.Search(repo.TournamentFilter{
+			Seasons: []string{"2018"},
+			Leagues: []string{"amateur-tour"},
+			Genders: []string{"M"},
+		})
 
 		b.Logf("found %d tournaments", len(ts))
 

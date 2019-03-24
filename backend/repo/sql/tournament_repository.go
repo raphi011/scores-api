@@ -67,16 +67,14 @@ func (s *tournamentRepository) UpdateBatch(tournaments ...*volleynet.Tournament)
 }
 
 // Filter loads all tournaments by season, league and gender.
-func (s *tournamentRepository) Filter(
-	seasons []string,
-	leagues []string,
-	gender []string) ([]*volleynet.Tournament, error) {
+func (s *tournamentRepository) Search(filter repo.TournamentFilter) (
+	[]*volleynet.Tournament, error) {
 
 	tournaments := []*volleynet.Tournament{}
 	err := crud.ReadIn(s.DB, "tournament/select-by-filter", &tournaments,
-		seasons,
-		leagues,
-		gender,
+		filter.Seasons,
+		filter.Leagues,
+		filter.Genders,
 	)
 
 	return tournaments, errors.Wrap(err, "filtered tournaments")

@@ -5,7 +5,7 @@ import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 
 import SearchPlayerListItem from './SearchPlayerListItem';
 
-import { SearchPlayer } from '../../types';
+import { Player } from '../../types';
 
 const styles = createStyles({
   root: {
@@ -14,9 +14,9 @@ const styles = createStyles({
 });
 
 interface Props extends WithStyles<typeof styles> {
-  players: SearchPlayer[];
+  players: Player[];
 
-  onPlayerClick: (player: SearchPlayer) => void;
+  onPlayerClick: (player: Player) => void;
 }
 
 class SearchPlayerList extends React.PureComponent<Props> {

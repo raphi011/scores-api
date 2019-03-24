@@ -26,13 +26,6 @@ func (s *Volleynet) Ladder(gender string) ([]*volleynet.Player, error) {
 	return s.PlayerRepo.Ladder(gender)
 }
 
-// TournamentFilter contains all available Tournament filters.
-type TournamentFilter struct {
-	Seasons []string
-	Leagues []string
-	Genders []string
-}
-
 // FilterOptions are the available tournament filters.
 type FilterOptions struct {
 	Seasons []string `json:"seasons"`
@@ -40,15 +33,21 @@ type FilterOptions struct {
 	Genders []string `json:"genders"`
 }
 
-// SearchTournaments loads all tournaments of a certain `gender`, `league` and `season`
-func (s *Volleynet) SearchTournaments(filter TournamentFilter) (
+// SearchTournaments searches for tournaments that satisfy the passed filter.
+func (s *Volleynet) SearchTournaments(filter repo.TournamentFilter) (
 	[]*volleynet.Tournament, error) {
-	return s.TournamentRepo.Filter(filter.Seasons, filter.Leagues, filter.Genders)
+	return s.TournamentRepo.Search(filter)
+}
+
+// SearchPlayers searches for players that satisfy the passed filter.
+func (s *Volleynet) SearchPlayers(filter repo.PlayerFilter) (
+	[]*volleynet.Player, error) {
+	return s.PlayerRepo.Search(filter)
 }
 
 // SetDefaultFilters sets filters to the users's previous setting - or the default value
 // if no value has been provided for a filter.
-func (s *Volleynet) SetDefaultFilters(filter TournamentFilter) TournamentFilter {
+func (s *Volleynet) SetDefaultFilters(filter repo.TournamentFilter) repo.TournamentFilter {
 	if len(filter.Seasons) == 0 {
 		filter.Seasons = append(filter.Seasons, strconv.Itoa(time.Now().Year()))
 	}
@@ -97,6 +96,13 @@ func (s *Volleynet) SubLeagues() ([]string, error) {
 	leagues, err := s.TournamentRepo.Leagues()
 
 	return leagues, errors.Wrap(err, "loading leagues")
+}
+
+// PreviousPartners returns a list of all partners a player has played with before.
+func (s *Volleynet) PreviousPartners(playerID int) ([]*volleynet.Player, error) {
+	partners, err := s.PlayerRepo.PreviousPartners(playerID)
+
+	return partners, errors.Wrap(err, "loading parners")
 }
 
 // Seasons loads all available seasons.

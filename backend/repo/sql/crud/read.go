@@ -1,8 +1,8 @@
 package crud
 
 import (
-	"github.com/pkg/errors"
 	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 )
 
 // ReadIn reads rows into `dest` and expands the query's `IN` parameters.

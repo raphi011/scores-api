@@ -1,10 +1,8 @@
 import React from 'react';
 
-import Link from 'next/link';
+import Router from 'next/router';
 
-import { Theme } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+import { Theme, Grid, Dialog } from '@material-ui/core';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -12,36 +10,45 @@ import Login from '../../components/volleynet/Login';
 import SearchPlayer from '../../components/volleynet/SearchPlayer';
 import withAuth from '../../hoc/next/withAuth';
 import Layout from '../../containers/LayoutContainer';
-import { userSelector } from '../../redux/auth/selectors';
 import {
   loadTournamentAction,
   tournamentSignupAction,
+  previousPartnersAction,
 } from '../../redux/entities/actions';
-import { tournamentSelector } from '../../redux/entities/selectors';
-import { link } from '../../styles/shared';
-
 import {
-  Tournament,
-  User,
-  SearchPlayer as SearchPlayerType,
-} from '../../types';
+  tournamentSelector,
+  previousPartnersSelector,
+  searchVolleynetplayerSelector,
+} from '../../redux/entities/selectors';
+
+import { Tournament, User, Player } from '../../types';
 import { Store } from '../../redux/store';
-import { QueryStringMapObject } from 'next';
-import withConnect from '../../hoc/next/withConnect';
+import withConnect, { Context } from '../../hoc/next/withConnect';
+import TournamentHeader from '../../components/volleynet/TournamentHeader';
+import SearchPlayerList from '../../components/volleynet/SearchPlayerList';
 
 const styles = (theme: Theme) =>
   createStyles({
-    container: {
-      padding: theme.spacing.unit * 2,
+    body: {
+      marginTop: '30px',
     },
-    link,
+    header: {
+      marginBottom: '20px',
+    },
+    info: {
+      verticalAlign: 'middle',
+      height: '100%',
+    },
   });
 
 interface Props extends WithStyles<typeof styles> {
   tournamentId: string;
   tournament?: Tournament;
   user: User;
+  previousPartners: Player[];
+  foundPlayers: Player[];
 
+  loadTeamPartners: (playerId: number) => void;
   signup: (info: {
     username: string;
     password: string;
@@ -52,35 +59,48 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 interface State {
-  partner: SearchPlayerType | null;
+  partner: Player | null;
 }
 
 class Signup extends React.Component<Props, State> {
   static mapDispatchToProps = {
     signup: tournamentSignupAction,
+    loadTeamPartners: previousPartnersAction,
   };
-  static getParameters(query: QueryStringMapObject) {
+
+  static async getInitialProps(ctx: Context) {
+    const { query } = ctx;
     const { id } = query;
 
     return { tournamentId: id };
   }
 
-  static buildActions({ tournamentId }: Props) {
-    return [loadTournamentAction(tournamentId)];
+  static buildActions({ tournamentId, user }: Props) {
+    const actions = [previousPartnersAction(user.volleynetUserId)];
+
+    if (tournamentId) {
+      actions.push(loadTournamentAction(tournamentId));
+    }
+
+    return actions;
   }
 
-  static mapStateToProps(state: Store, { tournamentId }: Props) {
+  static mapStateToProps(state: Store, { tournamentId, user }: Props) {
     const tournament = tournamentSelector(state, tournamentId);
-    const user = userSelector(state);
+    const previousPartners = previousPartnersSelector(
+      state,
+      user.volleynetUserId,
+    );
+    const foundPlayers = searchVolleynetplayerSelector(state);
 
-    return { tournament, user };
+    return { tournament, user, previousPartners, foundPlayers };
   }
 
   state: State = {
     partner: null,
   };
 
-  onSelectPlayer = (partner: SearchPlayerType | null) => {
+  onSelectPlayer = (partner: Player | null) => {
     this.setState({ partner });
   };
 
@@ -100,27 +120,38 @@ class Signup extends React.Component<Props, State> {
 
     const body = {
       partnerId,
+      tournamentId,
+
       password,
       rememberMe,
-      tournamentId,
       username,
     };
 
-    signup(body);
+    try {
+      await signup(body);
+      Router.push({
+        pathname: '/tournament',
+        query: { id: tournamentId },
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  render() {
+  onCloseSignup = () => {
+    this.setState({ partner: null });
+  };
+
+  renderDialog = () => {
     const { partner } = this.state;
-    const { tournament, user, classes } = this.props;
+    const { user } = this.props;
 
-    if (!tournament) {
-      return null;
-    }
+    const open = !!partner;
 
-    let content: React.ReactNode;
+    let body = null;
 
     if (partner) {
-      content = (
+      body = (
         <>
           <Typography variant="h6">{`Partner: ${partner.firstName} ${
             partner.lastName
@@ -128,14 +159,24 @@ class Signup extends React.Component<Props, State> {
           <Login onLogin={this.onSignup} username={user.volleynetLogin} />
         </>
       );
-    } else {
-      content = (
-        <SearchPlayer
-          gender={tournament.gender}
-          onSelectPlayer={this.onSelectPlayer}
-        />
-      );
     }
+
+    return (
+      <Dialog open={open} onClose={this.onCloseSignup}>
+        {body}
+      </Dialog>
+    );
+  };
+
+  render() {
+    const { foundPlayers, previousPartners, tournament, classes } = this.props;
+
+    if (!tournament) {
+      return null;
+    }
+
+    const players =
+      foundPlayers && foundPlayers.length ? foundPlayers : previousPartners;
 
     return (
       <Layout
@@ -144,17 +185,26 @@ class Signup extends React.Component<Props, State> {
           text: 'Signup',
         }}
       >
-        <div className={classes.container}>
-          <div className={classes.link}>
-            <Link href={`/tournament?id=${tournament.id}`}>
-              <a className={classes.link}>
-                <Typography variant="h4">{tournament.name}</Typography>
-              </a>
-            </Link>
-          </div>
-          <Card>
-            <CardContent>{content}</CardContent>
-          </Card>
+        {this.renderDialog()}
+        <TournamentHeader tournament={tournament} />
+        <div className={classes.body}>
+          <Typography color="primary" variant="h1" className={classes.header}>
+            Signup
+          </Typography>
+          <Grid container spacing={16}>
+            <Grid item xs={12} sm={4}>
+              <Typography variant="h3">Search</Typography>
+              <SearchPlayer gender={tournament.gender} />
+            </Grid>
+            <Grid item xs={12} sm={4} />
+            <Grid item xs={12} sm={4}>
+              <Typography variant="h3">Partner</Typography>
+              <SearchPlayerList
+                players={players}
+                onPlayerClick={this.onSelectPlayer}
+              />
+            </Grid>
+          </Grid>
         </div>
       </Layout>
     );

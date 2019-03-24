@@ -30,7 +30,7 @@ func (s *User) HasRole(userID int, roleName string) bool {
 }
 
 // UpdateTournamentFilter updates a users tournament filter
-func (s *User) UpdateTournamentFilter(userID int, filter TournamentFilter) error {
+func (s *User) UpdateTournamentFilter(userID int, filter repo.TournamentFilter) error {
 	return s.UpdateSettings(
 		userID,
 		&scores.Setting{UserID: userID, Key: "tournament-filter-league", Type: "strings", Value: scores.ListToString(filter.Leagues)},

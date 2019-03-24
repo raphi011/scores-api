@@ -18,10 +18,27 @@ export interface ReceiveEntitiesAction {
   };
 }
 
+export const previousPartnersAction = (playerId: number): ApiAction => ({
+  method: 'GET',
+  success: actionNames.RECEIVE_ENTITIES,
+  successParams: {
+    entityName: EntityName.Player,
+    listOptions: {
+      [EntityName.Player]: {
+        mode: 'replace',
+        key: playerId.toString(),
+        name: 'partners',
+      },
+    },
+  },
+  type: actionNames.API,
+  url: `players/partners/${playerId}`,
+});
+
 export const searchPlayersAction = (filters: {
   fname: string;
   lname: string;
-  bday: string;
+  gender: string;
 }): ApiAction => ({
   method: 'GET',
   params: filters,

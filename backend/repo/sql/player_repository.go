@@ -46,3 +46,33 @@ func (s *playerRepository) Update(p *volleynet.Player) error {
 
 	return errors.Wrap(err, "update player")
 }
+
+// PreviousPartners returns a list of all partners a player has played with before.
+func (s *playerRepository) PreviousPartners(playerID int) ([]*volleynet.Player, error) {
+	players := []*volleynet.Player{}
+
+	err := crud.Read(s.DB, "player/select-partners", &players, playerID)
+
+	return players, errors.Wrap(err, "previousPartners")
+}
+
+// Search searches for players that satisfy the passed filter.
+func (s *playerRepository) Search(filter repo.PlayerFilter) ([]*volleynet.Player, error) {
+	players := []*volleynet.Player{}
+
+	err := crud.Read(s.DB, "player/search", &players,
+		startsWith(filter.FirstName),
+		startsWith(filter.LastName),
+		filter.Gender,
+)
+
+	return players, errors.Wrap(err, "search")
+}
+
+func startsWith(query string) string {
+	if len(query) == 0 {
+		return query
+	}
+
+	return query + "%"
+}
