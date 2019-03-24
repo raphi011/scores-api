@@ -27,13 +27,13 @@ jobs:
     - name: "frontend"
       language: node_js
       node_js: node
-      install: npm --prefix ./web-client install ./web-client
+      install: npm --prefix ./web-client ci ./web-client
       script: npm --prefix ./web-client test
 
     - name: "lint-frontend"
       language: node_js
       node_js: node
-      install: npm --prefix ./web-client install ./web-client
+      install: npm --prefix ./web-client ci ./web-client
       script:
         - npm --prefix ./web-client run ci-lint
         - npm --prefix ./web-client run ci-build
