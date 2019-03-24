@@ -61,8 +61,11 @@ func (s *playerRepository) Search(filter repo.PlayerFilter) ([]*volleynet.Player
 	players := []*volleynet.Player{}
 
 	err := crud.Read(s.DB, "player/search", &players,
+		filter.FirstName,
 		startsWith(filter.FirstName),
+		filter.LastName,
 		startsWith(filter.LastName),
+		filter.Gender,
 		filter.Gender,
 )
 

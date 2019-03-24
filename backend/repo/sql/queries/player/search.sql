@@ -13,6 +13,6 @@ SELECT
 	p.license
 FROM players p
 WHERE
-    ($1 = "" OR p.first_name LIKE $1) AND
-    ($2 = "" OR p.last_name LIKE $2) AND
-    ($3 = "" OR p.gender = $3)
+    (? = '' OR p.first_name LIKE ?) AND
+    (? = '' OR p.last_name LIKE ?) AND
+    (? = '' OR p.gender = ?)
