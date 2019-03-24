@@ -87,6 +87,10 @@ class ShowTournament extends React.Component<Props> {
     });
   };
 
+  hasNotes = (notes: string) => {
+    return notes.trim().length > 0;
+  };
+
   renderBody = () => {
     const { classes, tab, tournament, width } = this.props;
 
@@ -97,6 +101,32 @@ class ShowTournament extends React.Component<Props> {
     }
 
     const teams = tournament.teams || [];
+
+    let body;
+
+    switch (tab) {
+      case 'notes': {
+        body = this.hasNotes(tournament.htmlNotes) ? (
+          <Typography
+            variant="body2"
+            dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
+          />
+        ) : (
+          <Typography variant="body2">There are no notes yet.</Typography>
+        );
+
+        break;
+      }
+      case 'teams': {
+        body = teams.length ? (
+          <TeamList teams={teams}>{body}</TeamList>
+        ) : (
+          <Typography variant="body2">No teams have signed up yet.</Typography>
+        );
+
+        break;
+      }
+    }
 
     return (
       <>
@@ -112,15 +142,7 @@ class ShowTournament extends React.Component<Props> {
             <Tab key={t} label={t} />
           ))}
         </Tabs>
-        <div className={classes.body}>
-          {tab === 'notes' && (
-            <Typography
-              variant="body2"
-              dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
-            />
-          )}
-          {tab === 'teams' && <TeamList teams={teams} />}
-        </div>
+        <div className={classes.body}>{body}</div>
       </>
     );
   };
