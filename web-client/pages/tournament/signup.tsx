@@ -52,7 +52,7 @@ interface Props extends WithStyles<typeof styles> {
     username: string;
     password: string;
     partnerId: number;
-    tournamentId: string;
+    tournamentId: number;
     rememberMe: boolean;
   }) => void;
 }
@@ -119,7 +119,7 @@ class Signup extends React.Component<Props, State> {
 
     const body = {
       partnerId,
-      tournamentId,
+      tournamentId: Number(tournamentId),
 
       password,
       rememberMe,
@@ -148,7 +148,7 @@ class Signup extends React.Component<Props, State> {
 
     const open = !!partner;
 
-    let body = null;
+    let body = <span />;
 
     if (partner) {
       body = (
@@ -196,7 +196,6 @@ class Signup extends React.Component<Props, State> {
               <Typography variant="h3">Search</Typography>
               <SearchPlayer gender={tournament.gender} />
             </Grid>
-            <Grid item xs={12} sm={4} />
             <Grid item xs={12} sm={4}>
               <Typography variant="h3">Partner</Typography>
               <SearchPlayerList
