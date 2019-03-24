@@ -5,7 +5,7 @@ jobs:
     - stage: "Test"
       name: "backend"
       language: go
-      go: "1.11"
+      go: "1.12"
       cache:
         directories:
           - $GOPATH/pkg/mod
