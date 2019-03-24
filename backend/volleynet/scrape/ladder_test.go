@@ -3,10 +3,16 @@ package scrape
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/raphi011/scores/test"
 	"github.com/raphi011/scores/volleynet"
 )
+
+func ParseMagicYear(timeString string) *time.Time {
+	t := test.MustParseTimeFormat("2006 15:04", timeString+" 13:37")
+	return &t
+}
 
 func TestParseLadderTest(t *testing.T) {
 	response, _ := os.Open("../testdata/ladder-men.html")
@@ -14,6 +20,7 @@ func TestParseLadderTest(t *testing.T) {
 	expected := []*volleynet.Player{
 		&volleynet.Player{
 			ID:           246,
+			Birthday:     ParseMagicYear("1982"),
 			FirstName:    "Alexander",
 			LastName:     "Horst",
 			LadderRank:   1,
@@ -24,6 +31,7 @@ func TestParseLadderTest(t *testing.T) {
 		},
 		&volleynet.Player{
 			ID:           1050,
+			Birthday:     ParseMagicYear("1980"),
 			FirstName:    "Clemens",
 			LastName:     "Doppler",
 			LadderRank:   1,
@@ -34,6 +42,7 @@ func TestParseLadderTest(t *testing.T) {
 		},
 		&volleynet.Player{
 			ID:           5626,
+			Birthday:     ParseMagicYear("1990"),
 			FirstName:    "Robin Valentin",
 			LastName:     "Seidl",
 			LadderRank:   3,
@@ -44,6 +53,7 @@ func TestParseLadderTest(t *testing.T) {
 		},
 		&volleynet.Player{
 			ID:           6656,
+			Birthday:     ParseMagicYear("1994"),
 			FirstName:    "Martin",
 			LastName:     "Ermacora",
 			LadderRank:   4,

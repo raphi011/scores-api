@@ -2,8 +2,10 @@ package scrape
 
 import (
 	"io"
+	"time"
 
 	"github.com/raphi011/scores/volleynet"
+	log "github.com/sirupsen/logrus"
 )
 
 // Ladder parses players from the ladder page
@@ -47,7 +49,15 @@ func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 				p.FirstName, p.LastName = parsePlayerName(c)
 				p.ID, _ = parsePlayerIDFromSteckbrief(c.Find("a"))
 			case 3:
-				break
+				// since we only know the birth year add a 'magic' time, so that we
+				// can update it as soon as we have the information.
+				birthday, err := time.Parse("2006 15:04", trimmSelectionText(c)+" 13:37")
+
+				if err != nil {
+					log.Warnf("error parsing birthday of player in ladder: %q", trimmSelectionText(c))
+				} else {
+					p.Birthday = &birthday
+				}
 			case 4:
 				p.CountryUnion = trimmSelectionText(c)
 			case 5:
