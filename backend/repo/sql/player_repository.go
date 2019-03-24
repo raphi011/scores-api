@@ -51,7 +51,8 @@ func (s *playerRepository) Update(p *volleynet.Player) error {
 func (s *playerRepository) PreviousPartners(playerID int) ([]*volleynet.Player, error) {
 	players := []*volleynet.Player{}
 
-	err := crud.Read(s.DB, "player/select-partners", &players, playerID)
+	err := crud.ReadNamed(s.DB, "player/select-partners", &players,
+		map[string]interface{}{"player_id": playerID })
 
 	return players, errors.Wrap(err, "previousPartners")
 }
@@ -60,14 +61,10 @@ func (s *playerRepository) PreviousPartners(playerID int) ([]*volleynet.Player, 
 func (s *playerRepository) Search(filter repo.PlayerFilter) ([]*volleynet.Player, error) {
 	players := []*volleynet.Player{}
 
-	err := crud.Read(s.DB, "player/search", &players,
-		filter.FirstName,
-		startsWith(filter.FirstName),
-		filter.LastName,
-		startsWith(filter.LastName),
-		filter.Gender,
-		filter.Gender,
-)
+	filter.FirstName = startsWith(filter.FirstName)
+	filter.LastName = startsWith(filter.LastName)
+
+	err := crud.ReadNamed(s.DB, "player/search", &players, filter)
 
 	return players, errors.Wrap(err, "search")
 }

@@ -13,6 +13,6 @@ SELECT
 	p.license
 FROM players p
 WHERE
-    (? = '' OR p.first_name LIKE ?) AND
-    (? = '' OR p.last_name LIKE ?) AND
-    (? = '' OR p.gender = ?)
+    (:first_name = '' OR p.first_name LIKE :first_name) AND
+    (:last_name = '' OR p.last_name LIKE :last_name) AND
+    (:gender = '' OR p.gender = :gender)

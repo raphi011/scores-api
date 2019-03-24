@@ -7,9 +7,9 @@ import (
 
 // PlayerFilter exposes search fields for a player.
 type PlayerFilter struct {
-	FirstName string
-	LastName  string
-	Gender    string
+	FirstName string `db:"first_name"`
+	LastName  string `db:"last_name"`
+	Gender    string `db:"gender"`
 }
 
 // PlayerRepository exposes CRUD operations on players.
