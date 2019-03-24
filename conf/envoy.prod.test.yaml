@@ -61,6 +61,7 @@ static_resources:
                           prefix: "/"
                         route:
                           cluster: frontend
+                          timeout: 0s
         tls_context:
           common_tls_context:
             tls_certificates:
