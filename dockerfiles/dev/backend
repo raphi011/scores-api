@@ -10,12 +10,12 @@ ENV BACKEND_URL $backend_url
 
 WORKDIR /scores/backend
 
-RUN go get -u github.com/derekparker/delve/cmd/dlv
-RUN go get -u github.com/gobuffalo/packr/packr
-
 COPY ./go.* ./
 
 RUN go mod download
+
+RUN go get -u github.com/derekparker/delve/cmd/dlv
+RUN go get -u github.com/gobuffalo/packr/packr
 
 COPY . .
 
