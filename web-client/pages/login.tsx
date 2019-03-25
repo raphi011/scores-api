@@ -118,7 +118,7 @@ class Login extends React.Component<Props, State> {
   loginWithPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { setStatus, loginWithPassword, r } = this.props;
+    const { setStatus, loginWithPassword } = this.props;
     const { email, password } = this.state;
 
     this.setState({ loggingIn: true });
