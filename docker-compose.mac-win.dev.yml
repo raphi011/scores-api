@@ -26,6 +26,8 @@ services:
       - "postgres://postgres:test@db?sslmode=disable"
       - "-provider"
       - "postgres"
+      - "-gauth"
+      - "/srv/scores/client_secret.json"
     environment:
       - GIN_MODE=debug
       - BACKEND_URL=https://localhost
