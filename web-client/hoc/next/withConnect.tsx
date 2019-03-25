@@ -7,6 +7,7 @@ import { Dispatch, Store as ReduxStore } from 'redux';
 
 import { Store } from '../../redux/store';
 import { dispatchActions } from '../../redux/actions';
+import { userSelector } from '../../redux/auth/selectors';
 
 interface Props {
   reduxStore: ReduxStore;
@@ -31,11 +32,13 @@ export default (Component: any): NextComponentClass<Props> => {
         const { store, res, req } = ctx;
 
         const isServer = !!req;
+        const initialReduxState = store.getState();
 
         let props = {
+          initialReduxState,
           fromServer: isServer,
-          initialReduxState: store.getState(),
           reduxStore: store,
+          user: userSelector(initialReduxState),
         };
 
         if (typeof Component.getInitialProps === 'function') {

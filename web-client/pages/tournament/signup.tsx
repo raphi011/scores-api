@@ -23,6 +23,7 @@ import {
 
 import { Tournament, User, Player } from '../../types';
 import { Store } from '../../redux/store';
+import * as Query from '../../utils/query';
 import withConnect, { Context } from '../../hoc/next/withConnect';
 import TournamentHeader from '../../components/volleynet/TournamentHeader';
 import SearchPlayerList from '../../components/volleynet/SearchPlayerList';
@@ -69,9 +70,9 @@ class Signup extends React.Component<Props, State> {
 
   static async getInitialProps(ctx: Context) {
     const { query } = ctx;
-    const { id } = query;
+    const tournamentId = Query.one(query, 'id');
 
-    return { tournamentId: id };
+    return { tournamentId };
   }
 
   static buildActions({ tournamentId, user }: Props) {

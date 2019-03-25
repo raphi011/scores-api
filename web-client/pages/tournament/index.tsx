@@ -21,6 +21,7 @@ import TeamList from '../../components/volleynet/TeamList';
 import * as Query from '../../utils/query';
 import withConnect, { Context } from '../../hoc/next/withConnect';
 import TournamentHeader from '../../components/volleynet/TournamentHeader';
+import { isSignedup } from '../../utils/tournament';
 
 const styles = createStyles({
   body: {
@@ -92,7 +93,7 @@ class ShowTournament extends React.Component<Props> {
   };
 
   renderBody = () => {
-    const { classes, tab, tournament, width } = this.props;
+    const { classes, user, tab, tournament, width } = this.props;
 
     const isMobile = ['xs', 'sm'].includes(width);
 
@@ -100,6 +101,9 @@ class ShowTournament extends React.Component<Props> {
       return null;
     }
 
+    const canSignup =
+      tournament.registrationOpen &&
+      !isSignedup(tournament, user.volleynetUserId);
     const teams = tournament.teams || [];
 
     let body;
@@ -130,7 +134,10 @@ class ShowTournament extends React.Component<Props> {
 
     return (
       <>
-        <TournamentHeader tournament={tournament} onSignup={this.onSignup} />
+        <TournamentHeader
+          tournament={tournament}
+          onSignup={canSignup ? this.onSignup : undefined}
+        />
         <Tabs
           className={classes.tabs}
           indicatorColor="primary"

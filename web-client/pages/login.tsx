@@ -12,18 +12,23 @@ import Typography from '@material-ui/core/Typography';
 import WarningIcon from '@material-ui/icons/Warning';
 
 import LoadingButton from '../components/LoadingButton';
+import * as Query from '../utils/query';
 import Snackbar from '../containers/SnackbarContainer';
-import { loginWithPasswordAction } from '../redux/auth/actions';
-import { loginRouteSelector } from '../redux/auth/selectors';
+import {
+  loginWithPasswordAction,
+  userOrLoginRouteAction,
+} from '../redux/auth/actions';
+import { loginRouteSelector, userSelector } from '../redux/auth/selectors';
 import { setStatusAction } from '../redux/status/actions';
 import { Store } from '../redux/store';
-import { QueryStringMapObject } from 'next';
-import withConnect from '../hoc/next/withConnect';
+import withConnect, { Context } from '../hoc/next/withConnect';
+import { User } from '../types';
 
 interface Props extends WithStyles<typeof styles> {
   r: string;
   loginRoute: string;
   loginError: string;
+  user: User | null;
 
   loginWithPassword: (credentials: {
     email: string;
@@ -59,16 +64,20 @@ class Login extends React.Component<Props, State> {
     setStatus: setStatusAction,
   };
 
-  static getParameters(query: QueryStringMapObject) {
-    const { error: loginError, r } = query;
+  static async getInitialProps(ctx: Context): Promise<Partial<Props>> {
+    const { query } = ctx;
+
+    const loginError = Query.one(query, 'error');
+    const r = Query.one(query, 'r');
 
     return { loginError, r };
   }
 
   static mapStateToProps(state: Store) {
     const loginRoute = loginRouteSelector(state);
+    const user = userSelector(state);
 
-    return { loginRoute };
+    return { loginRoute, user };
   }
 
   state = {
@@ -77,8 +86,18 @@ class Login extends React.Component<Props, State> {
     password: '',
   };
 
-  componentDidMount() {
-    Router.prefetch('/');
+  static buildActions() {
+    return [userOrLoginRouteAction()];
+  }
+
+  async componentDidMount() {
+    const { user } = this.props;
+
+    if (user) {
+      await this.onLoggedIn();
+    } else {
+      Router.prefetch('/');
+    }
   }
 
   onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,6 +106,13 @@ class Login extends React.Component<Props, State> {
 
   onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ password: e.target.value });
+  };
+
+  onLoggedIn = async () => {
+    const { r } = this.props;
+
+    const path = r || '/';
+    await Router.push(path);
   };
 
   loginWithPassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -104,8 +130,7 @@ class Login extends React.Component<Props, State> {
 
     try {
       await loginWithPassword(credentials);
-      const path = r || '/';
-      await Router.push(path);
+      await this.onLoggedIn();
     } catch ({ responseCode }) {
       this.setState({ loggingIn: false });
 
