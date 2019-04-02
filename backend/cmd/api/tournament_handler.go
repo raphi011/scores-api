@@ -115,17 +115,17 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 
 	if su.RememberMe {
 		session := sessions.Default(c)
-		userID := session.Get("user-id")
-		user, err := h.userService.ByID(userID.(int))
+		userID := session.Get("user-id").(int)
+		user, err := h.userService.ByID(userID)
 
 		if err != nil {
-			logger.Get(c).Warnf("loading user by email: %s failed", userID.(string))
+			logger.Get(c).Warnf("loading user by email: %s failed", userID)
 		}
 
 		if user != nil && user.VolleynetUser != su.Username ||
 			user.VolleynetUserID != loginData.ID {
 
-			err = h.userService.SetVolleynetLogin(su.Username, loginData.ID)
+			err = h.userService.SetVolleynetLogin(userID, loginData.ID, su.Username)
 
 			if err != nil {
 				logger.Get(c).Warnf("updating volleynet user information failed for userID: %d", user.ID)

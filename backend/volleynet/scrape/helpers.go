@@ -12,8 +12,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var numberRegex = regexp.MustCompile("\\d+")
-
 func parseFloat(text string) float32 {
 	val, err := strconv.ParseFloat(text, 32)
 	if err != nil {
@@ -22,6 +20,8 @@ func parseFloat(text string) float32 {
 
 	return float32(val)
 }
+
+var numberRegex = regexp.MustCompile("\\d+")
 
 func findInt(text string) (nr int, ok bool) {
 	nrstr := numberRegex.FindString(text)

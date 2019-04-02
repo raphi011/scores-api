@@ -196,15 +196,15 @@ func (s *User) SetProfileImage(userID int, imageURL string) error {
 }
 
 // SetVolleynetLogin updates the users volleynet login
-func (s *User) SetVolleynetLogin(loginName string, userID int) error {
+func (s *User) SetVolleynetLogin(userID, volleynetUserID int, volleynetLogin string) error {
 	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
 		return err
 	}
 
-	user.VolleynetUser = loginName
-	user.VolleynetUserID = userID
+	user.VolleynetUser = volleynetLogin
+	user.VolleynetUserID = volleynetUserID
 
 	err = s.Repo.Update(user)
 
