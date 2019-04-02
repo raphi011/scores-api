@@ -6,7 +6,7 @@ services:
     network_mode: "host"
     volumes:
       - "./certs:/usr/share/letsencrypt/scores.network"
-      - "./conf/envoy.yaml:/etc/envoy/envoy.yaml
+      - "./conf/envoy.yaml:/etc/envoy/envoy.yaml"
     ports:
       - "80:80"
       - "443:443"
