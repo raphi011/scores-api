@@ -25,4 +25,4 @@ SELECT
 FROM tournament_teams t
 JOIN players p1 on p1.id = t.player_1_id
 JOIN players p2 on p2.id = t.player_2_id
-WHERE t.tournament_id = ?
+WHERE t.tournament_id = ? and t.deleted_at IS NULL
