@@ -72,7 +72,6 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	auth := router.Group("/")
 	auth.Use(middleware.Auth())
 	auth.POST("/logout", authHandler.logout)
-
 	auth.POST("/csp-violation-report", cspHandler.violationReportHandler)
 
 	auth.GET("/ladder", volleynetHandler.getLadder)
@@ -81,6 +80,7 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	auth.GET("/tournaments/:tournamentID", volleynetHandler.getTournament)
 	auth.GET("/players/search", volleynetHandler.getSearchPlayers)
 	auth.GET("/players/partners/:playerID", volleynetHandler.getPartners)
+	auth.POST("/players/login", volleynetHandler.postLogin)
 	auth.POST("/signup", volleynetHandler.postSignup)
 
 	admin := auth.Group("/admin")

@@ -12,6 +12,7 @@ const styles = createStyles({});
 
 interface Props extends WithStyles<typeof styles> {
   username?: string;
+  showRememberMe?: boolean;
 
   onLogin: (username: string, password: string, rememberMe: boolean) => void;
 }
@@ -85,6 +86,7 @@ class Login extends React.Component<Props, State> {
       usernameValidation,
       loggingIn,
     } = this.state;
+    const { showRememberMe = true } = this.props;
 
     return (
       <form onSubmit={this.onLogin}>
@@ -106,13 +108,14 @@ class Login extends React.Component<Props, State> {
           onChange={this.onChangePassword}
           value={password}
         />
-        <FormControlLabel
-          control={
-            <Switch checked={rememberMe} onChange={this.onChangeRememberMe} />
-          }
-          label="Remember me"
-        />
-
+        {showRememberMe ? (
+          <FormControlLabel
+            control={
+              <Switch checked={rememberMe} onChange={this.onChangeRememberMe} />
+            }
+            label="Remember me"
+          />
+        ) : null}
         <LoadingButton loading={loggingIn}>
           <DoneIcon />
           <span>Signup</span>

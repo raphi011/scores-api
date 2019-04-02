@@ -18,6 +18,18 @@ export interface ReceiveEntitiesAction {
   };
 }
 
+export const volleynetLoginAction = (
+  username: string,
+  password: string,
+): ApiAction => ({
+  method: 'POST',
+  body: JSON.stringify({ username, password }),
+  successStatus: `Logged in to volleynet.`,
+  success: actionNames.SET_USER_OR_LOGINROUTE,
+  type: actionNames.API,
+  url: 'players/login',
+});
+
 export const previousPartnersAction = (playerId: number): ApiAction => ({
   method: 'GET',
   success: actionNames.RECEIVE_ENTITIES,

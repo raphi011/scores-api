@@ -4,9 +4,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/volleynet/client"
 )
 
 func (h *volleynetHandler) getLadder(c *gin.Context) {
@@ -25,6 +28,59 @@ func (h *volleynetHandler) getLadder(c *gin.Context) {
 	}
 
 	response(c, http.StatusOK, ladder)
+}
+
+type loginForm struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (h *volleynetHandler) postLogin(c *gin.Context) {
+	login := loginForm{}
+
+	if err := c.ShouldBindWith(&login, binding.JSON); err != nil {
+		responseBadRequest(c)
+		return
+	}
+
+	if login.Username == "" ||
+		login.Password == "" {
+		responseBadRequest(c)
+		return
+	}
+
+	vnClient := client.DefaultClient()
+	loginData, err := vnClient.Login(login.Username, login.Password)
+
+	if err != nil {
+		response(c, http.StatusUnauthorized, nil)
+		return
+	}
+
+	session := sessions.Default(c)
+	userID := session.Get("user-id").(int)
+	user, err := h.userService.ByID(userID)
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	err = h.userService.SetVolleynetLogin(userID, loginData.ID, login.Username)
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	user, err = h.userService.ByID(userID)
+
+	if err != nil {
+		responseErr(c, err)
+		return
+	}
+
+	response(c, http.StatusOK, loginRouteOrUserDto{User: user})
 }
 
 func (h *volleynetHandler) getPartners(c *gin.Context) {

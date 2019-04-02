@@ -8,6 +8,7 @@ import React, { ReactNode } from 'react';
 
 import AppBar from '../containers/AppBarContainer';
 import { maxContentWidth } from '../styles/theme';
+import MandatoryVolleynetLogin from '../containers/MandatoryVolleynetLogin';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -37,6 +38,7 @@ interface Props extends WithStyles<typeof styles> {
 const Layout = ({ title, children, classes }: Props) => (
   <div className={classes.root}>
     <AppBar title={title} />
+    <MandatoryVolleynetLogin />
     <main className={classes.content}>{children}</main>
   </div>
 );
