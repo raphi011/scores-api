@@ -6,8 +6,8 @@ type User struct {
 	Track
 	Email           string   `json:"email"`
 	ProfileImageURL string   `json:"profileImageUrl" db:"profile_image_url"`
-	VolleynetUserID int      `json:"volleynetUserId" db:"volleynet_user_id"`
-	VolleynetUser   string   `json:"volleynetUser" db:"volleynet_user"`
+	PlayerID        int      `json:"playerId" db:"player_id"`
+	PlayerLogin     string   `json:"playerLogin" db:"player_login"`
 	Role            string   `json:"role"`
 	Settings        Settings `json:"settings"`
 	PasswordInfo

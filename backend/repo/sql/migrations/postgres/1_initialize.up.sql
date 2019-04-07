@@ -1,22 +1,51 @@
+CREATE TABLE players (
+	id              int         PRIMARY KEY,
+
+	created_at      timestamptz NOT NULL,
+	updated_at      timestamptz,
+	deleted_at      timestamptz,
+
+	first_name      text        NOT NULL,
+	last_name       text        NOT NULL,
+    total_points    smallint    NOT NULL,
+	ladder_rank     smallint    NOT NULL,
+	country_union   text        NOT NULL,
+	club            text        NOT NULL,
+	birthday        date,
+	license         text        NOT NULL,
+	gender          varchar(1)  NOT NULL
+);
+
+CREATE INDEX players_first_name 	ON players USING btree  (first_name);
+CREATE INDEX players_last_name  	ON players USING btree  (last_name);
+CREATE INDEX players_ladder_rank    ON players USING btree  (ladder_rank);
+CREATE INDEX players_gender     	ON players USING hash   (gender);
+
 CREATE TABLE users (
 	id                  serial      PRIMARY KEY,
+
 	created_at          timestamptz NOT NULL,
+	updated_at          timestamptz,
 	deleted_at          timestamptz,
+
     email               text        NOT NULL UNIQUE,
 	profile_image_url   text        NOT NULL,
 	pw_hash             bytea,
 	pw_iterations       int,
 	pw_salt             bytea,
 	role                text        NOT NULL,
-	updated_at          timestamptz,
-	volleynet_user      text,
-	volleynet_user_id   int
+
+	player_login	    text,
+	player_id   		int			REFERENCES players(id)
 );
 
 CREATE TABLE tournaments (
 	id                  int         PRIMARY KEY,
+
 	created_at          timestamptz NOT NULL,
-	updated_at          timestamptz NOT NULL,
+	updated_at          timestamptz,
+	deleted_at          timestamptz,
+
     gender              text        NOT NULL,
     signedup_teams      int         NOT NULL,
 	start_date          timestamptz NOT NULL,
@@ -55,30 +84,16 @@ CREATE INDEX tournaments_gender			ON tournaments (gender);
 CREATE INDEX tournaments_league_key    	ON tournaments (league_key);
 CREATE INDEX tournaments_season     	ON tournaments (season);
 
-CREATE TABLE players (
-	id              int         PRIMARY KEY,
-	created_at      timestamptz NOT NULL,
-	updated_at      timestamptz NOT NULL,
-	first_name      text        NOT NULL,
-	last_name       text        NOT NULL,
-    total_points    smallint    NOT NULL,
-	ladder_rank     smallint    NOT NULL,
-	country_union   text        NOT NULL,
-	club            text        NOT NULL,
-	birthday        date,
-	license         text        NOT NULL,
-	gender          varchar(1)  NOT NULL
-);
-
-CREATE INDEX players_first_name 	ON players USING btree  (first_name);
-CREATE INDEX players_last_name  	ON players USING btree  (last_name);
-CREATE INDEX players_ladder_rank    ON players USING btree  (ladder_rank);
-CREATE INDEX players_gender     	ON players USING hash   (gender);
 
 CREATE TABLE tournament_teams (
 	tournament_id   int         NOT NULL REFERENCES tournaments(id),
 	player_1_id     int         NOT NULL REFERENCES players(id),
 	player_2_id     int         NOT NULL REFERENCES players(id),
+
+	created_at      timestamptz NOT NULL,
+	updated_at      timestamptz,
+	deleted_at      timestamptz,
+
 	result 			smallint    NOT NULL,
 	seed            smallint    NOT NULL,
 	total_points    smallint    NOT NULL,

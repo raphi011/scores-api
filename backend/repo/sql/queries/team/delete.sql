@@ -1,5 +1,5 @@
 UPDATE tournament_teams SET
 	deleted_at = :deleted_at
-WHERE volleynet_tournament_id = :tournament_id
-    AND volleynet_player_1_id = :player1.id
-    AND volleynet_player_2_id = :player2.id
+WHERE tournament_id = :tournament_id
+    AND player_1_id = :player1.id
+    AND player_2_id = :player2.id

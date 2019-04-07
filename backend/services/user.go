@@ -1,8 +1,6 @@
 package services
 
 import (
-	"time"
-
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores"
@@ -56,9 +54,6 @@ func (s *User) UpdateSettings(userID int, settings ...*scores.Setting) error {
 		if previousSetting, ok := currentSettings[setting.Key]; ok && previousSetting.Value == setting.Value {
 			continue
 		} else if ok {
-			setting.CreatedAt = previousSetting.CreatedAt
-			setting.UpdatedAt = time.Now()
-
 			err = s.SettingRepo.Update(setting)
 		} else {
 			_, err = s.SettingRepo.Create(setting)
@@ -196,15 +191,15 @@ func (s *User) SetProfileImage(userID int, imageURL string) error {
 }
 
 // SetVolleynetLogin updates the users volleynet login
-func (s *User) SetVolleynetLogin(userID, volleynetUserID int, volleynetLogin string) error {
+func (s *User) SetVolleynetLogin(userID, playerID int, playerLogin string) error {
 	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
 		return err
 	}
 
-	user.VolleynetUser = volleynetLogin
-	user.VolleynetUserID = volleynetUserID
+	user.PlayerLogin = playerLogin
+	user.PlayerID = playerID
 
 	err = s.Repo.Update(user)
 

@@ -122,8 +122,8 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 			logger.Get(c).Warnf("loading user by email: %s failed", userID)
 		}
 
-		if user != nil && user.VolleynetUser != su.Username ||
-			user.VolleynetUserID != loginData.ID {
+		if user != nil && user.PlayerLogin != su.Username ||
+			user.PlayerID != loginData.ID {
 
 			err = h.userService.SetVolleynetLogin(userID, loginData.ID, su.Username)
 

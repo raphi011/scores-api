@@ -1,4 +1,5 @@
 UPDATE tournament_teams SET
+	updated_at = :updated_at,
 	result = :result,
 	seed = :seed,
 	total_points = :total_points,

@@ -52,10 +52,18 @@ func TestUsers(t *testing.T) {
 		Email: "test@test.at",
 	})
 
+	if err != nil {
+		t.Errorf("userRepository.New() err: %s", err)
+	}
+
 	_, err = userRepo.New(&scores.User{
 		Email:           "test2@test.at",
 		ProfileImageURL: "image.url",
 	})
+
+	if err != nil {
+		t.Errorf("userRepository.New() err: %s", err)
+	}
 
 	users, err := userRepo.All()
 

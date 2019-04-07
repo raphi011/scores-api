@@ -1,7 +1,6 @@
 INSERT INTO settings 
 (
 	created_at,
-	updated_at,
     user_id,
     s_key,
     s_value,
@@ -10,7 +9,6 @@ INSERT INTO settings
 VALUES
 (
 	:created_at,
-	:updated_at,
     :user_id,
     :s_key,
     :s_value,

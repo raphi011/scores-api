@@ -2,7 +2,6 @@ INSERT INTO tournaments
 (
 	id,
 	created_at,
-	updated_at,
 	gender,
 	start_date,
 	end_date,
@@ -37,7 +36,6 @@ VALUES
 (
 	:id,
 	:created_at,
-	:updated_at,
 	:gender,
 	:start_date,
 	:end_date,

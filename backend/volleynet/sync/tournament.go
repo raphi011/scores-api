@@ -1,8 +1,6 @@
 package sync
 
 import (
-	"time"
-
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/raphi011/scores"
 
@@ -100,9 +98,7 @@ func tournamentSyncType(persisted *volleynet.Tournament, current *volleynet.Tour
 }
 
 func hasTournamentChanged(old, new *volleynet.Tournament) bool {
-	new.UpdatedAt = time.Time{}
-	old.UpdatedAt = time.Time{}
-
+	// TODO: ignore time changes
 	return !cmp.Equal(new, old, cmp.Options{cmpopts.IgnoreUnexported(scores.Track{})})
 }
 

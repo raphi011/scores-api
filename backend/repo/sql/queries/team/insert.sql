@@ -1,5 +1,6 @@
 INSERT INTO tournament_teams
 (
+	created_at,
 	tournament_id,
 	player_1_id,
 	player_2_id,
@@ -12,6 +13,7 @@ INSERT INTO tournament_teams
 )
 VALUES
 (
+	:created_at,
 	:tournament_id,
 	:player1.id,
 	:player2.id,

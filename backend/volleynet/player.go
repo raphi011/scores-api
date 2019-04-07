@@ -9,6 +9,7 @@ import (
 // Player contains all relevent volleynet player information.
 type Player struct {
 	ID int `json:"id"`
+
 	scores.Track
 
 	Birthday     *time.Time `json:"birthday"`

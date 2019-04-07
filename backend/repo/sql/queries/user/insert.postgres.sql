@@ -1,10 +1,9 @@
 INSERT INTO users (
     created_at,
-    updated_at,
     email,
     profile_image_url,
-    volleynet_user_id,
-    volleynet_user,
+    player_id,
+    player_login,
     role,
     pw_salt,
     pw_hash,
@@ -12,11 +11,10 @@ INSERT INTO users (
 )
 VALUES (
     :created_at,
-    :updated_at,
     :email,
     :profile_image_url,
-    :volleynet_user_id,
-    :volleynet_user,
+    :player_id,
+    :player_login,
     :role,
     :pw_salt,
     :pw_hash,

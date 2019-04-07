@@ -32,7 +32,7 @@ type Tracked interface {
 // `DeletedAt` to the model.
 type Track struct {
 	CreatedAt time.Time  `json:"createdAt" db:"created_at"`
-	UpdatedAt time.Time  `json:"updatedAt" db:"updated_at"`
+	UpdatedAt *time.Time `json:"updatedAt" db:"updated_at"`
 	DeletedAt *time.Time `json:"-" db:"deleted_at"`
 	mockTime  *time.Time
 }
@@ -44,7 +44,6 @@ func (t *Track) Create(when time.Time) Tracked {
 	}
 
 	t.CreatedAt = when
-	t.UpdatedAt = when
 
 	return t
 }
@@ -54,7 +53,8 @@ func (t *Track) Update(when time.Time) Tracked {
 	if t.mockTime != nil {
 		when = *t.mockTime
 	}
-	t.UpdatedAt = when
+
+	t.UpdatedAt = &when
 
 	return t
 }
@@ -65,7 +65,6 @@ func (t *Track) Delete(when time.Time) Tracked {
 		when = *t.mockTime
 	}
 
-	t.UpdatedAt = when
 	t.DeletedAt = &when
 
 	return t

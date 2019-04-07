@@ -2,7 +2,6 @@ INSERT INTO players
 (
 	id,
 	created_at,
-	updated_at,
 	first_name,
 	last_name,
 	birthday,
@@ -17,7 +16,6 @@ VALUES
 (
 	:id,
 	:created_at,
-	:updated_at,
 	:first_name,
 	:last_name,
 	:birthday,
