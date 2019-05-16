@@ -36,7 +36,7 @@ CREATE TABLE users (
 	pw_salt blob,
 	role varchar(32) NOT NULL,
 
-	player_login varchar(64) UNIQUE,
+	player_login varchar(64),
 	player_id integer UNIQUE REFERENCES players(id)
 );
 
