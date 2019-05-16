@@ -43,7 +43,7 @@
   },
   "scripts": {
     "dev": "next",
-    "debug": "next --inspect",
+    "debug": "NODE_OPTIONS=\"--inspect\" next",
     "build": "next build",
     "start": "next start",
     "test": "jest",
