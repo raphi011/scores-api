@@ -102,6 +102,7 @@ export default (Component: any): NextComponentClass<Props> => {
     }
   }
 
+  // @ts-ignore
   return connect(
     Component.mapStateToProps,
     Component.mapDispatchToProps,

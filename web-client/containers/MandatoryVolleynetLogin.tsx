@@ -8,9 +8,11 @@ import { Store } from '../redux/store';
 import { userSelector } from '../redux/auth/selectors';
 import { volleynetLoginAction } from '../redux/entities/actions';
 import { User } from '../types';
+import { Dispatch } from 'redux';
 
 interface Props {
   user: User | null;
+  open: boolean;
 
   volleynetLogin: (username: string, password: string) => Promise<void>;
 }
@@ -24,6 +26,7 @@ class MandatoryVolleynetLogin extends React.Component<Props> {
 
   render() {
     const { open } = this.props;
+
     return (
       <Dialog open={open}>
         <div style={{ padding: '20px' }}>
@@ -44,15 +47,19 @@ function mapStateToProps(state: Store) {
   const user = userSelector(state);
 
   return {
-    open: user && !user.volleynetUserId,
+    open: !!user && !user.volleynetUserId,
   };
 }
 
-const mapDispatchToProps = {
-  volleynetLogin: volleynetLoginAction,
-};
+function mapDispatchToProps(dispatch: Dispatch) {
+  return {
+    volleynetLogin: async (username: string, password: string) =>
+      await dispatch(volleynetLoginAction(username, password)),
+  };
+}
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  // @ts-ignore
 )(MandatoryVolleynetLogin);
