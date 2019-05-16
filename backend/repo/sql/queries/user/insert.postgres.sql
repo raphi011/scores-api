@@ -13,7 +13,7 @@ VALUES (
     :created_at,
     :email,
     :profile_image_url,
-    :player_id,
+    NULLIF(:player_id, 0),
     :player_login,
     :role,
     :pw_salt,
