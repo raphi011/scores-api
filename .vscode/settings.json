@@ -1,3 +1,7 @@
 {
-  "go.goroot": "./backend"
+  "go.goroot": "./backend",
+  "go.testEnvVars": {
+    "TEST_DB_PROVIDER": "postgres",
+    "TEST_DB_CONNECTION": "postgres://postgres@localhost?sslmode=disable"
+  }
 }
