@@ -9,6 +9,6 @@ SELECT
     COALESCE(u.profile_image_url, '') as profile_image_url,
     u.role,
     u.pw_salt,
-    u.player_id,
+    COALESCE(u.player_id, 0) as player_id,
     u.player_login
 FROM users u
