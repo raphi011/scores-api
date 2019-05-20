@@ -35,6 +35,39 @@ func TestCreateTeam(t *testing.T) {
 	test.Check(t, "teamRepository.New(), err: %v", err)
 }
 
+func TestUpdateTeam(t *testing.T) {
+	db := SetupDB(t)
+	teamRepo := &teamRepository{DB: db}
+
+	ps := CreatePlayers(t, db,
+		P{Gender: "m", TotalPoints: 5, LadderRank: 1, ID: 1},
+		P{Gender: "m", TotalPoints: 4, LadderRank: 2, ID: 2},
+	)
+
+	ts := CreateTournaments(t, db,
+		T{ID: 1},
+	)
+
+	CreateTeams(t, db,
+		TT{TournamentID: ts[0].ID, Player1: ps[0], Player2: ps[1], Seed: 1},
+	)
+
+	teams, _ := teamRepo.ByTournament(1)
+
+	test.Assert(t, "teamRepository.ByTournament(), want len(tournaments) == 1, got: %d", len(teams) == 1, len(teams))
+	test.Assert(t, "team seed should be %d", teams[0].Seed == 1, teams[0].Seed)
+
+	teams[0].Seed = 2
+	err := teamRepo.Update(teams[0])
+
+	test.Check(t, "teamRepository.Update(), err: %v", err)
+
+	teams, _ = teamRepo.ByTournament(1)
+
+	test.Assert(t, "teamRepository.ByTournament(), want len(tournaments) == 1, got: %d", len(teams) == 1, len(teams))
+	test.Assert(t, "team seed should be %d", teams[0].Seed == 2, teams[0].Seed)
+}
+
 func TestDeleteTeam(t *testing.T) {
 	db := SetupDB(t)
 	teamRepo := &teamRepository{DB: db}

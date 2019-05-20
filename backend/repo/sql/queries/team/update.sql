@@ -6,6 +6,6 @@ UPDATE tournament_teams SET
 	won_points = :won_points,
 	prize_money = :prize_money,
 	deregistered = :deregistered
-WHERE volleynet_tournament_id = :tournament_id
-    AND volleynet_player_1_id = :player1.id
-    AND volleynet_player_2_id = :player2.id
+WHERE tournament_id = :tournament_id
+    AND player_1_id = :player1.id
+    AND player_2_id = :player2.id
