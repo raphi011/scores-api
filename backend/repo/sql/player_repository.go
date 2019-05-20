@@ -15,6 +15,14 @@ type playerRepository struct {
 
 var _ repo.PlayerRepository = &playerRepository{}
 
+// ByGender gets all players of the passed gender.
+func (s *playerRepository) ByGender(gender string) ([]*volleynet.Player, error) {
+	players := []*volleynet.Player{}
+	err := crud.Read(s.DB, "player/select-by-gender", &players, gender)
+
+	return players, errors.Wrap(err, "by gender")
+}
+
 // Ladder gets all players of the passed gender that have a rank.
 func (s *playerRepository) Ladder(gender string) ([]*volleynet.Player, error) {
 
@@ -52,7 +60,7 @@ func (s *playerRepository) PreviousPartners(playerID int) ([]*volleynet.Player, 
 	players := []*volleynet.Player{}
 
 	err := crud.ReadNamed(s.DB, "player/select-partners", &players,
-		map[string]interface{}{"player_id": playerID })
+		map[string]interface{}{"player_id": playerID})
 
 	return players, errors.Wrap(err, "previousPartners")
 }

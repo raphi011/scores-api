@@ -22,7 +22,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 		return nil, errors.Wrap(err, "loading the ladder failed")
 	}
 
-	persisted, err := s.PlayerRepo.Ladder(gender)
+	persisted, err := s.PlayerRepo.ByGender(gender)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "loading persisted players failed")
@@ -54,7 +54,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 		}
 
 		if err != nil {
-			return nil, errors.Wrap(err, "sync player update failed")
+			return nil, errors.Wrap(err, "sync player failed")
 		}
 	}
 

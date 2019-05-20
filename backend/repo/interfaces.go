@@ -18,6 +18,7 @@ type PlayerRepository interface {
 	New(p *volleynet.Player) (*volleynet.Player, error)
 	Update(p *volleynet.Player) error
 	Ladder(gender string) ([]*volleynet.Player, error)
+	ByGender(gender string) ([]*volleynet.Player, error)
 	PreviousPartners(playerID int) ([]*volleynet.Player, error)
 	Search(filter PlayerFilter) ([]*volleynet.Player, error)
 }
