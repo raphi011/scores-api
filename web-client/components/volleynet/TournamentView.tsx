@@ -121,7 +121,7 @@ class TournamentView extends React.Component<Props, State> {
       },
     ].filter(detail => detail.show);
 
-    const signedup = isSignedup(tournament, user.volleynetUserId);
+    const signedup = isSignedup(tournament, user.playerId);
 
     const showSignup = signedup || tournament.registrationOpen;
 

@@ -13,8 +13,8 @@ export interface User {
   email: string;
   role: string;
   profileImageUrl?: string;
-  volleynetUserId: number;
-  volleynetLogin: string;
+  playerId: number;
+  playerLogin: string;
   settings: {
     [SETTING_TOURNAMENT_FILTER_LEAGUE_KEY]: string[];
     [SETTING_TOURNAMENT_FILTER_GENDER_KEY]: string[];

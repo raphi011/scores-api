@@ -102,8 +102,7 @@ class ShowTournament extends React.Component<Props> {
     }
 
     const canSignup =
-      tournament.registrationOpen &&
-      !isSignedup(tournament, user.volleynetUserId);
+      tournament.registrationOpen && !isSignedup(tournament, user.playerId);
     const teams = tournament.teams || [];
 
     let body;

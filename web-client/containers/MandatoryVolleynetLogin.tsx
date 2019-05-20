@@ -47,7 +47,7 @@ function mapStateToProps(state: Store) {
   const user = userSelector(state);
 
   return {
-    open: !!user && !user.volleynetUserId,
+    open: !!user && !user.playerId,
   };
 }
 

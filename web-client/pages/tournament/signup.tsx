@@ -76,7 +76,7 @@ class Signup extends React.Component<Props, State> {
   }
 
   static buildActions({ tournamentId, user }: Props) {
-    const actions = [previousPartnersAction(user.volleynetUserId)];
+    const actions = [previousPartnersAction(user.playerId)];
 
     if (tournamentId) {
       actions.push(loadTournamentAction(tournamentId));
@@ -87,10 +87,7 @@ class Signup extends React.Component<Props, State> {
 
   static mapStateToProps(state: Store, { tournamentId, user }: Props) {
     const tournament = tournamentSelector(state, tournamentId);
-    const previousPartners = previousPartnersSelector(
-      state,
-      user.volleynetUserId,
-    );
+    const previousPartners = previousPartnersSelector(state, user.playerId);
     const foundPlayers = searchVolleynetplayerSelector(state);
 
     return { tournament, user, previousPartners, foundPlayers };
@@ -157,7 +154,7 @@ class Signup extends React.Component<Props, State> {
           <Typography variant="h6">{`Partner: ${partner.firstName} ${
             partner.lastName
           }`}</Typography>
-          <Login onLogin={this.onSignup} username={user.volleynetLogin} />
+          <Login onLogin={this.onSignup} username={user.playerLogin} />
         </>
       );
     }
