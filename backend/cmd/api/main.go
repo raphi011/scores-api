@@ -35,10 +35,9 @@ func main() {
 	connectionString := flag.String("connection", "./scores.db", "provider specific connectionstring")
 	gSecret := flag.String("gauth", "./client_secret.json", "Path to google oauth secret")
 	logstashURL := flag.String("logstash", "", "logstash url")
+	debugLevel := flag.Int("debuglevel", int(logrus.InfoLevel), "")
 
-	flag.Parse()
-
-	log := setupLogger(*logstashURL)
+	log := setupLogger(*logstashURL, logrus.Level(*debugLevel))
 
 	production := os.Getenv("APP_ENV") == "production"
 	host := os.Getenv("BACKEND_URL")
@@ -47,7 +46,7 @@ func main() {
 		host = "https://localhost"
 	}
 
-	services, err := createServices(*dbProvider, *connectionString)
+	services, err := createServices(*dbProvider, *connectionString, log)
 
 	if err != nil {
 		log.Fatalf("Could not initialize services: %s", err)
@@ -73,8 +72,9 @@ func main() {
 	}
 }
 
-func setupLogger(logstashURL string) logrus.FieldLogger {
+func setupLogger(logstashURL string, level logrus.Level) logrus.FieldLogger {
 	log := logrus.New()
+	log.SetLevel(level)
 
 	if logstashURL != "" {
 		var con net.Conn
@@ -111,7 +111,7 @@ func setupLogger(logstashURL string) logrus.FieldLogger {
 	return log
 }
 
-func newBroker() *events.Broker {
+func newBroker(log logrus.FieldLogger) *events.Broker {
 	broker := &events.Broker{}
 
 	// we never unsubcribe
@@ -119,8 +119,7 @@ func newBroker() *events.Broker {
 
 	go func() {
 		for event := range events {
-			// TODO log the changes properly
-			fmt.Printf("scrape event: %v", event)
+			log.Debugf("scrape event: %v", event)
 		}
 	}()
 
@@ -135,7 +134,7 @@ type handlerServices struct {
 	Password   services.Password
 }
 
-func createServices(provider string, connectionString string) (*handlerServices, error) {
+func createServices(provider string, connectionString string, log logrus.FieldLogger) (*handlerServices, error) {
 	var repos *repo.Repositories
 	var err error
 
@@ -154,10 +153,10 @@ func createServices(provider string, connectionString string) (*handlerServices,
 		return nil, err
 	}
 
-	return servicesFromRepositories(repos, true), nil
+	return servicesFromRepositories(repos, true, log), nil
 }
 
-func servicesFromRepositories(repos *repo.Repositories, startManager bool) *handlerServices {
+func servicesFromRepositories(repos *repo.Repositories, startManager bool, log logrus.FieldLogger) *handlerServices {
 	password := &services.PBKDF2Password{
 		SaltBytes:  16,
 		Iterations: 10000,
@@ -176,7 +175,7 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 		TournamentRepo: repos.TournamentRepo,
 	}
 
-	broker := newBroker()
+	broker := newBroker(log)
 
 	scrapeService := &sync.Service{
 		Client:         client.DefaultClient(),
@@ -197,7 +196,7 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 		syncService: scrapeService,
 		genders:     []string{"M", "W"},
 		leagues:     []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
-		season: 	time.Now().Year(),
+		season:      time.Now().Year(),
 	}
 	
 	lastYearsTournamentsJob := tournamentsJob
@@ -213,8 +212,8 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool) *hand
 				Do: ladderJob.do,
 			},
 			job.Job{
-				Name:        "Last years tournaments",
-				MaxRuns: 	 1, // only run once on startup
+				Name:    "Last years tournaments",
+				MaxRuns: 1, // only run once on startup
 
 				Do: tournamentsJob.do,
 			},
