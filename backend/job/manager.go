@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // Job is the definition of a job which is run the Manager in defined intervals.
@@ -22,6 +22,8 @@ type Job struct {
 
 // Manager runs jobs in defined intervals
 type Manager struct {
+	Log logrus.FieldLogger
+
 	waitGroup sync.WaitGroup
 	running   bool
 
@@ -53,14 +55,14 @@ func (s *Manager) schedule(exec *Execution) {
 	wake := make(chan int)
 
 	if exec.Sleep > 0 {
-		log.Printf("job '%v' going to sleep for: %s", exec.Job.Name, formatDuration(exec.Sleep))
+		s.Log.Debugf("job '%v' going to sleep for: %s", exec.Job.Name, formatDuration(exec.Sleep))
 		go sleep(exec.Sleep, wake)
 
 		select {
 		case <-wake:
-			log.Printf("job '%v' running", exec.Job.Name)
+			s.Log.Debugf("job '%v' running", exec.Job.Name)
 		case <-exec.quit:
-			log.Printf("job '%v' canceled", exec.Job.Name)
+			s.Log.Debugf("job '%v' canceled", exec.Job.Name)
 			exec.State = StateStopped
 		}
 	}
@@ -71,7 +73,7 @@ func (s *Manager) schedule(exec *Execution) {
 
 	if len(exec.Errors) > 0 {
 		err := exec.Errors[len(exec.Errors)-1]
-		log.Warnf("job %q failed: %v", exec.Job.Name, err)
+		s.Log.Warnf("job %q failed: %v", exec.Job.Name, err)
 	}
 
 	s.waitGroup.Done()

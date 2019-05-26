@@ -61,7 +61,7 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 		Secure:   true,
 	})
 
-	router.Use(sessions.Sessions("session", store), middleware.Logger(app.log), middleware.Metric())
+	router.Use(sessions.Sessions("session", store), middleware.Logger(app.log))
 
 	router.GET("/version", infoHandler.version)
 

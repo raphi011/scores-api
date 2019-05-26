@@ -1,10 +1,12 @@
 package sync
 
 import (
-	"github.com/raphi011/scores"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/pkg/errors"
+	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/repo"
 	"github.com/raphi011/scores/volleynet"
@@ -13,7 +15,7 @@ import (
 
 // Changes contains metrics of a scrape job
 type Changes struct {
-	TournamentInfo     TournamentChanges
+	TournamentInfo TournamentChanges
 	Team           TeamChanges
 	ScrapeDuration time.Duration
 	Success        bool
@@ -21,11 +23,14 @@ type Changes struct {
 
 // Service allows loading and synchronizing of the volleynetpage.
 type Service struct {
-	TeamRepo repo.TeamRepository
+	Log logrus.FieldLogger
+
+	TeamRepo       repo.TeamRepository
 	TournamentRepo repo.TournamentRepository
-	PlayerRepo repo.PlayerRepository
-	Client              client.Client
-	Subscriptions       events.Publisher
+	PlayerRepo     repo.PlayerRepository
+
+	Client        client.Client
+	Subscriptions events.Publisher
 }
 
 // Tournaments loads tournaments of a certain `gender`, `league` and `season` and

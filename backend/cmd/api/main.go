@@ -55,7 +55,7 @@ func main() {
 	googleOAuth, err := googleOAuthConfig(*gSecret, host)
 
 	if err != nil {
-		log.Printf("Could not read google secret: %v, continuing without google oauth\n", err)
+		log.Warnf("Could not read google secret: %v, continuing without google oauth\n", err)
 	}
 
 	app := app{
@@ -65,10 +65,13 @@ func main() {
 	}
 
 	router := initRouter(app, services)
+
+	log.Info("Initialized")
+
 	err = router.Run()
 
 	if err != nil {
-		fmt.Print(err)
+		log.Error(err)
 	}
 }
 
@@ -85,7 +88,7 @@ func setupLogger(logstashURL string, level logrus.Level) logrus.FieldLogger {
 			con, err = net.Dial("tcp", logstashURL)
 
 			if err != nil {
-				log.Printf("Retrying connection to logstash: %s", err)
+				log.Infof("Retrying connection to logstash: %s", err)
 			}
 
 			return err
@@ -96,7 +99,7 @@ func setupLogger(logstashURL string, level logrus.Level) logrus.FieldLogger {
 			return log
 		}
 
-		log.Print("Successfully connected to logstash")
+		log.Info("Successfully connected to logstash")
 
 		hook, err := logrustash.NewHookWithConn(con, "scores")
 
@@ -178,14 +181,19 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool, log l
 	broker := newBroker(log)
 
 	scrapeService := &sync.Service{
-		Client:         client.DefaultClient(),
+		Log: log,
+
 		PlayerRepo:     repos.PlayerRepo,
 		TeamRepo:       repos.TeamRepo,
 		TournamentRepo: repos.TournamentRepo,
-		Subscriptions:  broker,
+
+		Client:        client.ClientWithLogger(log),
+		Subscriptions: broker,
 	}
 
-	manager := &job.Manager{}
+	manager := &job.Manager{
+		Log: log,
+	}
 
 	ladderJob := ladderJob{
 		syncService: scrapeService,
@@ -198,7 +206,7 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool, log l
 		leagues:     []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
 		season:      time.Now().Year(),
 	}
-	
+
 	lastYearsTournamentsJob := tournamentsJob
 	lastYearsTournamentsJob.season = lastYearsTournamentsJob.season - 1
 

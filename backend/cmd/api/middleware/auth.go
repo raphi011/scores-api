@@ -18,7 +18,6 @@ func Auth() gin.HandlerFunc {
 		userID := session.Get("user-id")
 
 		if userID == nil {
-			log.Print("unauthorized")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}

@@ -5,19 +5,16 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores/cmd/api/logger"
 	"github.com/raphi011/scores/services"
 )
 
 // Admin middleware restricts routes for admins only
 func Admin(userService *services.User) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		log := logger.Get(c)
 		session := sessions.Default(c)
 		userID := session.Get("user-id")
 
 		if !userService.HasRole(userID.(int), "admin") {
-			log.Print("unauthorized")
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}

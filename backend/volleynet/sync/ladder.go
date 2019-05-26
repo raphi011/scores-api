@@ -1,8 +1,6 @@
 package sync
 
 import (
-	"log"
-
 	"github.com/pkg/errors"
 	"github.com/raphi011/scores/volleynet"
 )
@@ -32,7 +30,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 
 	for _, info := range syncInfos {
 		if info.IsNew {
-			log.Printf("adding player id: %v, name: %s %s",
+			s.Log.Debugf("adding player id: %v, name: %s %s",
 				info.NewPlayer.ID,
 				info.NewPlayer.FirstName,
 				info.NewPlayer.LastName)
@@ -43,7 +41,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 		} else {
 			merged := MergePlayer(info.OldPlayer, info.NewPlayer)
 
-			log.Printf("updating player id: %d, name: %s %s",
+			s.Log.Debugf("updating player id: %d, name: %s %s",
 				info.NewPlayer.ID,
 				merged.FirstName,
 				merged.LastName)

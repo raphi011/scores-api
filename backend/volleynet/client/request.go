@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 
 	"github.com/raphi011/scores/volleynet"
 	"github.com/raphi011/scores/volleynet/scrape"
@@ -37,6 +38,7 @@ type Default struct {
 	PostURL string
 	GetURL  string
 	Cookie  string
+	Log     logrus.FieldLogger
 }
 
 // DefaultClient returns a Client with the correct PostURL and GetURL fields set.
@@ -44,6 +46,15 @@ func DefaultClient() Client {
 	return &Default{
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",
+		Log:     logrus.New(),
+	}
+}
+
+func ClientWithLogger(log logrus.FieldLogger) Client {
+	return &Default{
+		PostURL: "https://beach.volleynet.at",
+		GetURL:  "http://www.volleynet.at",
+		Log:     log,
 	}
 }
 
@@ -142,7 +153,7 @@ func (c *Default) ComplementTournament(tournament *volleynet.TournamentInfo) (
 	*volleynet.Tournament, error) {
 	url := c.GetAPITournamentLink(tournament)
 
-	fmt.Printf("Downloading tournament: %s\n", url)
+	c.Log.Debugf("Downloading tournament: %s\n", url)
 	resp, err := http.Get(url)
 
 	if err != nil {
