@@ -1,15 +1,14 @@
 import React from 'react';
 
 import App, { Container } from 'next/app';
-import JssProvider from 'react-jss/lib/JssProvider';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { MuiThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 
 import Snackbar from '../containers/SnackbarContainer';
-import getPageContext, { PageContext } from '../styles/getPageContext';
+import theme from '../styles/theme';
 import withReduxStore from '../hoc/next/withReduxStore';
 
 interface Props {
@@ -17,13 +16,6 @@ interface Props {
 }
 
 class MyApp extends App<Props> {
-  pageContext: PageContext;
-
-  constructor(props: any) {
-    super(props);
-    this.pageContext = getPageContext();
-  }
-
   componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -36,28 +28,18 @@ class MyApp extends App<Props> {
     const { Component, pageProps, store } = this.props;
     return (
       <Container>
-        {/* Wrap every page in Jss and Theme providers */}
-        <JssProvider
-          registry={this.pageContext.sheetsRegistry}
-          generateClassName={this.pageContext.generateClassName}
-        >
-          {/* MuiThemeProvider makes the theme available down the React
-              tree thanks to React context. */}
-          <MuiThemeProvider
-            theme={this.pageContext.theme}
-            sheetsManager={this.pageContext.sheetsManager}
-          >
-            <CssBaseline />
-            {/* Pass pageContext to the _document though the renderPage enhancer
+        <ThemeProvider theme={theme}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server side. */}
-            <Provider store={store}>
-              <>
-                <Component pageContext={this.pageContext} {...pageProps} />
-                <Snackbar />
-              </>
-            </Provider>
-          </MuiThemeProvider>
-        </JssProvider>
+          <Provider store={store}>
+            <>
+              <Component {...pageProps} />
+              <Snackbar />
+            </>
+          </Provider>
+        </ThemeProvider>
       </Container>
     );
   }

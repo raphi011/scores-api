@@ -189,7 +189,7 @@ class Signup extends React.Component<Props, State> {
           <Typography color="primary" variant="h1" className={classes.header}>
             Signup
           </Typography>
-          <Grid container spacing={16}>
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <Typography variant="h3">Search</Typography>
               <SearchPlayer gender={tournament.gender} />

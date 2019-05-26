@@ -30,11 +30,11 @@ import withConnect from '../hoc/next/withConnect';
 const styles = (theme: Theme) =>
   createStyles({
     container: {
-      margin: theme.spacing.unit,
+      margin: theme.spacing(1),
     },
     paper: {
       margin: '10px 0',
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(1),
     },
     title: { marginTop: '25px' },
     userHeader: {

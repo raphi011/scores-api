@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { MuiThemeProviderProps } from '@material-ui/core/styles/MuiThemeProvider';
+import { ServerStyleSheets } from '@material-ui/styles';
+import theme from '../styles/theme';
 import Document, {
   Head,
   Main,
@@ -10,45 +11,27 @@ import Document, {
 import flush from 'styled-jsx/server';
 
 interface Props {
-  pageContext: MuiThemeProviderProps;
   url: string;
 }
 
 class MyDocument extends Document<Props> {
-  static getInitialProps = (ctx: NextDocumentContext): any => {
-    let pageContext: MuiThemeProviderProps;
+  static getInitialProps = async (ctx: NextDocumentContext): Promise<any> => {
+    const sheets = new ServerStyleSheets();
+    const originalRenderPage = ctx.renderPage;
 
-    const page = ctx.renderPage((Component: any) => {
-      const WrappedComponent = (props: Props) => {
-        pageContext = props.pageContext;
-        return <Component {...props} />;
-      };
+    ctx.renderPage = () =>
+      originalRenderPage({
+        enhanceApp: App => props => sheets.collect(<App {...props} />),
+      });
 
-      return WrappedComponent;
-    });
-
-    let css;
-
-    // @ts-ignore
-    if (pageContext) {
-      // @ts-ignore
-      css = pageContext.sheetsRegistry.toString();
-    }
+    const initialProps = await Document.getInitialProps(ctx);
 
     return {
-      ...page,
-      // @ts-ignore
-      pageContext,
+      ...initialProps,
+      // Styles fragment is rendered after the app and page rendering finish.
       styles: (
         <>
-          <style
-            id="jss-server-side"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              // @ts-ignore
-              __html: css,
-            }}
-          />
+          {sheets.getStyleElement()}
           {flush() || null}
         </>
       ),
@@ -56,15 +39,6 @@ class MyDocument extends Document<Props> {
   };
 
   render() {
-    const { pageContext } = this.props;
-
-    const theme =
-      typeof pageContext.theme === 'function'
-        ? pageContext.theme(null)
-        : pageContext.theme;
-
-    const themeColor = theme.palette.primary.main;
-
     const directives = [
       "default-src 'self'",
       "script-src 'self'",
@@ -95,7 +69,7 @@ class MyDocument extends Document<Props> {
             }
           />
           <meta httpEquiv="Content-Security-Policy" content={csp} />
-          <meta name="theme-color" content={themeColor} />
+          <meta name="theme-color" content={theme.palette.primary.main} />
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"

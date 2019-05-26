@@ -48,7 +48,7 @@ const styles = (theme: Theme) =>
       boxShadow: 'none',
     },
     drawer: {
-      margin: `0 ${theme.spacing.unit * 2}px`,
+      margin: `0 ${theme.spacing(2)}px`,
     },
     flex: {
       flex: 1,

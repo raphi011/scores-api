@@ -44,8 +44,8 @@ const styles = (theme: Theme) =>
     },
     fab: {
       position: 'fixed',
-      bottom: theme.spacing.unit * 2,
-      right: theme.spacing.unit * 2,
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
     },
     signupButton: {
       width: '120px',
@@ -127,7 +127,7 @@ function TournamentHeader({ tournament, width, classes, onSignup }: Props) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Typography variant="h1" inline>
+            <Typography variant="h1">
               {tournament.name}
               <External className={classes.externalIcon} />
             </Typography>
@@ -145,10 +145,8 @@ function TournamentHeader({ tournament, width, classes, onSignup }: Props) {
               date={tournament.start}
               formatter={(value, unit, suffix) => (
                 <>
-                  <Typography inline className={classes.attr}>
-                    {value}
-                  </Typography>
-                  <Typography inline className={classes.attrValue}>
+                  <Typography className={classes.attr}>{value}</Typography>
+                  <Typography className={classes.attrValue}>
                     {unit}
                     {value > 1 ? 's' : ''} {suffix}
                   </Typography>
@@ -157,20 +155,18 @@ function TournamentHeader({ tournament, width, classes, onSignup }: Props) {
             />
           </span>
           <span className={classes.attrContainer}>
-            <Typography inline className={classes.attr}>
+            <Typography className={classes.attr}>
               {`${tournament.signedupTeams}/${tournament.maxTeams}`}
             </Typography>
-            <Typography inline className={classes.attrValue}>
+            <Typography className={classes.attrValue}>
               Teams signed up
             </Typography>
           </span>
           <span className={classes.attrContainer}>
-            <Typography inline className={classes.attr}>
+            <Typography className={classes.attr}>
               {tournament.maxPoints}
             </Typography>
-            <Typography inline className={classes.attrValue}>
-              Max points
-            </Typography>
+            <Typography className={classes.attrValue}>Max points</Typography>
           </span>
         </div>
       </div>

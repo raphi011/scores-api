@@ -31,13 +31,13 @@ import { Tournament, User } from '../../types';
 const styles = (theme: Theme) =>
   createStyles({
     container: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
     },
     descriptionContainer: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
     },
     headerContainer: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
     },
     infoElement: {
       fontSize: '1rem',
@@ -48,7 +48,7 @@ const styles = (theme: Theme) =>
       background: theme.palette.background.paper,
     },
     updatedAt: {
-      marginTop: theme.spacing.unit,
+      marginTop: theme.spacing(1),
     },
   });
 
@@ -130,7 +130,7 @@ class TournamentView extends React.Component<Props, State> {
 
     return (
       <div className={classes.container}>
-        <Grid container spacing={24}>
+        <Grid container spacing={3}>
           <Grid item xs={6}>
             <Typography variant="h4">{tournament.name}</Typography>
             <Card>

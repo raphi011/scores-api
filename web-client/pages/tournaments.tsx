@@ -54,7 +54,7 @@ const styles = (theme: Theme) =>
       flexGrow: 1,
     },
     dialogContainer: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
     },
     dialogBody: {
       marginTop: '20px',
@@ -71,8 +71,8 @@ const styles = (theme: Theme) =>
     },
     fab: {
       position: 'fixed',
-      bottom: theme.spacing.unit * 2,
-      right: theme.spacing.unit * 2,
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
     },
     secondary: {
       [theme.breakpoints.up('sm')]: {

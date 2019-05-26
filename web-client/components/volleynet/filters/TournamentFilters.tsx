@@ -81,12 +81,14 @@ class TournamentFilters extends React.Component<Props, State> {
     };
   }
 
-  onSelectSeason = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  onSelectSeason = (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ) => {
     const { genders, seasons, leagues } = this.state;
 
     const selectedSeason = event.target.value;
 
-    if (selectedSeason === seasons) {
+    if (typeof selectedSeason !== 'string' || selectedSeason === seasons) {
       return;
     }
 

@@ -28,7 +28,7 @@ interface Props {
   initialReduxState: Store;
 }
 
-export default (App: React.ComponentType) => {
+export default <P extends object>(App: React.ComponentType<P>) => {
   return class AppWithRedux extends React.Component<Props> {
     static async getInitialProps(appContext: Context) {
       // Get or Create the store with `undefined` as initialState

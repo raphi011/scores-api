@@ -72,9 +72,6 @@ export default createMuiTheme({
   shape: {
     borderRadius: 0,
   },
-  spacing: {
-    unit: spacingUnit,
-  },
   typography: (palette: Palette): TypographyOptions => {
     return {
       body1: {
@@ -114,7 +111,6 @@ export default createMuiTheme({
         fontSize: fontPalette[400],
         fontWeight: 400,
       },
-      useNextVariants: true,
     };
   },
 });

@@ -19,10 +19,10 @@ const styles = (theme: Theme) =>
       flexGrow: 1,
       margin: '80px auto 0 auto',
       maxWidth: maxContentWidth,
-      padding: theme.spacing.unit * 3,
+      padding: theme.spacing(3),
 
       [theme.breakpoints.down('xs')]: {
-        padding: theme.spacing.unit * 1,
+        padding: theme.spacing(1),
       },
     },
     root: {
