@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/raphi011/scores/events"
 	"github.com/raphi011/scores/repo/sql"
@@ -20,6 +21,8 @@ func syncMock(t *testing.T) (*mocks.ClientMock, *Service, *sqlx.DB) {
 	clientMock := new(mocks.ClientMock)
 
 	service := &Service{
+		Log: log.New(),
+
 		Client:         clientMock,
 		PlayerRepo:     repos.PlayerRepo,
 		TournamentRepo: repos.TournamentRepo,

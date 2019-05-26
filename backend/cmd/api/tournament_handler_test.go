@@ -19,7 +19,7 @@ import (
 func testServices(t testing.TB) *handlerServices {
 	repos, _ := sql.RepositoriesTest(t)
 
-	return servicesFromRepositories(repos, false)
+	return servicesFromRepositories(repos, false, logrus.New())
 }
 
 func SetupTestServer(t testing.TB) *gin.Engine {
