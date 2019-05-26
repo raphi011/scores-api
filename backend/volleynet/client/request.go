@@ -50,7 +50,8 @@ func DefaultClient() Client {
 	}
 }
 
-func ClientWithLogger(log logrus.FieldLogger) Client {
+// WithLogger returns a DefaultClient with a logger.
+func WithLogger(log logrus.FieldLogger) Client {
 	return &Default{
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",

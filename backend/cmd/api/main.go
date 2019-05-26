@@ -187,7 +187,7 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool, log l
 		TeamRepo:       repos.TeamRepo,
 		TournamentRepo: repos.TournamentRepo,
 
-		Client:        client.ClientWithLogger(log),
+		Client:        client.WithLogger(log),
 		Subscriptions: broker,
 	}
 
