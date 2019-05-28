@@ -37,6 +37,8 @@ func main() {
 	logstashURL := flag.String("logstash", "", "logstash url")
 	debugLevel := flag.Int("debuglevel", int(logrus.InfoLevel), "")
 
+	flag.Parse()
+
 	log := setupLogger(*logstashURL, logrus.Level(*debugLevel))
 
 	production := os.Getenv("APP_ENV") == "production"
