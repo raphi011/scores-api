@@ -131,7 +131,7 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 	if user.ProfileImageURL != googleUser.Picture {
 		err := a.userService.SetProfileImage(user.ID, googleUser.Picture)
 		if err != nil {
-			logger.Get(c).Errorf("error setting profile image %v", err)
+			logger.Get(c).Warningf("setting profile image %v", err)
 		}
 	}
 

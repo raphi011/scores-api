@@ -33,7 +33,7 @@ func Tournament(
 	err = parseFullTournamentTeams(doc, t)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "error parsing tournament teams")
+		return nil, errors.Wrap(err, "parsing tournament teams")
 	}
 
 	if isDone(t, now) {
@@ -105,7 +105,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		t.Start, t.End, err = parseStartEndDates(value)
 
 		if err != nil {
-			log.Warnf("error parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
+			log.Warnf("parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
 		}
 	},
 	"Ort": func(value *goquery.Selection, t *volleynet.Tournament) {
@@ -182,7 +182,7 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) er
 				player, err := parsePlayerRow(rows.Eq(j), team)
 
 				if err != nil {
-					log.Warnf("error parsing player: %s", err)
+					log.Warnf("parsing player: %s", err)
 					j++ // if it's not possible to parse a player, skip the entire team
 					continue
 				}

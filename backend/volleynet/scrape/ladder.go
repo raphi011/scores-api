@@ -54,7 +54,7 @@ func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 				birthday, err := time.Parse("2006 15:04", trimmSelectionText(c)+" 13:37")
 
 				if err != nil {
-					log.Warnf("error parsing birthday of player in ladder: %q", trimmSelectionText(c))
+					log.Debugf("parsing birthday of player in ladder: %q", trimmSelectionText(c))
 				} else {
 					p.Birthday = &birthday
 				}
