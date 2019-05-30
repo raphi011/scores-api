@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -27,9 +28,9 @@ func Logger(log logrus.FieldLogger) gin.HandlerFunc {
 }
 
 func ipFromRequest(request *http.Request) string {
-	if ip, ok := request.Header["x-forwarded-for"]; ok {
+	if ip, ok := request.Header["X-Forwarded-For"]; ok {
 		return ip[0]
 	}
 
-	return request.RemoteAddr
+	return strings.Split(request.RemoteAddr, ":")[0]
 }

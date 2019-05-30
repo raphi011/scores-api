@@ -11,12 +11,11 @@ import (
 
 func initRouter(app app, services *handlerServices) *gin.Engine {
 	var router *gin.Engine
-	if app.production {
-		router = gin.Default()
-	} else {
+	router = gin.New()
+	router.Use(gin.Recovery())
+
+	if !app.production {
 		gin.SetMode(gin.TestMode)
-		router = gin.New()
-		router.Use(gin.Recovery())
 	}
 
 	authHandler := authHandler{
