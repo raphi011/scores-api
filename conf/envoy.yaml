@@ -69,6 +69,7 @@ static_resources:
         filters:
           - name: envoy.http_connection_manager
             config:
+              use_remote_address: true
               codec_type: auto
               stat_prefix: ingress_http
               access_log:
