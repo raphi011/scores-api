@@ -27,13 +27,17 @@ func NewManager(log logrus.FieldLogger) *Manager {
 
 // run starts an execution and sets the appropriate state.
 func (s *Manager) run(job *Job) {
-
+	job.Execution.lock.Lock()
 	job.Execution.State = StateRunning
+	job.Execution.lock.Unlock()
 	s.log.Debugf("job %q running", job.Name)
 
 	start := time.Now()
 	err := job.Do()
 	end := time.Now()
+
+	job.Execution.lock.Lock()
+	defer job.Execution.lock.Unlock()
 
 	job.Execution.LastDuration = end.Sub(start)
 	job.Execution.LastRun = time.Now()
@@ -76,15 +80,16 @@ func (s *Manager) schedule(job *Job) {
 		if sleep > 0 {
 			s.log.Debugf("job %q going to sleep for: %s", job.Name, formatDuration(sleep))
 
-			go func() {
-				time.Sleep(sleep)
+			sleepTimer := time.AfterFunc(sleep, func() {
 				job.Execution.signal <- SignalStart
-			}()
+			})
 
-			signal := <-job.Execution.signal
+			if signal := <-job.Execution.signal; signal == SignalStop {
+				sleepTimer.Stop()
 
-			if signal == SignalStop {
+				job.Execution.lock.Lock()
 				job.Execution.State = StateStopped
+				job.Execution.lock.Unlock()
 				s.log.Debugf("job %q stopped", job.Name)
 				break
 			}
@@ -129,7 +134,11 @@ func (s *Manager) Job(jobName string) (Job, bool) {
 	j, ok := s.jobs[jobName]
 
 	if ok {
-		return *j, true
+		j.Execution.lock.Lock()
+		job := *j
+		j.Execution.lock.Unlock()
+
+		return job, true
 	}
 
 	return Job{}, false

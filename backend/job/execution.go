@@ -1,6 +1,7 @@
 package job
 
 import (
+	"sync"
 	"time"
 )
 
@@ -23,6 +24,8 @@ type Execution struct {
 	start time.Time
 	end   time.Time
 	sleep time.Duration
+
+	lock sync.Mutex
 
 	signal chan int
 }
