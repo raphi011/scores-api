@@ -16,7 +16,7 @@
       "apiVersion": 2,
       "port": 40000,
       "host": "localhost",
-      "program": "${workspaceRoot}/cmd/api",
+      "program": "${workspaceRoot}/cmd/api"
     },
     {
       "name": "Backend",
@@ -31,6 +31,8 @@
         "postgres",
         "-connection",
         "postgres://postgres:test@localhost?sslmode=disable"
+        // "-debuglevel",
+        // "5",
         // "-provider",
         // "mysql",
         // "-connection",

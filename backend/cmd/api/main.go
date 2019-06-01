@@ -35,7 +35,7 @@ func main() {
 	connectionString := flag.String("connection", "./scores.db", "provider specific connectionstring")
 	gSecret := flag.String("gauth", "./client_secret.json", "Path to google oauth secret")
 	logstashURL := flag.String("logstash", "", "logstash url")
-	debugLevel := flag.Int("debuglevel", int(logrus.InfoLevel), "")
+	debugLevel := flag.Int("debuglevel", int(logrus.InfoLevel), "Debug level")
 
 	flag.Parse()
 
@@ -193,9 +193,7 @@ func servicesFromRepositories(repos *repo.Repositories, startManager bool, log l
 		Subscriptions: broker,
 	}
 
-	manager := &job.Manager{
-		Log: log,
-	}
+	manager := job.NewManager(log)
 
 	ladderJob := ladderJob{
 		syncService: scrapeService,
