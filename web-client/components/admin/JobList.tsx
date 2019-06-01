@@ -17,7 +17,7 @@ class JobList extends React.PureComponent<Props> {
     return (
       <List dense>
         {jobs.map(j => (
-          <JobListItem key={j.job.name} job={j} onAction={onAction} />
+          <JobListItem key={j.name} job={j} onAction={onAction} />
         ))}
       </List>
     );

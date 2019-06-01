@@ -31,11 +31,11 @@ class JobListItem extends React.PureComponent<Props> {
     const { job, onAction } = this.props;
 
     return (
-      <ListItem key={job.job.name}>
-        <ListItemIcon>{stateToString(job.state)}</ListItemIcon>
-        <ListItemText primary={job.job.name} />
+      <ListItem key={job.name}>
+        <ListItemIcon>{stateToString(job.execution.state)}</ListItemIcon>
+        <ListItemText primary={job.name} />
         <ListItemSecondaryAction>
-          <Button onClick={() => onAction(job.job.name)}>run</Button>
+          <Button onClick={() => onAction(job.name)}>run</Button>
         </ListItemSecondaryAction>
       </ListItem>
     );

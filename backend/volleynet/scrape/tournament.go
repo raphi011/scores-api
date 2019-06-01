@@ -182,7 +182,7 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) er
 				player, err := parsePlayerRow(rows.Eq(j), team)
 
 				if err != nil {
-					log.Warnf("parsing player: %s", err)
+					log.Debugf("parsing player: %s", err)
 					j++ // if it's not possible to parse a player, skip the entire team
 					continue
 				}

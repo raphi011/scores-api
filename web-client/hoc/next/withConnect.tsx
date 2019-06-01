@@ -25,7 +25,14 @@ export interface ClientContext extends Context {
   fromServer: boolean;
 }
 
-export default (Component: any): NextComponentClass<Props> => {
+// interface ReduxPage {
+//   buildActions?: (props: any) => [];
+//   shouldComponentFetch: (nextProps, nextState) => boolean;
+// }
+
+export default (
+  Component: any, // NextComponentType & ReduxPage,
+): NextComponentClass<Props> => {
   class WithConnect extends React.Component<Props> {
     static async getInitialProps(ctx: Context) {
       try {

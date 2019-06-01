@@ -98,8 +98,8 @@ func initRouter(app app, services *handlerServices) *gin.Engine {
 	volleynetAdmin := admin.Group("/volleynet")
 
 	volleynetAdmin.GET("/scrape/report", scrapeHandler.report)
-	volleynetAdmin.POST("/scrape/run", scrapeHandler.run)
-	volleynetAdmin.POST("/scrape/stop", scrapeHandler.stop)
+	// volleynetAdmin.POST("/scrape/run", scrapeHandler.run)
+	// volleynetAdmin.POST("/scrape/stop", scrapeHandler.stop)
 
 	return router
 }

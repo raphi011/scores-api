@@ -97,18 +97,18 @@ export interface Tournament {
 }
 
 export interface ScrapeJob {
-  start: string;
-  end: string;
-  sleep: string;
-  lastDuration: number;
-  job: {
-    maxRuns: number;
-    name: string;
-    maxFailures: number;
-    interval: string;
+  maxRuns: number;
+  name: string;
+  maxFailures: number;
+  interval: string;
+
+  execution: {
+    lastRun: string;
+    lastDuration: string;
+    runs: number;
+    state: number;
+    // errors:
   };
-  runs: number;
-  state: number;
 }
 
 export type EntityType = User | Player | Team | Tournament;

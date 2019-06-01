@@ -9,196 +9,152 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Job is the definition of a job which is run the Manager in defined intervals.
-type Job struct {
-	MaxRuns     uint          `json:"maxRuns"`     // limit the # of runs, no limit if 0
-	Name        string        `json:"name"`        // name of the job, useful in logs
-	MaxFailures uint          `json:"maxFailures"` // max # of consecutive failures, retries endlessly if 0
-	Interval    time.Duration `json:"interval"`    // attempts to call the job every interval, if the job takes longer than the interval it will be restarted immediately after finishing
-	Delay       time.Duration `json:"delay"`       // delays first job start
-
-	Do func() error `json:"-"` // when started the job calls the do function
-}
-
 // Manager runs jobs in defined intervals
 type Manager struct {
-	Log logrus.FieldLogger
+	log logrus.FieldLogger
 
 	waitGroup sync.WaitGroup
-	running   bool
 
-	quit     chan int
-	executed chan *Execution
-
-	runningJobs map[string]*Execution
-	jobs        []*Job
+	jobs map[string]*Job
 }
 
-func (s *Manager) executionLoop() {
-	run := true
-
-	for run {
-		select {
-		case exec := <-s.executed:
-			if exec.State == StateWaiting {
-				s.schedule(exec)
-			}
-		case <-s.quit:
-			s.StopJobs()
-			run = false
-		}
+// NewManager constructs a new Manager.
+func NewManager(log logrus.FieldLogger) *Manager {
+	return &Manager{
+		log: log,
 	}
 }
 
-func (s *Manager) schedule(exec *Execution) {
+// run starts an execution and sets the appropriate state.
+func (s *Manager) run(job *Job) {
+
+	job.Execution.State = StateRunning
+	s.log.Debugf("job %q running", job.Name)
+
+	start := time.Now()
+	err := job.Do()
+	end := time.Now()
+
+	job.Execution.LastDuration = end.Sub(start)
+	job.Execution.LastRun = time.Now()
+	job.Execution.Runs++
+
+	if err != nil {
+		s.log.Warnf("job %q failed: %v", job.Name, err)
+		job.Execution.Errors = append(job.Execution.Errors, err)
+	} else {
+		s.log.Debugf("job %q finished", job.Name)
+		job.Execution.Errors = nil
+	}
+
+	if job.hasFailed() {
+		s.log.Warnf("job %q failed %d times, stopping", job.Name, job.MaxFailures)
+		job.Execution.State = StateErrored
+	} else if job.shouldStop() {
+		s.log.Infof("job %q ran %d times, stopping", job.Name, job.Execution.Runs)
+		job.Execution.State = StateStopped
+	} else {
+		job.Execution.State = StateWaiting
+	}
+}
+
+// schedule adds an execution to the run queue during the next interval
+// if the execution's state allows it (has not errored, isn't stopped).
+// Must be run in a go routine.
+func (s *Manager) schedule(job *Job) {
 	s.waitGroup.Add(1)
-	wake := make(chan int)
 
-	if exec.Sleep > 0 {
-		s.Log.Debugf("job '%v' going to sleep for: %s", exec.Job.Name, formatDuration(exec.Sleep))
-		go sleep(exec.Sleep, wake)
+	for {
+		sleep := time.Duration(0)
 
-		select {
-		case <-wake:
-			s.Log.Debugf("job '%v' running", exec.Job.Name)
-		case <-exec.quit:
-			s.Log.Debugf("job '%v' canceled", exec.Job.Name)
-			exec.State = StateStopped
+		if job.Execution.Runs == 0 {
+			sleep = job.Delay
+		} else {
+			sleep = job.Interval
 		}
-	}
 
-	if exec.State == StateWaiting {
-		exec.run()
-	}
+		if sleep > 0 {
+			s.log.Debugf("job %q going to sleep for: %s", job.Name, formatDuration(sleep))
 
-	if len(exec.Errors) > 0 {
-		err := exec.Errors[len(exec.Errors)-1]
-		s.Log.Warnf("job %q failed: %v", exec.Job.Name, err)
-	}
+			go func() {
+				time.Sleep(sleep)
+				job.Execution.signal <- SignalStart
+			}()
 
-	s.waitGroup.Done()
-	s.executed <- exec
-}
+			signal := <-job.Execution.signal
 
-// Run attempts to run a job referenced by its name (job.Name)
-func (s *Manager) Run(jobName string) error {
-	exec, ok := s.runningJobs[jobName]
+			if signal == SignalStop {
+				job.Execution.State = StateStopped
+				s.log.Debugf("job %q stopped", job.Name)
+				break
+			}
 
-	if !ok {
-		return fmt.Errorf("job %q does not exist", jobName)
-	}
+			s.log.Debugf("job %q woken up", job.Name)
+		}
 
-	return s.RunJob(exec.Job)
-}
+		s.run(job)
 
-// Executions returns all running jobs
-func (s *Manager) Executions() []Execution {
-	executions := []Execution{}
-
-	for _, execution := range s.runningJobs {
-		executions = append(executions, *execution)
-	}
-
-	return executions
-}
-
-// RunJob runs a job
-func (s *Manager) RunJob(job Job) error {
-	if !s.running {
-		return errors.New("Manager must be running before starting a job")
-	}
-
-	if job.Do == nil {
-		return errors.New("job has no 'Do' function")
-	}
-
-	exec, ok := s.runningJobs[job.Name]
-
-	if ok && !exec.canStart() {
-		return fmt.Errorf("job %q can't start because it's in state %q",
-			job.Name, exec.State)
-	}
-
-	var sleep time.Duration
-
-	if !ok && job.Delay > 0 {
-		sleep = job.Delay
-	}
-
-	exec = &Execution{
-		Job:   job,
-		Sleep: sleep,
-		State: StateWaiting,
-
-		quit: make(chan int),
-	}
-
-	s.runningJobs[job.Name] = exec
-
-	go s.schedule(exec)
-
-	return nil
-}
-
-// HasJob returns true if a job with the name `jobName` exists.
-func (s *Manager) HasJob(jobName string) bool {
-	_, ok := s.runningJobs[jobName]
-
-	return ok
-}
-
-// StopJob stops a job.
-func (s *Manager) StopJob(jobName string) error {
-	exec, ok := s.runningJobs[jobName]
-
-	if !ok {
-		return fmt.Errorf("job %q does not exist", jobName)
-	}
-
-	exec.stop()
-
-	return nil
-}
-
-// Start runs the Manager and queues the `jobs`
-func (s *Manager) Start(jobs ...Job) (err error) {
-	if s.running || len(jobs) == 0 {
-		return
-	}
-
-	s.runningJobs = make(map[string]*Execution)
-	s.quit = make(chan int)
-	s.executed = make(chan *Execution)
-	s.running = true
-
-	go s.executionLoop()
-
-	for _, job := range jobs {
-		err = s.RunJob(job)
-
-		if err != nil {
-			s.Stop()
+		if job.Execution.State != StateWaiting {
 			break
 		}
 	}
 
-	return err
+	s.waitGroup.Done()
 }
 
-// StopJobs stops all jobs
-func (s *Manager) StopJobs() {
-	for _, exec := range s.runningJobs {
-		exec.stop()
-	}
+func formatDuration(d time.Duration) string {
+	return fmt.Sprintf("%dm %ds", int(d.Minutes()), int(d.Seconds())%60)
 }
 
-// Stop stops the manager and all its jobs
-func (s *Manager) Stop() {
-	if !s.running {
-		return
+// Jobs returns all running jobs.
+func (s *Manager) Jobs() []Job {
+	jobs := []Job{}
+
+	for _, job := range s.jobs {
+		jobs = append(jobs, *job)
 	}
 
-	close(s.quit)
-	s.waitGroup.Wait()
-	s.running = false
+	return jobs
+}
+
+// HasJob returns true if a job with the name `jobName` exists.
+func (s *Manager) HasJob(jobName string) bool {
+	_, ok := s.jobs[jobName]
+
+	return ok
+}
+
+// Job retrieves a job.
+func (s *Manager) Job(jobName string) (Job, bool) {
+	j, ok := s.jobs[jobName]
+
+	if ok {
+		return *j, true
+	}
+
+	return Job{}, false
+}
+
+// Start runs the Manager and queues the `jobs`
+func (s *Manager) Start(jobs ...Job) error {
+	if len(jobs) == 0 {
+		return nil
+	}
+
+	s.jobs = make(map[string]*Job)
+
+	for i := range jobs {
+		job := &jobs[i]
+
+		if job.Do == nil {
+			return errors.New("job has no 'Do' function")
+		}
+
+		job.Execution.signal = make(chan int)
+		s.jobs[job.Name] = job
+
+		go s.schedule(job)
+	}
+
+	return nil
 }
