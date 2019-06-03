@@ -73,7 +73,7 @@ class ShowTournament extends React.Component<Props> {
 
     const tab = tabOptions[tabIndex];
 
-    Router.push({
+    Router.replace({
       pathname: '/tournament',
       query: { tab, id },
     });
