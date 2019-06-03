@@ -52,6 +52,9 @@ const styles = (theme: Theme) =>
     },
     primary: {
       flexGrow: 1,
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: '300px',
+      },
     },
     dialogContainer: {
       padding: theme.spacing(2),
@@ -81,10 +84,9 @@ const styles = (theme: Theme) =>
       right: theme.spacing(2),
     },
     secondary: {
-      [theme.breakpoints.up('sm')]: {
-        paddingRight: '50px',
-        width: '250px',
-      },
+      position: 'fixed',
+      paddingRight: '50px',
+      width: '250px',
     },
   });
 
