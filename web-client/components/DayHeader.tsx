@@ -19,7 +19,7 @@ interface Props extends WithStyles<typeof styles> {
 
 const DayHeader = ({ date, appendix, classes }: Props) => (
   <ListItem className={classes.container} disableGutters>
-    <Typography variant="subtitle1">
+    <Typography variant="h2" color="primary">
       {formatDate(date)} {appendix}
     </Typography>
   </ListItem>

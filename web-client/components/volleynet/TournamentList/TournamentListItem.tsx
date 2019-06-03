@@ -77,7 +77,7 @@ const TournamentListItem = ({ tournament, classes, onClick }: Props) => {
             data={`${tournament.signedupTeams}/${tournament.maxTeams}`}
           />
           <TournamentAttribute label="Status" data={tournament.status} />
-          <TournamentAttribute label="League" data={tournament.league} />
+          <TournamentAttribute label="League" data={tournament.subLeague} />
         </div>
       </div>
       <ArrowRight fontSize="large" color="primary" className={classes.arrow} />

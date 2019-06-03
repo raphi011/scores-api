@@ -69,6 +69,12 @@ const styles = (theme: Theme) =>
         flexDirection: 'column',
       },
     },
+    tournamentGroup: {
+      marginBottom: '40px',
+    },
+    tournamentHeader: {
+      marginBottom: '10px',
+    },
     fab: {
       position: 'fixed',
       bottom: theme.spacing(2),
@@ -149,9 +155,24 @@ class Volleynet extends React.Component<Props, State> {
     filterDialogOpen: false,
   };
 
-  renderList = (tournaments: Tournament[]) => {
+  renderHeader = (tournaments: Tournament[]) => {
+    const { classes } = this.props;
+
     return (
-      <div key={tournaments[0].id}>
+      <DayHeader
+        key={tournaments[0].start}
+        appendix={`(${tournaments.length})`}
+        date={new Date(tournaments[0].start)}
+        classes={{ container: classes.tournamentHeader }}
+      />
+    );
+  };
+
+  renderList = (tournaments: Tournament[]) => {
+    const { classes } = this.props;
+
+    return (
+      <div key={tournaments[0].id} className={classes.tournamentGroup}>
         <TournamentList
           tournaments={tournaments}
           onTournamentClick={this.onTournamentClick}
@@ -205,7 +226,7 @@ class Volleynet extends React.Component<Props, State> {
       <GroupedList<Tournament>
         groupItems={groupTournaments}
         items={tournaments}
-        renderHeader={renderHeader}
+        renderHeader={this.renderHeader}
         renderList={this.renderList}
       />
     );
@@ -290,16 +311,6 @@ function groupTournaments(tournaments: Tournament[]) {
   });
 
   return grouped;
-}
-
-function renderHeader(tournaments: Tournament[]) {
-  return (
-    <DayHeader
-      key={tournaments[0].start}
-      appendix={`(${tournaments.length})`}
-      date={new Date(tournaments[0].start)}
-    />
-  );
 }
 
 export default withAuth(

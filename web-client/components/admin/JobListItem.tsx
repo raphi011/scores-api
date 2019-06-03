@@ -47,12 +47,10 @@ function stateToString(state: number): JSX.Element {
     case 0:
       return <StopIcon />;
     case 1:
-      return <StopIcon />;
-    case 2:
       return <PauseIcon />;
-    case 3:
+    case 2:
       return <PlayIcon />;
-    case 4:
+    case 3:
       return <WarningIcon />;
     default:
       return <span />;
