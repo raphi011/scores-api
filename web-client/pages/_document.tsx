@@ -42,7 +42,7 @@ class MyDocument extends Document<Props> {
     const directives = [
       "default-src 'self'",
       "script-src 'self'",
-      "img-src 'self' https://*.googleusercontent.com",
+      'img-src *',
       "child-src 'none'",
       "object-src 'none'",
       "font-src 'self' https://fonts.gstatic.com",
