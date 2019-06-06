@@ -33,6 +33,11 @@ const styles = createStyles({
   title: {
     marginBottom: 0,
   },
+  notes: {
+    '& img': {
+      maxWidth: '100%',
+    },
+  },
 });
 
 type TabOption = 'notes' | 'teams';
@@ -112,6 +117,7 @@ class ShowTournament extends React.Component<Props> {
         body = this.hasNotes(tournament.htmlNotes) ? (
           <Typography
             variant="body2"
+            className={classes.notes}
             dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
           />
         ) : (
