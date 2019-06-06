@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"net"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -32,5 +32,7 @@ func ipFromRequest(request *http.Request) string {
 		return ip[0]
 	}
 
-	return strings.Split(request.RemoteAddr, ":")[0]
+	host, _, _ := net.SplitHostPort(request.RemoteAddr)
+
+	return host
 }
