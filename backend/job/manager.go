@@ -152,12 +152,14 @@ func (s *Manager) Start(jobs ...Job) error {
 
 	s.jobs = make(map[string]*Job)
 
-	for i := range jobs {
-		job := &jobs[i]
-
+	for _, job := range jobs {
 		if job.Do == nil {
 			return errors.New("job has no 'Do' function")
 		}
+	}
+
+	for i := range jobs {
+		job := &jobs[i]
 
 		job.Execution.signal = make(chan int)
 		s.jobs[job.Name] = job
