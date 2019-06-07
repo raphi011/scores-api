@@ -60,6 +60,7 @@ class MyDocument extends Document<Props> {
     return (
       <html lang="en" dir="ltr">
         <Head>
+          <title>Scores</title>
           <meta charSet="utf-8" />
           <meta
             name="viewport"
