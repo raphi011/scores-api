@@ -1,11 +1,16 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "backend"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "backend"
+    }
+  ],
+  "settings": {
+    "go.testEnvVars": {
+      "TEST_DB_PROVIDER": "postgres",
+      "TEST_DB_CONNECTION": "postgres://postgres@localhost?sslmode=disable"
+    }
+  }
 }
