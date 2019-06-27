@@ -60,8 +60,8 @@ func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *u
 	return link
 }
 
-// GetTournamentLink returns the link for a tournament.
-func (c *Default) GetTournamentLink(t *volleynet.TournamentInfo) string {
+// getTournamentLink returns the link for a tournament.
+func (c *Default) getTournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%d",
 		t.League,
 		t.League,
@@ -73,8 +73,8 @@ func (c *Default) GetTournamentLink(t *volleynet.TournamentInfo) string {
 	return url.String()
 }
 
-// GetAPITournamentLink returns the API link for a tournament.
-func (c *Default) GetAPITournamentLink(t *volleynet.TournamentInfo) string {
+// getAPITournamentLink returns the API link for a tournament.
+func (c *Default) getAPITournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%d",
 		t.League,
 		t.League,

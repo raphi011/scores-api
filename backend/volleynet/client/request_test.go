@@ -10,7 +10,7 @@ func Test_upcoming_games(t *testing.T) {
 	t.Skip()
 
 	c := DefaultClient()
-	tournaments, err := c.AllTournaments("M", "AMATEUR TOUR", 2018)
+	tournaments, err := c.Tournaments("M", "AMATEUR TOUR", 2018)
 
 	if err != nil {
 		t.Error(err)

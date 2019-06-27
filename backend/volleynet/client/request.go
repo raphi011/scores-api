@@ -21,15 +21,15 @@ import (
 // Client is the interface to the volleynet api, use DefaultClient()
 // to get a new Client.
 type Client interface {
-	GetTournamentLink(t *volleynet.TournamentInfo) string
-	GetAPITournamentLink(t *volleynet.TournamentInfo) string
 	Login(username, password string) (*scrape.LoginData, error)
-	AllTournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error)
+
+	Tournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error)
 	Ladder(gender string) ([]*volleynet.Player, error)
 	ComplementTournament(tournament *volleynet.TournamentInfo) (*volleynet.Tournament, error)
-	ComplementMultipleTournaments(tournaments []*volleynet.TournamentInfo) ([]*volleynet.Tournament, error)
-	TournamentWithdrawal(tournamentID int) error
-	TournamentEntry(playerName string, playerID, tournamentID int) error
+
+	WithdrawFromTournament(tournamentID int) error
+	EnterTournament(playerName string, playerID, tournamentID int) error
+
 	SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error)
 }
 
@@ -99,9 +99,9 @@ func (c *Default) Login(username, password string) (*scrape.LoginData, error) {
 	return loginData, nil
 }
 
-// AllTournaments reads all tournaments of a certain gender, league and year.
-// To get more detailed tournamnent information call `ComplementTournament`.
-func (c *Default) AllTournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error) {
+// Tournaments reads all tournaments of a certain gender, league and year.
+// To get all details of a tournamnent use `Client.ComplementTournament`.
+func (c *Default) Tournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/information/all",
 		league,
@@ -121,7 +121,7 @@ func (c *Default) AllTournaments(gender, league string, year int) ([]*volleynet.
 	return scrape.TournamentList(resp.Body, c.GetURL)
 }
 
-// Ladder reads all players of a certain gender.
+// Ladder loads all ranked players of a certain gender.
 func (c *Default) Ladder(gender string) ([]*volleynet.Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
@@ -131,7 +131,7 @@ func (c *Default) Ladder(gender string) ([]*volleynet.Player, error) {
 	resp, err := http.Get(url)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "loading ladder %q failed", gender)
 	}
 
 	defer resp.Body.Close()
@@ -149,10 +149,10 @@ func genderLong(gender string) string {
 	return ""
 }
 
-// ComplementTournament adds the missing information from `AllTournaments`.
+// ComplementTournament adds the missing information from `Tournaments`.
 func (c *Default) ComplementTournament(tournament *volleynet.TournamentInfo) (
 	*volleynet.Tournament, error) {
-	url := c.GetAPITournamentLink(tournament)
+	url := c.getAPITournamentLink(tournament)
 
 	c.Log.Debugf("Downloading tournament: %s\n", url)
 	resp, err := http.Get(url)
@@ -167,27 +167,9 @@ func (c *Default) ComplementTournament(tournament *volleynet.TournamentInfo) (
 		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
 	}
 
-	t.Link = c.GetTournamentLink(tournament)
+	t.Link = c.getTournamentLink(tournament)
 
 	return t, nil
-}
-
-// ComplementMultipleTournaments adds the missing information from `AllTournaments`
-func (c *Default) ComplementMultipleTournaments(tournaments []*volleynet.TournamentInfo) (
-	[]*volleynet.Tournament, error) {
-	// maybe donwload tournaments in parallel in the future?
-	fullTournaments := []*volleynet.Tournament{}
-
-	for _, t := range tournaments {
-		fullTournament, err := c.ComplementTournament(t)
-		if err != nil {
-			return nil, err
-		}
-
-		fullTournaments = append(fullTournaments, fullTournament)
-	}
-
-	return fullTournaments, nil
 }
 
 func (c *Default) loadUniqueWriteCode(tournamentID int) (string, error) {
@@ -219,8 +201,9 @@ func (c *Default) loadUniqueWriteCode(tournamentID int) (string, error) {
 	return code, errors.Wrap(err, "parsing unique writecode failed")
 }
 
-// TournamentWithdrawal signs a player out of a tournament. A valid session Cookie must be set.
-func (c *Default) TournamentWithdrawal(tournamentID int) error {
+// WithdrawFromTournament withdraws a player from a tournament.
+// A valid session Cookie must be set.
+func (c *Default) WithdrawFromTournament(tournamentID int) error {
 	url := c.buildPostURL("/Abmelden/0-%d-00-0", tournamentID).String()
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -244,8 +227,9 @@ func (c *Default) TournamentWithdrawal(tournamentID int) error {
 	return nil
 }
 
-// TournamentEntry signs a player up for a tournament. A valid session Cookie must be set.
-func (c *Default) TournamentEntry(playerName string, playerID, tournamentID int) error {
+// EnterTournament enters a player at a tournament.
+// A valid session Cookie must be set.
+func (c *Default) EnterTournament(playerName string, playerID, tournamentID int) error {
 	if c.Cookie == "" {
 		return errors.New("cookie must be set")
 	}

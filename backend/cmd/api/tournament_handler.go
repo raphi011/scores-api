@@ -133,7 +133,7 @@ func (h *volleynetHandler) postSignup(c *gin.Context) {
 		}
 	}
 
-	err = vnClient.TournamentEntry(su.PartnerName, su.PartnerID, su.TournamentID)
+	err = vnClient.EnterTournament(su.PartnerName, su.PartnerID, su.TournamentID)
 
 	if err != nil {
 		responseErr(c, err)
