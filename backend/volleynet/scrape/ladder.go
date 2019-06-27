@@ -4,11 +4,13 @@ import (
 	"io"
 	"time"
 
-	"github.com/raphi011/scores/volleynet"
+	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/raphi011/scores/volleynet"
 )
 
-// Ladder parses players from the ladder page
+// Ladder parses players from the ladder page.
 func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 	doc, err := parseHTML(html)
 
@@ -28,48 +30,58 @@ func Ladder(html io.Reader) ([]*volleynet.Player, error) {
 	}
 
 	for i := range rows.Nodes {
-		r := rows.Eq(i)
+		row := rows.Eq(i)
 
-		columns := r.Find("td")
+		player := parseLadderRow(row)
 
-		if len(columns.Nodes) != 7 {
+		if player == nil {
 			continue
 		}
 
-		p := &volleynet.Player{}
-		p.Gender = gender
+		player.Gender = gender
 
-		for j := range columns.Nodes {
-			c := columns.Eq(j)
-
-			switch j {
-			case 1:
-				p.LadderRank, _ = findInt(c.Text())
-			case 2:
-				p.FirstName, p.LastName = parsePlayerName(c)
-				p.ID, _ = parsePlayerIDFromSteckbrief(c.Find("a"))
-			case 3:
-				// since we only know the birth year add a 'magic' time, so that we
-				// can update it as soon as we have the information.
-				birthday, err := time.Parse("2006 15:04", trimmSelectionText(c)+" 13:37")
-
-				if err != nil {
-					log.Debugf("parsing birthday of player in ladder: %q", trimmSelectionText(c))
-				} else {
-					p.Birthday = &birthday
-				}
-			case 4:
-				p.CountryUnion = trimmSelectionText(c)
-			case 5:
-				p.Club = trimmSelectionText(c)
-			case 6:
-				p.TotalPoints, _ = findInt(c.Text())
-			}
-		}
-
-		players = append(players, p)
-
+		players = append(players, player)
 	}
 
 	return players, nil
+}
+
+func parseLadderRow(row *goquery.Selection) *volleynet.Player {
+	columns := row.Find("td")
+
+	if len(columns.Nodes) != 7 {
+		return nil
+	}
+
+	p := &volleynet.Player{}
+
+	for j := range columns.Nodes {
+		c := columns.Eq(j)
+
+		switch j {
+		case 1:
+			p.LadderRank, _ = findInt(c.Text())
+		case 2:
+			p.FirstName, p.LastName = parsePlayerName(c)
+			p.ID, _ = parsePlayerIDFromSteckbrief(c.Find("a"))
+		case 3:
+			// since we only know the birth year add a 'magic' time, so that we
+			// can update it as soon as we have the information.
+			birthday, err := time.Parse("2006 15:04", trimmSelectionText(c)+" 13:37")
+
+			if err != nil {
+				log.Debugf("parsing birthday of player in ladder: %q", trimmSelectionText(c))
+			} else {
+				p.Birthday = &birthday
+			}
+		case 4:
+			p.CountryUnion = trimmSelectionText(c)
+		case 5:
+			p.Club = trimmSelectionText(c)
+		case 6:
+			p.TotalPoints, _ = findInt(c.Text())
+		}
+	}
+
+	return p
 }

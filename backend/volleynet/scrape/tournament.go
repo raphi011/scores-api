@@ -13,7 +13,7 @@ import (
 	"github.com/raphi011/scores/volleynet"
 )
 
-// Tournament adds remaining details to the tournament (parsed by tournament_list)
+// Tournament adds remaining details to the tournament (parsed by TournamentList()).
 func Tournament(
 	html io.Reader,
 	now time.Time,
@@ -22,7 +22,7 @@ func Tournament(
 	doc, err := parseHTML(html)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "parseFullTournament failed")
+		return nil, errors.Wrap(err, "parse tournament")
 	}
 
 	t := &volleynet.Tournament{TournamentInfo: *tournament}
@@ -33,7 +33,7 @@ func Tournament(
 	err = parseFullTournamentTeams(doc, t)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "parsing tournament teams")
+		return nil, errors.Wrap(err, "parse tournament teams")
 	}
 
 	if isDone(t, now) {
@@ -55,12 +55,12 @@ func isDone(t *volleynet.Tournament, now time.Time) bool {
 		return true
 	}
 
-	return hasNotTookPlace(t, now)
+	return hasNotTakenPlace(t, now)
 }
 
-// hasNotTookPlace returns true if no results were added a week after the
+// hasNotTakenPlace returns true if no results were added a week after the
 // tournament has ended - thus assuming that the tournament has not taken place.
-func hasNotTookPlace(t *volleynet.Tournament, now time.Time) bool {
+func hasNotTakenPlace(t *volleynet.Tournament, now time.Time) bool {
 	updateDeadline := t.End.AddDate(0, 0, 7)
 
 	return isDateAfter(now, updateDeadline)

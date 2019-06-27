@@ -41,7 +41,7 @@ type License struct {
 	Requested string
 }
 
-// Login parses data from the successfull login page
+// Login parses data from the successfull login page.
 func Login(html io.Reader) (*LoginData, error) {
 	doc, err := parseHTML(html)
 

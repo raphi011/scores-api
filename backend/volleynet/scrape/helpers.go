@@ -69,6 +69,10 @@ func parsePlayerID(s *goquery.Selection) (int, error) {
 
 	id := re.FindStringSubmatch(href)
 
+	if len(id) < 2 {
+		return -1, errors.New("ID not found")
+	}
+
 	return strconv.Atoi(id[1])
 }
 
