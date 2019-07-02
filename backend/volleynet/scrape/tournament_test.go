@@ -1,7 +1,6 @@
 package scrape
 
 import (
-	"fmt"
 	"os"
 	"testing"
 	"time"
