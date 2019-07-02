@@ -94,8 +94,8 @@ func TestSyncTournaments(t *testing.T) {
 	league := "amateur-league"
 	season := 2018
 
-	clientMock.On("AllTournaments", gender, league, season).Return(clientTournaments, nil)
-	clientMock.On("ComplementMultipleTournaments", clientTournaments).Return(clientFullTournament, nil)
+	clientMock.On("Tournaments", gender, league, season).Return(clientTournaments, nil)
+	clientMock.On("ComplementTournament", clientTournaments[0]).Return(clientFullTournament[0], nil)
 
 	err := service.Tournaments("M", "amateur-league", 2018)
 

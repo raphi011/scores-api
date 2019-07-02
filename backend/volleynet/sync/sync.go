@@ -39,7 +39,7 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 	report := &Changes{TournamentInfo: TournamentChanges{}, Team: TeamChanges{}}
 	s.publishStartScrapeEvent("tournaments", time.Now())
 
-	current, err := s.Client.AllTournaments(gender, league, season)
+	current, err := s.Client.Tournaments(gender, league, season)
 
 	if err != nil {
 		return errors.Wrap(err, "loading the client tournament list failed")
@@ -78,7 +78,18 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 		return nil
 	}
 
-	currentTournaments, err := s.Client.ComplementMultipleTournaments(toDownload)
+	currentTournaments := make([]*volleynet.Tournament, len(toDownload))
+
+	for i, t := range toDownload {
+		currentTournaments[i], err = s.Client.ComplementTournament(t)
+
+		if err != nil {
+			s.Log.Warnf("error loading touappend(slice[:s], slice[s+1:]...)rnament: %v", err)
+
+			// remove it from the tournaments for now
+			currentTournaments = append(currentTournaments[:i], currentTournaments[i+1:]...)
+		}
+	}
 
 	s.syncTournaments(report, persistedTournaments, currentTournaments)
 
