@@ -218,7 +218,9 @@ function RenderLink({
       prefetch
       href={href}
     >
-      <Typography variant="subtitle1">{name}</Typography>
+      <Typography component="a" variant="subtitle1">
+        {name}
+      </Typography>
     </ActiveLink>
   );
 

@@ -18,7 +18,12 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 const DayHeader = ({ date, appendix, classes }: Props) => (
-  <Typography variant="h2" color="primary" className={classes.container}>
+  <Typography
+    component="a"
+    variant="h2"
+    color="primary"
+    className={classes.container}
+  >
     {formatDate(date)} {appendix}
   </Typography>
 );

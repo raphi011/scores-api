@@ -4,7 +4,7 @@
   "dependencies": {
     "@material-ui/core": "4.0.0",
     "@material-ui/styles": "4.0.0",
-    "@material-ui/icons": "^3.0.1",
+    "@material-ui/icons": "^4.0.0",
     "isomorphic-unfetch": "^3.0.0",
     "classnames": "^2.2.6",
     "next": "^8.0.4",
@@ -38,7 +38,7 @@
     "ts-jest": "^23.10.5",
     "tslint": "^5.12.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.3.3"
+    "typescript": "^3.5.1"
   },
   "scripts": {
     "dev": "next",

@@ -25,14 +25,7 @@ export interface ClientContext extends Context {
   fromServer: boolean;
 }
 
-// interface ReduxPage {
-//   buildActions?: (props: any) => [];
-//   shouldComponentFetch: (nextProps, nextState) => boolean;
-// }
-
-export default (
-  Component: any, // NextComponentType & ReduxPage,
-): NextComponentClass<Props> => {
+export default (Component: any): NextComponentClass<Props> => {
   class WithConnect extends React.Component<Props> {
     static async getInitialProps(ctx: Context) {
       try {
@@ -66,15 +59,15 @@ export default (
         }
 
         return props;
-      } catch (e) {
-        return { e };
+      } catch (error) {
+        return { error };
       }
     }
 
     async componentDidMount() {
-      const { fromServer, reduxStore } = this.props;
+      const { fromServer, reduxStore, error } = this.props;
 
-      if (!Component.buildActions || fromServer) {
+      if (error || !Component.buildActions || fromServer) {
         return;
       }
 
@@ -84,6 +77,7 @@ export default (
 
     async componentDidUpdate(nextProps: any, nextState: any) {
       if (
+        nextProps.error ||
         !Component.buildActions ||
         !Component.shouldComponentFetch ||
         !Component.shouldComponentFetch(nextProps, nextState)
