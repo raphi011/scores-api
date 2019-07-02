@@ -272,11 +272,16 @@ func (c *Default) EnterTournament(playerName string, playerID, tournamentID int)
 
 	defer resp.Body.Close()
 
-	// TODO: volleynet always returns 200, parse content and see what really happened ..
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("tournamententry request for tournamentID: %d failed with code %d",
 			tournamentID,
 			resp.StatusCode)
+	}
+
+	entryData, err := scrape.Entry(resp.Body)
+
+	if err != nil || !entryData.Successfull {
+		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
 	}
 
 	return nil

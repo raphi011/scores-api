@@ -1,6 +1,7 @@
 package scrape
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -538,6 +539,22 @@ var tournamentTests = []struct {
 			},
 		},
 	},
+}
+
+func TestEntry(t *testing.T) {
+	reader, _ := os.Open("../testdata/succesfull-login.html")
+
+	result, err := Entry(reader)
+
+	test.Check(t, "Entry() err: %s", err)
+	test.Assert(t, "Entry().Successfull should be true", result.Successfull)
+}
+
+func TestSpecificTournament(t *testing.T) {
+	reader, _ := os.Open("../testdata/23775-done.html")
+	tournament, _ := Tournament(reader, time.Now(), &volleynet.TournamentInfo{})
+
+	fmt.Print(tournament)
 }
 
 func TestTournament(t *testing.T) {

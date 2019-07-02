@@ -211,6 +211,30 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) er
 	return nil
 }
 
+// EntryResult contains the data that is returned by the
+// TournamentEntry endpoint.
+type EntryResult struct {
+	Successfull bool `json:"successfull"`
+}
+
+// Entry parses the result of a tournament entry.
+func Entry(body io.Reader) (EntryResult, error) {
+	doc, err := parseHTML(body)
+	result := EntryResult{}
+
+	if err != nil {
+		return result, errors.Wrap(err, "could not parse html")
+	}
+
+	selection := doc.Find("[name='XX_unique_write_XXBeach/Profile/TurnierAnmeldungErfolgreich']")
+
+	if selection.Length() > 0 {
+		result.Successfull = true
+	}
+
+	return result, nil
+}
+
 func parsePlayerRow(row *goquery.Selection, team *volleynet.TournamentTeam) (player *volleynet.Player, err error) {
 	player = &volleynet.Player{}
 
