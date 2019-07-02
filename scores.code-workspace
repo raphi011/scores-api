@@ -10,7 +10,9 @@
   "settings": {
     "go.testEnvVars": {
       "TEST_DB_PROVIDER": "postgres",
-      "TEST_DB_CONNECTION": "postgres://postgres@localhost?sslmode=disable"
+      "TEST_DB_CONNECTION": "postgres://postgres@localhost?sslmode=disable",
+      "VOLLEYNET_LOGIN_USER": "",
+      "VOLLEYNET_LOGIN_PASSWORD": ""
     }
   }
 }
