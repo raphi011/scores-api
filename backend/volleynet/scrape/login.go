@@ -10,7 +10,7 @@ type loginDataParser func(*goquery.Selection, *LoginData)
 
 var parseLoginDataMap = map[string]loginDataParser{
 	"Name": func(value *goquery.Selection, d *LoginData) {
-		//  parsePlayerName(value) TODO
+		d.FirstName, d.LastName = parsePlayerName(value)
 	},
 	"Geburtsdatum": func(value *goquery.Selection, d *LoginData) {
 		// d.Birthday = value.Text() TODO

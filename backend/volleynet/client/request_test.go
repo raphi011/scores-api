@@ -1,6 +1,8 @@
 package client
 
 import (
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -33,12 +35,21 @@ func Test_searchPlayers(t *testing.T) {
 }
 
 func Test_login(t *testing.T) {
-	t.Skip() // Add Testing credentials to env
+	user := os.Getenv("VOLLEYNET_LOGIN_USER")
+	password := os.Getenv("VOLLEYNET_LOGIN_PASSWORD")
+
+	if user == "" || password == "" {
+		t.Skip("must set VOLLEYNET_LOGIN_USER and VOLLEYNET_LOGIN_PASSWORD to run this test")
+	}
 
 	c := DefaultClient()
-	_, err := c.Login("", "")
+	result, err := c.Login(user, password)
 
 	if err != nil {
 		t.Error(err)
+	}
+
+	if result.FirstName == "" || !strings.Contains(user, result.FirstName) {
+		t.Error("login(), should return the logged in user")
 	}
 }
