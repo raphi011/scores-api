@@ -1,4 +1,4 @@
-package main
+package cron
 
 import (
 	"time"
@@ -13,14 +13,14 @@ type JobReport struct {
 	RunningSince time.Duration `json:"runningSince"`
 }
 
-type ladderJob struct {
-	syncService *sync.Service
-	genders     []string
+type LadderJob struct {
+	SyncService *sync.Service
+	Genders     []string
 }
 
-func (j *ladderJob) do() error {
-	for _, gender := range j.genders {
-		_, err := j.syncService.Ladder(gender)
+func (j *LadderJob) Do() error {
+	for _, gender := range j.Genders {
+		_, err := j.SyncService.Ladder(gender)
 
 		if err != nil {
 			return err
@@ -33,17 +33,17 @@ func (j *ladderJob) do() error {
 var leagues = []string{"amateur-tour", "pro-tour", "junior-tour"}
 var genders = []string{"M", "W"}
 
-type tournamentsJob struct {
-	syncService *sync.Service
-	leagues     []string
-	genders     []string
-	season      int
+type TournamentsJob struct {
+	SyncService *sync.Service
+	Leagues     []string
+	Genders     []string
+	Season      int
 }
 
-func (j *tournamentsJob) do() error {
-	for _, league := range j.leagues {
-		for _, gender := range j.genders {
-			err := j.syncService.Tournaments(gender, league, j.season)
+func (j *TournamentsJob) Do() error {
+	for _, league := range j.Leagues {
+		for _, gender := range j.Genders {
+			err := j.SyncService.Tournaments(gender, league, j.Season)
 
 			if err != nil {
 				return err

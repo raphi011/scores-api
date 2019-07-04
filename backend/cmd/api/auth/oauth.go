@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"encoding/json"
@@ -12,7 +12,7 @@ type credentials struct {
 	ClientID    string `json:"client_id"`
 	CientSecret string `json:"client_secret"`
 }
-type oauthUser struct {
+type OauthUser struct {
 	Sub           string `json:"sub"`
 	Name          string `json:"name"`
 	GivenName     string `json:"given_name"`
@@ -24,7 +24,7 @@ type oauthUser struct {
 	Gender        string `json:"gender"`
 }
 
-func googleOAuthConfig(configPath, host string) (*oauth2.Config, error) {
+func GoogleOAuthConfig(configPath, host string) (*oauth2.Config, error) {
 	var credentials credentials
 	file, err := ioutil.ReadFile(configPath)
 

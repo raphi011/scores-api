@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"net/http"
@@ -7,17 +7,23 @@ import (
 	"github.com/raphi011/scores/job"
 )
 
-type scrapeHandler struct {
+func ScrapeHandler(jobManager *job.Manager) Scrape {
+	return Scrape{
+		jobManager: jobManager,
+	}
+}
+
+type Scrape struct {
 	jobManager *job.Manager
 }
 
-func (h *scrapeHandler) report(c *gin.Context) {
+func (h *Scrape) GetReport(c *gin.Context) {
 	execs := h.jobManager.Jobs()
 
 	response(c, http.StatusOK, execs)
 }
 
-// func (h *scrapeHandler) run(c *gin.Context) {
+// func (h *Scrape) run(c *gin.Context) {
 // 	jobName := c.Query("job")
 
 // 	exists := h.jobManager.HasJob(jobName)
@@ -37,7 +43,7 @@ func (h *scrapeHandler) report(c *gin.Context) {
 // 	response(c, http.StatusOK, nil)
 // }
 
-// func (h *scrapeHandler) stop(c *gin.Context) {
+// func (h *Scrape) stop(c *gin.Context) {
 // 	jobName := c.Query("job")
 
 // 	exists := h.jobManager.HasJob(jobName)

@@ -63,7 +63,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 		_, err := s.TeamRepo.New(new)
 
 		if err != nil {
-			return errors.Wrap(err, "persisting new tournamentteam failed")
+			return errors.Wrapf(err, "persist new tournament team %+v", new)
 		}
 	}
 
@@ -71,7 +71,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 		err := s.TeamRepo.Update(update)
 
 		if err != nil {
-			return errors.Wrap(err, "persisting updated tournamentteam failed")
+			return errors.Wrapf(err, "persist updated tournament team %+v", update)
 		}
 	}
 
@@ -79,7 +79,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 		err := s.TeamRepo.Delete(delete)
 
 		if err != nil {
-			return errors.Wrap(err, "persisting deleted tournamentteam failed")
+			return errors.Wrapf(err, "persist deleted tournament team %+v", delete)
 		}
 	}
 

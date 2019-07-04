@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"net/http"
@@ -10,9 +10,13 @@ import (
 	"github.com/raphi011/scores/cmd/api/logger"
 )
 
-type cspHandler struct{}
+func CspHandler() Csp {
+	return Csp{}
+}
 
-func (a *cspHandler) violationReportHandler(c *gin.Context) {
+type Csp struct{}
+
+func (a *Csp) PostViolationReport(c *gin.Context) {
 	report := csp.ViolationReport{}
 
 	if err := c.ShouldBindWith(&report, binding.JSON); err != nil {

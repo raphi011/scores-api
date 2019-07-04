@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"github.com/gin-gonic/gin"
@@ -7,11 +7,15 @@ import (
 	"github.com/raphi011/scores/services"
 )
 
-type debugHandler struct {
+func DebugHandler(userService *services.User) Debug {
+	return Debug{userService: userService}
+}
+
+type Debug struct {
 	userService *services.User
 }
 
-func (a *debugHandler) postCreateAdmin(c *gin.Context) {
+func (a *Debug) PostCreateAdmin(c *gin.Context) {
 	testEmail := "admin@scores.network"
 	testPassword := "test123"
 

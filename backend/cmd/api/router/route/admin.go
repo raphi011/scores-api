@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"net/http"
@@ -11,7 +11,11 @@ import (
 	"github.com/raphi011/scores/services"
 )
 
-type adminHandler struct {
+func AdminHandler(userService *services.User) Admin {
+	return Admin{userService: userService}
+}
+
+type Admin struct {
 	userService *services.User
 }
 
@@ -20,7 +24,7 @@ type postUserDto struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func (a *adminHandler) postUser(c *gin.Context) {
+func (a *Admin) PostUser(c *gin.Context) {
 	var userChanges postUserDto
 
 	if err := c.ShouldBindWith(&userChanges, binding.JSON); err != nil {
@@ -54,7 +58,7 @@ func (a *adminHandler) postUser(c *gin.Context) {
 	response(c, http.StatusOK, user)
 }
 
-func (a *adminHandler) getUsers(c *gin.Context) {
+func (a *Admin) GetUsers(c *gin.Context) {
 	users, err := a.userService.All()
 
 	if err != nil {

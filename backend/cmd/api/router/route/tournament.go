@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"net/http"
@@ -14,12 +14,19 @@ import (
 	"github.com/raphi011/scores/volleynet/client"
 )
 
-type volleynetHandler struct {
+func TournamentHandler(volleynetService *services.Volleynet, userService *services.User) Tournament {
+	return Tournament{
+		volleynetService: volleynetService,
+		userService:      userService,
+	}
+}
+
+type Tournament struct {
 	volleynetService *services.Volleynet
 	userService      *services.User
 }
 
-func (h *volleynetHandler) getTournaments(c *gin.Context) {
+func (h *Tournament) GetTournaments(c *gin.Context) {
 	season := c.QueryArray("seasons")
 	gender := c.QueryArray("genders")
 	league := c.QueryArray("leagues")
@@ -50,7 +57,7 @@ func (h *volleynetHandler) getTournaments(c *gin.Context) {
 	response(c, http.StatusOK, tournaments)
 }
 
-func (h *volleynetHandler) getFilterOptions(c *gin.Context) {
+func (h *Tournament) GetFilterOptions(c *gin.Context) {
 	filters, err := h.volleynetService.TournamentFilterOptions()
 
 	if err != nil {
@@ -61,7 +68,7 @@ func (h *volleynetHandler) getFilterOptions(c *gin.Context) {
 	response(c, http.StatusOK, filters)
 }
 
-func (h *volleynetHandler) getTournament(c *gin.Context) {
+func (h *Tournament) GetTournament(c *gin.Context) {
 	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
 
 	if err != nil {
@@ -88,7 +95,7 @@ type signupForm struct {
 	RememberMe   bool   `json:"rememberMe"`
 }
 
-func (h *volleynetHandler) postSignup(c *gin.Context) {
+func (h *Tournament) PostSignup(c *gin.Context) {
 	su := signupForm{}
 
 	if err := c.ShouldBindWith(&su, binding.JSON); err != nil {

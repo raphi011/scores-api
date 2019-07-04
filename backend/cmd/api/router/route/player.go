@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"net/http"
@@ -9,10 +9,23 @@ import (
 	"github.com/gin-gonic/gin/binding"
 
 	"github.com/raphi011/scores/repo"
+	"github.com/raphi011/scores/services"
 	"github.com/raphi011/scores/volleynet/client"
 )
 
-func (h *volleynetHandler) getLadder(c *gin.Context) {
+func PlayerHandler(volleynetService *services.Volleynet, userService *services.User) Player {
+	return Player{
+		volleynetService: volleynetService,
+		userService:      userService,
+	}
+}
+
+type Player struct {
+	volleynetService *services.Volleynet
+	userService      *services.User
+}
+
+func (h *Player) GetLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 
 	if !h.volleynetService.ValidGender(gender) {
@@ -35,7 +48,7 @@ type loginForm struct {
 	Password string `json:"password"`
 }
 
-func (h *volleynetHandler) postLogin(c *gin.Context) {
+func (h *Player) PostLogin(c *gin.Context) {
 	login := loginForm{}
 
 	if err := c.ShouldBindWith(&login, binding.JSON); err != nil {
@@ -83,7 +96,7 @@ func (h *volleynetHandler) postLogin(c *gin.Context) {
 	response(c, http.StatusOK, loginRouteOrUserDto{User: user})
 }
 
-func (h *volleynetHandler) getPartners(c *gin.Context) {
+func (h *Player) GetPartners(c *gin.Context) {
 	playerID, err := strconv.Atoi(c.Param("playerID"))
 
 	if err != nil {
@@ -101,7 +114,7 @@ func (h *volleynetHandler) getPartners(c *gin.Context) {
 	response(c, http.StatusOK, partners)
 }
 
-func (h *volleynetHandler) getSearchPlayers(c *gin.Context) {
+func (h *Player) GetSearchPlayers(c *gin.Context) {
 	firstName := c.Query("fname")
 	lastName := c.Query("lname")
 	gender := c.Query("gender")

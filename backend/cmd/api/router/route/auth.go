@@ -1,4 +1,4 @@
-package main
+package route
 
 import (
 	"crypto/rand"
@@ -14,6 +14,7 @@ import (
 
 	"github.com/raphi011/scores"
 	"github.com/raphi011/scores/cmd/api/logger"
+	"github.com/raphi011/scores/cmd/api/auth"
 	"github.com/raphi011/scores/services"
 )
 
@@ -35,9 +36,17 @@ func randToken() string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-type authHandler struct {
-	userService *services.User
-	password    services.Password
+func AuthHandler(userService *services.User, passwordService services.Password, conf *oauth2.Config) Auth {
+	return Auth{
+		userService:     userService,
+		passwordService: passwordService,
+		conf:            conf,
+	}
+}
+
+type Auth struct {
+	userService     *services.User
+	passwordService services.Password
 
 	conf *oauth2.Config
 }
@@ -47,7 +56,7 @@ type credentialsDto struct {
 	Password string `json:"password"`
 }
 
-func (a *authHandler) passwordAuthenticate(c *gin.Context) {
+func (a *Auth) PostPasswordAuthenticate(c *gin.Context) {
 	session := sessions.Default(c)
 	var credentials credentialsDto
 
@@ -63,7 +72,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 		return
 	}
 
-	if !a.password.Compare([]byte(credentials.Password), &user.PasswordInfo) {
+	if !a.passwordService.Compare([]byte(credentials.Password), &user.PasswordInfo) {
 		response(c, http.StatusUnauthorized, nil)
 		return
 	}
@@ -75,7 +84,7 @@ func (a *authHandler) passwordAuthenticate(c *gin.Context) {
 	response(c, http.StatusOK, loginRouteOrUserDto{User: user})
 }
 
-func (a *authHandler) googleAuthenticate(c *gin.Context) {
+func (a *Auth) GetGoogleAuthenticate(c *gin.Context) {
 	if a.conf == nil {
 		// google oauth config is missing, only password
 		// authentication is available
@@ -112,7 +121,7 @@ func (a *authHandler) googleAuthenticate(c *gin.Context) {
 	// since the client successfully logged in reset the state token
 	newStateToken(session)
 
-	googleUser := oauthUser{}
+	googleUser := auth.OauthUser{}
 
 	data, _ := ioutil.ReadAll(userinfo.Body)
 
@@ -147,7 +156,7 @@ func successfullLogin(session sessions.Session, user *scores.User) {
 	session.Save()
 }
 
-func (a *authHandler) loginRouteOrUser(c *gin.Context) {
+func (a *Auth) GetLoginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
 	if userID, ok := session.Get("user-id").(int); ok {
@@ -185,7 +194,7 @@ func newStateToken(session sessions.Session) string {
 	return state
 }
 
-func (a *authHandler) logout(c *gin.Context) {
+func (a *Auth) PostLogout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()
 
