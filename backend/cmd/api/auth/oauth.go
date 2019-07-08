@@ -8,6 +8,11 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+type PasswordCredentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type credentials struct {
 	ClientID    string `json:"client_id"`
 	CientSecret string `json:"client_secret"`

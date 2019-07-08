@@ -1,4 +1,4 @@
-package route
+package route_test
 
 import (
 	"bytes"
@@ -10,27 +10,20 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores/repo/sql"
+	"github.com/raphi011/scores/cmd/api/auth"
+	"github.com/raphi011/scores/cmd/api/router"
 	"github.com/raphi011/scores/test"
 )
 
-func testServices(t testing.TB) *handlerServices {
-	repos, _ := sql.RepositoriesTest(t)
+func SetupTestServer(t testing.TB) *router.Router {
+	r := router.New(
+		router.WithMode("debug"),
+		router.WithTestRepository(t),
+		router.WithEventQueue(),
+	)
 
-	return servicesFromRepositories(repos, false, logrus.New())
-}
-
-func SetupTestServer(t testing.TB) *gin.Engine {
-	a := app{
-		production: false,
-		conf:       nil,
-		log:        logrus.New(),
-	}
-	services := testServices(t)
-
-	return initRouter(a, services)
+	return r
 }
 
 type testClient struct {
@@ -43,7 +36,7 @@ type testClient struct {
 func newTestClient(t testing.TB) *testClient {
 	return &testClient{
 		t:      t,
-		router: SetupTestServer(t),
+		router: SetupTestServer(t).Build(),
 	}
 }
 
@@ -55,7 +48,7 @@ func (c *testClient) login() {
 
 	test.Equal(c.t, "/debug/new-admin expected code %d, got %d", http.StatusNoContent, w.Code)
 
-	w = c.post("/pw-auth", credentialsDto{
+	w = c.post("/pw-auth", auth.PasswordCredentials{
 		Email:    "admin@scores.network",
 		Password: "test123",
 	})

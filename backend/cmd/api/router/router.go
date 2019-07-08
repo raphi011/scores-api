@@ -3,6 +3,7 @@ package router
 import (
 	"fmt"
 	"net"
+	"testing"
 	"time"
 
 	logrustash "github.com/bshuster-repo/logrus-logstash-hook"
@@ -41,7 +42,9 @@ type Option func(*Router)
 
 // New creates a new router and configures it with `opts`.
 func New(opts ...Option) *Router {
-	router := &Router{}
+	router := &Router{
+		log: logrus.New(),
+	}
 
 	for _, o := range opts {
 		o(router)
@@ -50,7 +53,7 @@ func New(opts ...Option) *Router {
 	return router
 }
 
-func (r *Router) Run() {
+func (r *Router) Build() *gin.Engine {
 	var router *gin.Engine
 
 	s := servicesFromRepository(r.repository, true, r.log)
@@ -130,6 +133,12 @@ func (r *Router) Run() {
 	volleynetAdmin := admin.Group("/volleynet")
 
 	volleynetAdmin.GET("/scrape/report", scrapeHandler.GetReport)
+
+	return router
+}
+
+func (r *Router) Run() {
+	router := r.Build()
 
 	err := router.Run()
 
@@ -220,6 +229,14 @@ func WithLogstash(logstashURL string, level logrus.Level) Option {
 
 			log.Hooks.Add(hook)
 		}
+	}
+}
+
+func WithTestRepository(t testing.TB) Option {
+	t.Helper()
+
+	return func(r *Router) {
+		r.repository, _ = sql.RepositoriesTest(t)
 	}
 }
 

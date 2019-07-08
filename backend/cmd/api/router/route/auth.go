@@ -13,8 +13,8 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/cmd/api/logger"
 	"github.com/raphi011/scores/cmd/api/auth"
+	"github.com/raphi011/scores/cmd/api/logger"
 	"github.com/raphi011/scores/services"
 )
 
@@ -51,14 +51,9 @@ type Auth struct {
 	conf *oauth2.Config
 }
 
-type credentialsDto struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 func (a *Auth) PostPasswordAuthenticate(c *gin.Context) {
 	session := sessions.Default(c)
-	var credentials credentialsDto
+	var credentials auth.PasswordCredentials
 
 	if err := c.ShouldBindWith(&credentials, binding.JSON); err != nil {
 		responseBadRequest(c)
