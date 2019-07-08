@@ -36,7 +36,9 @@
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
-    "tslint-config-prettier": "^1.18.0"
+    "tslint-config-prettier": "^1.18.0",
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0"
   },
   "scripts": {
     "dev": "next",
