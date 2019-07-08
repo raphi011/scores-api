@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NextComponentClass, NextContext } from 'next';
+import { NextComponentType, NextPageContext } from 'next';
 import Error from 'next/error';
 import { connect } from 'react-redux';
 import { Dispatch, Store as ReduxStore } from 'redux';
@@ -17,7 +17,7 @@ interface Props {
   error?: { responseCode: number };
 }
 
-export interface Context extends NextContext {
+export interface Context extends NextPageContext {
   store: ReduxStore;
 }
 
@@ -25,7 +25,7 @@ export interface ClientContext extends Context {
   fromServer: boolean;
 }
 
-export default (Component: any): NextComponentClass<Props> => {
+export default (Component: any): NextComponentType<Props> => {
   class WithConnect extends React.Component<Props> {
     static async getInitialProps(ctx: Context) {
       try {
@@ -96,7 +96,7 @@ export default (Component: any): NextComponentClass<Props> => {
       const { error, ...props } = this.props;
 
       if (error) {
-        return <Error statusCode={error.responseCode} />;
+        return <Error title="An error occured" statusCode={error.responseCode} />;
       }
 
       return <Component {...props} />;

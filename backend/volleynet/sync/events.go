@@ -13,7 +13,7 @@ const (
 	// StartScrapeEventType TODO
 	StartScrapeEventType = "volleynet/scrape/start"
 	// EndScrapeEventType TODO
-	EndScrapeEventType   = "volleynet/scrape/end"
+	EndScrapeEventType = "volleynet/scrape/end"
 )
 
 // StartScrapeEvent TODO
@@ -24,14 +24,16 @@ type StartScrapeEvent struct {
 }
 
 func (s *Service) publishStartScrapeEvent(scrapeType string, start time.Time) {
-	s.Subscriptions.Publish(events.Event{
-		Name: StartScrapeEventType,
-		Body: StartScrapeEvent{
-			ID:        uuid.New().String(),
-			Timestamp: start,
-			Type:      scrapeType,
-		},
-	})
+	if s.Subscriptions != nil {
+		s.Subscriptions.Publish(events.Event{
+			Name: StartScrapeEventType,
+			Body: StartScrapeEvent{
+				ID:        uuid.New().String(),
+				Timestamp: start,
+				Type:      scrapeType,
+			},
+		})
+	}
 }
 
 // EndScrapeEvent TODO
@@ -42,12 +44,14 @@ type EndScrapeEvent struct {
 }
 
 func (s *Service) publishEndScrapeEvent(report *Changes, end time.Time) {
-	s.Subscriptions.Publish(events.Event{
-		Name: EndScrapeEventType,
-		Body: EndScrapeEvent{
-			ID:        uuid.New().String(),
-			Timestamp: end,
-			Report:    report,
-		},
-	})
+	if s.Subscriptions != nil {
+		s.Subscriptions.Publish(events.Event{
+			Name: EndScrapeEventType,
+			Body: EndScrapeEvent{
+				ID:        uuid.New().String(),
+				Timestamp: end,
+				Report:    report,
+			},
+		})
+	}
 }

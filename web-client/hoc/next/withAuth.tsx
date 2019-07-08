@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NextComponentClass } from 'next';
+import { NextComponentType } from 'next';
 import Router from 'next/router';
 import { Dispatch, Store, Action } from 'redux';
 
@@ -40,7 +40,7 @@ export function redirectWithContext(ctx: Context, path: string) {
   }
 }
 
-export default (Component: any): NextComponentClass<Props> => {
+export default (Component: any): NextComponentType<Props> => {
   class Auth extends React.Component<Props> {
     static async getInitialProps(ctx: Context) {
       try {

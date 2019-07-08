@@ -1,11 +1,11 @@
-import { QueryStringMapObject } from 'next';
+import { ParsedUrlQuery } from "querystring";
 
 function isOfT<T>(value: any, options: T[]): value is T {
   return options.indexOf(value) !== -1;
 }
 
 export function multipleOf<T>(
-  query: QueryStringMapObject,
+  query: ParsedUrlQuery,
   key: string,
   available: T[] = [],
 ): T[] {
@@ -31,7 +31,7 @@ export function multipleOf<T>(
 }
 
 export function multipleOfDefault<T>(
-  query: QueryStringMapObject,
+  query: ParsedUrlQuery,
   key: string,
   available: T[] = [],
   defaultValues: T[],
@@ -45,7 +45,7 @@ export function multipleOfDefault<T>(
   return values;
 }
 
-export function one(query: QueryStringMapObject, key: string): string {
+export function one(query: ParsedUrlQuery, key: string): string {
   const value = query[key];
 
   if (!value) {
@@ -59,7 +59,7 @@ export function one(query: QueryStringMapObject, key: string): string {
   return value;
 }
 
-export function multiple(query: QueryStringMapObject, key: string): string[] {
+export function multiple(query: ParsedUrlQuery, key: string): string[] {
   const value = query[key];
 
   if (!value) {
@@ -74,7 +74,7 @@ export function multiple(query: QueryStringMapObject, key: string): string[] {
 }
 
 export function oneOf<T>(
-  query: QueryStringMapObject,
+  query: ParsedUrlQuery,
   key: string,
   available: T[] = [],
 ): T | '' {
@@ -94,7 +94,7 @@ export function oneOf<T>(
 }
 
 export function oneOfDefault<T>(
-  query: QueryStringMapObject,
+  query: ParsedUrlQuery,
   key: string,
   available: T[] = [],
   defaultValue: T,

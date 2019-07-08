@@ -1,9 +1,9 @@
 import React, { Children } from 'react';
 
-import Link, { LinkProps } from 'next/link';
+import Link from 'next/link';
 import { SingletonRouter, withRouter } from 'next/router';
 
-interface Props extends LinkProps {
+interface Props {
   children: JSX.Element;
   activeClassName: string;
   altHref?: string;

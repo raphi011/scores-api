@@ -22,6 +22,8 @@ services:
     volumes:
       - "./data/backend:/srv/scores"
     command:
+      - "-mode"
+      - "debug"
       - "-connection"
       - "postgres://postgres:test@db?sslmode=disable"
       - "-provider"

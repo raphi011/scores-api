@@ -1,11 +1,5 @@
-const withTypescript = require('@zeit/next-typescript');
-
-module.exports = withTypescript({
+module.exports = {
   env: {
     VERSION: JSON.stringify(process.env.VERSION),
-  },
-  onDemandEntries: {
-    websocketPort: 3001,
-    websocketProxyPort: 7000,
-  },
-});
+  }
+};

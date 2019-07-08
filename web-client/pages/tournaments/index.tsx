@@ -17,33 +17,33 @@ import CloseIcon from '@material-ui/icons/Close';
 import Fab from '@material-ui/core/Fab';
 import { Dialog } from '@material-ui/core';
 
-import * as Query from '../utils/query';
-import DayHeader from '../components/DayHeader';
-import GroupedList from '../components/GroupedList';
+import * as Query from '../../utils/query';
+import DayHeader from '../../components/DayHeader';
+import GroupedList from '../../components/GroupedList';
 import TournamentFilters, {
   Filters,
-} from '../components/volleynet/filters/TournamentFilters';
-import TournamentList from '../components/volleynet/TournamentList';
-import withAuth from '../hoc/next/withAuth';
-import Layout from '../containers/LayoutContainer';
-import { userSelector } from '../redux/auth/selectors';
-import { loadTournamentsAction } from '../redux/entities/actions';
-import { filteredTournamentsSelector } from '../redux/entities/selectors';
-import { Store } from '../redux/store';
-import { Tournament, User } from '../types';
-import { sameDay } from '../utils/date';
+} from '../../components/volleynet/filters/TournamentFilters';
+import TournamentList from '../../components/volleynet/TournamentList';
+import withAuth from '../../hoc/next/withAuth';
+import Layout from '../../containers/LayoutContainer';
+import { userSelector } from '../../redux/auth/selectors';
+import { loadTournamentsAction } from '../../redux/entities/actions';
+import { filteredTournamentsSelector } from '../../redux/entities/selectors';
+import { Store } from '../../redux/store';
+import { Tournament, User } from '../../types';
+import { sameDay } from '../../utils/date';
 import {
   tournamentFilterSelector,
   filterOptionsSelector,
-} from '../redux/tournaments/selectors';
-import { FilterOptions, Filter } from '../redux/tournaments/reducer';
+} from '../../redux/tournaments/selectors';
+import { FilterOptions, Filter } from '../../redux/tournaments/reducer';
 import {
   setFilterAction,
   loadFilterOptionsAction,
-} from '../redux/tournaments/actions';
-import { QueryStringMapObject } from 'next';
-import { dispatchAction } from '../redux/actions';
-import withConnect, { ClientContext } from '../hoc/next/withConnect';
+} from '../../redux/tournaments/actions';
+import { dispatchAction } from '../../redux/actions';
+import withConnect, { ClientContext } from '../../hoc/next/withConnect';
+import { ParsedUrlQuery } from 'querystring';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -109,7 +109,7 @@ interface State {
   filterDialogOpen: boolean;
 }
 
-function filtersFromQuery(query: QueryStringMapObject): Filters {
+function filtersFromQuery(query: ParsedUrlQuery): Filters {
   const seasons = Query.one(query, 'season');
   const genders = Query.multiple(query, 'gender');
   const leagues = Query.multiple(query, 'league');
@@ -184,10 +184,7 @@ class Volleynet extends React.Component<Props, State> {
   };
 
   onTournamentClick = (t: Tournament) => {
-    Router.push({
-      pathname: '/tournament',
-      query: { id: t.id },
-    });
+    Router.push(`/tournaments/${t.id}`);
   };
 
   onFilter = async (filters: Filters) => {
@@ -197,6 +194,7 @@ class Volleynet extends React.Component<Props, State> {
 
     const query = filters;
 
+    // @ts-ignore
     Router.push({
       pathname: '/',
       query,

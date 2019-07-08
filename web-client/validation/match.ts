@@ -1,5 +1,6 @@
 // import { NewMatch } from '../types';
 
+export {}
 // export interface IMatchValidation {
 //   scoreTeam1?: string;
 //   scoreTeam2?: string;

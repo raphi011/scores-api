@@ -6,7 +6,7 @@ import Document, {
   Head,
   Main,
   NextScript,
-  NextDocumentContext,
+  DocumentContext
 } from 'next/document';
 import flush from 'styled-jsx/server';
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 class MyDocument extends Document<Props> {
-  static getInitialProps = async (ctx: NextDocumentContext): Promise<any> => {
+  static getInitialProps = async (ctx: DocumentContext): Promise<any> => {
     const sheets = new ServerStyleSheets();
     const originalRenderPage = ctx.renderPage;
 

@@ -145,7 +145,6 @@ class TournamentView extends React.Component<Props, State> {
                 </div>
                 {!showSignup || (
                   <Link
-                    prefetch
                     href={{
                       pathname: '/tournament/signup',
                       query: { id: tournament.id },

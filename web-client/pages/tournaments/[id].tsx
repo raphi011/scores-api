@@ -78,19 +78,17 @@ class ShowTournament extends React.Component<Props> {
 
     const tab = tabOptions[tabIndex];
 
+    // @ts-ignore
     Router.replace({
-      pathname: '/tournament',
-      query: { tab, id },
+      pathname: `/tournaments/${id}`,
+      query: { tab },
     });
   };
 
   onSignup = () => {
     const { tournamentId: id } = this.props;
 
-    Router.push({
-      pathname: '/tournament/signup',
-      query: { id },
-    });
+    Router.push(`/tournaments/${id}/signup`);
   };
 
   hasNotes = (notes: string) => {

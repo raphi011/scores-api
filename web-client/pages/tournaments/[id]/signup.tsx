@@ -6,27 +6,27 @@ import { Grid, Dialog } from '@material-ui/core';
 import { createStyles, WithStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-import Login from '../../components/volleynet/Login';
-import SearchPlayer from '../../components/volleynet/SearchPlayer';
-import withAuth from '../../hoc/next/withAuth';
-import Layout from '../../containers/LayoutContainer';
+import Login from '../../../components/volleynet/Login';
+import SearchPlayer from '../../../components/volleynet/SearchPlayer';
+import withAuth from '../../../hoc/next/withAuth';
+import Layout from '../../../containers/LayoutContainer';
 import {
   loadTournamentAction,
   tournamentSignupAction,
   previousPartnersAction,
-} from '../../redux/entities/actions';
+} from '../../../redux/entities/actions';
 import {
   tournamentSelector,
   previousPartnersSelector,
   searchVolleynetplayerSelector,
-} from '../../redux/entities/selectors';
+} from '../../../redux/entities/selectors';
 
-import { Tournament, User, Player } from '../../types';
-import { Store } from '../../redux/store';
-import * as Query from '../../utils/query';
-import withConnect, { Context } from '../../hoc/next/withConnect';
-import TournamentHeader from '../../components/volleynet/TournamentHeader';
-import SearchPlayerList from '../../components/volleynet/SearchPlayerList';
+import { Tournament, User, Player } from '../../../types';
+import { Store } from '../../../redux/store';
+import * as Query from '../../../utils/query';
+import withConnect, { Context } from '../../../hoc/next/withConnect';
+import TournamentHeader from '../../../components/volleynet/TournamentHeader';
+import SearchPlayerList from '../../../components/volleynet/SearchPlayerList';
 
 const styles = createStyles({
   body: {
@@ -126,6 +126,8 @@ class Signup extends React.Component<Props, State> {
 
     try {
       await signup(body);
+
+      // @ts-ignore
       Router.push({
         pathname: '/tournament',
         query: { id: tournamentId },

@@ -10,8 +10,9 @@
     {
       "name": "Backend Docker",
       "type": "go",
-      "request": "launch",
+      "request": "attach",
       "mode": "remote",
+
       "remotePath": "/scores/baclend/cmd/api",
       "apiVersion": 2,
       "port": 40000,

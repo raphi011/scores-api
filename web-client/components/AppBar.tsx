@@ -103,7 +103,7 @@ const links = [
   {
     href: '/',
     name: 'Tournaments',
-    altHref: '/tournament',
+    altHref: '/tournaments',
   },
   {
     href: '/ladder',
@@ -215,7 +215,6 @@ function RenderLink({
     <ActiveLink
       altHref={altHref}
       activeClassName={classes.active}
-      prefetch
       href={href}
     >
       <Typography component="a" variant="subtitle1">
