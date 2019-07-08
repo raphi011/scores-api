@@ -14,6 +14,7 @@ import (
 	"github.com/raphi011/scores/volleynet/client"
 )
 
+//TournamentHandler is the constructor for the tournament routes handler.
 func TournamentHandler(volleynetService *services.Volleynet, userService *services.User) Tournament {
 	return Tournament{
 		volleynetService: volleynetService,
@@ -21,11 +22,13 @@ func TournamentHandler(volleynetService *services.Volleynet, userService *servic
 	}
 }
 
+// Tournament wraps the depdencies of the TournamentHandler.
 type Tournament struct {
 	volleynetService *services.Volleynet
 	userService      *services.User
 }
 
+// GetTournaments queries all available tournaments.
 func (h *Tournament) GetTournaments(c *gin.Context) {
 	season := c.QueryArray("seasons")
 	gender := c.QueryArray("genders")
@@ -57,6 +60,7 @@ func (h *Tournament) GetTournaments(c *gin.Context) {
 	response(c, http.StatusOK, tournaments)
 }
 
+// GetFilterOptions returns the possible tournament filter values.
 func (h *Tournament) GetFilterOptions(c *gin.Context) {
 	filters, err := h.volleynetService.TournamentFilterOptions()
 
@@ -68,6 +72,7 @@ func (h *Tournament) GetFilterOptions(c *gin.Context) {
 	response(c, http.StatusOK, filters)
 }
 
+// GetTournament loads a tournament.
 func (h *Tournament) GetTournament(c *gin.Context) {
 	tournamentID, err := strconv.Atoi(c.Param("tournamentID"))
 
@@ -95,6 +100,7 @@ type signupForm struct {
 	RememberMe   bool   `json:"rememberMe"`
 }
 
+// PostSignup allows a player to signup for a tournament.
 func (h *Tournament) PostSignup(c *gin.Context) {
 	su := signupForm{}
 

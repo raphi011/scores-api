@@ -28,6 +28,8 @@ import (
 	"github.com/raphi011/scores/volleynet/sync"
 )
 
+// Router wraps all the services and configuration needed
+// to serve the api.
 type Router struct {
 	conf        *oauth2.Config
 	log         logrus.FieldLogger
@@ -53,6 +55,7 @@ func New(opts ...Option) *Router {
 	return router
 }
 
+// Build builds the routes from the configuration.
 func (r *Router) Build() *gin.Engine {
 	var router *gin.Engine
 
@@ -137,6 +140,7 @@ func (r *Router) Build() *gin.Engine {
 	return router
 }
 
+// Run builds the router and opens the port.
 func (r *Router) Run() {
 	router := r.Build()
 
@@ -147,18 +151,21 @@ func (r *Router) Run() {
 	}
 }
 
+// WithMode sets the production mode to true if "production" is passed.
 func WithMode(mode string) Option {
 	return func(r *Router) {
 		r.production = mode == "production"
 	}
 }
 
+// WithVersion sets the api version.
 func WithVersion(version string) Option {
 	return func(r *Router) {
 		r.version = version
 	}
 }
 
+// WithRepository sets the repository provider and connectionstring.
 func WithRepository(provider, connectionString string) Option {
 	return func(r *Router) {
 		var err error
@@ -180,6 +187,7 @@ func WithRepository(provider, connectionString string) Option {
 	}
 }
 
+// WithOAuth sets the oauth configuration.
 func WithOAuth(configPath, host string) Option {
 	return func(r *Router) {
 		var err error
@@ -191,6 +199,7 @@ func WithOAuth(configPath, host string) Option {
 	}
 }
 
+// WithLogstash configures the logger to use logstash.
 func WithLogstash(logstashURL string, level logrus.Level) Option {
 	return func(r *Router) {
 		log := logrus.New()
@@ -232,6 +241,8 @@ func WithLogstash(logstashURL string, level logrus.Level) Option {
 	}
 }
 
+// WithTestRepository configures the repository with the test database
+// via test environment variables.
 func WithTestRepository(t testing.TB) Option {
 	t.Helper()
 
@@ -240,6 +251,7 @@ func WithTestRepository(t testing.TB) Option {
 	}
 }
 
+// WithEventQueue configures the eventqueue.
 func WithEventQueue() Option {
 	return func(r *Router) {
 		r.eventBroker = &events.Broker{}

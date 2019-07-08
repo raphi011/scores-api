@@ -11,10 +11,12 @@ import (
 	"github.com/raphi011/scores/services"
 )
 
+// AdminHandler is the constructor for the Admin routes handler.
 func AdminHandler(userService *services.User) Admin {
 	return Admin{userService: userService}
 }
 
+// Admin wraps the dependencies of the AdminHandler.
 type Admin struct {
 	userService *services.User
 }
@@ -24,6 +26,8 @@ type postUserDto struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// PostUser handles the user post route that allows an admin to change
+// details of a user.
 func (a *Admin) PostUser(c *gin.Context) {
 	var userChanges postUserDto
 
@@ -58,6 +62,7 @@ func (a *Admin) PostUser(c *gin.Context) {
 	response(c, http.StatusOK, user)
 }
 
+// GetUsers returns all current users.
 func (a *Admin) GetUsers(c *gin.Context) {
 	users, err := a.userService.All()
 

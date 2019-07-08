@@ -8,6 +8,7 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+// PasswordCredentials is a email + password combination.
 type PasswordCredentials struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -17,6 +18,8 @@ type credentials struct {
 	ClientID    string `json:"client_id"`
 	CientSecret string `json:"client_secret"`
 }
+
+// OauthUser is returned by the google /userinfo api call.
 type OauthUser struct {
 	Sub           string `json:"sub"`
 	Name          string `json:"name"`
@@ -29,6 +32,8 @@ type OauthUser struct {
 	Gender        string `json:"gender"`
 }
 
+// GoogleOAuthConfig reads the google oauth config from the specified file.
+// Host is the url the api response should be redirected to.
 func GoogleOAuthConfig(configPath, host string) (*oauth2.Config, error) {
 	var credentials credentials
 	file, err := ioutil.ReadFile(configPath)

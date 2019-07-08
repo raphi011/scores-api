@@ -7,16 +7,20 @@ import (
 	"github.com/raphi011/scores/job"
 )
 
+// ScrapeHandler is the constructor for the Scrape routes handler.
 func ScrapeHandler(jobManager *job.Manager) Scrape {
 	return Scrape{
 		jobManager: jobManager,
 	}
 }
 
+// Scrape wraps the depdencies of the ScrapeHandler.
 type Scrape struct {
 	jobManager *job.Manager
 }
 
+// GetReport handles the Report route that returns
+// runtime information about all current jobs.
 func (h *Scrape) GetReport(c *gin.Context) {
 	execs := h.jobManager.Jobs()
 

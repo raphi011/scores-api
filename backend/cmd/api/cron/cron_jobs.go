@@ -13,11 +13,13 @@ type JobReport struct {
 	RunningSince time.Duration `json:"runningSince"`
 }
 
+// LadderJob is a job that scrapes the volleynet ladder.
 type LadderJob struct {
 	SyncService *sync.Service
 	Genders     []string
 }
 
+// Do runs the scrape job.
 func (j *LadderJob) Do() error {
 	for _, gender := range j.Genders {
 		_, err := j.SyncService.Ladder(gender)
@@ -33,6 +35,7 @@ func (j *LadderJob) Do() error {
 var leagues = []string{"amateur-tour", "pro-tour", "junior-tour"}
 var genders = []string{"M", "W"}
 
+// TournamentsJob is a job that scrapes tournaments with the given filters.
 type TournamentsJob struct {
 	SyncService *sync.Service
 	Leagues     []string
@@ -40,6 +43,7 @@ type TournamentsJob struct {
 	Season      int
 }
 
+// Do runs the scrape job.
 func (j *TournamentsJob) Do() error {
 	for _, league := range j.Leagues {
 		for _, gender := range j.Genders {

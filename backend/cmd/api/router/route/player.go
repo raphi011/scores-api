@@ -13,6 +13,7 @@ import (
 	"github.com/raphi011/scores/volleynet/client"
 )
 
+// PlayerHandler is the constructor for the player routes handler.
 func PlayerHandler(volleynetService *services.Volleynet, userService *services.User) Player {
 	return Player{
 		volleynetService: volleynetService,
@@ -20,11 +21,14 @@ func PlayerHandler(volleynetService *services.Volleynet, userService *services.U
 	}
 }
 
+// Player wraps the dependencies of the PlayerHandler.
 type Player struct {
 	volleynetService *services.Volleynet
 	userService      *services.User
 }
 
+// GetLadder returns the ladder of a gender.
+// Default gender is "M"
 func (h *Player) GetLadder(c *gin.Context) {
 	gender := c.DefaultQuery("gender", "M")
 
@@ -48,6 +52,8 @@ type loginForm struct {
 	Password string `json:"password"`
 }
 
+// PostLogin logs in to volleynet and if successfull saves the
+// username of the player.
 func (h *Player) PostLogin(c *gin.Context) {
 	login := loginForm{}
 
@@ -96,6 +102,7 @@ func (h *Player) PostLogin(c *gin.Context) {
 	response(c, http.StatusOK, loginRouteOrUserDto{User: user})
 }
 
+// GetPartners returns all previous tournament partners of a player.
 func (h *Player) GetPartners(c *gin.Context) {
 	playerID, err := strconv.Atoi(c.Param("playerID"))
 
@@ -114,6 +121,7 @@ func (h *Player) GetPartners(c *gin.Context) {
 	response(c, http.StatusOK, partners)
 }
 
+// GetSearchPlayers searches all players of a gender.
 func (h *Player) GetSearchPlayers(c *gin.Context) {
 	firstName := c.Query("fname")
 	lastName := c.Query("lname")

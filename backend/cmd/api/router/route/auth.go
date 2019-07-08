@@ -36,6 +36,7 @@ func randToken() string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
+// AuthHandler is the constructor for the Auth routes handler.
 func AuthHandler(userService *services.User, passwordService services.Password, conf *oauth2.Config) Auth {
 	return Auth{
 		userService:     userService,
@@ -44,6 +45,7 @@ func AuthHandler(userService *services.User, passwordService services.Password, 
 	}
 }
 
+// Auth handles the authentication routes.
 type Auth struct {
 	userService     *services.User
 	passwordService services.Password
@@ -51,6 +53,7 @@ type Auth struct {
 	conf *oauth2.Config
 }
 
+// PostPasswordAuthenticate handles the password authentication route.
 func (a *Auth) PostPasswordAuthenticate(c *gin.Context) {
 	session := sessions.Default(c)
 	var credentials auth.PasswordCredentials
@@ -79,6 +82,8 @@ func (a *Auth) PostPasswordAuthenticate(c *gin.Context) {
 	response(c, http.StatusOK, loginRouteOrUserDto{User: user})
 }
 
+// GetGoogleAuthenticate handles is the oauth endpoint for a successfull
+// oauth authentication from google.
 func (a *Auth) GetGoogleAuthenticate(c *gin.Context) {
 	if a.conf == nil {
 		// google oauth config is missing, only password
@@ -151,6 +156,8 @@ func successfullLogin(session sessions.Session, user *scores.User) {
 	session.Save()
 }
 
+// GetLoginRouteOrUser returns the oauth login route or the user
+// if logged in.
 func (a *Auth) GetLoginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
@@ -189,6 +196,7 @@ func newStateToken(session sessions.Session) string {
 	return state
 }
 
+// PostLogout handles the logout route.
 func (a *Auth) PostLogout(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Clear()

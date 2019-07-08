@@ -10,12 +10,15 @@ import (
 	"github.com/raphi011/scores/cmd/api/logger"
 )
 
+// CspHandler is the constructor for the csp routes handler.
 func CspHandler() Csp {
 	return Csp{}
 }
 
+// Csp wraps the dependencies of the CspHandler.
 type Csp struct{}
 
+// PostViolationReport handles the csp violation repot route.
 func (a *Csp) PostViolationReport(c *gin.Context) {
 	report := csp.ViolationReport{}
 

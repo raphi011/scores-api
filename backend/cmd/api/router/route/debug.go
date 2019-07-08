@@ -7,14 +7,18 @@ import (
 	"github.com/raphi011/scores/services"
 )
 
+// DebugHandler is the constructor for the debug routes handler.
 func DebugHandler(userService *services.User) Debug {
 	return Debug{userService: userService}
 }
 
+// Debug wraps the dependencies of the DebugHandler.
 type Debug struct {
 	userService *services.User
 }
 
+// PostCreateAdmin creates a user with the admin role
+// for debugging purposes.
 func (a *Debug) PostCreateAdmin(c *gin.Context) {
 	testEmail := "admin@scores.network"
 	testPassword := "test123"
