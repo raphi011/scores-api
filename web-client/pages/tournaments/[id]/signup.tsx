@@ -186,7 +186,7 @@ class Signup extends React.Component<Props, State> {
         }}
       >
         {this.renderDialog()}
-        <TournamentHeader tournament={tournament} />
+        <TournamentHeader tournament={tournament} showSignup={false} />
         <div className={classes.body}>
           <Typography color="primary" variant="h1" className={classes.header}>
             Signup

@@ -19,23 +19,17 @@ const styles = createStyles({
 
 interface Props extends WithStyles<typeof styles> {
   tournaments: Tournament[];
-
-  onTournamentClick: (t: Tournament) => void;
 }
 
 class TournamentList extends React.PureComponent<Props> {
   render() {
-    const { tournaments = [], onTournamentClick, classes } = this.props;
+    const { tournaments = [], classes } = this.props;
 
     return (
       <Card classes={{ root: classes.container }}>
         <List className={classes.list}>
           {tournaments.map(t => (
-            <TournamentListItem
-              key={t.id}
-              onClick={onTournamentClick}
-              tournament={t}
-            />
+            <TournamentListItem key={t.id} tournament={t} />
           ))}
         </List>
       </Card>

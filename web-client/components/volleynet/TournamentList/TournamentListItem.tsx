@@ -7,6 +7,7 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core/styles';
+import Link from 'next/link';
 import Typography from '@material-ui/core/Typography';
 import ArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
@@ -52,36 +53,39 @@ const styles = (theme: Theme) =>
 
 interface Props extends WithStyles<typeof styles> {
   tournament: Tournament;
-
-  onClick: (tournament: Tournament) => void;
 }
 
-const TournamentListItem = ({ tournament, classes, onClick }: Props) => {
+const TournamentListItem = ({ tournament, classes }: Props) => {
   return (
-    <ListItem
-      className={classes.item}
-      button
-      divider
-      onClick={() => onClick(tournament)}
+    <Link
+      href="/tournaments/[id]"
+      as={`/tournaments/${tournament.id}`}
+      passHref
     >
-      <div className={classes.content}>
-        <Typography className={classes.name} noWrap>
-          {tournament.name}{' '}
-          <span className={classes.gender}>
-            ({tournament.gender.toLowerCase()})
-          </span>
-        </Typography>
-        <div className={classes.attributes}>
-          <TournamentAttribute
-            label="Teams"
-            data={`${tournament.signedupTeams}/${tournament.maxTeams}`}
-          />
-          <TournamentAttribute label="Status" data={tournament.status} />
-          <TournamentAttribute label="League" data={tournament.subLeague} />
+      <ListItem className={classes.item} component="a" button divider>
+        <div className={classes.content}>
+          <Typography className={classes.name} noWrap>
+            {tournament.name}{' '}
+            <span className={classes.gender}>
+              ({tournament.gender.toLowerCase()})
+            </span>
+          </Typography>
+          <div className={classes.attributes}>
+            <TournamentAttribute
+              label="Teams"
+              data={`${tournament.signedupTeams}/${tournament.maxTeams}`}
+            />
+            <TournamentAttribute label="Status" data={tournament.status} />
+            <TournamentAttribute label="League" data={tournament.subLeague} />
+          </div>
         </div>
-      </div>
-      <ArrowRight fontSize="large" color="primary" className={classes.arrow} />
-    </ListItem>
+        <ArrowRight
+          fontSize="large"
+          color="primary"
+          className={classes.arrow}
+        />
+      </ListItem>
+    </Link>
   );
 };
 

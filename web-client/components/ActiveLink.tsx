@@ -18,7 +18,7 @@ const ActiveLink = withRouter(
     const active = (altHref && path.startsWith(altHref)) || path === props.href;
 
     return (
-      <Link {...props}>
+      <Link {...props} passHref>
         {React.cloneElement(Children.only(children), {
           className: active ? activeClassName : null,
         })}

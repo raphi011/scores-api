@@ -175,16 +175,9 @@ class Volleynet extends React.Component<Props, State> {
 
     return (
       <div key={tournaments[0].id} className={classes.tournamentGroup}>
-        <TournamentList
-          tournaments={tournaments}
-          onTournamentClick={this.onTournamentClick}
-        />
+        <TournamentList tournaments={tournaments} />
       </div>
     );
-  };
-
-  onTournamentClick = (t: Tournament) => {
-    Router.push(`/tournaments/${t.id}`);
   };
 
   onFilter = async (filters: Filters) => {

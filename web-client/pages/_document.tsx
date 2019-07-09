@@ -6,7 +6,7 @@ import Document, {
   Head,
   Main,
   NextScript,
-  DocumentContext
+  DocumentContext,
 } from 'next/document';
 import flush from 'styled-jsx/server';
 
@@ -60,7 +60,6 @@ class MyDocument extends Document<Props> {
     return (
       <html lang="en" dir="ltr">
         <Head>
-          <title>Scores</title>
           <meta charSet="utf-8" />
           <meta
             name="viewport"

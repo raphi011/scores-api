@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Router from 'next/router';
+import Link from 'next/link';
 
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -9,19 +9,19 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
-import withAuth from '../../hoc/next/withAuth';
-import Layout from '../../containers/LayoutContainer';
+import withAuth from '../../../hoc/next/withAuth';
+import Layout from '../../../containers/LayoutContainer';
 
-import { userSelector } from '../../redux/auth/selectors';
-import { loadTournamentAction } from '../../redux/entities/actions';
-import { tournamentSelector } from '../../redux/entities/selectors';
-import { Tournament, User } from '../../types';
-import { Store } from '../../redux/store';
-import TeamList from '../../components/volleynet/TeamList';
-import * as Query from '../../utils/query';
-import withConnect, { Context } from '../../hoc/next/withConnect';
-import TournamentHeader from '../../components/volleynet/TournamentHeader';
-import { isSignedup } from '../../utils/tournament';
+import { userSelector } from '../../../redux/auth/selectors';
+import { loadTournamentAction } from '../../../redux/entities/actions';
+import { tournamentSelector } from '../../../redux/entities/selectors';
+import { Tournament, User } from '../../../types';
+import { Store } from '../../../redux/store';
+import TeamList from '../../../components/volleynet/TeamList';
+import * as Query from '../../../utils/query';
+import withConnect, { Context } from '../../../hoc/next/withConnect';
+import TournamentHeader from '../../../components/volleynet/TournamentHeader';
+import { isSignedup } from '../../../utils/tournament';
 
 const styles = createStyles({
   body: {
@@ -73,24 +73,6 @@ class ShowTournament extends React.Component<Props> {
     return { tournament, user };
   }
 
-  onSelectTab = (_event: React.ChangeEvent<{}>, tabIndex: number) => {
-    const { tournamentId: id } = this.props;
-
-    const tab = tabOptions[tabIndex];
-
-    // @ts-ignore
-    Router.replace({
-      pathname: `/tournaments/${id}`,
-      query: { tab },
-    });
-  };
-
-  onSignup = () => {
-    const { tournamentId: id } = this.props;
-
-    Router.push(`/tournaments/${id}/signup`);
-  };
-
   hasNotes = (notes: string) => {
     return notes.trim().length > 0;
   };
@@ -137,19 +119,23 @@ class ShowTournament extends React.Component<Props> {
 
     return (
       <>
-        <TournamentHeader
-          tournament={tournament}
-          onSignup={canSignup ? this.onSignup : undefined}
-        />
+        <TournamentHeader tournament={tournament} showSignup={canSignup} />
         <Tabs
           className={classes.tabs}
           indicatorColor="primary"
           value={tabOptions.indexOf(tab)}
           variant={isMobile ? 'fullWidth' : 'standard'}
-          onChange={this.onSelectTab}
         >
           {tabOptions.map(t => (
-            <Tab key={t} label={t} />
+            <Link
+              href={`/tournaments/[id]?tab=${t}`}
+              as={`/tournaments/${tournament.id}?tab=${t}`}
+              key={t}
+              replace
+              passHref
+            >
+              <Tab component="a" label={t} />
+            </Link>
           ))}
         </Tabs>
         <div className={classes.body}>{body}</div>

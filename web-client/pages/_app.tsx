@@ -1,6 +1,7 @@
 import React from 'react';
 
 import App, { Container } from 'next/app';
+import Head from 'next/head';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
 
@@ -28,6 +29,9 @@ class MyApp extends App<Props> {
     const { Component, pageProps, store } = this.props;
     return (
       <Container>
+        <Head>
+          <title>Scores</title>
+        </Head>
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />

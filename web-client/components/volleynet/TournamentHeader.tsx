@@ -21,6 +21,7 @@ import { link } from '../../styles/shared';
 import { Tournament } from '../../types';
 import { withWidth } from '@material-ui/core';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
+import Link from 'next/link';
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -79,10 +80,10 @@ interface Props extends WithStyles<typeof styles> {
   tournament: Tournament;
   width: Breakpoint;
 
-  onSignup?: (event: React.MouseEvent<HTMLElement>) => void;
+  showSignup: boolean;
 }
 
-function TournamentHeader({ tournament, width, classes, onSignup }: Props) {
+function TournamentHeader({ tournament, width, classes, showSignup }: Props) {
   const isMobile = ['xs', 'sm'].includes(width);
 
   const titleRowClassName = classNames(classes.titleRow, {
@@ -93,26 +94,36 @@ function TournamentHeader({ tournament, width, classes, onSignup }: Props) {
   let button = null;
   let fabButton = null;
 
-  if (onSignup) {
+  if (showSignup) {
     if (isMobile) {
       fabButton = (
-        <>
+        <Link
+          href="/tournaments/[id]/signup"
+          as={`/tournaments/${tournament.id}/signup`}
+          passHref
+        >
           <div style={{ height: '30px' }} />
-          <Fab className={classes.fab} color="primary">
+          <Fab component="a" className={classes.fab} color="primary">
             <SignupIcon />
           </Fab>
-        </>
+        </Link>
       );
     } else {
       button = (
-        <Button
-          variant="contained"
-          className={classes.signupButton}
-          color="primary"
-          onClick={onSignup}
+        <Link
+          href="/tournaments/[id]/signup"
+          as={`/tournaments/${tournament.id}/signup`}
+          passHref
         >
-          Signup
-        </Button>
+          <Button
+            component="a"
+            variant="contained"
+            className={classes.signupButton}
+            color="primary"
+          >
+            Signup
+          </Button>
+        </Link>
       );
     }
   }
