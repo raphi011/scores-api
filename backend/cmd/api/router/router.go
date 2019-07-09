@@ -64,7 +64,9 @@ func (r *Router) Build() *gin.Engine {
 	router = gin.New()
 	router.Use(gin.Recovery())
 
-	if !r.production {
+	if r.production {
+		gin.SetMode(gin.ReleaseMode)
+	} else {
 		gin.SetMode(gin.TestMode)
 	}
 
