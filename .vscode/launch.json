@@ -26,6 +26,8 @@
       "mode": "debug",
       "program": "${workspaceRoot}/backend/cmd/api",
       "args": [
+        "-mode",
+        "debug",
         "-gauth",
         "${workspaceRoot}/data/backend/client_secret.json",
         "-provider",
@@ -39,9 +41,6 @@
         // "-connection",
         // "root@tcp(localhost)/scores?charset=utf8mb4&parseTime=true&multiStatements=true"
       ],
-      "env": {
-        "TEST_SQL_FILES": "${workspaceRoot}/backend/repo/sql"
-      },
       "showLog": true,
       "apiVersion": 2
     },
