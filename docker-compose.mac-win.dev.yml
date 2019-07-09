@@ -30,10 +30,6 @@ services:
       - "postgres"
       - "-gauth"
       - "/srv/scores/client_secret.json"
-    environment:
-      - GIN_MODE=debug
-      - BACKEND_URL=https://localhost
-      - APP_ENV=debug
     security_opt:
       - seccomp:unconfined
     ports:

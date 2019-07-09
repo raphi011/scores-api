@@ -21,16 +21,14 @@ services:
     volumes:
       - "./data/backend:/srv/scores"
     command:
+      - "-mode"
+      - "production"
       - "-connection"
       - "postgres://postgres:test@db?sslmode=disable"
       - "-provider"
       - "postgres"
       - "-gauth"
       - "/srv/scores/client_secret.json"
-    environment:
-      - GIN_MODE=release
-      - BACKEND_URL=https://localhost
-      - APP_ENV=production
 
   envoy:
     build:
