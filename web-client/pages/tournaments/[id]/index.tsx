@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import withWidth from '@material-ui/core/withWidth';
-import Tab from '@material-ui/core/Tab';
-import Tabs from '@material-ui/core/Tabs';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
 import withAuth from '../../../hoc/next/withAuth';
@@ -22,16 +20,17 @@ import * as Query from '../../../utils/query';
 import withConnect, { Context } from '../../../hoc/next/withConnect';
 import TournamentHeader from '../../../components/volleynet/TournamentHeader';
 import { isSignedup } from '../../../utils/tournament';
+import Grid from '@material-ui/core/Grid';
 
 const styles = createStyles({
   body: {
     marginTop: '30px',
   },
-  tabs: {
-    marginTop: '50px',
-  },
   title: {
     marginBottom: 0,
+  },
+  columnHeader: {
+    marginBottom: '20px',
   },
   notes: {
     '& img': {
@@ -40,15 +39,10 @@ const styles = createStyles({
   },
 });
 
-type TabOption = 'notes' | 'teams';
-
-const tabOptions: TabOption[] = ['notes', 'teams'];
-
 interface Props extends WithStyles<typeof styles> {
   tournament?: Tournament;
   tournamentId: string;
   user: User;
-  tab: TabOption;
   width: Breakpoint;
 }
 
@@ -56,10 +50,9 @@ class ShowTournament extends React.Component<Props> {
   static async getInitialProps(ctx: Context): Promise<Partial<Props>> {
     const { query } = ctx;
 
-    const tab = Query.oneOfDefault(query, 'tab', tabOptions, 'notes');
     const tournamentId = Query.one(query, 'id');
 
-    return { tournamentId, tab };
+    return { tournamentId };
   }
 
   static buildActions({ tournamentId }: Props) {
@@ -78,7 +71,7 @@ class ShowTournament extends React.Component<Props> {
   };
 
   renderBody = () => {
-    const { classes, user, tab, tournament, width } = this.props;
+    const { classes, user, tournament, width } = this.props;
 
     const isMobile = ['xs', 'sm'].includes(width);
 
@@ -88,57 +81,40 @@ class ShowTournament extends React.Component<Props> {
 
     const canSignup =
       tournament.registrationOpen && !isSignedup(tournament, user.playerId);
+
     const teams = tournament.teams || [];
-
-    let body;
-
-    switch (tab) {
-      case 'notes': {
-        body = this.hasNotes(tournament.htmlNotes) ? (
-          <Typography
-            variant="body2"
-            className={classes.notes}
-            dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
-          />
-        ) : (
-          <Typography variant="body2">There are no notes yet.</Typography>
-        );
-
-        break;
-      }
-      case 'teams': {
-        body = teams.length ? (
-          <TeamList teams={teams}>{body}</TeamList>
-        ) : (
-          <Typography variant="body2">No teams have signed up yet.</Typography>
-        );
-
-        break;
-      }
-    }
 
     return (
       <>
         <TournamentHeader tournament={tournament} showSignup={canSignup} />
-        <Tabs
-          className={classes.tabs}
-          indicatorColor="primary"
-          value={tabOptions.indexOf(tab)}
-          variant={isMobile ? 'fullWidth' : 'standard'}
-        >
-          {tabOptions.map(t => (
-            <Link
-              href={`/tournaments/[id]?tab=${t}`}
-              as={`/tournaments/${tournament.id}?tab=${t}`}
-              key={t}
-              replace
-              passHref
-            >
-              <Tab component="a" label={t} />
-            </Link>
-          ))}
-        </Tabs>
-        <div className={classes.body}>{body}</div>
+        <Grid container spacing={2} className={classes.body}>
+          <Grid md={8} xs={12} item>
+            <Typography className={classes.columnHeader} variant="h2">
+              Notes
+            </Typography>
+            {this.hasNotes(tournament.htmlNotes) ? (
+              <Typography
+                variant="body2"
+                className={classes.notes}
+                dangerouslySetInnerHTML={{ __html: tournament.htmlNotes }}
+              />
+            ) : (
+              <Typography variant="body2">There are no notes yet.</Typography>
+            )}
+          </Grid>
+          <Grid md={4} xs={12} item>
+            <Typography className={classes.columnHeader} variant="h2">
+              Teams
+            </Typography>
+            {teams.length ? (
+              <TeamList teams={teams} />
+            ) : (
+              <Typography variant="body2">
+                No teams have signed up yet.
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
       </>
     );
   };
