@@ -1,11 +1,7 @@
 import React from 'react';
 
-import Link from 'next/link';
-
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import withWidth from '@material-ui/core/withWidth';
-import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
 import withAuth from '../../../hoc/next/withAuth';
 import Layout from '../../../containers/LayoutContainer';
@@ -43,7 +39,6 @@ interface Props extends WithStyles<typeof styles> {
   tournament?: Tournament;
   tournamentId: string;
   user: User;
-  width: Breakpoint;
 }
 
 class ShowTournament extends React.Component<Props> {
@@ -71,9 +66,7 @@ class ShowTournament extends React.Component<Props> {
   };
 
   renderBody = () => {
-    const { classes, user, tournament, width } = this.props;
-
-    const isMobile = ['xs', 'sm'].includes(width);
+    const { classes, user, tournament } = this.props;
 
     if (!tournament) {
       return null;
@@ -134,6 +127,4 @@ class ShowTournament extends React.Component<Props> {
   }
 }
 
-export default withAuth(
-  withConnect(withWidth()(withStyles(styles)(ShowTournament))),
-);
+export default withAuth(withConnect(withStyles(styles)(ShowTournament)));
