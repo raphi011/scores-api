@@ -48,12 +48,13 @@
       "name": "Frontend",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "npm",
-      "cwd": "${workspaceRoot}/web-client",
-      "runtimeArgs": ["run-script", "debug"],
-      "env": { "BACKEND_URL": "http://localhost:8080" },
-      "port": 9229,
-      "console": "integratedTerminal"
+      "runtimeExecutable": "${workspaceFolder}/web-client/node_modules/.bin/next",
+      "cwd": "${workspaceFolder}/web-client",
+      "env": {
+        "NODE_OPTIONS": "--inspect",
+        "BACKEND_URL": "http://localhost:8080"
+      },
+      "port": 9229
     }
   ]
 }
