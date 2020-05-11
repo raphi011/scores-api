@@ -1,8 +1,0 @@
-{
-  "name": "Scores",
-  "short_name": "Scores",
-  "display": "standalone",
-  "start_url": "/",
-  "theme_color": "#03A9F4",
-  "background_color": "#fafafa"
-}
