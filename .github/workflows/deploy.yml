@@ -1,0 +1,49 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+        id: go
+      - name: Checkout code
+        uses: actions/checkout@v1
+      - name: Download modules
+        run: |
+          go get ./...
+      - name: Run tests
+        run: |
+          go test -v ./...
+
+  docker:
+    runs-on: ubuntu-latest
+    # needs: test
+
+    steps:
+      - uses: actions/checkout@v1
+
+      # - name: Build
+      #   run: docker build .
+
+      - name: Deploy
+        working-directory: ./deploy
+        run: |
+          gpg --batch --passphrase ${{secrets.CERTS_PW}} -d docker-auth.tar.gz.gpg | tar xzvf -
+          docker \
+            --tlsverify \
+            --tlscacert=ca.pem \
+            --tlscert=cert.pem \
+            --tlskey=key.pem \
+            -H=scores.network:2376 \
+            version
+      - name: Cleanup
+        working-directory: ./deploy
+        if: ${{ always() }}
+        run: rm ca.pem cert.pem key.pem

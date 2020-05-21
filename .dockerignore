@@ -1,0 +1,9 @@
+README.md
+
+revive.toml
+
+*_test.go
+
+.gitignore
+.github/
+.vscode/
