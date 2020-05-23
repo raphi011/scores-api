@@ -13,7 +13,7 @@ func Repositories(provider, connectionString string) (*repo.Repositories, error)
 	db, err := sqlx.Open(provider, connectionString)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "open db: %v")
+		return nil, errors.Wrap(err, "open db")
 	}
 
 	err = migrate.All(provider, db)
