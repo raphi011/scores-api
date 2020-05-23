@@ -1,4 +1,4 @@
-name: Deploy
+name: Docker Push and Deploy
 on:
   push:
     branches:
@@ -13,37 +13,32 @@ jobs:
         with:
           go-version: 1.14
         id: go
+
       - name: Checkout code
         uses: actions/checkout@v1
-      - name: Download modules
-        run: |
-          go get ./...
-      - name: Run tests
-        run: |
-          go test -v ./...
 
-  docker:
+      - name: Run tests
+        run: ./scripts/test.sh
+
+  deploy:
     runs-on: ubuntu-latest
-    # needs: test
+    needs: test
 
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v1
 
-      # - name: Build
-      #   run: docker build .
+      - name: Docker push
+        env: 
+          DOCKER_USERNAME: ${{secrets.DOCKER_HUB_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_HUB_PW}}
+        run: ./scripts/docker-push.sh
 
       - name: Deploy
-        working-directory: ./deploy
-        run: |
-          gpg --batch --passphrase ${{secrets.CERTS_PW}} -d docker-auth.tar.gz.gpg | tar xzvf -
-          docker \
-            --tlsverify \
-            --tlscacert=ca.pem \
-            --tlscert=cert.pem \
-            --tlskey=key.pem \
-            -H=scores.network:2376 \
-            version
+        env:
+          DEPLOY_HOST: ${{secrets.DOCKER_DEPLOY_URL}}
+        run: ./scripts/deploy.sh
+
       - name: Cleanup
-        working-directory: ./deploy
         if: ${{ always() }}
-        run: rm ca.pem cert.pem key.pem
+        run: ./scripts/clean.sh

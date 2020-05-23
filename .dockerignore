@@ -4,6 +4,7 @@ revive.toml
 
 *_test.go
 
+Dockerfile
 .gitignore
 .github/
 .vscode/
