@@ -1,18 +1,13 @@
 package crud
 
 import (
-	"fmt"
 	"database/sql"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/repo/sql/assets"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/gobuffalo/packr/v2"
-)
-
-var (
-	queries = packr.New("queries", "../queries")
 )
 
 // Execute executes a query.
@@ -29,9 +24,9 @@ func loadQuery(db *sqlx.DB, name string) string {
 	dbSpecificName := fmt.Sprintf("%s.%s.sql", name, db.DriverName())
 	genericName := fmt.Sprintf("%s.sql", name)
 
-	if q, err = queries.FindString(dbSpecificName); err == nil {
+	if q, err = assets.LoadQueryString(dbSpecificName); err == nil {
 		return q
-	} else if q, err = queries.FindString(genericName); err == nil {
+	} else if q, err = assets.LoadQueryString(genericName); err == nil {
 		return q
 	}
 
@@ -59,4 +54,3 @@ func mapError(err error) error {
 
 	return err
 }
-
