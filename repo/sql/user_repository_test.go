@@ -7,8 +7,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/test"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/test"
 )
 
 func TestCreateUser(t *testing.T) {

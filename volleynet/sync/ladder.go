@@ -2,7 +2,7 @@ package sync
 
 import (
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 // LadderSyncReport contains metrics of a Ladder sync job

@@ -6,12 +6,11 @@ import (
 	"crypto/sha256"
 	"io"
 
-	"github.com/raphi011/scores"
+	"github.com/raphi011/scores-backend"
 	"golang.org/x/crypto/pbkdf2"
 )
 
 var _ Password = &PBKDF2Password{}
-
 
 // Password allows comparing hashed passwords and creating new ones
 type Password interface {

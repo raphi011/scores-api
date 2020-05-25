@@ -4,26 +4,26 @@ import (
 	"os"
 	"testing"
 
-	"github.com/raphi011/scores/test"
+	"github.com/raphi011/scores-backend/test"
 )
 
 func TestParsePlayers(t *testing.T) {
 	response, _ := os.Open("../testdata/search.html")
 
 	expected := []*PlayerInfo{
-		&PlayerInfo{
+		{
 			ID:        34822,
 			FirstName: "Cristopher",
 			LastName:  "Pfau",
 			Birthday:  test.MustParseDate("28.01.2000"),
 		},
-		&PlayerInfo{
+		{
 			ID:        50427,
 			FirstName: "Hannes",
 			LastName:  "Pfau",
 			Birthday:  test.MustParseDate("22.10.2002"),
 		},
-		&PlayerInfo{
+		{
 			ID:        42378,
 			FirstName: "Jennifer",
 			LastName:  "Pfau",

@@ -1,8 +1,8 @@
 package repo
 
 import (
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 // PlayerFilter exposes search fields for a player.

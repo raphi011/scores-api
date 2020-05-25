@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 
-	"github.com/raphi011/scores/repo"
-	"github.com/raphi011/scores/services"
-	"github.com/raphi011/scores/volleynet/client"
+	"github.com/raphi011/scores-backend/repo"
+	"github.com/raphi011/scores-backend/services"
+	"github.com/raphi011/scores-backend/volleynet/client"
 )
 
 // PlayerHandler is the constructor for the player routes handler.

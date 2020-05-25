@@ -1,6 +1,6 @@
 package volleynet
 
-import "github.com/raphi011/scores"
+import "github.com/raphi011/scores-backend"
 
 // TournamentTeam is the current status of the team entry in a
 // tournament, if the tournament is finished it may also contain

@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/repo"
-	"github.com/raphi011/scores/repo/sql/crud"
-	"github.com/raphi011/scores/repo/sql/migrate"
-	"github.com/raphi011/scores/test"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/repo"
+	"github.com/raphi011/scores-backend/repo/sql/crud"
+	"github.com/raphi011/scores-backend/repo/sql/migrate"
+	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 // RepositoriesTest creates a database that respects the `TEST_DB_PROVIDER`
@@ -92,8 +92,8 @@ func CreateUsers(t testing.TB, db *sqlx.DB, users ...U) []*scores.User {
 // P is a helper struct to create players.
 type P struct {
 	Gender      string
-	FirstName string
-	LastName string
+	FirstName   string
+	LastName    string
 	TotalPoints int
 	LadderRank  int
 	ID          int
@@ -109,8 +109,8 @@ func CreatePlayers(t testing.TB, db *sqlx.DB, players ...P) []*volleynet.Player 
 	for _, p := range players {
 		persistedPlayer, err := playerRepo.New(&volleynet.Player{
 			ID:          p.ID,
-			FirstName:	 p.FirstName,
-			LastName: 	 p.LastName,
+			FirstName:   p.FirstName,
+			LastName:    p.LastName,
 			Gender:      p.Gender,
 			TotalPoints: p.TotalPoints,
 			LadderRank:  p.LadderRank,

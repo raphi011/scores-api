@@ -5,7 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores/cmd/api/router"
+	"github.com/raphi011/scores-backend/cmd/api/router"
 )
 
 var version = "undefined"

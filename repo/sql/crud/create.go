@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores"
+	"github.com/raphi011/scores-backend"
 )
 
 // Create creates a new entity.

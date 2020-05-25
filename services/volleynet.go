@@ -2,8 +2,8 @@ package services
 
 import (
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores/repo"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend/repo"
+	"github.com/raphi011/scores-backend/volleynet"
 
 	"strconv"
 	"time"

@@ -3,7 +3,7 @@ package volleynet
 import (
 	"time"
 
-	"github.com/raphi011/scores"
+	"github.com/raphi011/scores-backend"
 )
 
 // Player contains all relevent volleynet player information.

@@ -1,6 +1,6 @@
 package sync
 
-import "github.com/raphi011/scores/volleynet"
+import "github.com/raphi011/scores-backend/volleynet"
 
 // MergeTournamentTeam merges two tournament teams depending on the syncType
 // and returns the new TournamentTeam.

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/raphi011/scores/events"
+	"github.com/raphi011/scores-backend/events"
 )
 
 const (

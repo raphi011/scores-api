@@ -8,12 +8,12 @@ import (
 	"github.com/jmoiron/sqlx"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores/events"
-	"github.com/raphi011/scores/repo/sql"
-	"github.com/raphi011/scores/test"
-	"github.com/raphi011/scores/volleynet"
-	"github.com/raphi011/scores/volleynet/mocks"
-	"github.com/raphi011/scores/volleynet/scrape"
+	"github.com/raphi011/scores-backend/events"
+	"github.com/raphi011/scores-backend/repo/sql"
+	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-backend/volleynet/mocks"
+	"github.com/raphi011/scores-backend/volleynet/scrape"
 )
 
 func syncMock(t *testing.T) (*mocks.ClientMock, *Service, *sqlx.DB) {
@@ -42,7 +42,7 @@ func TestSyncLadder(t *testing.T) {
 	)
 
 	clientPlayers := []*volleynet.Player{
-		&volleynet.Player{ID: 1, TotalPoints: 125, LadderRank: 60, Gender: gender},
+		{ID: 1, TotalPoints: 125, LadderRank: 60, Gender: gender},
 	}
 
 	clientMock.On("Ladder", gender).Return(clientPlayers, nil)
@@ -67,7 +67,7 @@ func TestSyncTournamentInformation(t *testing.T) {
 func TestSyncTournaments(t *testing.T) {
 	clientMock, service, db := syncMock(t)
 
-	clientTournaments := []*volleynet.TournamentInfo{&volleynet.TournamentInfo{
+	clientTournaments := []*volleynet.TournamentInfo{{
 		ID:     1,
 		Status: volleynet.StatusUpcoming,
 		Start:  time.Now(),
@@ -75,7 +75,7 @@ func TestSyncTournaments(t *testing.T) {
 	}}
 
 	clientFullTournament := []*volleynet.Tournament{
-		&volleynet.Tournament{TournamentInfo: volleynet.TournamentInfo{
+		{TournamentInfo: volleynet.TournamentInfo{
 			ID:     1,
 			Status: volleynet.StatusUpcoming,
 			Name:   "New name",

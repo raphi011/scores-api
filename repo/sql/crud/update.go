@@ -5,7 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"github.com/raphi011/scores"
+	"github.com/raphi011/scores-backend"
 )
 
 // Update updates multiple entities and updates the `UpdatedAt` field.

@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores/services"
+	"github.com/raphi011/scores-backend/services"
 )
 
 // Admin middleware restricts routes for admins only

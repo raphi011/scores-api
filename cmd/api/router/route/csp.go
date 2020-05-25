@@ -6,8 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 
-	"github.com/raphi011/scores/cmd/api/csp"
-	"github.com/raphi011/scores/cmd/api/logger"
+	"github.com/raphi011/scores-backend/cmd/api/csp"
+	"github.com/raphi011/scores-backend/cmd/api/logger"
 )
 
 // CspHandler is the constructor for the csp routes handler.

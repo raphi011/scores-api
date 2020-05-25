@@ -3,7 +3,7 @@ package sync
 import (
 	"testing"
 
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 func TestMergeTournamentTeam(t *testing.T) {
@@ -14,7 +14,7 @@ func TestMergeTournamentTeam(t *testing.T) {
 
 	newTeam := &volleynet.TournamentTeam{
 		PrizeMoney: 200,
-		Result:       2,
+		Result:     2,
 		WonPoints:  35,
 	}
 

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/raphi011/scores/test"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 var tournamentTests = []struct {
@@ -40,7 +40,7 @@ var tournamentTests = []struct {
 			Email:         "Johannes.Wascher@gmail.com",
 			SignedupTeams: 0,
 			Teams: []*volleynet.TournamentTeam{
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 20014, FirstName: "Maximilian", LastName: "Mündler", Gender: "M", CountryUnion: "ÖVV", License: "1", TotalPoints: 89},
 					Player2:      &volleynet.Player{ID: 20015, FirstName: "Leopold", LastName: "Rittler", Gender: "M", CountryUnion: "BVV", License: "1", TotalPoints: 190},
 					Deregistered: true,
@@ -50,7 +50,7 @@ var tournamentTests = []struct {
 					TotalPoints:  279,
 					WonPoints:    0,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 47513, FirstName: "Noah", LastName: "Nebosis", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 59},
 					Player2:      &volleynet.Player{ID: 45266, FirstName: "Philip", LastName: "Höllriegl", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 33},
 					Deregistered: true,
@@ -114,7 +114,7 @@ var tournamentTests = []struct {
 			Phone:         "+43 664 6122639",
 			Email:         "Vorstand@12ndr.at",
 			Teams: []*volleynet.TournamentTeam{
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 22606, FirstName: "Richard", LastName: "Bosse", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 41275, FirstName: "Raphael", LastName: "Gruber", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -122,7 +122,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    36,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 28725, FirstName: "Alexander", LastName: "Jäger", Gender: "M", CountryUnion: "WVV"},
 					Player2:      &volleynet.Player{ID: 20436, FirstName: "Bernhard", LastName: "Metzger", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -130,7 +130,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    33,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 27201, FirstName: "Alexander", LastName: "Jirgal", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 17623, FirstName: "Luca Maxim", LastName: "Wojnar", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -138,7 +138,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    29,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 10198, FirstName: "Markus", LastName: "Mayer", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 42403, FirstName: "Constantin", LastName: "Schieber", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -146,7 +146,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    26,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 22913, FirstName: "Herbert", LastName: "Eminger", Gender: "M", CountryUnion: "WVV"},
 					Player2:      &volleynet.Player{ID: 33125, FirstName: "Stefan", LastName: "Handschmann", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,
@@ -154,7 +154,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    22,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 44906, FirstName: "Reinhard", LastName: "Weiskirchner", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 13788, FirstName: "Michael", LastName: "Gahler", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -162,7 +162,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    22,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 18427, FirstName: "Michael", LastName: "Haas", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 39945, FirstName: "Werner", LastName: "Schmid", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -170,7 +170,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    18,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 36540, FirstName: "Andreas", LastName: "Zelinka", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 51104, FirstName: "Simon", LastName: "Sladek", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -178,7 +178,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    18,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 55789, FirstName: "Martin", LastName: "Gschweidl", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 36557, FirstName: "Stefan", LastName: "Müller", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -186,7 +186,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					WonPoints:    15,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 55596, FirstName: "Thomas", LastName: "Müllner", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 43098, FirstName: "Sebastian", LastName: "Lechner", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -222,7 +222,7 @@ var tournamentTests = []struct {
 			Phone:         "0699 106 934 19",
 			Email:         "tarek.mohamed@outlook.com",
 			Teams: []*volleynet.TournamentTeam{
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 1043, FirstName: "Peter", LastName: "Dietl", Gender: "M", CountryUnion: "WVV"},
 					Player2:      &volleynet.Player{ID: 39947, FirstName: "Michael", LastName: "Seiser", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,
@@ -230,7 +230,7 @@ var tournamentTests = []struct {
 					TournamentID: 22228,
 					WonPoints:    50,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 11072, FirstName: "Christoph", LastName: "Brunnhofer", Gender: "M", CountryUnion: "STVV"},
 					Player2:      &volleynet.Player{ID: 27471, FirstName: "Christoph", LastName: "Mittendrein", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
@@ -238,7 +238,7 @@ var tournamentTests = []struct {
 					TournamentID: 22228,
 					WonPoints:    45,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 36552, FirstName: "Dominik", LastName: "Koudela", Gender: "M", CountryUnion: "WVV"},
 					Player2:      &volleynet.Player{ID: 18348, FirstName: "Marian", LastName: "Schwinner", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -272,7 +272,7 @@ var tournamentTests = []struct {
 			Website:       "www.beachvolleywien.at",
 			Phone:         "0699/81 49 1124",
 			Teams: []*volleynet.TournamentTeam{
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 4162, FirstName: "Christoph", LastName: "Haas", Gender: "M", CountryUnion: "STVV"},
 					Player2:      &volleynet.Player{ID: 20158, FirstName: "Dominik Karl", LastName: "Blaha", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
@@ -280,7 +280,7 @@ var tournamentTests = []struct {
 					TournamentID: 22750,
 					WonPoints:    80,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 4523, FirstName: "Josef", LastName: "Buchner", Gender: "M", CountryUnion: "SVV"},
 					Player2:      &volleynet.Player{ID: 4179, FirstName: "Florian", LastName: "Tatra", Gender: "M", CountryUnion: "SVV"},
 					Deregistered: false,
@@ -288,7 +288,7 @@ var tournamentTests = []struct {
 					TournamentID: 22750,
 					WonPoints:    70,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 13011, FirstName: "Daniel", LastName: "Wimmer", Gender: "M", CountryUnion: "SVV"},
 					Player2:      &volleynet.Player{ID: 44897, FirstName: "Maximilian", LastName: "Wieser", Gender: "M", CountryUnion: "SVV"},
 					Deregistered: false,
@@ -296,7 +296,7 @@ var tournamentTests = []struct {
 					TournamentID: 22750,
 					WonPoints:    60,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 39947, FirstName: "Michael", LastName: "Seiser", Gender: "M", CountryUnion: "WVV"},
 					Player2:      &volleynet.Player{ID: 1991, FirstName: "Wolfgang", LastName: "Ertl", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,
@@ -333,7 +333,7 @@ var tournamentTests = []struct {
 			Phone:         "0699 106 934 19",
 			Email:         "ziegler@sportz.at",
 			Teams: []*volleynet.TournamentTeam{
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 10938, FirstName: "Sascha", LastName: "Kosatschow", TotalPoints: 303, License: "1", Gender: "M", CountryUnion: "STVV"},
 					Player2:      &volleynet.Player{ID: 27103, FirstName: "Johannes", LastName: "Pekar", TotalPoints: 177, License: "1", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
@@ -341,7 +341,7 @@ var tournamentTests = []struct {
 					TournamentID: 22231,
 					TotalPoints:  480,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 18068, FirstName: "Lukas", LastName: "Wimmer", TotalPoints: 206, License: "1", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 22590, FirstName: "Dominik", LastName: "Rieder", TotalPoints: 228, License: "1", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -349,7 +349,7 @@ var tournamentTests = []struct {
 					TournamentID: 22231,
 					TotalPoints:  434,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 42649, FirstName: "Niels", LastName: "Antoni", TotalPoints: 162, License: "1", Gender: "M", CountryUnion: "WVV"},
 					Player2:      &volleynet.Player{ID: 21259, FirstName: "Liam", LastName: "Ochaya", TotalPoints: 257, License: "1", Gender: "M", CountryUnion: "STVV"},
 					Deregistered: false,
@@ -386,7 +386,7 @@ var tournamentTests = []struct {
 			Phone:         "+43 664 6122639",
 			Email:         "Vorstand@12ndr.at",
 			Teams: []*volleynet.TournamentTeam{
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 22606, FirstName: "Richard", LastName: "Bosse", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 249},
 					Player2:      &volleynet.Player{ID: 41275, FirstName: "Raphael", LastName: "Gruber", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 242},
 					Deregistered: false,
@@ -394,7 +394,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  491,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 27201, FirstName: "Alexander", LastName: "Jirgal", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 184},
 					Player2:      &volleynet.Player{ID: 17623, FirstName: "Luca Maxim", LastName: "Wojnar", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 185},
 					Deregistered: false,
@@ -402,7 +402,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  369,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 54595, FirstName: "Maximilian", LastName: "Rauter", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 155},
 					Player2:      &volleynet.Player{ID: 47755, FirstName: "Moritz", LastName: "Hörl", Gender: "M", CountryUnion: "SVV", License: "1", TotalPoints: 187},
 					Deregistered: false,
@@ -410,7 +410,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  342,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 44906, FirstName: "Reinhard", LastName: "Weiskirchner", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 157},
 					Player2:      &volleynet.Player{ID: 13788, FirstName: "Michael", LastName: "Gahler", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 138},
 					Deregistered: false,
@@ -418,14 +418,14 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  295,
 				},
-				&volleynet.TournamentTeam{Player1: &volleynet.Player{ID: 28725, FirstName: "Alexander", LastName: "Jäger", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 214},
+				{Player1: &volleynet.Player{ID: 28725, FirstName: "Alexander", LastName: "Jäger", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 214},
 					Player2:      &volleynet.Player{ID: 20436, FirstName: "Bernhard", LastName: "Metzger", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 78},
 					Deregistered: false,
 					Seed:         5,
 					TournamentID: 22764,
 					TotalPoints:  292,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 22913, FirstName: "Herbert", LastName: "Eminger", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 102},
 					Player2:      &volleynet.Player{ID: 33125, FirstName: "Stefan", LastName: "Handschmann", Gender: "M", CountryUnion: "WVV", License: "1", TotalPoints: 122},
 					Deregistered: false,
@@ -433,7 +433,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  224,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 10198, FirstName: "Markus", LastName: "Mayer", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 42},
 					Player2:      &volleynet.Player{ID: 42403, FirstName: "Constantin", LastName: "Schieber", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 153},
 					Deregistered: false,
@@ -441,7 +441,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  195,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 36540, FirstName: "Andreas", LastName: "Zelinka", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 18},
 					Player2:      &volleynet.Player{ID: 51104, FirstName: "Simon", LastName: "Sladek", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 103},
 					Deregistered: false,
@@ -449,7 +449,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  121,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 18427, FirstName: "Michael", LastName: "Haas", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 98},
 					Player2:      &volleynet.Player{ID: 39945, FirstName: "Werner", LastName: "Schmid", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 11},
 					Deregistered: false,
@@ -457,7 +457,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  109,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 55596, FirstName: "Thomas", LastName: "Müllner", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 25},
 					Player2:      &volleynet.Player{ID: 43098, FirstName: "Sebastian", LastName: "Lechner", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 25},
 					Deregistered: false,
@@ -465,7 +465,7 @@ var tournamentTests = []struct {
 					TournamentID: 22764,
 					TotalPoints:  50,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 55789, FirstName: "Martin", LastName: "Gschweidl", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 0},
 					Player2:      &volleynet.Player{ID: 36557, FirstName: "Stefan", LastName: "Müller", Gender: "M", CountryUnion: "NÖVV", License: "1", TotalPoints: 0},
 					Deregistered: false,
@@ -503,7 +503,7 @@ var tournamentTests = []struct {
 			Phone:         "0676 587 444 0",
 			Email:         "fschaffer@gmx.at",
 			Teams: []*volleynet.TournamentTeam{
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 41275, FirstName: "Raphael", LastName: "Gruber", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 22590, FirstName: "Dominik", LastName: "Rieder", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -511,7 +511,7 @@ var tournamentTests = []struct {
 					TournamentID: 22616,
 					WonPoints:    42,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 6724, FirstName: "Robert", LastName: "Kirkovics", Gender: "M", CountryUnion: "NÖVV"},
 					Player2:      &volleynet.Player{ID: 13089, FirstName: "Christian", LastName: "Karlin", Gender: "M", CountryUnion: "NÖVV"},
 					Deregistered: false,
@@ -519,7 +519,7 @@ var tournamentTests = []struct {
 					TournamentID: 22616,
 					WonPoints:    38,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 13917, FirstName: "Florian", LastName: "Böhm", Gender: "M", CountryUnion: "BVV"},
 					Player2:      &volleynet.Player{ID: 51026, FirstName: "Stefan", LastName: "Dienst", Gender: "M", CountryUnion: "BVV"},
 					Deregistered: false,
@@ -527,7 +527,7 @@ var tournamentTests = []struct {
 					TournamentID: 22616,
 					WonPoints:    34,
 				},
-				&volleynet.TournamentTeam{
+				{
 					Player1:      &volleynet.Player{ID: 45125, FirstName: "Bernhard", LastName: "Sirowy", Gender: "M", CountryUnion: "WVV"},
 					Player2:      &volleynet.Player{ID: 36552, FirstName: "Dominik", LastName: "Koudela", Gender: "M", CountryUnion: "WVV"},
 					Deregistered: false,

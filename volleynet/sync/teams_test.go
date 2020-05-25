@@ -3,18 +3,18 @@ package sync
 import (
 	"testing"
 
-	"github.com/raphi011/scores/repo/sql"
-	"github.com/raphi011/scores/volleynet"
-	"github.com/raphi011/scores/test"
+	"github.com/raphi011/scores-backend/repo/sql"
+	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 func TestDistinctPlayers(t *testing.T) {
 	input := []*volleynet.TournamentTeam{
-		&volleynet.TournamentTeam{
+		{
 			Player1: &volleynet.Player{ID: 1},
 			Player2: &volleynet.Player{ID: 2},
 		},
-		&volleynet.TournamentTeam{
+		{
 			Player1: &volleynet.Player{ID: 3},
 			Player2: &volleynet.Player{ID: 1},
 		},
@@ -28,19 +28,19 @@ func TestDistinctPlayers(t *testing.T) {
 
 	output := distinctPlayers(input)
 
-	test.Compare(t, "distinctPlayers() diff:\n%s", output,expected)
+	test.Compare(t, "distinctPlayers() diff:\n%s", output, expected)
 }
 
 func TestAddMissingPlayers(t *testing.T) {
 	_, service, db := syncMock(t)
 
 	players := sql.CreatePlayers(t, db,
-		sql.P{ ID: 1 },
-		sql.P{ ID: 2 },
+		sql.P{ID: 1},
+		sql.P{ID: 2},
 	)
 
 	teams := []*volleynet.TournamentTeam{
-		&volleynet.TournamentTeam{
+		{
 			Player1: players[0],
 			Player2: players[1],
 		},
@@ -60,22 +60,22 @@ func TestSyncTournamentTeams(t *testing.T) {
 	teamDeleted := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         1,
-		Player1: &volleynet.Player{ID: 1},
-		Player2: &volleynet.Player{ID: 2},
+		Player1:      &volleynet.Player{ID: 1},
+		Player2:      &volleynet.Player{ID: 2},
 	}
 
 	teamOutdated := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         2,
-		Player1: &volleynet.Player{ID: 5},
-		Player2: &volleynet.Player{ID: 6},
+		Player1:      &volleynet.Player{ID: 5},
+		Player2:      &volleynet.Player{ID: 6},
 	}
 
 	teamNew := &volleynet.TournamentTeam{
 		TournamentID: tournamentID,
 		Seed:         2,
-		Player1: &volleynet.Player{ID: 3},
-		Player2: &volleynet.Player{ID: 4},
+		Player1:      &volleynet.Player{ID: 3},
+		Player2:      &volleynet.Player{ID: 4},
 	}
 
 	teamUpdated := *teamOutdated
@@ -93,7 +93,7 @@ func TestSyncTournamentTeams(t *testing.T) {
 
 	service.syncTournamentTeams(changes, old, new)
 
-	test.Assert(t,"Service.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d",len(changes.New) == 1 , len(changes.New))
-	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update) == 1, len(changes.Update) )
-	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete) == 1,len(changes.Delete))
+	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.New) == 1, got: %d", len(changes.New) == 1, len(changes.New))
+	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Update) == 1, got: %d", len(changes.Update) == 1, len(changes.Update))
+	test.Assert(t, "Service.syncTournamentTeam(...) want: len(changes.Delete) == 1, got: %d", len(changes.Delete) == 1, len(changes.Delete))
 }

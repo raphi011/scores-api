@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/cmd/api/logger"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/cmd/api/logger"
 )
 
 func responseBadRequest(c *gin.Context) {

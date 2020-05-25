@@ -8,8 +8,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 // TournamentList parses the list of tournaments.

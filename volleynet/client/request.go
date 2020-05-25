@@ -14,8 +14,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores/volleynet"
-	"github.com/raphi011/scores/volleynet/scrape"
+	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-backend/volleynet/scrape"
 )
 
 // Client is the interface to the volleynet api, use DefaultClient()

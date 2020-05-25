@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/raphi011/scores/test"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 func ParseMagicYear(timeString string) *time.Time {
@@ -18,7 +18,7 @@ func TestParseLadderTest(t *testing.T) {
 	response, _ := os.Open("../testdata/ladder-men.html")
 
 	expected := []*volleynet.Player{
-		&volleynet.Player{
+		{
 			ID:           246,
 			Birthday:     ParseMagicYear("1982"),
 			FirstName:    "Alexander",
@@ -29,7 +29,7 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
-		&volleynet.Player{
+		{
 			ID:           1050,
 			Birthday:     ParseMagicYear("1980"),
 			FirstName:    "Clemens",
@@ -40,7 +40,7 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  2575,
 			Gender:       "M",
 		},
-		&volleynet.Player{
+		{
 			ID:           5626,
 			Birthday:     ParseMagicYear("1990"),
 			FirstName:    "Robin Valentin",
@@ -51,7 +51,7 @@ func TestParseLadderTest(t *testing.T) {
 			TotalPoints:  1900,
 			Gender:       "M",
 		},
-		&volleynet.Player{
+		{
 			ID:           6656,
 			Birthday:     ParseMagicYear("1994"),
 			FirstName:    "Martin",

@@ -1,4 +1,4 @@
-module github.com/raphi011/scores
+module github.com/raphi011/scores-backend
 
 go 1.14
 

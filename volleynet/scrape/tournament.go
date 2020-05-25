@@ -9,8 +9,8 @@ import (
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 // Tournament adds remaining details to the tournament (parsed by TournamentList()).

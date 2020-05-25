@@ -1,6 +1,6 @@
 package sync
 
-import "github.com/raphi011/scores/volleynet"
+import "github.com/raphi011/scores-backend/volleynet"
 
 // FindPlayer searches a player slice for a player, returns nil if not found
 func FindPlayer(players []*volleynet.Player, playerID int) *volleynet.Player {

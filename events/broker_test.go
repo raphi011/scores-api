@@ -3,7 +3,7 @@ package events
 import (
 	"testing"
 
-	"github.com/raphi011/scores/test"
+	"github.com/raphi011/scores-backend/test"
 )
 
 func TestExpandPossibleHandlers(t *testing.T) {

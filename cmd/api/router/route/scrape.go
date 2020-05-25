@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores/job"
+	"github.com/raphi011/scores-backend/job"
 )
 
 // ScrapeHandler is the constructor for the Scrape routes handler.

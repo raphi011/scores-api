@@ -6,10 +6,10 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores"
-	"github.com/raphi011/scores/repo"
-	"github.com/raphi011/scores/repo/sql/crud"
-	"github.com/raphi011/scores/volleynet"
+	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-backend/repo"
+	"github.com/raphi011/scores-backend/repo/sql/crud"
+	"github.com/raphi011/scores-backend/volleynet"
 )
 
 type tournamentRepository struct {

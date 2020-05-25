@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores/cmd/api/logger"
+	"github.com/raphi011/scores-backend/cmd/api/logger"
 )
 
 // LocalhostOnly middleware restricts routes to requests coming from private ip ranges
