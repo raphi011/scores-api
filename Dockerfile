@@ -2,13 +2,13 @@ ARG GO_VERSION=1.14
 ARG VERSION=dev
 
 FROM golang:$GO_VERSION as builder
-RUN go get -u github.com/gobuffalo/packr/packr
+RUN go get github.com/markbates/pkger/cmd/pkger
 WORKDIR /scores/backend
 COPY ./go.* ./
 RUN go mod download
 COPY . .
 WORKDIR /scores/backend/cmd/api
-RUN packr
+RUN pkger
 # the portable build tag removes the SQLITE driver that relies on cgo
 RUN CGO_ENABLED=0 GOOS=linux go install -ldflags="-X main.version=$VERSION" -tags=portable
 
