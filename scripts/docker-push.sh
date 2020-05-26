@@ -10,9 +10,9 @@ docker login \
     --password="${DOCKER_PASSWORD}"
 
 docker build \
-    -t raphi011/scores-backend:$version \
-    -t raphi011/scores-backend:latest \
+    -t raphi011/scores-api:$version \
+    -t raphi011/scores-api:latest \
     .
 
-docker push raphi011/scores-backend:$version
-docker push raphi011/scores-backend:latest
+docker push raphi011/scores-api:$version
+docker push raphi011/scores-api:latest

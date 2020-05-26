@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/repo"
-	"github.com/raphi011/scores-backend/repo/sql/crud"
-	"github.com/raphi011/scores-backend/repo/sql/migrate"
-	"github.com/raphi011/scores-backend/test"
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/repo"
+	"github.com/raphi011/scores-api/repo/sql/crud"
+	"github.com/raphi011/scores-api/repo/sql/migrate"
+	"github.com/raphi011/scores-api/test"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 // RepositoriesTest creates a database that respects the `TEST_DB_PROVIDER`

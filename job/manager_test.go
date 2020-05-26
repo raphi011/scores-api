@@ -6,7 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-api/test"
 )
 
 func TestManager(t *testing.T) {

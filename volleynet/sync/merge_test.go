@@ -3,7 +3,7 @@ package sync
 import (
 	"testing"
 
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 func TestMergeTournamentTeam(t *testing.T) {

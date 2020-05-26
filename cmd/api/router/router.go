@@ -15,17 +15,17 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 
-	"github.com/raphi011/scores-backend/cmd/api/auth"
-	"github.com/raphi011/scores-backend/cmd/api/cron"
-	"github.com/raphi011/scores-backend/cmd/api/middleware"
-	"github.com/raphi011/scores-backend/cmd/api/router/route"
-	"github.com/raphi011/scores-backend/events"
-	"github.com/raphi011/scores-backend/job"
-	"github.com/raphi011/scores-backend/repo"
-	"github.com/raphi011/scores-backend/repo/sql"
-	"github.com/raphi011/scores-backend/services"
-	"github.com/raphi011/scores-backend/volleynet/client"
-	"github.com/raphi011/scores-backend/volleynet/sync"
+	"github.com/raphi011/scores-api/cmd/api/auth"
+	"github.com/raphi011/scores-api/cmd/api/cron"
+	"github.com/raphi011/scores-api/cmd/api/middleware"
+	"github.com/raphi011/scores-api/cmd/api/router/route"
+	"github.com/raphi011/scores-api/events"
+	"github.com/raphi011/scores-api/job"
+	"github.com/raphi011/scores-api/repo"
+	"github.com/raphi011/scores-api/repo/sql"
+	"github.com/raphi011/scores-api/services"
+	"github.com/raphi011/scores-api/volleynet/client"
+	"github.com/raphi011/scores-api/volleynet/sync"
 )
 
 // Router wraps all the services and configuration needed

@@ -7,7 +7,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 
-	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-api"
 )
 
 // Check fails the test if `err` != `nil` with the `message` and arg `err`.

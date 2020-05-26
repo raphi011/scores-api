@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/raphi011/scores-backend/cmd/api/logger"
+	"github.com/raphi011/scores-api/cmd/api/logger"
 )
 
 // Auth middleware restricts routes for authenticated users only

@@ -3,7 +3,7 @@ package volleynet
 import (
 	"time"
 
-	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-api"
 )
 
 const (

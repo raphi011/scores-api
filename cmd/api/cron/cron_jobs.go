@@ -3,8 +3,8 @@ package cron
 import (
 	"time"
 
-	"github.com/raphi011/scores-backend/job"
-	"github.com/raphi011/scores-backend/volleynet/sync"
+	"github.com/raphi011/scores-api/job"
+	"github.com/raphi011/scores-api/volleynet/sync"
 )
 
 // JobReport contains information about a running job

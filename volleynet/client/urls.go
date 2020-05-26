@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 func (c *Default) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {

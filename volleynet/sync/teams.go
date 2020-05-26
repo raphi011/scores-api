@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 // TeamChanges lists the teams that are `New`, `Delete`'d and `Update`'d

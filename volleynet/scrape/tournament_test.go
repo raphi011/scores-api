@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/raphi011/scores-backend/test"
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/test"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 var tournamentTests = []struct {

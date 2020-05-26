@@ -6,11 +6,11 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/events"
-	"github.com/raphi011/scores-backend/repo"
-	"github.com/raphi011/scores-backend/volleynet"
-	"github.com/raphi011/scores-backend/volleynet/client"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/events"
+	"github.com/raphi011/scores-api/repo"
+	"github.com/raphi011/scores-api/volleynet"
+	"github.com/raphi011/scores-api/volleynet/client"
 )
 
 // Changes contains metrics of a scrape job

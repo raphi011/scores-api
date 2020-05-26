@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/services"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/services"
 )
 
 // AdminHandler is the constructor for the Admin routes handler.

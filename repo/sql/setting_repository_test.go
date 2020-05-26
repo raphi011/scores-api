@@ -5,8 +5,8 @@ package sql
 import (
 	"testing"
 
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/test"
 )
 
 func TestCreateSetting(t *testing.T) {

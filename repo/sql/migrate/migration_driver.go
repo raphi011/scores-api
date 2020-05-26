@@ -8,7 +8,7 @@ import (
 	"path"
 
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores-backend/repo/sql/assets"
+	"github.com/raphi011/scores-api/repo/sql/assets"
 
 	"github.com/golang-migrate/migrate/v4/source"
 )

@@ -3,8 +3,8 @@ package route
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/services"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/services"
 )
 
 // DebugHandler is the constructor for the debug routes handler.

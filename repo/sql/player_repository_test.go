@@ -5,9 +5,9 @@ package sql
 import (
 	"testing"
 
-	"github.com/raphi011/scores-backend/repo"
-	"github.com/raphi011/scores-backend/test"
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/repo"
+	"github.com/raphi011/scores-api/test"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 func TestCreatePlayer(t *testing.T) {

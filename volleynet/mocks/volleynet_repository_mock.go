@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/volleynet"
 	"github.com/stretchr/testify/mock"
 )
 

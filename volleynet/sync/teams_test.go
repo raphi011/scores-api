@@ -3,9 +3,9 @@ package sync
 import (
 	"testing"
 
-	"github.com/raphi011/scores-backend/repo/sql"
-	"github.com/raphi011/scores-backend/test"
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/repo/sql"
+	"github.com/raphi011/scores-api/test"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 func TestDistinctPlayers(t *testing.T) {

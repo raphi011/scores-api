@@ -12,10 +12,10 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"golang.org/x/oauth2"
 
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/cmd/api/auth"
-	"github.com/raphi011/scores-backend/cmd/api/logger"
-	"github.com/raphi011/scores-backend/services"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/cmd/api/auth"
+	"github.com/raphi011/scores-api/cmd/api/logger"
+	"github.com/raphi011/scores-api/services"
 )
 
 type loginRouteOrUserDto struct {

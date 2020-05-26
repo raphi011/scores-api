@@ -11,9 +11,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/raphi011/scores-backend/cmd/api/auth"
-	"github.com/raphi011/scores-backend/cmd/api/router"
-	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-api/cmd/api/auth"
+	"github.com/raphi011/scores-api/cmd/api/router"
+	"github.com/raphi011/scores-api/test"
 )
 
 func SetupTestServer(t testing.TB) *router.Router {

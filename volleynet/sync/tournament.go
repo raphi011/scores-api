@@ -2,12 +2,12 @@ package sync
 
 import (
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-api"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 // TournamentChanges lists the tournaments that are `New`, `Delete`'d and `Update`'d

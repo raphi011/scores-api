@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-api"
 )
 
 // Delete deletes an entity.

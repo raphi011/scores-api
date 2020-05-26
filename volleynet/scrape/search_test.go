@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/raphi011/scores-backend/test"
+	"github.com/raphi011/scores-api/test"
 )
 
 func TestParsePlayers(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"crypto/sha256"
 	"io"
 
-	"github.com/raphi011/scores-backend"
+	"github.com/raphi011/scores-api"
 	"golang.org/x/crypto/pbkdf2"
 )
 

@@ -3,8 +3,8 @@ package services
 import (
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/repo"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/repo"
 )
 
 // User allows loading / mutation of user data

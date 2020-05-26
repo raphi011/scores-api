@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/raphi011/scores-backend"
-	"github.com/raphi011/scores-backend/repo/sql/assets"
+	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/repo/sql/assets"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -8,17 +8,17 @@ export DOCKER_CERT_PATH=$(pwd)
 export DOCKER_TLS_VERIFY=1
 export DOCKER_HOST=${DOCKER_DEPLOY_URL:-scores.network:2376}
 
-docker pull raphi011/scores-backend:latest
+docker pull raphi011/scores-api:latest
 
-docker stop scores-backend
+docker stop scores-api
 
-docker rm scores-backend
+docker rm scores-api
 
 docker run \
     -d \
     -p 8080 \
     --network="scores" \
-    --network-alias=["backend"] \
-    --name scores-backend \
-    --mount 'type=volume,src=scores-backend,dst=/srv/scores' \
-    raphi011/scores-backend:latest
+    --network-alias=["api"] \
+    --name scores-api \
+    --mount 'type=volume,src=scores-api,dst=/srv/scores' \
+    raphi011/scores-api:latest

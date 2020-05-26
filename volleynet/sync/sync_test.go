@@ -8,12 +8,12 @@ import (
 	"github.com/jmoiron/sqlx"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/raphi011/scores-backend/events"
-	"github.com/raphi011/scores-backend/repo/sql"
-	"github.com/raphi011/scores-backend/test"
-	"github.com/raphi011/scores-backend/volleynet"
-	"github.com/raphi011/scores-backend/volleynet/mocks"
-	"github.com/raphi011/scores-backend/volleynet/scrape"
+	"github.com/raphi011/scores-api/events"
+	"github.com/raphi011/scores-api/repo/sql"
+	"github.com/raphi011/scores-api/test"
+	"github.com/raphi011/scores-api/volleynet"
+	"github.com/raphi011/scores-api/volleynet/mocks"
+	"github.com/raphi011/scores-api/volleynet/scrape"
 )
 
 func syncMock(t *testing.T) (*mocks.ClientMock, *Service, *sqlx.DB) {

@@ -4,9 +4,9 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
-	"github.com/raphi011/scores-backend/repo"
-	"github.com/raphi011/scores-backend/repo/sql/crud"
-	"github.com/raphi011/scores-backend/volleynet"
+	"github.com/raphi011/scores-api/repo"
+	"github.com/raphi011/scores-api/repo/sql/crud"
+	"github.com/raphi011/scores-api/volleynet"
 )
 
 type playerRepository struct {
