@@ -6,8 +6,6 @@ replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-2019020
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.0
-	github.com/bshuster-repo/logrus-logstash-hook v0.4.1
-	github.com/cenkalti/backoff v2.1.1+incompatible
 	github.com/corpix/uarand v0.0.0 // indirect
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
 	github.com/gin-contrib/sse v0.1.0 // indirect

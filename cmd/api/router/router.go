@@ -2,12 +2,9 @@ package router
 
 import (
 	"fmt"
-	"net"
 	"testing"
 	"time"
 
-	logrustash "github.com/bshuster-repo/logrus-logstash-hook"
-	"github.com/cenkalti/backoff"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -197,48 +194,6 @@ func WithOAuth(configPath, host string) Option {
 
 		if err != nil {
 			r.log.Warnf("Could not read google secret: %v, continuing without google oauth\n", err)
-		}
-	}
-}
-
-// WithLogstash configures the logger to use logstash.
-func WithLogstash(logstashURL string, level logrus.Level) Option {
-	return func(r *Router) {
-		log := logrus.New()
-		log.SetLevel(level)
-
-		r.log = log
-
-		if logstashURL != "" {
-			var con net.Conn
-
-			err := backoff.Retry(func() error {
-				var err error
-
-				con, err = net.Dial("tcp", logstashURL)
-
-				if err != nil {
-					log.Infof("Retrying connection to logstash: %s", err)
-				}
-
-				return err
-			}, backoff.NewExponentialBackOff())
-
-			if err != nil {
-				log.Warnf("unable to setup logstash hook: %s", err)
-				return
-			}
-
-			log.Info("Successfully connected to logstash")
-
-			hook, err := logrustash.NewHookWithConn(con, "scores")
-
-			if err != nil {
-				log.Warnf("unable to setup logstash hook: %s", err)
-				return
-			}
-
-			log.Hooks.Add(hook)
 		}
 	}
 }
