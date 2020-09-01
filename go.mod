@@ -1,6 +1,6 @@
 module github.com/raphi011/scores-api
 
-go 1.14
+go 1.15
 
 replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43
 
@@ -8,7 +8,6 @@ require (
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/corpix/uarand v0.0.0 // indirect
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
-	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.6.3
 	github.com/gobuffalo/envy v1.7.0 // indirect
 	github.com/gobuffalo/here v0.6.2 // indirect
@@ -32,6 +31,4 @@ require (
 	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
 	golang.org/x/net v0.0.0-20190607181551-461777fb6f67 // indirect
 	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a
-	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
-	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 )
