@@ -12,7 +12,6 @@ This is mainly a hobby project of mine to improve my skills creating a modern ja
 - Automated builds / tests / deployments with [travis-ci](https://travis-ci.org).
 - Debugging of Front + Backend (via VS-Code).
 - Automated database migrations.
-- Logging to the ELK stack.
 - Webscraping of http://www.volleynet.at/beach.
 - Plugable persistance architecture, currently it's possible to store the data with Postgresql, MySQL and Sqlite3. No-SQL db's could also be supported.
 - Well tested against all supported data stores
@@ -29,10 +28,6 @@ Srape the data from the official Austrian beach volleynet homepage and present i
 ### Web Frontend
 
 Signup/out of Tournaments, browse and filter through tournaments. Get notifications, ...
-
-### Teleram BOT
-
-TODO
 
 ## Build locally
 
