@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/raphi011/scores.svg?branch=development)](https://travis-ci.org/raphi011/scores)
-
 # scores
 
 ## Motivation
@@ -9,7 +7,7 @@ This is mainly a hobby project of mine to improve my skills creating a modern ja
 ### Incomplete list of features / tools:
 
 - Serverside Rending (courtesy of the awesome [nextjs](https://nextjs.org/) framework).
-- Automated builds / tests / deployments with [travis-ci](https://travis-ci.org).
+- Automated builds / tests / deployments with [github actions](https://github.com/features/actions).
 - Debugging of Front + Backend (via VS-Code).
 - Automated database migrations.
 - Webscraping of http://www.volleynet.at/beach.
