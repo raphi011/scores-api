@@ -41,8 +41,11 @@ type Option func(*App)
 
 // New creates a new router and configures it with `opts`.
 func New(opts ...Option) *App {
+	logger := logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{})
+
 	router := &App{
-		log: logrus.New(),
+		log: logger,
 	}
 
 	for _, o := range opts {
