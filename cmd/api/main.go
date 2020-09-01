@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/raphi011/scores-api/cmd/api/router"
+	"github.com/raphi011/scores-api/cmd/api/app"
 )
 
 var version = "undefined"
@@ -17,12 +17,13 @@ func main() {
 
 	flag.Parse()
 
-	r := router.New(
-		router.WithVersion(version),
-		router.WithMode(*mode),
-		router.WithRepository(*dbProvider, *connectionString),
-		router.WithOAuth(*gSecret, *host),
-		router.WithEventQueue(),
+	r := app.New(
+		app.WithVersion(version),
+		app.WithMode(*mode),
+		app.WithRepository(*dbProvider, *connectionString),
+		app.WithCron(),
+		app.WithOAuth(*gSecret, *host),
+		app.WithEventQueue(),
 	)
 
 	r.Run()

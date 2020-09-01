@@ -16,7 +16,7 @@ import (
 	"github.com/raphi011/scores-api/test"
 )
 
-func SetupTestServer(t testing.TB) *router.Router {
+func SetupTestServer(t testing.TB) *router.App {
 	r := router.New(
 		router.WithMode("debug"),
 		router.WithTestRepository(t),

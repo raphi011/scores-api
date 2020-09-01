@@ -1,4 +1,4 @@
-package router
+package app
 
 import (
 	"fmt"
@@ -25,23 +25,23 @@ import (
 	"github.com/raphi011/scores-api/volleynet/sync"
 )
 
-// Router wraps all the services and configuration needed
+// App wraps all the services and configuration needed
 // to serve the api.
-type Router struct {
+type App struct {
 	conf        *oauth2.Config
 	log         logrus.FieldLogger
-	repository  *repo.Repositories
+	services    *handlerServices
 	eventBroker *events.Broker
 	version     string
 	production  bool
 }
 
 // Option is used to configure a new Router.
-type Option func(*Router)
+type Option func(*App)
 
 // New creates a new router and configures it with `opts`.
-func New(opts ...Option) *Router {
-	router := &Router{
+func New(opts ...Option) *App {
+	router := &App{
 		log: logrus.New(),
 	}
 
@@ -53,10 +53,8 @@ func New(opts ...Option) *Router {
 }
 
 // Build builds the routes from the configuration.
-func (r *Router) Build() *gin.Engine {
+func (r *App) Build() *gin.Engine {
 	var router *gin.Engine
-
-	s := servicesFromRepository(r.repository, true, r.log)
 
 	router = gin.New()
 	router.Use(gin.Recovery())
@@ -66,6 +64,8 @@ func (r *Router) Build() *gin.Engine {
 	} else {
 		gin.SetMode(gin.TestMode)
 	}
+
+	s := r.services
 
 	authHandler := route.AuthHandler(
 		s.User,
@@ -93,7 +93,8 @@ func (r *Router) Build() *gin.Engine {
 		Path:     "/",
 		MaxAge:   60 * 60 * 24, // 1 day
 		HttpOnly: true,
-		Secure:   true,
+
+		Secure: true,
 	})
 
 	router.Use(sessions.Sessions("session", store), middleware.Logger(r.log))
@@ -140,7 +141,7 @@ func (r *Router) Build() *gin.Engine {
 }
 
 // Run builds the router and opens the port.
-func (r *Router) Run() {
+func (r *App) Run() {
 	router := r.Build()
 
 	err := router.Run()
@@ -152,22 +153,23 @@ func (r *Router) Run() {
 
 // WithMode sets the production mode to true if "production" is passed.
 func WithMode(mode string) Option {
-	return func(r *Router) {
+	return func(r *App) {
 		r.production = mode == "production"
 	}
 }
 
 // WithVersion sets the api version.
 func WithVersion(version string) Option {
-	return func(r *Router) {
+	return func(r *App) {
 		r.version = version
 	}
 }
 
 // WithRepository sets the repository provider and connectionstring.
 func WithRepository(provider, connectionString string) Option {
-	return func(r *Router) {
+	return func(r *App) {
 		var err error
+		var repos *repo.Repositories
 
 		switch provider {
 		case "sqlite3":
@@ -175,7 +177,7 @@ func WithRepository(provider, connectionString string) Option {
 		case "postgres":
 			fallthrough
 		case "mysql":
-			r.repository, err = sql.Repositories(provider, connectionString)
+			repos, err = sql.Repositories(provider, connectionString)
 		default:
 			err = fmt.Errorf("invalid repo provider %q", provider)
 		}
@@ -183,12 +185,14 @@ func WithRepository(provider, connectionString string) Option {
 		if err != nil {
 			r.log.Fatalf("Could not initialize repository: %s", err)
 		}
+
+		r.services = servicesFromRepository(repos, r.log)
 	}
 }
 
 // WithOAuth sets the oauth configuration.
 func WithOAuth(configPath, host string) Option {
-	return func(r *Router) {
+	return func(r *App) {
 		var err error
 		r.conf, err = auth.GoogleOAuthConfig(configPath, host)
 
@@ -203,14 +207,17 @@ func WithOAuth(configPath, host string) Option {
 func WithTestRepository(t testing.TB) Option {
 	t.Helper()
 
-	return func(r *Router) {
-		r.repository, _ = sql.RepositoriesTest(t)
+	return func(r *App) {
+		repos, _ := sql.RepositoriesTest(t)
+
+		r.services = servicesFromRepository(repos, r.log)
+
 	}
 }
 
 // WithEventQueue configures the eventqueue.
 func WithEventQueue() Option {
-	return func(r *Router) {
+	return func(r *App) {
 		r.eventBroker = &events.Broker{}
 
 		// we never unsubcribe
@@ -227,6 +234,48 @@ func WithEventQueue() Option {
 	}
 }
 
+// WithCron enable cron jobs.
+func WithCron() Option {
+	return func(r *App) {
+		ladderJob := cron.LadderJob{
+			SyncService: r.services.Scrape,
+			Genders:     []string{"M", "W"},
+		}
+
+		tournamentsJob := cron.TournamentsJob{
+			SyncService: r.services.Scrape,
+			Genders:     []string{"M", "W"},
+			Leagues:     []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
+			Season:      time.Now().Year(),
+		}
+
+		lastYearsTournamentsJob := tournamentsJob
+		lastYearsTournamentsJob.Season = lastYearsTournamentsJob.Season - 1
+
+		r.services.JobManager.Start(
+			job.Job{
+				Name:        "Players",
+				MaxFailures: 3,
+				Interval:    1 * time.Hour,
+				Do:          ladderJob.Do,
+			},
+			job.Job{
+				Name:    "Last years tournaments",
+				MaxRuns: 1, // only run once on startup
+				Do:      tournamentsJob.Do,
+			},
+			job.Job{
+				Name:        "Tournaments",
+				MaxFailures: 3,
+				Interval:    5 * time.Minute,
+				Delay:       1 * time.Minute,
+				Do:          tournamentsJob.Do,
+			},
+		)
+
+	}
+}
+
 type handlerServices struct {
 	JobManager *job.Manager
 	User       *services.User
@@ -235,7 +284,7 @@ type handlerServices struct {
 	Password   services.Password
 }
 
-func servicesFromRepository(repos *repo.Repositories, startManager bool, log logrus.FieldLogger) *handlerServices {
+func servicesFromRepository(repos *repo.Repositories, log logrus.FieldLogger) *handlerServices {
 	password := &services.PBKDF2Password{
 		SaltBytes:  16,
 		Iterations: 10000,
@@ -254,6 +303,8 @@ func servicesFromRepository(repos *repo.Repositories, startManager bool, log log
 		TournamentRepo: repos.TournamentRepo,
 	}
 
+	manager := job.NewManager(log)
+
 	scrapeService := &sync.Service{
 		Log: log,
 
@@ -262,58 +313,14 @@ func servicesFromRepository(repos *repo.Repositories, startManager bool, log log
 		TournamentRepo: repos.TournamentRepo,
 
 		Client: client.WithLogger(log),
-		// Subscriptions: r.eventBroker,
-	}
-
-	manager := job.NewManager(log)
-
-	ladderJob := cron.LadderJob{
-		SyncService: scrapeService,
-		Genders:     []string{"M", "W"},
-	}
-
-	tournamentsJob := cron.TournamentsJob{
-		SyncService: scrapeService,
-		Genders:     []string{"M", "W"},
-		Leagues:     []string{"AMATEUR TOUR", "PRO TOUR", "JUNIOR TOUR"},
-		Season:      time.Now().Year(),
-	}
-
-	lastYearsTournamentsJob := tournamentsJob
-	lastYearsTournamentsJob.Season = lastYearsTournamentsJob.Season - 1
-
-	if startManager {
-		manager.Start(
-			job.Job{
-				Name:        "Players",
-				MaxFailures: 3,
-				Interval:    1 * time.Hour,
-
-				Do: ladderJob.Do,
-			},
-			job.Job{
-				Name:    "Last years tournaments",
-				MaxRuns: 1, // only run once on startup
-
-				Do: tournamentsJob.Do,
-			},
-			job.Job{
-				Name:        "Tournaments",
-				MaxFailures: 3,
-				Interval:    5 * time.Minute,
-				Delay:       1 * time.Minute,
-
-				Do: tournamentsJob.Do,
-			},
-		)
 	}
 
 	s := &handlerServices{
-		JobManager: manager,
 		Scrape:     scrapeService,
 		Volleynet:  volleynetService,
 		Password:   password,
 		User:       userService,
+		JobManager: manager,
 	}
 
 	return s
