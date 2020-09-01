@@ -15,7 +15,7 @@ import (
 	"github.com/raphi011/scores-api/cmd/api/auth"
 	"github.com/raphi011/scores-api/cmd/api/cron"
 	"github.com/raphi011/scores-api/cmd/api/middleware"
-	"github.com/raphi011/scores-api/cmd/api/router/route"
+	"github.com/raphi011/scores-api/cmd/api/route"
 	"github.com/raphi011/scores-api/events"
 	"github.com/raphi011/scores-api/job"
 	"github.com/raphi011/scores-api/repo"

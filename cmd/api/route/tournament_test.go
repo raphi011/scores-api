@@ -11,16 +11,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/raphi011/scores-api/cmd/api/app"
 	"github.com/raphi011/scores-api/cmd/api/auth"
-	"github.com/raphi011/scores-api/cmd/api/router"
 	"github.com/raphi011/scores-api/test"
 )
 
-func SetupTestServer(t testing.TB) *router.App {
-	r := router.New(
-		router.WithMode("debug"),
-		router.WithTestRepository(t),
-		router.WithEventQueue(),
+func SetupTestServer(t testing.TB) *app.App {
+	r := app.New(
+		app.WithMode("debug"),
+		app.WithTestRepository(t),
+		app.WithEventQueue(),
 	)
 
 	return r
