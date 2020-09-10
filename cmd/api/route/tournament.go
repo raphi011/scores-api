@@ -118,7 +118,7 @@ func (h *Tournament) PostSignup(c *gin.Context) {
 		return
 	}
 
-	vnClient := client.DefaultClient()
+	vnClient := client.Default()
 	loginData, err := vnClient.Login(su.Username, su.Password)
 
 	if err != nil {

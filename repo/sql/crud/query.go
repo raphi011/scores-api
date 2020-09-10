@@ -7,7 +7,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/repo/sql/assets"
-	log "github.com/sirupsen/logrus"
 )
 
 // Execute executes a query.
@@ -30,9 +29,7 @@ func loadQuery(db *sqlx.DB, name string) string {
 		return q
 	}
 
-	log.Fatalf("could not load sql query %s: %v", name, err)
-
-	return ""
+	panic(fmt.Sprintf("could not load sql query %s: %v", name, err))
 }
 
 func namedQuery(db *sqlx.DB, name string) string {

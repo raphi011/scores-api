@@ -4,13 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/raphi011/scores-api/test"
 )
 
 func TestManager(t *testing.T) {
-	manager := NewManager(logrus.New())
+	manager := NewManager()
 
 	err := manager.Start(
 		Job{

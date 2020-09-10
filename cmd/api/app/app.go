@@ -9,7 +9,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 
 	"github.com/raphi011/scores-api/cmd/api/auth"
@@ -21,7 +21,7 @@ import (
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/repo/sql"
 	"github.com/raphi011/scores-api/services"
-	"github.com/raphi011/scores-api/volleynet/client"
+	volleynet_client "github.com/raphi011/scores-api/volleynet/client"
 	"github.com/raphi011/scores-api/volleynet/sync"
 )
 
@@ -29,7 +29,6 @@ import (
 // to serve the api.
 type App struct {
 	conf        *oauth2.Config
-	log         logrus.FieldLogger
 	services    *handlerServices
 	eventBroker *events.Broker
 	version     string
@@ -41,18 +40,13 @@ type Option func(*App)
 
 // New creates a new router and configures it with `opts`.
 func New(opts ...Option) *App {
-	logger := logrus.New()
-	logger.SetFormatter(&logrus.JSONFormatter{})
-
-	router := &App{
-		log: logger,
-	}
+	app := &App{}
 
 	for _, o := range opts {
-		o(router)
+		o(app)
 	}
 
-	return router
+	return app
 }
 
 // Build builds the routes from the configuration.
@@ -100,7 +94,7 @@ func (r *App) Build() *gin.Engine {
 		Secure: true,
 	})
 
-	router.Use(sessions.Sessions("session", store), middleware.Logger(r.log))
+	router.Use(sessions.Sessions("session", store), middleware.Logger(r.production))
 
 	router.GET("/version", infoHandler.GetVersion)
 
@@ -150,7 +144,7 @@ func (r *App) Run() {
 	err := router.Run()
 
 	if err != nil {
-		r.log.Errorf("could not start router: %+v", err)
+		zap.S().Errorf("could not start router: %+v", err)
 	}
 }
 
@@ -186,10 +180,10 @@ func WithRepository(provider, connectionString string) Option {
 		}
 
 		if err != nil {
-			r.log.Fatalf("Could not initialize repository: %s", err)
+			zap.L().Sugar().Errorf("Could not initialize repository: %s", err)
 		}
 
-		r.services = servicesFromRepository(repos, r.log)
+		r.services = servicesFromRepository(repos)
 	}
 }
 
@@ -200,7 +194,7 @@ func WithOAuth(configPath, host string) Option {
 		r.conf, err = auth.GoogleOAuthConfig(configPath, host)
 
 		if err != nil {
-			r.log.Warnf("Could not read google secret: %v, continuing without google oauth\n", err)
+			zap.L().Sugar().Infof("Could not read google secret: %v, continuing without google oauth\n", err)
 		}
 	}
 }
@@ -213,7 +207,7 @@ func WithTestRepository(t testing.TB) Option {
 	return func(r *App) {
 		repos, _ := sql.RepositoriesTest(t)
 
-		r.services = servicesFromRepository(repos, r.log)
+		r.services = servicesFromRepository(repos)
 
 	}
 }
@@ -228,7 +222,7 @@ func WithEventQueue() Option {
 
 		go func() {
 			for event := range events {
-				r.log.Debugf("scrape event: %v", event)
+				zap.L().Sugar().Debugf("scrape event: %v", event)
 			}
 		}()
 
@@ -287,7 +281,7 @@ type handlerServices struct {
 	Password   services.Password
 }
 
-func servicesFromRepository(repos *repo.Repositories, log logrus.FieldLogger) *handlerServices {
+func servicesFromRepository(repos *repo.Repositories) *handlerServices {
 	password := &services.PBKDF2Password{
 		SaltBytes:  16,
 		Iterations: 10000,
@@ -306,16 +300,14 @@ func servicesFromRepository(repos *repo.Repositories, log logrus.FieldLogger) *h
 		TournamentRepo: repos.TournamentRepo,
 	}
 
-	manager := job.NewManager(log)
+	manager := job.NewManager()
 
 	scrapeService := &sync.Service{
-		Log: log,
-
 		PlayerRepo:     repos.PlayerRepo,
 		TeamRepo:       repos.TeamRepo,
 		TournamentRepo: repos.TournamentRepo,
 
-		Client: client.WithLogger(log),
+		Client: volleynet_client.Default(),
 	}
 
 	s := &handlerServices{

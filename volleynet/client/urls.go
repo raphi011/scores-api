@@ -7,11 +7,11 @@ import (
 	"github.com/raphi011/scores-api/volleynet"
 )
 
-func (c *Default) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *defaultClient) buildGetAPIURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	return buildGetAPIURL(c.GetURL, "/api", relativePath, routeArgs...)
 }
 
-func (c *Default) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *defaultClient) buildGetURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	return buildGetAPIURL(c.GetURL, "", relativePath, routeArgs...)
 }
 
@@ -46,7 +46,7 @@ func buildGetAPIURL(host, prefixedPath, relativePath string, routeArgs ...interf
 	return link
 }
 
-func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
+func (c *defaultClient) buildPostURL(relativePath string, routeArgs ...interface{}) *url.URL {
 	path := escapeArgs(relativePath, routeArgs...)
 
 	absoluteURL := c.PostURL + path
@@ -61,7 +61,7 @@ func (c *Default) buildPostURL(relativePath string, routeArgs ...interface{}) *u
 }
 
 // getTournamentLink returns the link for a tournament.
-func (c *Default) getTournamentLink(t *volleynet.TournamentInfo) string {
+func (c *defaultClient) getTournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%d",
 		t.League,
 		t.League,
@@ -74,7 +74,7 @@ func (c *Default) getTournamentLink(t *volleynet.TournamentInfo) string {
 }
 
 // getAPITournamentLink returns the API link for a tournament.
-func (c *Default) getAPITournamentLink(t *volleynet.TournamentInfo) string {
+func (c *defaultClient) getAPITournamentLink(t *volleynet.TournamentInfo) string {
 	url := c.buildGetAPIURL("/beach/bewerbe/%s/phase/%s/sex/%s/saison/%s/cup/%d",
 		t.League,
 		t.League,

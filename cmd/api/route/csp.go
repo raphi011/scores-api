@@ -27,7 +27,7 @@ func (a *Csp) PostViolationReport(c *gin.Context) {
 		return
 	}
 
-	logger.Get(c).WithField("report", report).Warn("received violation report")
+	logger.Get(c).Warnf("received violation report: %+v", report)
 
 	c.Status(http.StatusOK)
 }

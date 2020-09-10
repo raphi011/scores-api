@@ -3,11 +3,10 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/raphi011/scores-api/cmd/api/logger"
+	"go.uber.org/zap"
 )
 
 // Auth middleware restricts routes for authenticated users only
@@ -24,7 +23,7 @@ func Auth() gin.HandlerFunc {
 
 		c.Set("user-id", userID)
 
-		log = log.WithFields(logrus.Fields{"user-id": userID})
+		log = log.With(zap.String("user-id", userID.(string)))
 
 		c.Set("log", log)
 

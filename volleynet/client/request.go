@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 
 	"github.com/raphi011/scores-api/volleynet"
 	"github.com/raphi011/scores-api/volleynet/scrape"
@@ -33,35 +32,24 @@ type Client interface {
 	SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error)
 }
 
-// Default implements the Client interface
-type Default struct {
+// defaultClient implements the Client interface
+type defaultClient struct {
 	PostURL string
 	GetURL  string
 	Cookie  string
-	Log     logrus.FieldLogger
 }
 
-// DefaultClient returns a Client with the correct PostURL and GetURL fields set.
-func DefaultClient() Client {
-	return &Default{
+// Default returns a Client with the correct PostURL and GetURL fields set.
+func Default() Client {
+	return &defaultClient{
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",
-		Log:     logrus.New(),
-	}
-}
-
-// WithLogger returns a DefaultClient with a logger.
-func WithLogger(log logrus.FieldLogger) Client {
-	return &Default{
-		PostURL: "https://beach.volleynet.at",
-		GetURL:  "http://www.volleynet.at",
-		Log:     log,
 	}
 }
 
 // Login authenticates the user against the volleynet page, if
 // successfull the Client cookie is set, else an error is returned.
-func (c *Default) Login(username, password string) (*scrape.LoginData, error) {
+func (c *defaultClient) Login(username, password string) (*scrape.LoginData, error) {
 	form := url.Values{}
 	form.Add("login_name", username)
 	form.Add("login_pass", password)
@@ -101,7 +89,7 @@ func (c *Default) Login(username, password string) (*scrape.LoginData, error) {
 
 // Tournaments reads all tournaments of a certain gender, league and year.
 // To get all details of a tournamnent use `Client.ComplementTournament`.
-func (c *Default) Tournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error) {
+func (c *defaultClient) Tournaments(gender, league string, year int) ([]*volleynet.TournamentInfo, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/%s/phase/%s/sex/%s/saison/%d/information/all",
 		league,
@@ -122,7 +110,7 @@ func (c *Default) Tournaments(gender, league string, year int) ([]*volleynet.Tou
 }
 
 // Ladder loads all ranked players of a certain gender.
-func (c *Default) Ladder(gender string) ([]*volleynet.Player, error) {
+func (c *defaultClient) Ladder(gender string) ([]*volleynet.Player, error) {
 	url := c.buildGetAPIURL(
 		"/beach/bewerbe/Rangliste/phase/%s",
 		genderLong(gender),
@@ -150,11 +138,10 @@ func genderLong(gender string) string {
 }
 
 // ComplementTournament adds the missing information from `Tournaments`.
-func (c *Default) ComplementTournament(tournament *volleynet.TournamentInfo) (
+func (c *defaultClient) ComplementTournament(tournament *volleynet.TournamentInfo) (
 	*volleynet.Tournament, error) {
 	url := c.getAPITournamentLink(tournament)
 
-	c.Log.Debugf("Downloading tournament: %s\n", url)
 	resp, err := http.Get(url)
 
 	if err != nil {
@@ -172,7 +159,7 @@ func (c *Default) ComplementTournament(tournament *volleynet.TournamentInfo) (
 	return t, nil
 }
 
-func (c *Default) loadUniqueWriteCode(tournamentID int) (string, error) {
+func (c *defaultClient) loadUniqueWriteCode(tournamentID int) (string, error) {
 	url := c.buildPostURL(
 		"/Admin/index.php?screen=Beach/Profile/TurnierAnmeldung&parent=0&prev=0&next=0&cur=%d",
 		tournamentID,
@@ -203,7 +190,7 @@ func (c *Default) loadUniqueWriteCode(tournamentID int) (string, error) {
 
 // WithdrawFromTournament withdraws a player from a tournament.
 // A valid session Cookie must be set.
-func (c *Default) WithdrawFromTournament(tournamentID int) error {
+func (c *defaultClient) WithdrawFromTournament(tournamentID int) error {
 	url := c.buildPostURL("/Abmelden/0-%d-00-0", tournamentID).String()
 
 	req, err := http.NewRequest("GET", url, nil)
@@ -229,7 +216,7 @@ func (c *Default) WithdrawFromTournament(tournamentID int) error {
 
 // EnterTournament enters a player at a tournament.
 // A valid session Cookie must be set.
-func (c *Default) EnterTournament(playerName string, playerID, tournamentID int) error {
+func (c *defaultClient) EnterTournament(playerName string, playerID, tournamentID int) error {
 	if c.Cookie == "" {
 		return errors.New("cookie must be set")
 	}
@@ -300,7 +287,7 @@ func traceResponse(resp *http.Response) {
 }
 
 // SearchPlayers searches for players via firstName, lastName and their birthdate in dd.mm.yyyy format.
-func (c *Default) SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error) {
+func (c *defaultClient) SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error) {
 	form := url.Values{}
 
 	form.Add("XX_unique_write_XXAdmin/Search", "0.50981600 1525795371")

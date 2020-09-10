@@ -7,7 +7,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/volleynet"
@@ -28,11 +27,12 @@ func Tournament(
 	t := &volleynet.Tournament{TournamentInfo: *tournament}
 
 	parseTournamentNotes(doc, t)
-	parseTournamentDetails(doc, t)
 
-	err = parseFullTournamentTeams(doc, t)
+	if err = parseTournamentDetails(doc, t); err != nil {
+		return nil, errors.Wrap(err, "parse tournament details")
+	}
 
-	if err != nil {
+	if err = parseFullTournamentTeams(doc, t); err != nil {
 		return nil, errors.Wrap(err, "parse tournament teams")
 	}
 
@@ -85,61 +85,81 @@ func parseTournamentNotes(doc *goquery.Document, t *volleynet.Tournament) {
 	}
 }
 
-type detailsParser func(*goquery.Selection, *volleynet.Tournament)
+type detailsParser func(*goquery.Selection, *volleynet.Tournament) error
 
 var parseTournamentDetailsMap = map[string]detailsParser{
-	"Kategorie": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Kategorie": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.SubLeague = trimmSelectionText(value)
 		t.SubLeagueKey = scores.Sluggify(trimmSelectionText(value))
+
+		return nil
 	},
-	"Modus": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Modus": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.Mode = trimmSelectionText(value)
 		t.MaxTeams, _ = findInt(t.Mode)
+
+		return nil
 	},
-	"Teiln. Qual.": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Teiln. Qual.": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		// TODO: not min teams but min teams for qualification, this is misleading
 		t.MinTeams, _ = findInt(value.Text())
+
+		return nil
 	},
-	"Datum": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Datum": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		var err error
 		t.Start, t.End, err = parseStartEndDates(value)
 
-		if err != nil {
-			log.Warnf("parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
-		}
+		return errors.Wrapf(err, "parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
 	},
-	"Ort": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Ort": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.Location = trimSelectionHTML(value)
+
+		return nil
 	},
-	"Max. Punkte": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Max. Punkte": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.MaxPoints, _ = findInt(value.Text())
+
+		return nil
 	},
-	"Veranstalter": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Veranstalter": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.Organiser = trimmSelectionText(value)
+
+		return nil
 	},
-	"Telefon": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Telefon": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.Phone = trimmSelectionText(value)
+
+		return nil
 	},
-	"EMail": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"EMail": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.Email = trimmSelectionText(value)
+
+		return nil
 	},
-	"Web": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Web": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.Website = trimmSelectionText(value)
+
+		return nil
 	},
-	"Vorläufige Punkte": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Vorläufige Punkte": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.CurrentPoints = trimmSelectionText(value)
+
+		return nil
 	},
-	"Nennschluss": func(value *goquery.Selection, t *volleynet.Tournament) {
+	"Nennschluss": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		endRegistration, _ := parseDate(value.Text())
 		if endRegistration.IsZero() {
 			t.EndRegistration = nil
 		} else {
 			t.EndRegistration = &endRegistration
 		}
+
+		return nil
 	},
 }
 
-func parseTournamentDetails(doc *goquery.Document, t *volleynet.Tournament) {
+func parseTournamentDetails(doc *goquery.Document, t *volleynet.Tournament) error {
 	table := doc.Find("tbody")
 
 	for i := range table.Nodes {
@@ -155,11 +175,15 @@ func parseTournamentDetails(doc *goquery.Document, t *volleynet.Tournament) {
 				value := row.Eq(1)
 
 				if parser, ok := parseTournamentDetailsMap[columnName]; ok {
-					parser(value, t)
+					if err := parser(value, t); err != nil {
+						return errors.Wrapf(err, "error parsing column %s with value %s", value.Text(), t)
+					}
 				}
 			}
 		}
 	}
+
+	return nil
 }
 
 func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) error {
@@ -182,7 +206,6 @@ func parseFullTournamentTeams(doc *goquery.Document, t *volleynet.Tournament) er
 				player, err := parsePlayerRow(rows.Eq(j), team)
 
 				if err != nil {
-					log.Debugf("parsing player: %s", err)
 					j++ // if it's not possible to parse a player, skip the entire team
 					continue
 				}

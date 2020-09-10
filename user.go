@@ -1,8 +1,10 @@
 package scores
 
+import "github.com/google/uuid"
+
 // User represents a user in the repository
 type User struct {
-	M
+	Id uuid.UUID string  `json:"id"`
 	Track
 	Email           string   `json:"email"`
 	ProfileImageURL string   `json:"profileImageUrl" db:"profile_image_url"`

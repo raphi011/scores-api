@@ -11,7 +11,7 @@ import (
 func Test_upcoming_games(t *testing.T) {
 	t.Skip()
 
-	c := DefaultClient()
+	c := Default()
 	tournaments, err := c.Tournaments("M", "AMATEUR TOUR", 2018)
 
 	if err != nil {
@@ -22,7 +22,7 @@ func Test_upcoming_games(t *testing.T) {
 }
 
 func Test_searchPlayers(t *testing.T) {
-	c := DefaultClient()
+	c := Default()
 	players, err := c.SearchPlayers("Lukas", "Wimmer", "")
 
 	if err != nil {
@@ -42,7 +42,7 @@ func Test_login(t *testing.T) {
 		t.Skip("must set VOLLEYNET_LOGIN_USER and VOLLEYNET_LOGIN_PASSWORD to run this test")
 	}
 
-	c := DefaultClient()
+	c := Default()
 	result, err := c.Login(user, password)
 
 	if err != nil {

@@ -6,22 +6,24 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 // Manager runs jobs in defined intervals
 type Manager struct {
-	log logrus.FieldLogger
-
 	waitGroup sync.WaitGroup
 
 	jobs map[string]*Job
+
+	log *zap.SugaredLogger
 }
 
 // NewManager constructs a new Manager.
-func NewManager(log logrus.FieldLogger) *Manager {
+func NewManager() *Manager {
+	log, _ := zap.NewProduction()
+
 	return &Manager{
-		log: log,
+		log: log.Sugar(),
 	}
 }
 

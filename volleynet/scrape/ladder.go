@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/raphi011/scores-api/volleynet"
 )
@@ -69,9 +68,7 @@ func parseLadderRow(row *goquery.Selection) *volleynet.Player {
 			// can update it as soon as we have the information.
 			birthday, err := time.Parse("2006 15:04", trimmSelectionText(c)+" 13:37")
 
-			if err != nil {
-				log.Debugf("parsing birthday of player in ladder: %q", trimmSelectionText(c))
-			} else {
+			if err == nil {
 				p.Birthday = &birthday
 			}
 		case 4:

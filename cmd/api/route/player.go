@@ -68,7 +68,7 @@ func (h *Player) PostLogin(c *gin.Context) {
 		return
 	}
 
-	vnClient := client.DefaultClient()
+	vnClient := client.Default()
 	loginData, err := vnClient.Login(login.Username, login.Password)
 
 	if err != nil {

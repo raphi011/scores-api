@@ -3,8 +3,6 @@ package sync
 import (
 	"time"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/pkg/errors"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/events"
@@ -23,8 +21,6 @@ type Changes struct {
 
 // Service allows loading and synchronizing of the volleynetpage.
 type Service struct {
-	Log logrus.FieldLogger
-
 	TeamRepo       repo.TeamRepository
 	TournamentRepo repo.TournamentRepository
 	PlayerRepo     repo.PlayerRepository
@@ -84,8 +80,6 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 		currentTournaments[i], err = s.Client.ComplementTournament(t)
 
 		if err != nil {
-			s.Log.Warnf("error loading touappend(slice[:s], slice[s+1:]...)rnament: %v", err)
-
 			// remove it from the tournaments for now
 			currentTournaments = append(currentTournaments[:i], currentTournaments[i+1:]...)
 		}

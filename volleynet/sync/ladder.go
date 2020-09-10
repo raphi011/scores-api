@@ -30,21 +30,11 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 
 	for _, info := range syncInfos {
 		if info.IsNew {
-			s.Log.Debugf("adding player id: %v, name: %s %s",
-				info.NewPlayer.ID,
-				info.NewPlayer.FirstName,
-				info.NewPlayer.LastName)
-
 			_, err = s.PlayerRepo.New(info.NewPlayer)
 			report.NewPlayers++
 
 		} else {
 			merged := MergePlayer(info.OldPlayer, info.NewPlayer)
-
-			s.Log.Debugf("updating player id: %d, name: %s %s",
-				info.NewPlayer.ID,
-				merged.FirstName,
-				merged.LastName)
 
 			err = s.PlayerRepo.Update(merged)
 			report.UpdatedPlayers++
