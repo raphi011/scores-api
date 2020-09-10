@@ -28,15 +28,13 @@ func Logger(production bool) gin.HandlerFunc {
 			panic("could not create logger")
 		}
 
-		log = log.With(
+		c.Set("log", log.Sugar().With(
 			zap.String("method", c.Request.Method),
 			zap.String("url", c.Request.URL.String()),
 			zap.String("ip", ipFromRequest(c.Request)),
 			zap.String("user-agent", c.Request.UserAgent()),
 			zap.String("request-id", requestID),
-		)
-
-		c.Set("log", log)
+		))
 
 		c.Next()
 	}

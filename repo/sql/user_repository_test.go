@@ -5,6 +5,7 @@ package sql
 import (
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores-api"
@@ -16,15 +17,16 @@ func TestCreateUser(t *testing.T) {
 	userRepo := &userRepository{DB: db}
 
 	email := "test@test.com"
+	id := uuid.New()
 
 	user, err := userRepo.New(&scores.User{
+		ID:              id,
 		Email:           email,
 		ProfileImageURL: "image.url",
 	})
 
 	test.Check(t, "userRepository.New() err: %v", err)
-	test.Assert(t, "userRepository.New(): want ID != 0, got 0", user.ID != 0)
-
+	test.Assert(t, "userRepository.New(): want ID != 0, got 0", user.ID == id)
 	userByEmail, err := userRepo.ByEmail(email)
 
 	test.Check(t, "userRepository.ByEmail() err: %v", err)
@@ -39,7 +41,9 @@ func TestUserNotFound(t *testing.T) {
 	db := SetupDB(t)
 	userRepo := &userRepository{DB: db}
 
-	_, err := userRepo.ByID(1)
+	id := uuid.New()
+
+	_, err := userRepo.ByID(id)
 
 	if errors.Cause(err) != scores.ErrNotFound {
 		t.Errorf("userRepository.ByID(), want err = ErrNotFound, got: %v", err)
@@ -51,6 +55,7 @@ func TestUsers(t *testing.T) {
 	userRepo := &userRepository{DB: db}
 
 	_, err := userRepo.New(&scores.User{
+		ID:    uuid.New(),
 		Email: "test@test.at",
 	})
 
@@ -59,6 +64,7 @@ func TestUsers(t *testing.T) {
 	}
 
 	_, err = userRepo.New(&scores.User{
+		ID:              uuid.New(),
 		Email:           "test2@test.at",
 		ProfileImageURL: "image.url",
 	})

@@ -176,7 +176,7 @@ func parseTournamentDetails(doc *goquery.Document, t *volleynet.Tournament) erro
 
 				if parser, ok := parseTournamentDetailsMap[columnName]; ok {
 					if err := parser(value, t); err != nil {
-						return errors.Wrapf(err, "error parsing column %s with value %s", value.Text(), t)
+						return errors.Wrapf(err, "error parsing column %s with value %+v", value.Text(), t)
 					}
 				}
 			}

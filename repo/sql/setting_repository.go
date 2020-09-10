@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
@@ -27,7 +28,7 @@ func (s *settingRepository) Update(setting *scores.Setting) error {
 	return errors.Wrap(err, "update setting")
 }
 
-func (s *settingRepository) ByUserID(userID int) ([]*scores.Setting, error) {
+func (s *settingRepository) ByUserID(userID uuid.UUID) ([]*scores.Setting, error) {
 	settings := []*scores.Setting{}
 	err := crud.Read(s.DB, "setting/select-by-user-id", &settings, userID)
 

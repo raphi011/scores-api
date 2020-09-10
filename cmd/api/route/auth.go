@@ -3,6 +3,7 @@ package route
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/gob"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 
 	"github.com/raphi011/scores-api"
@@ -17,6 +19,11 @@ import (
 	"github.com/raphi011/scores-api/cmd/api/logger"
 	"github.com/raphi011/scores-api/services"
 )
+
+func init() {
+	// needed for cookie storage marshalling
+	gob.Register(&uuid.UUID{})
+}
 
 type loginRouteOrUserDto struct {
 	LoginRoute string       `json:"loginRoute,omitempty"`
@@ -152,8 +159,12 @@ func (a *Auth) GetGoogleAuthenticate(c *gin.Context) {
 }
 
 func successfullLogin(session sessions.Session, user *scores.User) {
-	session.Set("user-id", user.ID)
-	session.Save()
+	session.Set("user-id", &user.ID)
+	err := session.Save()
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 // GetLoginRouteOrUser returns the oauth login route or the user
@@ -161,8 +172,8 @@ func successfullLogin(session sessions.Session, user *scores.User) {
 func (a *Auth) GetLoginRouteOrUser(c *gin.Context) {
 	session := sessions.Default(c)
 
-	if userID, ok := session.Get("user-id").(int); ok {
-		user, err := a.userService.ByID(userID)
+	if userID, ok := session.Get("user-id").(*uuid.UUID); ok {
+		user, err := a.userService.ByID(*userID)
 
 		if err != nil {
 			session.Delete("user-id")

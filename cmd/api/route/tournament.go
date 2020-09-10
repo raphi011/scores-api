@@ -7,6 +7,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/google/uuid"
 
 	"github.com/raphi011/scores-api/cmd/api/logger"
 	"github.com/raphi011/scores-api/repo"
@@ -49,8 +50,8 @@ func (h *Tournament) GetTournaments(c *gin.Context) {
 
 	session := sessions.Default(c)
 
-	if userID, ok := session.Get("user-id").(int); ok {
-		err := h.userService.UpdateTournamentFilter(userID, filters)
+	if userID, ok := session.Get("user-id").(*uuid.UUID); ok {
+		err := h.userService.UpdateTournamentFilter(*userID, filters)
 
 		if err != nil {
 			logger.Get(c).Warnf("could not update user settings %v", err)
@@ -128,8 +129,8 @@ func (h *Tournament) PostSignup(c *gin.Context) {
 
 	if su.RememberMe {
 		session := sessions.Default(c)
-		userID := session.Get("user-id").(int)
-		user, err := h.userService.ByID(userID)
+		userID := session.Get("user-id").(*uuid.UUID)
+		user, err := h.userService.ByID(*userID)
 
 		if err != nil {
 			logger.Get(c).Warnf("loading user by email: %s failed", userID)
@@ -138,7 +139,7 @@ func (h *Tournament) PostSignup(c *gin.Context) {
 		if user != nil && user.PlayerLogin != su.Username ||
 			user.PlayerID != loginData.ID {
 
-			err = h.userService.SetVolleynetLogin(userID, loginData.ID, su.Username)
+			err = h.userService.SetVolleynetLogin(*userID, loginData.ID, su.Username)
 
 			if err != nil {
 				logger.Get(c).Warnf("updating volleynet user information failed for userID: %d", user.ID)

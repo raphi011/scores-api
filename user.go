@@ -1,17 +1,19 @@
 package scores
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 // User represents a user in the repository
 type User struct {
-	Id uuid.UUID string  `json:"id"`
 	Track
-	Email           string   `json:"email"`
-	ProfileImageURL string   `json:"profileImageUrl" db:"profile_image_url"`
-	PlayerID        int      `json:"playerId" db:"player_id"`
-	PlayerLogin     string   `json:"playerLogin" db:"player_login"`
-	Role            string   `json:"role"`
-	Settings        Settings `json:"settings"`
+	ID              uuid.UUID `json:"id"`
+	Email           string    `json:"email"`
+	ProfileImageURL string    `json:"profileImageUrl" db:"profile_image_url"`
+	PlayerID        int       `json:"playerId" db:"player_id"`
+	PlayerLogin     string    `json:"playerLogin" db:"player_login"`
+	Role            string    `json:"role"`
+	Settings        Settings  `json:"settings"`
 	PasswordInfo
 }
 

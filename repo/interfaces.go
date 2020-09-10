@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"github.com/google/uuid"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/volleynet"
 )
@@ -59,7 +60,7 @@ type TournamentRepository interface {
 type UserRepository interface {
 	All() ([]*scores.User, error)
 	ByEmail(email string) (*scores.User, error)
-	ByID(userID int) (*scores.User, error)
+	ByID(userID uuid.UUID) (*scores.User, error)
 	New(user *scores.User) (*scores.User, error)
 	Update(user *scores.User) error
 }
@@ -68,7 +69,7 @@ type UserRepository interface {
 type SettingRepository interface {
 	Create(setting *scores.Setting) (*scores.Setting, error)
 	Update(setting *scores.Setting) error
-	ByUserID(userID int) ([]*scores.Setting, error)
+	ByUserID(userID uuid.UUID) ([]*scores.Setting, error)
 }
 
 // Repositories is a collection of instances of all available repositories.

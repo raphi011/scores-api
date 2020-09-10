@@ -2,6 +2,8 @@ package scores
 
 import (
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 // Settings maps Keys to Settings
@@ -10,10 +12,10 @@ type Settings map[string]interface{}
 // Setting represents a user setting in the repository
 type Setting struct {
 	Track  `json:"-"`
-	UserID int    `json:"-" db:"user_id"`
-	Key    string `json:"key" db:"s_key"`
-	Value  string `json:"-" db:"s_value"`
-	Type   string `json:"-" db:"s_type"`
+	UserID uuid.UUID `json:"-" db:"user_id"`
+	Key    string    `json:"key" db:"s_key"`
+	Value  string    `json:"-" db:"s_value"`
+	Type   string    `json:"-" db:"s_type"`
 }
 
 const (

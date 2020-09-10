@@ -1,6 +1,7 @@
 package sql
 
 import (
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 
@@ -17,7 +18,7 @@ type userRepository struct {
 
 // New persists a user and assigns a new id.
 func (s *userRepository) New(user *scores.User) (*scores.User, error) {
-	err := crud.CreateSetID(s.DB, "user/insert", user)
+	err := crud.Create(s.DB, "user/insert", user)
 
 	return user, errors.Wrap(err, "new user")
 }
@@ -39,7 +40,7 @@ func (s *userRepository) All() ([]*scores.User, error) {
 }
 
 // ByID retrieves a user by his/her ID.
-func (s *userRepository) ByID(userID int) (*scores.User, error) {
+func (s *userRepository) ByID(userID uuid.UUID) (*scores.User, error) {
 
 	user := &scores.User{}
 	err := crud.ReadOne(s.DB, "user/select-by-id", user, userID)

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores-api"
@@ -17,7 +18,7 @@ type User struct {
 }
 
 // HasRole verifies if a user has a certain role
-func (s *User) HasRole(userID int, roleName string) bool {
+func (s *User) HasRole(userID uuid.UUID, roleName string) bool {
 	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
@@ -28,7 +29,7 @@ func (s *User) HasRole(userID int, roleName string) bool {
 }
 
 // UpdateTournamentFilter updates a users tournament filter
-func (s *User) UpdateTournamentFilter(userID int, filter repo.TournamentFilter) error {
+func (s *User) UpdateTournamentFilter(userID uuid.UUID, filter repo.TournamentFilter) error {
 	return s.UpdateSettings(
 		userID,
 		&scores.Setting{UserID: userID, Key: "tournament-filter-league", Type: "strings", Value: scores.ListToString(filter.Leagues)},
@@ -38,7 +39,7 @@ func (s *User) UpdateTournamentFilter(userID int, filter repo.TournamentFilter) 
 }
 
 // UpdateSettings updates settings for a user
-func (s *User) UpdateSettings(userID int, settings ...*scores.Setting) error {
+func (s *User) UpdateSettings(userID uuid.UUID, settings ...*scores.Setting) error {
 	currentSettings, err := s.loadSettings(userID)
 
 	if err != nil {
@@ -76,6 +77,7 @@ func (s *User) New(email, password string, role string) (*scores.User, error) {
 	}
 
 	user, err := s.Repo.New(&scores.User{
+		ID:           uuid.New(),
 		Email:        email,
 		PasswordInfo: *passwordInfo,
 		Role:         role,
@@ -94,7 +96,7 @@ func (s *User) New(email, password string, role string) (*scores.User, error) {
 
 // SetPassword sets a new password for a user
 func (s *User) SetPassword(
-	userID int,
+	userID uuid.UUID,
 	password string,
 ) error {
 	user, err := s.Repo.ByID(userID)
@@ -130,7 +132,7 @@ func (s *User) ByEmail(email string) (*scores.User, error) {
 }
 
 // ByID retrieves a user by ID
-func (s *User) ByID(userID int) (*scores.User, error) {
+func (s *User) ByID(userID uuid.UUID) (*scores.User, error) {
 	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
@@ -142,7 +144,7 @@ func (s *User) ByID(userID int) (*scores.User, error) {
 	return user, err
 }
 
-func (s *User) loadSettingsDictionary(userID int) (scores.Settings, error) {
+func (s *User) loadSettingsDictionary(userID uuid.UUID) (scores.Settings, error) {
 	settings, err := s.SettingRepo.ByUserID(userID)
 
 	if err != nil {
@@ -154,7 +156,7 @@ func (s *User) loadSettingsDictionary(userID int) (scores.Settings, error) {
 
 type settingsMap map[string]*scores.Setting
 
-func (s *User) loadSettings(userID int) (settingsMap, error) {
+func (s *User) loadSettings(userID uuid.UUID) (settingsMap, error) {
 	settings, err := s.SettingRepo.ByUserID(userID)
 
 	if err != nil {
@@ -176,7 +178,7 @@ func (s *User) All() ([]*scores.User, error) {
 }
 
 // SetProfileImage updates a users profile image
-func (s *User) SetProfileImage(userID int, imageURL string) error {
+func (s *User) SetProfileImage(userID uuid.UUID, imageURL string) error {
 	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
@@ -191,7 +193,7 @@ func (s *User) SetProfileImage(userID int, imageURL string) error {
 }
 
 // SetVolleynetLogin updates the users volleynet login
-func (s *User) SetVolleynetLogin(userID, playerID int, playerLogin string) error {
+func (s *User) SetVolleynetLogin(userID uuid.UUID, playerID int, playerLogin string) error {
 	user, err := s.Repo.ByID(userID)
 
 	if err != nil {

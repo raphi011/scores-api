@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/repo"
@@ -64,7 +65,7 @@ func SetupDB(t testing.TB) *sqlx.DB {
 
 // U is a helper struct to create users.
 type U struct {
-	ID int
+	ID uuid.UUID
 }
 
 // CreateUsers is a handy helper to create multiple users.
@@ -75,11 +76,7 @@ func CreateUsers(t testing.TB, db *sqlx.DB, users ...U) []*scores.User {
 	userRepo := &userRepository{DB: db}
 
 	for _, u := range users {
-		persistedUser, err := userRepo.New(&scores.User{
-			M: scores.M{
-				ID: u.ID,
-			},
-		})
+		persistedUser, err := userRepo.New(&scores.User{ID: u.ID})
 
 		test.Check(t, "userRepo.New() failed: %v", err)
 

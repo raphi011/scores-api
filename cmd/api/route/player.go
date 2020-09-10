@@ -7,6 +7,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"github.com/google/uuid"
 
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/services"
@@ -77,22 +78,22 @@ func (h *Player) PostLogin(c *gin.Context) {
 	}
 
 	session := sessions.Default(c)
-	userID := session.Get("user-id").(int)
-	user, err := h.userService.ByID(userID)
+	userID := session.Get("user-id").(*uuid.UUID)
+	user, err := h.userService.ByID(*userID)
 
 	if err != nil {
 		responseErr(c, err)
 		return
 	}
 
-	err = h.userService.SetVolleynetLogin(userID, loginData.ID, login.Username)
+	err = h.userService.SetVolleynetLogin(*userID, loginData.ID, login.Username)
 
 	if err != nil {
 		responseErr(c, err)
 		return
 	}
 
-	user, err = h.userService.ByID(userID)
+	user, err = h.userService.ByID(*userID)
 
 	if err != nil {
 		responseErr(c, err)

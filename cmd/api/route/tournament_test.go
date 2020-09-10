@@ -57,8 +57,11 @@ func (c *testClient) login() {
 
 	headers := w.Header()
 
-	c.sessionCookie = parseCookie(headers["Set-Cookie"][0])
-
+	if len(headers["Set-Cookie"]) > 0 {
+		c.sessionCookie = parseCookie(headers["Set-Cookie"][0])
+	} else {
+		c.t.Fatal("did not get session cookie")
+	}
 }
 
 func parseCookie(setCookie string) (cookie string) {

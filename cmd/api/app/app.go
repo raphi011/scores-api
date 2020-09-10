@@ -178,7 +178,7 @@ func WithRepository(provider, connectionString string) Option {
 		}
 
 		if err != nil {
-			zap.L().Sugar().Errorf("Could not initialize repository: %s", err)
+			zap.S().Errorf("Could not initialize repository: %s", err)
 		}
 
 		r.services = servicesFromRepository(repos)
@@ -192,7 +192,7 @@ func WithOAuth(configPath, host string) Option {
 		r.conf, err = auth.GoogleOAuthConfig(configPath, host)
 
 		if err != nil {
-			zap.L().Sugar().Infof("Could not read google secret: %v, continuing without google oauth\n", err)
+			zap.S().Infof("Could not read google secret: %v, continuing without google oauth\n", err)
 		}
 	}
 }
@@ -220,7 +220,7 @@ func WithEventQueue() Option {
 
 		go func() {
 			for event := range events {
-				zap.L().Sugar().Debugf("scrape event: %v", event)
+				zap.S().Debugf("scrape event: %v", event)
 			}
 		}()
 
