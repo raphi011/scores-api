@@ -1,4 +1,5 @@
 INSERT INTO users (
+    id,
     created_at,
     email,
     profile_image_url,
@@ -10,6 +11,7 @@ INSERT INTO users (
     pw_iterations
 )
 VALUES (
+    :id,
     :created_at,
     :email,
     :profile_image_url,

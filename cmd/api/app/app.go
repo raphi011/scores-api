@@ -172,8 +172,6 @@ func WithRepository(provider, connectionString string) Option {
 		case "sqlite3":
 			fallthrough
 		case "postgres":
-			fallthrough
-		case "mysql":
 			repos, err = sql.Repositories(provider, connectionString)
 		default:
 			err = fmt.Errorf("invalid repo provider %q", provider)

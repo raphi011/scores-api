@@ -105,3 +105,15 @@ CREATE TABLE tournament_teams (
 );
 
 CREATE INDEX tournament_teams_team ON tournament_teams (player_1_id, player_2_id);
+
+CREATE TABLE settings (
+	created_at  timestamptz NOT NULL,
+	updated_at  timestamptz,
+	deleted_at  timestamptz,
+    s_key       text NOT NULL,
+    s_value     text,
+	s_type 		text NOT NULL,	
+    user_id     uuid REFERENCES users(id),
+
+	PRIMARY KEY (s_key, user_id)
+);

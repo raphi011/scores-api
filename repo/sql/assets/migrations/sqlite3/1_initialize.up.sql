@@ -17,7 +17,7 @@ CREATE TABLE players (
 );
 
 CREATE TABLE users (
-	id integer PRIMARY KEY autoincrement,
+	id string PRIMARY KEY,
 
 	created_at datetime NOT NULL,
 	updated_at datetime,
@@ -95,4 +95,17 @@ CREATE TABLE tournament_teams (
 	FOREIGN KEY(player_1_id) REFERENCES players(id),
 	FOREIGN KEY(player_2_id) REFERENCES players(id),
 	PRIMARY KEY(tournament_id, player_1_id, player_2_id)
+);
+
+CREATE TABLE settings (
+	created_at          datetime NOT NULL,
+	updated_at          datetime,
+	deleted_at          datetime,
+    s_key               varchar(255) NOT NULL,
+    s_value             varchar(255),
+	s_type				varchar(255) NOT NULL,
+    user_id             uuid REFERENCES users(id),
+
+	PRIMARY KEY(s_key, user_id),
+	FOREIGN KEY(user_id) REFERENCES users(id)
 );
