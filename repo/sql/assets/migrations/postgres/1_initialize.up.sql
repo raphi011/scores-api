@@ -22,7 +22,7 @@ CREATE INDEX players_ladder_rank    ON players USING btree  (ladder_rank);
 CREATE INDEX players_gender     	ON players USING hash   (gender);
 
 CREATE TABLE users (
-	id                  serial      PRIMARY KEY,
+	id                  uuid PRIMARY KEY,
 
 	created_at          timestamptz NOT NULL,
 	updated_at          timestamptz,

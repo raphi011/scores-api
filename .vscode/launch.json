@@ -26,11 +26,7 @@
         "-connection",
         "postgres://postgres:test@localhost?sslmode=disable"
         // "-debuglevel",
-        // "5",
-        // "-provider",
-        // "mysql",
-        // "-connection",
-        // "root@tcp(localhost)/scores?charset=utf8mb4&parseTime=true&multiStatements=true"
+        // "5"
       ],
       "showLog": true,
       "apiVersion": 2
