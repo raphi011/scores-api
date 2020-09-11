@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"github.com/raphi011/scores-api/volleynet"
 	"github.com/raphi011/scores-api/volleynet/scrape"
@@ -34,6 +36,9 @@ type Client interface {
 
 // defaultClient implements the Client interface
 type defaultClient struct {
+	metrics struct {
+		signups *prometheus.CounterVec
+	}
 	PostURL string
 	GetURL  string
 	Cookie  string
@@ -42,6 +47,13 @@ type defaultClient struct {
 // Default returns a Client with the correct PostURL and GetURL fields set.
 func Default() Client {
 	return &defaultClient{
+		metrics: struct{ signups *prometheus.CounterVec }{
+			signups: promauto.NewCounterVec(prometheus.CounterOpts{
+				Name: "api_tournament_signups",
+				Help: "The total number of tournament signups",
+			}, []string{}),
+		},
+
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",
 	}
@@ -270,6 +282,8 @@ func (c *defaultClient) EnterTournament(playerName string, playerID, tournamentI
 	if err != nil || !entryData.Successfull {
 		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
 	}
+
+	c.metrics.signups.With(prometheus.Labels{}).Inc()
 
 	return nil
 }

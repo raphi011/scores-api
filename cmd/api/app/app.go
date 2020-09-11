@@ -9,6 +9,7 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/securecookie"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 
@@ -96,6 +97,10 @@ func (r *App) Build() *gin.Engine {
 
 	router.Use(sessions.Sessions("session", store), middleware.Logger(r.production))
 
+	// if r.production {
+	router.Handle("GET", "/metrics", gin.WrapH(promhttp.Handler()))
+	// }
+
 	router.GET("/version", infoHandler.GetVersion)
 
 	router.GET("/user-or-login", authHandler.GetLoginRouteOrUser)
@@ -178,7 +183,7 @@ func WithRepository(provider, connectionString string) Option {
 		}
 
 		if err != nil {
-			zap.S().Errorf("Could not initialize repository: %s", err)
+			zap.S().Fatalf("Could not initialize repository: %s", err)
 		}
 
 		r.services = servicesFromRepository(repos)
