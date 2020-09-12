@@ -12,8 +12,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"github.com/raphi011/scores-api/volleynet"
 	"github.com/raphi011/scores-api/volleynet/scrape"
@@ -29,16 +27,13 @@ type Client interface {
 	ComplementTournament(tournament *volleynet.TournamentInfo) (*volleynet.Tournament, error)
 
 	WithdrawFromTournament(tournamentID int) error
-	EnterTournament(playerName string, playerID, tournamentID int) error
+	EnterTournament( /*playerName string, */ playerID, tournamentID int) error
 
 	SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error)
 }
 
 // defaultClient implements the Client interface
 type defaultClient struct {
-	metrics struct {
-		signups *prometheus.CounterVec
-	}
 	PostURL string
 	GetURL  string
 	Cookie  string
@@ -47,13 +42,6 @@ type defaultClient struct {
 // Default returns a Client with the correct PostURL and GetURL fields set.
 func Default() Client {
 	return &defaultClient{
-		metrics: struct{ signups *prometheus.CounterVec }{
-			signups: promauto.NewCounterVec(prometheus.CounterOpts{
-				Name: "api_tournament_signups",
-				Help: "The total number of tournament signups",
-			}, []string{}),
-		},
-
 		PostURL: "https://beach.volleynet.at",
 		GetURL:  "http://www.volleynet.at",
 	}
@@ -228,7 +216,7 @@ func (c *defaultClient) WithdrawFromTournament(tournamentID int) error {
 
 // EnterTournament enters a player at a tournament.
 // A valid session Cookie must be set.
-func (c *defaultClient) EnterTournament(playerName string, playerID, tournamentID int) error {
+func (c *defaultClient) EnterTournament( /*playerName string, */ playerID, tournamentID int) error {
 	if c.Cookie == "" {
 		return errors.New("cookie must be set")
 	}
@@ -247,7 +235,7 @@ func (c *defaultClient) EnterTournament(playerName string, playerID, tournamentI
 	form.Add("prev", "0")
 	form.Add("next", "0")
 	form.Add("cur", strconv.Itoa(tournamentID))
-	form.Add("name_b", playerName)
+	// form.Add("name_b", playerName) TODO: is this really needed?
 	form.Add("bte_per_id_b", strconv.Itoa(playerID))
 	form.Add("submit", "Anmelden")
 
@@ -282,8 +270,6 @@ func (c *defaultClient) EnterTournament(playerName string, playerID, tournamentI
 	if err != nil || !entryData.Successfull {
 		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
 	}
-
-	c.metrics.signups.With(prometheus.Labels{}).Inc()
 
 	return nil
 }

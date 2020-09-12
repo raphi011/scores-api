@@ -72,7 +72,7 @@ func (r *App) Build() *gin.Engine {
 	)
 
 	playerHandler := route.PlayerHandler(s.Volleynet, s.User)
-	tournamentHandler := route.TournamentHandler(s.Volleynet, s.User)
+	tournamentHandler := route.TournamentHandler(s.Volleynet, s.VolleynetClient, s.User)
 	scrapeHandler := route.ScrapeHandler(s.JobManager)
 	infoHandler := route.InfoHandler(r.version)
 	adminHandler := route.AdminHandler(s.User)
@@ -97,9 +97,9 @@ func (r *App) Build() *gin.Engine {
 
 	router.Use(sessions.Sessions("session", store), middleware.Logger(r.production))
 
-	// if r.production {
-	router.Handle("GET", "/metrics", gin.WrapH(promhttp.Handler()))
-	// }
+	if r.production {
+		router.Handle("GET", "/metrics", gin.WrapH(promhttp.Handler()))
+	}
 
 	router.GET("/version", infoHandler.GetVersion)
 
@@ -277,11 +277,12 @@ func WithCron() Option {
 }
 
 type handlerServices struct {
-	JobManager *job.Manager
-	User       *services.User
-	Volleynet  *services.Volleynet
-	Scrape     *sync.Service
-	Password   services.Password
+	JobManager      *job.Manager
+	User            *services.User
+	Volleynet       *services.Volleynet
+	Scrape          *sync.Service
+	Password        services.Password
+	VolleynetClient volleynet_client.Client
 }
 
 func servicesFromRepository(repos *repo.Repositories) *handlerServices {
@@ -290,6 +291,8 @@ func servicesFromRepository(repos *repo.Repositories) *handlerServices {
 		Iterations: 10000,
 	}
 
+	metrics := services.NewMetrics()
+
 	userService := &services.User{
 		Repo:        repos.UserRepo,
 		PlayerRepo:  repos.PlayerRepo,
@@ -297,11 +300,12 @@ func servicesFromRepository(repos *repo.Repositories) *handlerServices {
 		Password:    password,
 	}
 
-	volleynetService := &services.Volleynet{
-		PlayerRepo:     repos.PlayerRepo,
-		TeamRepo:       repos.TeamRepo,
-		TournamentRepo: repos.TournamentRepo,
-	}
+	volleynetService := services.NewVolleynetService(
+		repos.TeamRepo,
+		repos.PlayerRepo,
+		repos.TournamentRepo,
+		metrics,
+	)
 
 	manager := job.NewManager()
 
