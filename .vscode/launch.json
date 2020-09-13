@@ -13,18 +13,18 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceRoot}/cmd/api",
-      "env": {
-        "CGO_ENABLED": 0,
-        "GOOS": "linux"
-      },
+      // "env": {
+      //   "CGO_ENABLED": 0,
+      //   "GOOS": "linux"
+      // },
       "buildFlags": "-tags=portable",
       "args": [
         "-mode",
-        "debug",
-        "-provider",
-        "postgres",
-        "-connection",
-        "postgres://postgres:test@localhost?sslmode=disable"
+        "debug" //,
+      //   "-provider",
+      //   "postgres",
+      //   "-connection",
+      // "postgres://postgres:test@localhost?sslmode=disable"
         // "-debuglevel",
         // "5"
       ],

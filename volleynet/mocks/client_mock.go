@@ -40,8 +40,8 @@ func (m *ClientMock) WithdrawFromTournament(tournamentID int) error {
 	return args.Error(0)
 }
 
-func (m *ClientMock) EnterTournament(playerName string, playerID, tournamentID int) error {
-	args := m.Called(playerName, playerID, tournamentID)
+func (m *ClientMock) EnterTournament(playerID, tournamentID int) error {
+	args := m.Called(playerID, tournamentID)
 
 	return args.Error(0)
 }

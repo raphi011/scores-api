@@ -2,8 +2,10 @@ package services
 
 import (
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/volleynet"
+	volleynet_client "github.com/raphi011/scores-api/volleynet/client"
 
 	"strconv"
 	"time"
@@ -14,6 +16,25 @@ type Volleynet struct {
 	TeamRepo       repo.TeamRepository
 	PlayerRepo     repo.PlayerRepository
 	TournamentRepo repo.TournamentRepository
+
+	VolleynetClient volleynet_client.Client
+
+	Metrics *Metrics
+}
+
+func NewVolleynetService(
+	teamRepo repo.TeamRepository,
+	playerRepo repo.PlayerRepository,
+	tournamentRepo repo.TournamentRepository,
+	metrics *Metrics,
+) *Volleynet {
+	return &Volleynet{
+		TeamRepo:       teamRepo,
+		PlayerRepo:     playerRepo,
+		TournamentRepo: tournamentRepo,
+
+		Metrics: metrics,
+	}
 }
 
 // ValidGender returns true if if the passed gender string is valid
@@ -142,4 +163,36 @@ func (s *Volleynet) TournamentInfo(tournamentID int) (
 	}
 
 	return nil, err
+}
+
+func (s *Volleynet) EnterTournament(partnerID, tournamentID int) error {
+	partner, err := s.PlayerRepo.Get(partnerID)
+
+	if err != nil {
+		return errors.Wrap(err, "signup: error while retrieving player")
+	}
+
+	tournament, err := s.TournamentRepo.Get(tournamentID)
+
+	if err != nil {
+		return errors.Wrap(err, "signup: error while retrieving tournament")
+	}
+
+	err = s.VolleynetClient.EnterTournament(partner.ID, tournament.ID)
+
+	if err != nil {
+		return errors.Wrapf(err, "entering tournament %d with partner %d failed", partnerID, tournamentID)
+	}
+
+	s.incTournamentSignupMetric(tournament)
+
+	return nil
+}
+
+func (s *Volleynet) incTournamentSignupMetric(t *volleynet.Tournament) {
+	s.Metrics.tournamentSignups.With(prometheus.Labels{
+		"league_key":     t.LeagueKey,
+		"sub_league_key": t.SubLeagueKey,
+		"gender":         t.Gender,
+	}).Inc()
 }

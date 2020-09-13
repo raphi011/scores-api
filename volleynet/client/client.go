@@ -27,7 +27,7 @@ type Client interface {
 	ComplementTournament(tournament *volleynet.TournamentInfo) (*volleynet.Tournament, error)
 
 	WithdrawFromTournament(tournamentID int) error
-	EnterTournament(playerName string, playerID, tournamentID int) error
+	EnterTournament( /*playerName string, */ playerID, tournamentID int) error
 
 	SearchPlayers(firstName, lastName, birthday string) ([]*scrape.PlayerInfo, error)
 }
@@ -216,7 +216,7 @@ func (c *defaultClient) WithdrawFromTournament(tournamentID int) error {
 
 // EnterTournament enters a player at a tournament.
 // A valid session Cookie must be set.
-func (c *defaultClient) EnterTournament(playerName string, playerID, tournamentID int) error {
+func (c *defaultClient) EnterTournament( /*playerName string, */ playerID, tournamentID int) error {
 	if c.Cookie == "" {
 		return errors.New("cookie must be set")
 	}
@@ -235,7 +235,7 @@ func (c *defaultClient) EnterTournament(playerName string, playerID, tournamentI
 	form.Add("prev", "0")
 	form.Add("next", "0")
 	form.Add("cur", strconv.Itoa(tournamentID))
-	form.Add("name_b", playerName)
+	// form.Add("name_b", playerName) TODO: is this really needed?
 	form.Add("bte_per_id_b", strconv.Itoa(playerID))
 	form.Add("submit", "Anmelden")
 

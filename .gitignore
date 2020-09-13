@@ -2,4 +2,7 @@
 
 pkged.go
 
+*.db
+/api
+
 debug

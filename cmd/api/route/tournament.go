@@ -13,12 +13,18 @@ import (
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/services"
 	"github.com/raphi011/scores-api/volleynet/client"
+	volleynet_client "github.com/raphi011/scores-api/volleynet/client"
 )
 
 //TournamentHandler is the constructor for the tournament routes handler.
-func TournamentHandler(volleynetService *services.Volleynet, userService *services.User) Tournament {
+func TournamentHandler(
+	volleynetService *services.Volleynet,
+	volleynetClient volleynet_client.Client,
+	userService *services.User,
+) Tournament {
 	return Tournament{
 		volleynetService: volleynetService,
+		volleynetClient:  volleynetClient,
 		userService:      userService,
 	}
 }
@@ -26,6 +32,7 @@ func TournamentHandler(volleynetService *services.Volleynet, userService *servic
 // Tournament wraps the depdencies of the TournamentHandler.
 type Tournament struct {
 	volleynetService *services.Volleynet
+	volleynetClient  volleynet_client.Client
 	userService      *services.User
 }
 
@@ -96,7 +103,6 @@ type signupForm struct {
 	Username     string `json:"username"`
 	Password     string `json:"password"`
 	PartnerID    int    `json:"partnerId"`
-	PartnerName  string `json:"partnerName"`
 	TournamentID int    `json:"tournamentId"`
 	RememberMe   bool   `json:"rememberMe"`
 }
@@ -128,26 +134,10 @@ func (h *Tournament) PostSignup(c *gin.Context) {
 	}
 
 	if su.RememberMe {
-		session := sessions.Default(c)
-		userID := session.Get("user-id").(*uuid.UUID)
-		user, err := h.userService.ByID(*userID)
-
-		if err != nil {
-			logger.Get(c).Warnf("loading user by email: %s failed", userID)
-		}
-
-		if user != nil && user.PlayerLogin != su.Username ||
-			user.PlayerID != loginData.ID {
-
-			err = h.userService.SetVolleynetLogin(*userID, loginData.ID, su.Username)
-
-			if err != nil {
-				logger.Get(c).Warnf("updating volleynet user information failed for userID: %d", user.ID)
-			}
-		}
+		h.rememberMe(c, su.Username, loginData.ID)
 	}
 
-	err = vnClient.EnterTournament(su.PartnerName, su.PartnerID, su.TournamentID)
+	err = h.volleynetService.EnterTournament(su.PartnerID, su.TournamentID)
 
 	if err != nil {
 		responseErr(c, err)
@@ -155,4 +145,29 @@ func (h *Tournament) PostSignup(c *gin.Context) {
 	}
 
 	response(c, http.StatusOK, nil)
+}
+
+func (h *Tournament) rememberMe(
+	c *gin.Context,
+	userName string,
+	playerID int,
+) {
+	session := sessions.Default(c)
+	userID := session.Get("user-id").(*uuid.UUID)
+	user, err := h.userService.ByID(*userID)
+
+	if err != nil {
+		logger.Get(c).Warnf("loading user by id: %s failed", userID)
+	}
+
+	if user != nil &&
+		user.PlayerLogin != userName ||
+		user.PlayerID != playerID {
+
+		err = h.userService.SetVolleynetLogin(*userID, playerID, userName)
+
+		if err != nil {
+			logger.Get(c).Warnf("updating volleynet user information failed for userID: %d", user.ID)
+		}
+	}
 }
