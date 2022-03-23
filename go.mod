@@ -7,7 +7,7 @@ replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-2019020
 require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
-	github.com/gin-gonic/gin v1.6.3
+	github.com/gin-gonic/gin v1.7.0
 	github.com/golang-migrate/migrate/v4 v4.4.0
 	github.com/google/go-cmp v0.4.0
 	github.com/google/uuid v1.1.1
@@ -19,7 +19,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/wawandco/fako v0.0.0-20180828010250-c36a0bc97398
 	go.uber.org/zap v1.16.0
-	golang.org/x/crypto v0.0.0-20190605123033-f99c8df09eb5
+	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a
 )
 
@@ -33,7 +33,7 @@ require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/go-playground/validator/v10 v10.2.0 // indirect
+	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/gobuffalo/envy v1.7.0 // indirect
 	github.com/gobuffalo/here v0.6.2 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
