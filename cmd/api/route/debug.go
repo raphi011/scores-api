@@ -1,8 +1,9 @@
 package route
 
 import (
+	"errors"
+
 	"github.com/gin-gonic/gin"
-	"github.com/pkg/errors"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/services"
 )
@@ -25,7 +26,7 @@ func (a *Debug) PostCreateAdmin(c *gin.Context) {
 
 	_, err := a.userService.ByEmail(testEmail)
 
-	if errors.Cause(err) == scores.ErrNotFound {
+	if errors.Is(err, scores.ErrNotFound) {
 		_, err = a.userService.New(testEmail, testPassword, "admin")
 
 		if err != nil {

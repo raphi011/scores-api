@@ -1,6 +1,6 @@
 package scores
 
-import "github.com/pkg/errors"
+import "errors"
 
 // ErrNotFound is returned if an entity was not found.
 var ErrNotFound = errors.New("not found")

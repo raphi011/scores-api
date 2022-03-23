@@ -1,12 +1,11 @@
 package route
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/pkg/errors"
-
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/services"
 )
@@ -38,7 +37,7 @@ func (a *Admin) PostUser(c *gin.Context) {
 
 	user, err := a.userService.ByEmail(userChanges.Email)
 
-	if errors.Cause(err) == scores.ErrNotFound {
+	if errors.Is(err, scores.ErrNotFound) {
 		user, err = a.userService.New(userChanges.Email, userChanges.Password, "user")
 
 		if err != nil {
