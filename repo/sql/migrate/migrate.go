@@ -1,9 +1,10 @@
 package migrate
 
 import (
+	"fmt"
+
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
 )
 
 // All runs all available migrations on the db connection.
@@ -11,19 +12,19 @@ func All(provider string, db *sqlx.DB) error {
 	dbDriver, err := migrationDriver(provider, db)
 
 	if err != nil {
-		return errors.Wrap(err, "create db migration driver")
+		return fmt.Errorf("create db migration driver: %w", err)
 	}
 
 	driver, err := (&pkgerDriver{}).Open(provider)
 
 	if err != nil {
-		return errors.Wrap(err, "load migration scripts")
+		return fmt.Errorf("load migration scripts: %w", err)
 	}
 
 	m, err := migrate.NewWithInstance("pkger", driver, provider, dbDriver)
 
 	if err != nil {
-		return errors.Wrap(err, "initialize migration")
+		return fmt.Errorf("initialize migration: %w", err)
 	}
 
 	err = m.Up()
@@ -32,5 +33,5 @@ func All(provider string, db *sqlx.DB) error {
 		return nil
 	}
 
-	return errors.Wrap(err, "migrateAll")
+	return fmt.Errorf("migrateAll: %w", err)
 }

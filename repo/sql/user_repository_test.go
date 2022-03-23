@@ -1,13 +1,13 @@
+//go:build repository
 // +build repository
 
 package sql
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
-
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/test"
 )
@@ -45,7 +45,7 @@ func TestUserNotFound(t *testing.T) {
 
 	_, err := userRepo.ByID(id)
 
-	if errors.Cause(err) != scores.ErrNotFound {
+	if !errors.Is(err, scores.ErrNotFound) {
 		t.Errorf("userRepository.ByID(), want err = ErrNotFound, got: %v", err)
 	}
 }

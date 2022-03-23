@@ -1,9 +1,9 @@
 package sync
 
 import (
+	"errors"
 	"fmt"
 
-	"github.com/pkg/errors"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/volleynet"
 )
@@ -63,7 +63,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 		_, err := s.TeamRepo.New(new)
 
 		if err != nil {
-			return errors.Wrapf(err, "persist new tournament team %+v", new)
+			return fmt.Errorf("persist new tournament team %+v %w", new, err)
 		}
 	}
 
@@ -71,7 +71,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 		err := s.TeamRepo.Update(update)
 
 		if err != nil {
-			return errors.Wrapf(err, "persist updated tournament team %+v", update)
+			return fmt.Errorf("persist updated tournament team %+v %w", update, err)
 		}
 	}
 
@@ -79,7 +79,7 @@ func (s *Service) persistTeams(changes *TeamChanges) error {
 		err := s.TeamRepo.Delete(delete)
 
 		if err != nil {
-			return errors.Wrapf(err, "persist deleted tournament team %+v", delete)
+			return fmt.Errorf("persist deleted tournament team %+v %w", delete, err)
 		}
 	}
 
@@ -93,7 +93,7 @@ func (s *Service) addMissingPlayers(teams []*volleynet.TournamentTeam) error {
 		err := s.addPlayerIfNeeded(p)
 
 		if err != nil {
-			return errors.Wrap(err, "addMissingPlayers failed")
+			return fmt.Errorf("addMissingPlayers failed: %w", err)
 		}
 	}
 
@@ -123,12 +123,12 @@ func distinctPlayers(teams []*volleynet.TournamentTeam) []*volleynet.Player {
 func (s *Service) addPlayerIfNeeded(player *volleynet.Player) error {
 	_, err := s.PlayerRepo.Get(player.ID)
 
-	if errors.Cause(err) == scores.ErrNotFound {
+	if errors.Is(err, scores.ErrNotFound) {
 		_, err = s.PlayerRepo.New(player)
 
-		return errors.Wrap(err, "addPlayerIfNeeded")
+		return fmt.Errorf("addPlayerIfNeeded: %w", err)
 	} else if err != nil {
-		return errors.Wrap(err, "addPlayerIfNeeded")
+		return fmt.Errorf("addPlayerIfNeeded: %w", err)
 	}
 
 	return nil

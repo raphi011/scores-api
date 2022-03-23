@@ -1,9 +1,9 @@
 package scrape
 
 import (
+	"errors"
+	"fmt"
 	"io"
-
-	"github.com/pkg/errors"
 )
 
 // UniqueWriteCode extracts the XSRF token from the tournament login page
@@ -11,7 +11,7 @@ func UniqueWriteCode(html io.Reader) (string, error) {
 	doc, err := parseHTML(html)
 
 	if err != nil {
-		return "", errors.Wrap(err, "UniqueWriteCode failed")
+		return "", fmt.Errorf("UniqueWriteCode failed: %w", err)
 	}
 
 	input := doc.Find("input[name='XX_unique_write_XXBeach/Profile/TurnierAnmeldung']")

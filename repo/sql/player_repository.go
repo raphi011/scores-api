@@ -1,8 +1,9 @@
 package sql
 
 import (
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/repo/sql/crud"
@@ -20,7 +21,7 @@ func (s *playerRepository) ByGender(gender string) ([]*volleynet.Player, error) 
 	players := []*volleynet.Player{}
 	err := crud.Read(s.DB, "player/select-by-gender", &players, gender)
 
-	return players, errors.Wrap(err, "by gender")
+	return players, fmt.Errorf("by gender: %w", err)
 }
 
 // Ladder gets all players of the passed gender that have a rank.
@@ -29,7 +30,7 @@ func (s *playerRepository) Ladder(gender string) ([]*volleynet.Player, error) {
 	players := []*volleynet.Player{}
 	err := crud.Read(s.DB, "player/select-ladder", &players, gender)
 
-	return players, errors.Wrap(err, "ladder")
+	return players, fmt.Errorf("ladder: %w", err)
 }
 
 // Get loads a player.
@@ -38,21 +39,21 @@ func (s *playerRepository) Get(id int) (*volleynet.Player, error) {
 	player := &volleynet.Player{}
 	err := crud.ReadOne(s.DB, "player/select-by-id", player, id)
 
-	return player, errors.Wrap(err, "get player")
+	return player, fmt.Errorf("get player: %w", err)
 }
 
 // New creates a new player.
 func (s *playerRepository) New(p *volleynet.Player) (*volleynet.Player, error) {
 	err := crud.Create(s.DB, "player/insert", p)
 
-	return p, errors.Wrap(err, "new player")
+	return p, fmt.Errorf("new player: %w", err)
 }
 
 // Update updates a player.
 func (s *playerRepository) Update(p *volleynet.Player) error {
 	err := crud.Update(s.DB, "player/update", p)
 
-	return errors.Wrap(err, "update player")
+	return fmt.Errorf("update player: %w", err)
 }
 
 // PreviousPartners returns a list of all partners a player has played with before.
@@ -62,7 +63,7 @@ func (s *playerRepository) PreviousPartners(playerID int) ([]*volleynet.Player, 
 	err := crud.ReadNamed(s.DB, "player/select-partners", &players,
 		map[string]interface{}{"player_id": playerID})
 
-	return players, errors.Wrap(err, "previousPartners")
+	return players, fmt.Errorf("previousPartners: %w", err)
 }
 
 // Search searches for players that satisfy the passed filter.
@@ -74,7 +75,7 @@ func (s *playerRepository) Search(filter repo.PlayerFilter) ([]*volleynet.Player
 
 	err := crud.ReadNamed(s.DB, "player/search", &players, filter)
 
-	return players, errors.Wrap(err, "search")
+	return players, fmt.Errorf("search: %w", err)
 }
 
 func startsWith(query string) string {

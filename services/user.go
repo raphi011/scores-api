@@ -1,10 +1,11 @@
 package services
 
 import (
-	"github.com/google/uuid"
-	"github.com/pkg/errors"
+	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/raphi011/scores-api"
+	"github.com/raphi011/scores-api/password"
 	"github.com/raphi011/scores-api/repo"
 )
 
@@ -14,7 +15,7 @@ type User struct {
 	PlayerRepo  repo.PlayerRepository
 	SettingRepo repo.SettingRepository
 
-	Password Password
+	Password *password.PBKDF2
 }
 
 // HasRole verifies if a user has a certain role
@@ -61,7 +62,7 @@ func (s *User) UpdateSettings(userID uuid.UUID, settings ...*scores.Setting) err
 		}
 
 		if err != nil {
-			return errors.Wrapf(err, "updating user's %q setting key %q", userID, setting.Key)
+			return fmt.Errorf("updating user's %q setting key %q %w", userID, setting.Key, err)
 		}
 	}
 
@@ -73,7 +74,7 @@ func (s *User) New(email, password string, role string) (*scores.User, error) {
 	passwordInfo, err := s.Password.Hash([]byte(password))
 
 	if err != nil {
-		return nil, errors.Wrap(err, "hashing password")
+		return nil, fmt.Errorf("hashing password: %w", err)
 	}
 
 	user, err := s.Repo.New(&scores.User{
@@ -84,11 +85,11 @@ func (s *User) New(email, password string, role string) (*scores.User, error) {
 	})
 
 	if err != nil {
-		return nil, errors.Wrap(err, "creating user")
+		return nil, fmt.Errorf("creating user: %w", err)
 	}
 
 	if err != nil {
-		return nil, errors.Wrap(err, "creating user player")
+		return nil, fmt.Errorf("creating user player: %w", err)
 	}
 
 	return user, nil
@@ -108,14 +109,14 @@ func (s *User) SetPassword(
 	passwordInfo, err := s.Password.Hash([]byte(password))
 
 	if err != nil {
-		return errors.Wrap(err, "hashing password")
+		return fmt.Errorf("hashing password: %w", err)
 	}
 
 	user.PasswordInfo = *passwordInfo
 
 	err = s.Repo.Update(user)
 
-	return errors.Wrap(err, "could not update user password")
+	return fmt.Errorf("could not update user password: %w", err)
 }
 
 // ByEmail retrieves a user by email
@@ -123,7 +124,7 @@ func (s *User) ByEmail(email string) (*scores.User, error) {
 	user, err := s.Repo.ByEmail(email)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "could not load user by email %s", email)
+		return nil, fmt.Errorf("could not load user by email %s %w", email, err)
 	}
 
 	user.Settings, err = s.loadSettingsDictionary(user.ID)
@@ -136,7 +137,7 @@ func (s *User) ByID(userID uuid.UUID) (*scores.User, error) {
 	user, err := s.Repo.ByID(userID)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "could not load user by ID %d", userID)
+		return nil, fmt.Errorf("could not load user by ID %d %w", userID, err)
 	}
 
 	user.Settings, err = s.loadSettingsDictionary(userID)
@@ -148,7 +149,7 @@ func (s *User) loadSettingsDictionary(userID uuid.UUID) (scores.Settings, error)
 	settings, err := s.SettingRepo.ByUserID(userID)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "load settings for user %q", userID)
+		return nil, fmt.Errorf("load settings for user %q %w", userID, err)
 	}
 
 	return scores.ToSettingsDictionary(settings), nil
@@ -160,7 +161,7 @@ func (s *User) loadSettings(userID uuid.UUID) (settingsMap, error) {
 	settings, err := s.SettingRepo.ByUserID(userID)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "load settings for user %q", userID)
+		return nil, fmt.Errorf("load settings for user %q %w", userID, err)
 	}
 
 	settingsMap := map[string]*scores.Setting{}
@@ -189,7 +190,7 @@ func (s *User) SetProfileImage(userID uuid.UUID, imageURL string) error {
 
 	err = s.Repo.Update(user)
 
-	return errors.Wrap(err, "updating profile image")
+	return fmt.Errorf("updating profile image: %w", err)
 }
 
 // SetVolleynetLogin updates the users volleynet login
@@ -205,5 +206,5 @@ func (s *User) SetVolleynetLogin(userID uuid.UUID, playerID int, playerLogin str
 
 	err = s.Repo.Update(user)
 
-	return errors.Wrap(err, "updatin volleynet login")
+	return fmt.Errorf("updatin volleynet login: %w", err)
 }

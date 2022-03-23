@@ -12,12 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/google/uuid"
-	"golang.org/x/oauth2"
-
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/cmd/api/auth"
 	"github.com/raphi011/scores-api/cmd/api/logger"
+	"github.com/raphi011/scores-api/password"
 	"github.com/raphi011/scores-api/services"
+	"golang.org/x/oauth2"
 )
 
 func init() {
@@ -44,7 +44,7 @@ func randToken() string {
 }
 
 // AuthHandler is the constructor for the Auth routes handler.
-func AuthHandler(userService *services.User, passwordService services.Password, conf *oauth2.Config) Auth {
+func AuthHandler(userService *services.User, passwordService *password.PBKDF2, conf *oauth2.Config) Auth {
 	return Auth{
 		userService:     userService,
 		passwordService: passwordService,
@@ -55,7 +55,7 @@ func AuthHandler(userService *services.User, passwordService services.Password, 
 // Auth handles the authentication routes.
 type Auth struct {
 	userService     *services.User
-	passwordService services.Password
+	passwordService *password.PBKDF2
 
 	conf *oauth2.Config
 }

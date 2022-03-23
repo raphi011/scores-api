@@ -1,9 +1,10 @@
 package sync
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/events"
 	"github.com/raphi011/scores-api/repo"
@@ -38,7 +39,7 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 	current, err := s.Client.Tournaments(gender, league, season)
 
 	if err != nil {
-		return errors.Wrap(err, "loading the client tournament list failed")
+		return fmt.Errorf("loading the client tournament list failed: %w", err)
 	}
 
 	persistedTournaments := []*volleynet.Tournament{}
@@ -47,10 +48,10 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 	for _, t := range current {
 		persisted, err := s.TournamentRepo.Get(t.ID)
 
-		if errors.Cause(err) == scores.ErrNotFound {
+		if errors.Is(err, scores.ErrNotFound) {
 			persisted = nil
 		} else if err != nil {
-			return errors.Wrap(err, "loading the persisted tournament failed")
+			return fmt.Errorf("loading the persisted tournament failed: %w", err)
 		}
 
 		syncInfo := Tournaments(persisted, t)
@@ -61,7 +62,7 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 			persisted.Teams, err = s.TeamRepo.ByTournament(t.ID)
 
 			if err != nil {
-				return errors.Wrap(err, "loading the persisted tournament teams failed")
+				return fmt.Errorf("loading the persisted tournament teams failed: %w", err)
 			}
 
 			persistedTournaments = append(persistedTournaments, persisted)
@@ -91,7 +92,7 @@ func (s *Service) Tournaments(gender, league string, season int) error {
 
 	s.publishEndScrapeEvent(report, time.Now())
 
-	return errors.Wrap(err, "sync failed")
+	return fmt.Errorf("sync failed: %w", err)
 }
 
 func (s *Service) persistChanges(report *Changes) error {

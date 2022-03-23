@@ -1,11 +1,10 @@
 package client
 
 import (
+	"errors"
 	"os"
 	"strings"
 	"testing"
-
-	"github.com/pkg/errors"
 )
 
 func Test_upcoming_games(t *testing.T) {

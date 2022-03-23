@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,8 +11,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores-api/volleynet"
 	"github.com/raphi011/scores-api/volleynet/scrape"
@@ -61,7 +60,7 @@ func (c *defaultClient) Login(username, password string) (*scrape.LoginData, err
 	resp, err := http.PostForm(url, form)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "client login")
+		return nil, fmt.Errorf("client login: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
@@ -73,7 +72,7 @@ func (c *defaultClient) Login(username, password string) (*scrape.LoginData, err
 	loginData, err := scrape.Login(resp.Body)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "parse login")
+		return nil, fmt.Errorf("parse login: %w", err)
 	}
 
 	c.Cookie = resp.Header.Get("Set-Cookie")
@@ -119,7 +118,7 @@ func (c *defaultClient) Ladder(gender string) ([]*volleynet.Player, error) {
 	resp, err := http.Get(url)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "loading ladder %q failed", gender)
+		return nil, fmt.Errorf("loading ladder %q failed %w", gender, err)
 	}
 
 	defer resp.Body.Close()
@@ -145,13 +144,13 @@ func (c *defaultClient) ComplementTournament(tournament *volleynet.TournamentInf
 	resp, err := http.Get(url)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "loading tournament %d failed", tournament.ID)
+		return nil, fmt.Errorf("loading tournament %d failed %w", tournament.ID, err)
 	}
 
 	t, err := scrape.Tournament(resp.Body, time.Now(), tournament)
 
 	if err != nil {
-		return nil, errors.Wrapf(err, "parsing tournament %d failed", tournament.ID)
+		return nil, fmt.Errorf("parsing tournament %d failed %w", tournament.ID, err)
 	}
 
 	t.Link = c.getTournamentLink(tournament)
@@ -171,7 +170,7 @@ func (c *defaultClient) loadUniqueWriteCode(tournamentID int) (string, error) {
 		nil)
 
 	if err != nil {
-		return "", errors.Wrap(err, "creating request failed")
+		return "", fmt.Errorf("creating request failed: %w", err)
 	}
 
 	req.Header.Add("Cookie", c.Cookie)
@@ -180,12 +179,12 @@ func (c *defaultClient) loadUniqueWriteCode(tournamentID int) (string, error) {
 	resp, err := httpClient.Do(req)
 
 	if err != nil {
-		return "", errors.Wrap(err, "loading unique writecode failed")
+		return "", fmt.Errorf("loading unique writecode failed: %w", err)
 	}
 
 	code, err := scrape.UniqueWriteCode(resp.Body)
 
-	return code, errors.Wrap(err, "parsing unique writecode failed")
+	return code, fmt.Errorf("parsing unique writecode failed: %w", err)
 }
 
 // WithdrawFromTournament withdraws a player from a tournament.
@@ -200,7 +199,7 @@ func (c *defaultClient) WithdrawFromTournament(tournamentID int) error {
 	resp, err := httpClient.Do(req)
 
 	if err != nil {
-		return errors.Wrapf(err, "tournamentwithdrawal request for tournamentID: %d failed", tournamentID)
+		return fmt.Errorf("tournamentwithdrawal request for tournamentID: %d failed %w", tournamentID, err)
 	}
 
 	defer resp.Body.Close()
@@ -226,7 +225,7 @@ func (c *defaultClient) EnterTournament( /*playerName string, */ playerID, tourn
 	code, err := c.loadUniqueWriteCode(tournamentID)
 
 	if err != nil {
-		return errors.Wrapf(err, "could not load writecode for tournamentID: %d", tournamentID)
+		return fmt.Errorf("could not load writecode for tournamentID: %d %w", tournamentID, err)
 	}
 
 	form.Add("action", "Beach/Profile/TurnierAnmeldung")
@@ -244,7 +243,7 @@ func (c *defaultClient) EnterTournament( /*playerName string, */ playerID, tourn
 	req, err := http.NewRequest("POST", url, bytes.NewBufferString(form.Encode()))
 
 	if err != nil {
-		return errors.Wrap(err, "creating tournamententry request failed")
+		return fmt.Errorf("creating tournamententry request failed: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -254,7 +253,7 @@ func (c *defaultClient) EnterTournament( /*playerName string, */ playerID, tourn
 	resp, err := httpClient.Do(req)
 
 	if err != nil {
-		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
+		return fmt.Errorf("tournamententry request for tournamentID: %d failed %w", tournamentID, err)
 	}
 
 	defer resp.Body.Close()
@@ -268,7 +267,7 @@ func (c *defaultClient) EnterTournament( /*playerName string, */ playerID, tourn
 	entryData, err := scrape.Entry(resp.Body)
 
 	if err != nil || !entryData.Successfull {
-		return errors.Wrapf(err, "tournamententry request for tournamentID: %d failed", tournamentID)
+		return fmt.Errorf("tournamententry request for tournamentID: %d failed %w", tournamentID, err)
 	}
 
 	return nil

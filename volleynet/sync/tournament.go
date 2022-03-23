@@ -1,11 +1,12 @@
 package sync
 
 import (
+	"fmt"
+
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/raphi011/scores-api"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores-api/volleynet"
 )
@@ -119,7 +120,7 @@ func (s *Service) persistTournaments(changes *TournamentChanges) error {
 		_, err := s.TournamentRepo.New(new)
 
 		if err != nil {
-			return errors.Wrap(err, "persisting new tournament failed")
+			return fmt.Errorf("persisting new tournament failed: %w", err)
 		}
 	}
 
@@ -127,7 +128,7 @@ func (s *Service) persistTournaments(changes *TournamentChanges) error {
 		err := s.TournamentRepo.Update(update)
 
 		if err != nil {
-			return errors.Wrap(err, "persisting updated tournament failed")
+			return fmt.Errorf("persisting updated tournament failed: %w", err)
 		}
 	}
 

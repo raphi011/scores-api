@@ -1,6 +1,7 @@
 package scrape
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"regexp"
@@ -9,7 +10,6 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/pkg/errors"
 )
 
 func parseFloat(text string) float32 {
@@ -99,7 +99,7 @@ func parsePlayerIDFromSteckbrief(s *goquery.Selection) (int, error) {
 
 	id, err := strconv.Atoi(href[dashIndex+1:])
 
-	return id, errors.Wrap(err, "could not parse playerid from steckbrief link")
+	return id, fmt.Errorf("could not parse playerid from steckbrief link: %w", err)
 }
 
 func parseStartEndDates(s *goquery.Selection) (time.Time, time.Time, error) {
@@ -151,5 +151,5 @@ func parseHref(anchor *goquery.Selection) string {
 func parseHTML(html io.Reader) (*goquery.Document, error) {
 	doc, err := goquery.NewDocumentFromReader(html)
 
-	return doc, errors.Wrap(err, "invalid html")
+	return doc, fmt.Errorf("invalid html: %w", err)
 }

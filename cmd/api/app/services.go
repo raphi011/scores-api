@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/raphi011/scores-api/job"
+	"github.com/raphi011/scores-api/password"
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/services"
 	volleynet_client "github.com/raphi011/scores-api/volleynet/client"
@@ -13,12 +14,12 @@ type handlerServices struct {
 	User            *services.User
 	Volleynet       *services.Volleynet
 	Scrape          *sync.Service
-	Password        services.Password
+	Password        *password.PBKDF2
 	VolleynetClient volleynet_client.Client
 }
 
 func servicesFromRepository(repos *repo.Repositories) *handlerServices {
-	password := &services.PBKDF2Password{
+	password := &password.PBKDF2{
 		SaltBytes:  16,
 		Iterations: 10000,
 	}

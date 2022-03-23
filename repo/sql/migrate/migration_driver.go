@@ -1,16 +1,15 @@
 package migrate
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	"path"
 
-	"github.com/pkg/errors"
-	"github.com/raphi011/scores-api/repo/sql/assets"
-
 	"github.com/golang-migrate/migrate/v4/source"
+	"github.com/raphi011/scores-api/repo/sql/assets"
 )
 
 type pkgerDriver struct {

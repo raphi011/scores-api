@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/pkg/errors"
-
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/volleynet"
 )
@@ -21,7 +19,7 @@ func Tournament(
 	doc, err := parseHTML(html)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "parse tournament")
+		return nil, fmt.Errorf("parse tournament: %w", err)
 	}
 
 	t := &volleynet.Tournament{TournamentInfo: *tournament}
@@ -29,11 +27,11 @@ func Tournament(
 	parseTournamentNotes(doc, t)
 
 	if err = parseTournamentDetails(doc, t); err != nil {
-		return nil, errors.Wrap(err, "parse tournament details")
+		return nil, fmt.Errorf("parse tournament details: %w", err)
 	}
 
 	if err = parseFullTournamentTeams(doc, t); err != nil {
-		return nil, errors.Wrap(err, "parse tournament teams")
+		return nil, fmt.Errorf("parse tournament teams: %w", err)
 	}
 
 	if isDone(t, now) {
@@ -110,7 +108,7 @@ var parseTournamentDetailsMap = map[string]detailsParser{
 		var err error
 		t.Start, t.End, err = parseStartEndDates(value)
 
-		return errors.Wrapf(err, "parsing start/end dates from tournamentId: %d, value: %s", t.ID, value.Text())
+		return fmt.Errorf("parsing start/end dates from tournamentId: %d, value: %s %w", t.ID, value.Text(), err)
 	},
 	"Ort": func(value *goquery.Selection, t *volleynet.Tournament) error {
 		t.Location = trimSelectionHTML(value)
@@ -176,7 +174,7 @@ func parseTournamentDetails(doc *goquery.Document, t *volleynet.Tournament) erro
 
 				if parser, ok := parseTournamentDetailsMap[columnName]; ok {
 					if err := parser(value, t); err != nil {
-						return errors.Wrapf(err, "error parsing column %s with value %+v", value.Text(), t)
+						return fmt.Errorf("error parsing column %s with value %+v %w", value.Text(), t, err)
 					}
 				}
 			}
@@ -246,7 +244,7 @@ func Entry(body io.Reader) (EntryResult, error) {
 	result := EntryResult{}
 
 	if err != nil {
-		return result, errors.Wrap(err, "could not parse html")
+		return result, fmt.Errorf("could not parse html: %w", err)
 	}
 
 	selection := doc.Find("[name='XX_unique_write_XXBeach/Profile/TurnierAnmeldungErfolgreich']")

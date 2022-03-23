@@ -1,10 +1,10 @@
 package sql
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/repo"
@@ -25,14 +25,14 @@ func (s *tournamentRepository) Get(tournamentID int) (*volleynet.Tournament, err
 	}
 	err := crud.ReadOne(s.DB, "tournament/select-by-id", tournament, tournamentID)
 
-	return tournament, errors.Wrap(err, "get tournament")
+	return tournament, fmt.Errorf("get tournament: %w", err)
 }
 
 // New creates a new tournament.
 func (s *tournamentRepository) New(t *volleynet.Tournament) (*volleynet.Tournament, error) {
 	err := crud.Create(s.DB, "tournament/insert", t)
 
-	return t, errors.Wrap(err, "insert tournament")
+	return t, fmt.Errorf("insert tournament: %w", err)
 }
 
 // NewBatch creates a new tournament.
@@ -44,14 +44,14 @@ func (s *tournamentRepository) NewBatch(tournaments ...*volleynet.Tournament) er
 	}
 	err := crud.Create(s.DB, "tournament/insert", ts...)
 
-	return errors.Wrap(err, "insert tournament")
+	return fmt.Errorf("insert tournament: %w", err)
 }
 
 // Update updates a tournament.
 func (s *tournamentRepository) Update(t *volleynet.Tournament) error {
 	err := crud.Update(s.DB, "tournament/update", t)
 
-	return errors.Wrap(err, "update tournament")
+	return fmt.Errorf("update tournament: %w", err)
 }
 
 // UpdateBatch updates a tournament.
@@ -63,7 +63,7 @@ func (s *tournamentRepository) UpdateBatch(tournaments ...*volleynet.Tournament)
 	}
 	err := crud.Update(s.DB, "tournament/update", ts...)
 
-	return errors.Wrap(err, "update tournament")
+	return fmt.Errorf("update tournament: %w", err)
 }
 
 // Filter loads all tournaments by season, league and gender.
@@ -77,7 +77,7 @@ func (s *tournamentRepository) Search(filter repo.TournamentFilter) (
 		filter.Genders,
 	)
 
-	return tournaments, errors.Wrap(err, "filtered tournaments")
+	return tournaments, fmt.Errorf("filtered tournaments: %w", err)
 }
 
 // Seasons returns all available seasons
@@ -87,7 +87,7 @@ func (s *tournamentRepository) Seasons() ([]string, error) {
 
 	sort.Strings(seasons)
 
-	return seasons, errors.Wrap(err, "available seasons")
+	return seasons, fmt.Errorf("available seasons: %w", err)
 }
 
 // Leagues returns all available leagues
@@ -98,7 +98,7 @@ func (s *tournamentRepository) Leagues() ([]string, error) {
 
 	sort.Strings(leagues)
 
-	return leagues, errors.Wrap(err, "leagues")
+	return leagues, fmt.Errorf("leagues: %w", err)
 }
 
 // SubLeagues returns all available sub-leagues
@@ -108,5 +108,5 @@ func (s *tournamentRepository) SubLeagues() ([]string, error) {
 
 	sort.Strings(subLeagues)
 
-	return subLeagues, errors.Wrap(err, "subleagues")
+	return subLeagues, fmt.Errorf("subleagues: %w", err)
 }

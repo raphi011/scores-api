@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
+	"errors"
+
 	"github.com/gin-gonic/gin"
-	"github.com/pkg/errors"
 	"github.com/raphi011/scores-api"
 	"github.com/raphi011/scores-api/cmd/api/logger"
 )
@@ -30,11 +31,9 @@ func extractErrorInformation(err error) (code int, message string) {
 	code = http.StatusInternalServerError
 	message = err.Error()
 
-	cause := errors.Cause(err)
-
-	if cause == scores.ErrNotFound {
+	if errors.Is(err, scores.ErrNotFound) {
 		code = http.StatusNotFound
-	} else if cause == scores.ErrorUnauthorized {
+	} else if errors.Is(err, scores.ErrorUnauthorized) {
 		code = http.StatusUnauthorized
 	}
 

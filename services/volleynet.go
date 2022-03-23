@@ -1,7 +1,8 @@
 package services
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/volleynet"
@@ -87,13 +88,13 @@ func (s *Volleynet) SetDefaultFilters(filter repo.TournamentFilter) repo.Tournam
 func (s *Volleynet) TournamentFilterOptions() (*FilterOptions, error) {
 	leagues, err := s.Leagues()
 	if err != nil {
-		return nil, errors.Wrap(err, "loading leagues")
+		return nil, fmt.Errorf("loading leagues: %w", err)
 	}
 
 	seasons, err := s.Seasons()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "loading seasons")
+		return nil, fmt.Errorf("loading seasons: %w", err)
 	}
 
 	options := &FilterOptions{
@@ -109,28 +110,28 @@ func (s *Volleynet) TournamentFilterOptions() (*FilterOptions, error) {
 func (s *Volleynet) Leagues() ([]string, error) {
 	leagues, err := s.TournamentRepo.Leagues()
 
-	return leagues, errors.Wrap(err, "loading leagues")
+	return leagues, fmt.Errorf("loading leagues: %w", err)
 }
 
 // SubLeagues loads all available SubLeagues as Name/Value pairs.
 func (s *Volleynet) SubLeagues() ([]string, error) {
 	leagues, err := s.TournamentRepo.Leagues()
 
-	return leagues, errors.Wrap(err, "loading leagues")
+	return leagues, fmt.Errorf("loading leagues: %w", err)
 }
 
 // PreviousPartners returns a list of all partners a player has played with before.
 func (s *Volleynet) PreviousPartners(playerID int) ([]*volleynet.Player, error) {
 	partners, err := s.PlayerRepo.PreviousPartners(playerID)
 
-	return partners, errors.Wrap(err, "loading parners")
+	return partners, fmt.Errorf("loading parners: %w", err)
 }
 
 // Seasons loads all available seasons.
 func (s *Volleynet) Seasons() ([]string, error) {
 	leagues, err := s.TournamentRepo.Seasons()
 
-	return leagues, errors.Wrap(err, "loading leagues")
+	return leagues, fmt.Errorf("loading leagues: %w", err)
 }
 
 func (s *Volleynet) addTeams(tournaments ...*volleynet.Tournament) ([]*volleynet.Tournament, error) {
@@ -140,7 +141,7 @@ func (s *Volleynet) addTeams(tournaments ...*volleynet.Tournament) ([]*volleynet
 		t.Teams, err = s.TeamRepo.ByTournament(t.ID)
 
 		if err != nil {
-			return nil, errors.Wrapf(err, "adding teams of tournamentID %d", t.ID)
+			return nil, fmt.Errorf("adding teams of tournamentID %d %w", t.ID, err)
 		}
 	}
 
@@ -169,19 +170,19 @@ func (s *Volleynet) EnterTournament(partnerID, tournamentID int) error {
 	partner, err := s.PlayerRepo.Get(partnerID)
 
 	if err != nil {
-		return errors.Wrap(err, "signup: error while retrieving player")
+		return fmt.Errorf("signup: error while retrieving player: %w", err)
 	}
 
 	tournament, err := s.TournamentRepo.Get(tournamentID)
 
 	if err != nil {
-		return errors.Wrap(err, "signup: error while retrieving tournament")
+		return fmt.Errorf("signup: error while retrieving tournament: %w", err)
 	}
 
 	err = s.VolleynetClient.EnterTournament(partner.ID, tournament.ID)
 
 	if err != nil {
-		return errors.Wrapf(err, "entering tournament %d with partner %d failed", partnerID, tournamentID)
+		return fmt.Errorf("entering tournament %d with partner %d failed %w", partnerID, tournamentID, err)
 	}
 
 	s.incTournamentSignupMetric(tournament)

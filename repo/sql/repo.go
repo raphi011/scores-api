@@ -1,8 +1,9 @@
 package sql
 
 import (
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
 
 	"github.com/raphi011/scores-api/repo"
 	"github.com/raphi011/scores-api/repo/sql/migrate"
@@ -13,7 +14,7 @@ func Repositories(provider, connectionString string) (*repo.Repositories, error)
 	db, err := sqlx.Open(provider, connectionString)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "open db")
+		return nil, fmt.Errorf("open db: %w", err)
 	}
 
 	err = migrate.All(provider, db)

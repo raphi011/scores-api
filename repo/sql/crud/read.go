@@ -1,8 +1,9 @@
 package crud
 
 import (
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
-	"github.com/pkg/errors"
 )
 
 // ReadIn reads rows into `dest` and expands the query's `IN` parameters.
@@ -10,7 +11,7 @@ func ReadIn(db *sqlx.DB, queryName string, dest interface{}, args ...interface{}
 	q, args, err := sqlx.In(loadQuery(db, queryName), args...)
 
 	if err != nil {
-		return errors.Wrap(err, "creating query")
+		return fmt.Errorf("creating query: %w", err)
 	}
 
 	q = db.Rebind(q)

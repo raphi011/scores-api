@@ -1,7 +1,8 @@
 package sync
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
 	"github.com/raphi011/scores-api/volleynet"
 )
 
@@ -17,13 +18,13 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 	report := &LadderSyncReport{}
 
 	if err != nil {
-		return nil, errors.Wrap(err, "loading the ladder failed")
+		return nil, fmt.Errorf("loading the ladder failed: %w", err)
 	}
 
 	persisted, err := s.PlayerRepo.ByGender(gender)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "loading persisted players failed")
+		return nil, fmt.Errorf("loading persisted players failed: %w", err)
 	}
 
 	syncInfos := Players(persisted, ranks...)
@@ -42,7 +43,7 @@ func (s *Service) Ladder(gender string) (*LadderSyncReport, error) {
 		}
 
 		if err != nil {
-			return nil, errors.Wrap(err, "sync player failed")
+			return nil, fmt.Errorf("sync player failed: %w", err)
 		}
 	}
 

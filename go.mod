@@ -2,8 +2,6 @@ module github.com/raphi011/scores-api
 
 go 1.18
 
-replace github.com/ugorji/go v1.1.4 => github.com/ugorji/go/codec v0.0.0-20190204201341-e444a5086c43
-
 require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/gin-contrib/sessions v0.0.0-20180509034348-15760a03818f
@@ -14,7 +12,6 @@ require (
 	github.com/gorilla/securecookie v1.1.1
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/markbates/pkger v0.17.1
-	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v1.7.1
 	github.com/stretchr/testify v1.5.1
 	github.com/wawandco/fako v0.0.0-20180828010250-c36a0bc97398
